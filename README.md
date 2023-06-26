@@ -1,3 +1,14 @@
+Mneme Feast
+===========
+
+Named for the{" "} [Greek Muse for memory](https://en.wikipedia.org/wiki/Mneme) , Mneme Feast will be a web application and API for submitting, storing, and retrieving learning materials in a database. These learning materials can be sources of information, such as articles, news reports, official documents, scientific papers, specifications, etc; notes to condense and clarify the information in those sources; and questions or prompts to challenge a student to recall and use the information.
+
+This project is open source. Contributors are welcome to [view the source code on GitHub](https://github.com/joewrotehaikus/mnemefeast), make their own GitHub fork, and submit pull requests for contribution to the project.
+
+For discussion about the application, [go to our Discord server](https://discord.gg/PcsjqPFh).
+
+This application is using NextJS 13 and Mongoose.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
@@ -14,21 +25,8 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+## The API
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This application serves both the website and the API. There are currently three endpoints for the API. For your personal system, you will need the URI of a MongoDB database, possibly by running a local instance of MongoDB. The file "sample.env" has instructions for adding the URI that you are using.
