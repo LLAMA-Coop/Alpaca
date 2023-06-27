@@ -7,9 +7,7 @@ This project is open source. Contributors are welcome to [view the source code o
 
 For discussion about the application, [go to our Discord server](https://discord.gg/PcsjqPFh).
 
-This application is using NextJS 13 and Mongoose.
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This application is using NextJS 13 and Mongoose, bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## To Set Up From Git Repository
 
