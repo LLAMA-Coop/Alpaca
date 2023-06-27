@@ -14,9 +14,13 @@ This application is using NextJS 13 and Mongoose, bootstrapped with [`create-nex
 You are required to have git and npm installed. You will have to provide your own instance of MongoDB. [For instructions on getting your own MongoDB instance, click here](https://www.mongodb.com/docs/manual/administration/install-community/).
 
 In command terminal, type:
+```bash
     git clone https://github.com/joewrotehaikus/mnemefeast.git
+```
 Then
+```
     npm install
+```
 
 Once that installs, you will open mneme/sample.env and follow the instructions to create your own .env file, with the URL to your MongoDB database.
 
@@ -46,8 +50,8 @@ The plan is to make three endpoints for the API, each corresponding to three Mon
 
 Here are the proposed models:
 1. Source
-    Information and link to a reliable source of information pertinent to a subject one might one to study
+    : Information and link to a reliable source of information pertinent to a subject one might one to study
 2. Note
-    A brief summary or explanation of information one might wish to study and learn drawn from one or more sources (the more sources that support a note, the more reliable the note likely is)
+    : A brief summary or explanation of information one might wish to study and learn drawn from one or more sources (the more sources that support a note, the more reliable the note likely is)
 3. Quiz
-    A single question or prompt that checks a student's command of information. This can come in many forms, such as prompt/response, fill-in-the-blank, ordered or unordered list to fill in, sandbox for coding, etc. The prompt may be multimedia, audio, video, still image, or text, so long as there are text alternatives compliant with WCAG.
+    : A single question or prompt that checks a student's command of information. This can come in many forms, such as prompt/response, fill-in-the-blank, ordered or unordered list to fill in, sandbox for coding, etc. The prompt may be multimedia, audio, video, still image, or text, so long as there are text alternatives compliant with WCAG.
