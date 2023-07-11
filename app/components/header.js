@@ -5,14 +5,16 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <h1>Mneme</h1>
-      <menu className={styles.menu}>
-        <li>
-          <Link href="/">Home</Link>
-        </li>
-        <li>
-          <Link href="/about">About</Link>
-        </li>
-      </menu>
+      <nav>
+        <menu>
+          <li>
+            <Link href="/">Home</Link>
+          </li>
+          <li>
+            <Link href="/about">About</Link>
+          </li>
+        </menu>
+      </nav>
     </header>
   );
-};
+}

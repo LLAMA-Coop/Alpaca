@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import styles from "../page.module.css";
 
 export default function About() {
@@ -7,9 +8,9 @@ export default function About() {
       <h1>About Mneme Feast</h1>
       <p>
         Named for the{" "}
-        <a href="https://en.wikipedia.org/wiki/Mneme" target="_blank">
+        <Link href="https://en.wikipedia.org/wiki/Mneme" target="_blank">
           Greek Muse for memory
-        </a>
+        </Link>
         , Mneme Feast will be a web application and API for submitting, storing,
         and retrieving learning materials in a database. These learning
         materials can be sources of information, such as articles, news reports,
@@ -19,15 +20,15 @@ export default function About() {
       </p>
       <p>
         This project is open source. Contributors are welcome to{" "}
-        <a href="https://github.com/joewrotehaikus/mnemefeast">
+        <Link href="https://github.com/joewrotehaikus/mnemefeast">
           view the source code on GitHub
-        </a>
+        </Link>
         , make their own GitHub fork, and submit pull requests for contribution
         to the project.
       </p>
       <p>
         For discussion about the application,{" "}
-        <a href="https://discord.gg/PcsjqPFh">go to our Discord server</a>.
+        <Link href="https://discord.gg/PcsjqPFh">go to our Discord server</Link>.
       </p>
       <p>This application is using NextJS 13 and Mongoose.</p>
     </main>
