@@ -1,6 +1,7 @@
 import { model, models, Schema } from "mongoose";
 import connectDB from "../db";
 connectDB();
+
 // validation:
 //  need either lastAccessed or publishDate
 //  url to match http format

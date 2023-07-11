@@ -1,35 +1,37 @@
-import Image from "next/image";
 import styles from "./page.module.css";
+import Source from "./api/models/Source";
+
+const sources = await Source.find();
 
 export default function Home() {
   return (
     <main className={styles.main}>
-      <h1>Mneme Feast</h1>
-      <p>
-        Named for the{" "}
-        <a href="https://en.wikipedia.org/wiki/Mneme" target="_blank">
-          Greek Muse for memory
-        </a>
-        , Mneme Feast will be a web application and API for submitting, storing,
-        and retrieving learning materials in a database. These learning
-        materials can be sources of information, such as articles, news reports,
-        official documents, scientific papers, specifications, etc; notes to
-        condense and clarify the information in those sources; and questions or
-        prompts to challenge a student to recall and use the information.
-      </p>
-      <p>
-        This project is open source. Contributors are welcome to{" "}
-        <a href="https://github.com/joewrotehaikus/mnemefeast">
-          view the source code on GitHub
-        </a>
-        , make their own GitHub fork, and submit pull requests for contribution
-        to the project.
-      </p>
-      <p>
-        For discussion about the application,{" "}
-        <a href="https://discord.gg/PcsjqPFh">go to our Discord server</a>.
-      </p>
-      <p>This application is using NextJS 13 and Mongoose.</p>
+      <h2>Let's take it for a spin!</h2>
+      <h3>Sources</h3>
+      {sources.map((src) => {
+        return (
+          <div key={src._id}>
+            <h4>{src.title}</h4>
+            <p>
+              <em>Medium: </em>
+              {src.medium}
+            </p>
+            <p>
+              <em>Contributors: </em>
+            </p>
+            {src.contributors.length > 0 ? (
+              <ol>
+                {src.contributors.map((cont) => {
+                  return <li key={cont}>{cont}</li>;
+                })}
+              </ol>
+            ) : (
+              <p>No contributors listed</p>
+            )}
+            <a href={src.url}>Click here to visit source page</a>
+          </div>
+        );
+      })}
     </main>
   );
 }

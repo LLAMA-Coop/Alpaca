@@ -1,0 +1,12 @@
+.header {
+    text-align: center;
+}
+
+.header menu {
+    list-style: none;
+}
+
+.header menu li {
+    display: inline;
+    margin: 1rem;
+}
