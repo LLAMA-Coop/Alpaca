@@ -8,5 +8,23 @@
 
 .header menu li {
     display: inline;
-    margin: 1rem;
+    margin: 0.5rem;
+}
+
+.header menu li > * {
+    padding: 0.1rem 0.5rem;
+    background-color: purple;
+    color: white;
+    text-decoration: none;
+    border: 2px outset lightgreen;
+    border-radius: 0.5rem;
+    /* Can be moved to media query that targets touch */
+    min-height: 45px;
+    min-width: 45px;
+}
+
+.header menu li > *:hover {
+    background-color: lightblue;
+    color: purple;
+    border: 2px outset green;
 }

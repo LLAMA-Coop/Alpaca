@@ -1,5 +1,6 @@
 import styles from "./page.module.css";
 import Source from "./api/models/Source";
+import SourceDisplay from "./components/sourceDisplay";
 
 const sources = await Source.find();
 
@@ -10,26 +11,7 @@ export default function Home() {
       <h3>Sources</h3>
       {sources.map((src) => {
         return (
-          <div key={src._id}>
-            <h4>{src.title}</h4>
-            <p>
-              <em>Medium: </em>
-              {src.medium}
-            </p>
-            <p>
-              <em>Contributors: </em>
-            </p>
-            {src.contributors.length > 0 ? (
-              <ol>
-                {src.contributors.map((cont) => {
-                  return <li key={cont}>{cont}</li>;
-                })}
-              </ol>
-            ) : (
-              <p>No contributors listed</p>
-            )}
-            <a href={src.url}>Click here to visit source page</a>
-          </div>
+          <SourceDisplay key={src._id} source={src}></SourceDisplay>
         );
       })}
     </main>
