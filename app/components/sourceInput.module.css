@@ -1,0 +1,17 @@
+.form {
+    background-color: grey;
+    color: black;
+    padding: 1rem;
+}
+
+.form label {
+    display: block;
+    margin: 1rem;
+    background-color: lightblue;
+    padding: 0.5rem;
+}
+
+.form label > input, .form li input {
+    margin-left: 1rem;
+    max-width: 100%;
+}

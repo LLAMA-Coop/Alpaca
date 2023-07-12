@@ -1,48 +1,129 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import styles from "./sourceInput.module.css";
 
 export default function SourceInput() {
   let [title, setTitle] = useState("");
   let [medium, setMedium] = useState("");
   let [url, setUrl] = useState("");
-  let [contributors, setContributors] = useState(["blah", "blah"]);
-  let [lastAccessed, setLastAccessed] = useState(new Date());
-  let [publishDate, setPublishDate] = useState("");
+  let [contributors, setContributors] = useState([]);
+  let [lastAccessed, setLastAccessed] = useState();
+  let [publishDate, setPublishDate] = useState();
 
-  const uniqueId = new Date().getTime();
+  let [validUrl, setValidUrl] = useState(true);
+  let [validAccessed, setValidAccessed] = useState(true);
+  let [validPublish, setValidPublish] = useState(true);
+
+  let uniqueId;
+  useEffect(() => {
+    uniqueId = new Date().getTime();
+    setLastAccessed(new Date().toISOString().split("T")[0]);
+  }, []);
   const addContributorRef = useRef();
 
   function handleAddContributor(e) {
     e.preventDefault();
-    console.log(addContributorRef.current.value);
     setContributors([...contributors, addContributorRef.current.value]);
   }
 
+  async function handleSubmit(e) {
+    e.preventDefault();
+    function formatDate(htmlDate) {
+      let ymd = htmlDate.split("-");
+      return new Date(ymd[0], ymd[1] - 1, ymd[2]);
+    }
+    const src = {
+      title,
+      medium,
+      url,
+      contributors,
+      lastAccessed: formatDate(lastAccessed),
+      publishDate: formatDate(publishDate),
+    };
+    let response = await fetch("./api/source", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(src),
+    });
+
+    console.log(response);
+  }
+
   return (
-    <form>
+    <form className={styles.form}>
       <label htmlFor={"title" + uniqueId}>
         Title
         <input
           id={"title" + uniqueId}
           type="text"
+          defaultValue={title}
           onChange={(e) => setTitle(e.target.value)}
+          required
         ></input>
       </label>
 
       <label htmlFor={"medium" + uniqueId}>
-        <input id={"medium" + uniqueId} type="text"></input>
+        Medium
+        <input
+          id={"medium" + uniqueId}
+          type="text"
+          defaultValue={medium}
+          onChange={(e) => setMedium(e.target.value)}
+          required
+        ></input>
       </label>
 
       <label htmlFor={"url" + uniqueId}>
-        <input id={"url" + uniqueId} type="text"></input>
+        URL of Source
+        <input
+          id={"url" + uniqueId}
+          type="text"
+          defaultValue={url}
+          onChange={(e) => {
+            setUrl(e.target.value);
+            setValidUrl(
+              /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(e.target.value)
+            );
+          }}
+          required
+        ></input>
+        {validUrl ? null : (
+          <span style={{ color: "red" }}>Please use valid URL format</span>
+        )}
       </label>
 
       <label htmlFor={"lastAccessed" + uniqueId}>
-        <input id={"lastAccessed" + uniqueId} type="date"></input>
+        Last Accessed
+        <input
+          id={"lastAccessed" + uniqueId}
+          type="date"
+          defaultValue={lastAccessed}
+          onChange={(e) => {
+            setLastAccessed(e.target.value);
+            setValidAccessed(/^\d{4}-\d{2}-\d{2}$/.test(e.target.value));
+          }}
+        ></input>
+        {validAccessed ? null : (
+          <span style={{ color: "red" }}>Please use YYYY-MM-DD format</span>
+        )}
       </label>
 
       <label htmlFor={"publishDate" + uniqueId}>
-        <input id={"publishDate" + uniqueId} type="date"></input>
+        Published
+        <input
+          id={"publishDate" + uniqueId}
+          type="date"
+          defaultValue={publishDate}
+          onChange={(e) => {
+            setPublishDate(e.target.value);
+            setValidPublish(/^\d{4}-\d{2}-\d{2}$/.test(e.target.value));
+          }}
+        ></input>
+        {validPublish ? null : (
+          <span style={{ color: "red" }}>Please use YYYY-MM-DD format</span>
+        )}
       </label>
 
       <p>Contributors</p>
@@ -62,14 +143,7 @@ export default function SourceInput() {
           <button onClick={handleAddContributor}>Add Contributor</button>
         </li>
       </ul>
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          console.log(title, contributors);
-        }}
-      >
-        Submit
-      </button>
+      <button onClick={handleSubmit}>Submit</button>
     </form>
   );
 }
