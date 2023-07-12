@@ -1,7 +1,7 @@
 import styles from "./page.module.css";
 import Source from "./api/models/Source";
-import SourceDisplay from "./components/sourceDisplay";
-import SourceInput from "./components/sourceInput";
+import SourceDisplay from "./components/source/sourceDisplay";
+import SourceInput from "./components/source/sourceInput";
 
 const sources = await Source.find();
 
