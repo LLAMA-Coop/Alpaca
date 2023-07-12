@@ -1,6 +1,7 @@
 import styles from "./page.module.css";
 import Source from "./api/models/Source";
 import SourceDisplay from "./components/sourceDisplay";
+import SourceInput from "./components/sourceInput";
 
 const sources = await Source.find();
 
@@ -14,6 +15,9 @@ export default function Home() {
           <SourceDisplay key={src._id} source={src}></SourceDisplay>
         );
       })}
+
+      <p>Add Source</p>
+      <SourceInput></SourceInput>
     </main>
   );
 }
