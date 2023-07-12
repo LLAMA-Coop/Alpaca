@@ -1,0 +1,19 @@
+.source {
+    border: 1px solid black;
+    border-radius: 0.2rem;
+    background-color: skyblue;
+    padding: 0.5rem;
+}
+
+.source h4 {
+    text-align: center;
+}
+
+.contributors {
+    background-color: black;
+    color: white;
+    padding: 0 0.2rem;
+}
+.contributors::first-line {
+    font-style: italic;
+}
