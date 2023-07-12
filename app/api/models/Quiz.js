@@ -16,5 +16,14 @@ export default models.quiz ||
           ref: "user",
         },
       ],
+      dateAdded: {
+        type: Date,
+        default: Date.now,
+      },
+      addedBy: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+        required: true
+      }
     })
   );

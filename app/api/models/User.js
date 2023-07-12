@@ -9,5 +9,10 @@ const userQuiz = new Schema({
 export default models.user || model("user", new Schema({
     username: String,
     passwordHash: String,
+    dateAdded: {
+      type: Date,
+      default: Date.now,
+    },
+    roles: [String],
     quizzes: [userQuiz]
 }));

@@ -14,14 +14,15 @@ export async function GET(req) {
 export async function POST(req) {
   const body = await req.json();
   // Will need to get author from authentication
-  // Author refers to the user that made the note
+  // addedBy refers to the user that made the note
   // and that should be the person signed in
   // Eventually, there will be guards checking authentication before the request even comes here
+  // As well as a check on authorization to make notes
 
   // Will need to redesign once images/videos are permitted in notes
 
-  const author = "Joe";
-  if (!author) {
+  const addedBy = "Joe";
+  if (!addedBy) {
     return new Response(
       JSON.stringify({
         400: {
@@ -55,7 +56,7 @@ export async function POST(req) {
   }
 
   let noteRcvd = {
-    author,
+    author: addedBy,
     text: body.text,
     sources: [...body.sources],
   };

@@ -11,14 +11,14 @@ export default models.note ||
   model(
     "note",
     new Schema({
-      author: {
+      addedBy: {
         type: Schema.Types.ObjectId,
         ref: "user",
-        required: true
+        required: true,
       },
       text: {
         type: String,
-        required: true
+        required: true,
       },
       sources: [
         {
@@ -28,7 +28,12 @@ export default models.note ||
       ],
       dateAdded: {
         type: Date,
-        default: Date.now
-      }
+        default: Date.now,
+      },
+      addedBy: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+        required: true,
+      },
     })
   );

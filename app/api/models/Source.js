@@ -19,5 +19,10 @@ export default models.source ||
         type: Date,
         default: Date.now,
       },
+      addedBy: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+        required: true
+      }
     })
   );
