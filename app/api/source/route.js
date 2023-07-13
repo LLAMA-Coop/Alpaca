@@ -15,8 +15,14 @@ export async function POST(req) {
   const body = await req.json();
   if (!(body.title && body.medium && body.url)) {
     return new Response(
-      JSON.stringify({ 400: { message: "Missing required information" } }),
-      { status: 400 }
+      JSON.stringify({
+        400: {
+          message: "Missing required information",
+        },
+      }),
+      {
+        status: 400,
+      }
     );
   }
 
@@ -38,5 +44,11 @@ export async function POST(req) {
 
   const source = new Source(srcRcvd);
   let content = await source.save();
-  return new Response(JSON.stringify({ 200: { content } }));
+  return new Response(
+    JSON.stringify({
+      200: {
+        content,
+      },
+    })
+  );
 }
