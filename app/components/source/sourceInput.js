@@ -22,13 +22,11 @@ export default function SourceInput() {
   const addContributorRef = useRef();
 
   useEffect(() => {
-    setValidUrl(
-      /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(e.target.value)
-    );
+    setValidUrl(/^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(url));
 
-    setValidAccessed(/^\d{4}-\d{2}-\d{2}$/.test(e.target.value));
+    setValidAccessed(/^\d{4}-\d{2}-\d{2}$/.test(lastAccessed));
 
-    setValidPublish(/^\d{4}-\d{2}-\d{2}$/.test(e.target.value));
+    setValidPublish(/^\d{4}-\d{2}-\d{2}$/.test(publishDate));
   }, [url, lastAccessed, publishDate]);
 
   function handleAddContributor(e) {
