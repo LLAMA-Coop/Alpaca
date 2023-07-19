@@ -21,6 +21,16 @@ export default function SourceInput() {
   }, []);
   const addContributorRef = useRef();
 
+  useEffect(() => {
+    setValidUrl(
+      /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(e.target.value)
+    );
+
+    setValidAccessed(/^\d{4}-\d{2}-\d{2}$/.test(e.target.value));
+
+    setValidPublish(/^\d{4}-\d{2}-\d{2}$/.test(e.target.value));
+  }, [url, lastAccessed, publishDate]);
+
   function handleAddContributor(e) {
     e.preventDefault();
     setContributors([...contributors, addContributorRef.current.value]);
@@ -48,7 +58,7 @@ export default function SourceInput() {
       body: JSON.stringify(src),
     });
 
-    console.log(response);
+    console.log(await response.json());
   }
 
   return (
@@ -83,9 +93,6 @@ export default function SourceInput() {
           defaultValue={url}
           onChange={(e) => {
             setUrl(e.target.value);
-            setValidUrl(
-              /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(e.target.value)
-            );
           }}
           required
         ></input>
@@ -102,7 +109,6 @@ export default function SourceInput() {
           defaultValue={lastAccessed}
           onChange={(e) => {
             setLastAccessed(e.target.value);
-            setValidAccessed(/^\d{4}-\d{2}-\d{2}$/.test(e.target.value));
           }}
         ></input>
         {validAccessed ? null : (
@@ -118,7 +124,6 @@ export default function SourceInput() {
           defaultValue={publishDate}
           onChange={(e) => {
             setPublishDate(e.target.value);
-            setValidPublish(/^\d{4}-\d{2}-\d{2}$/.test(e.target.value));
           }}
         ></input>
         {validPublish ? null : (
