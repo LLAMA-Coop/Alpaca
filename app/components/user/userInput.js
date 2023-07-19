@@ -1,4 +1,5 @@
 "use client";
+import makeUniqueId from "@/app/code/uniqueId";
 import { useEffect, useState } from "react";
 
 export default function UserInput({ isRegistering }) {
@@ -13,9 +14,9 @@ export default function UserInput({ isRegistering }) {
     ? useState(true)
     : [undefined, undefined];
 
-  let uniqueId;
+  let [uniqueId, setUniqueId] = useState("");
   useEffect(() => {
-    uniqueId = new Date().getTime();
+    setUniqueId(makeUniqueId());
   }, []);
 
   useEffect(() => {
@@ -49,28 +50,28 @@ export default function UserInput({ isRegistering }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if(!(username && validPassword && confirmMatch)){
-        console.error("cannot submit");
-        return;
+    if (!(username && validPassword && confirmMatch)) {
+      console.error("cannot submit");
+      return;
     }
     const user = { username, password };
     let response = await fetch("./api/user", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(user)
-    })
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
 
     console.log(await response.json());
   }
 
   return (
     <form>
-      <label htmlFor={"username" + uniqueId}>
+      <label htmlFor={"username_" + uniqueId}>
         Username
         <input
-          id={"username" + uniqueId}
+          id={"username_" + uniqueId}
           type="text"
           defaultValue={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -78,10 +79,10 @@ export default function UserInput({ isRegistering }) {
         ></input>
       </label>
 
-      <label htmlFor={"password" + uniqueId}>
+      <label htmlFor={"password_" + uniqueId}>
         Password
         <input
-          id={"password" + uniqueId}
+          id={"password_" + uniqueId}
           type="password"
           defaultValue={password}
           onChange={(e) => {
@@ -102,10 +103,10 @@ export default function UserInput({ isRegistering }) {
       </label>
 
       {isRegistering && (
-        <label htmlFor={"confirm" + uniqueId}>
+        <label htmlFor={"confirm_" + uniqueId}>
           Confirm Password
           <input
-            id={"confirm" + uniqueId}
+            id={"confirm_" + uniqueId}
             type="password"
             defaultValue={confirm}
             onChange={(e) => {

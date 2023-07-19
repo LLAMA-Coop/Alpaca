@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import styles from "./sourceInput.module.css";
+import makeUniqueId from "@/app/code/uniqueId";
 
 export default function SourceInput() {
   let [title, setTitle] = useState("");
@@ -14,9 +15,9 @@ export default function SourceInput() {
   let [validAccessed, setValidAccessed] = useState(true);
   let [validPublish, setValidPublish] = useState(true);
 
-  let uniqueId;
+  let [uniqueId, setUniqueId] = useState("");
   useEffect(() => {
-    uniqueId = new Date().getTime();
+    setUniqueId(makeUniqueId());
     setLastAccessed(new Date().toISOString().split("T")[0]);
   }, []);
   const addContributorRef = useRef();
@@ -37,6 +38,7 @@ export default function SourceInput() {
   async function handleSubmit(e) {
     e.preventDefault();
     function formatDate(htmlDate) {
+      if(!htmlDate) return undefined;
       let ymd = htmlDate.split("-");
       return new Date(ymd[0], ymd[1] - 1, ymd[2]);
     }
@@ -61,10 +63,10 @@ export default function SourceInput() {
 
   return (
     <form className={styles.form}>
-      <label htmlFor={"title" + uniqueId}>
+      <label htmlFor={"title_" + uniqueId}>
         Title
         <input
-          id={"title" + uniqueId}
+          id={"title_" + uniqueId}
           type="text"
           defaultValue={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -72,10 +74,10 @@ export default function SourceInput() {
         ></input>
       </label>
 
-      <label htmlFor={"medium" + uniqueId}>
+      <label htmlFor={"medium_" + uniqueId}>
         Medium
         <input
-          id={"medium" + uniqueId}
+          id={"medium_" + uniqueId}
           type="text"
           defaultValue={medium}
           onChange={(e) => setMedium(e.target.value)}
@@ -83,10 +85,10 @@ export default function SourceInput() {
         ></input>
       </label>
 
-      <label htmlFor={"url" + uniqueId}>
+      <label htmlFor={"url_" + uniqueId}>
         URL of Source
         <input
-          id={"url" + uniqueId}
+          id={"url_" + uniqueId}
           type="text"
           defaultValue={url}
           onChange={(e) => {
@@ -99,10 +101,10 @@ export default function SourceInput() {
         )}
       </label>
 
-      <label htmlFor={"lastAccessed" + uniqueId}>
+      <label htmlFor={"lastAccessed_" + uniqueId}>
         Last Accessed
         <input
-          id={"lastAccessed" + uniqueId}
+          id={"lastAccessed_" + uniqueId}
           type="date"
           defaultValue={lastAccessed}
           onChange={(e) => {
@@ -114,10 +116,10 @@ export default function SourceInput() {
         )}
       </label>
 
-      <label htmlFor={"publishDate" + uniqueId}>
+      <label htmlFor={"publishDate_" + uniqueId}>
         Published
         <input
-          id={"publishDate" + uniqueId}
+          id={"publishDate_" + uniqueId}
           type="date"
           defaultValue={publishDate}
           onChange={(e) => {
@@ -135,10 +137,10 @@ export default function SourceInput() {
           return <li key={index}>{cont}</li>;
         })}
         <li>
-          <label htmlFor={"title" + uniqueId}>
+          <label htmlFor={"contributor_" + uniqueId}>
             New Contributor
             <input
-              id={"title" + uniqueId}
+              id={"contributor_" + uniqueId}
               type="text"
               ref={addContributorRef}
             ></input>
