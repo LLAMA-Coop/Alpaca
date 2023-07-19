@@ -2,6 +2,7 @@ import styles from "./page.module.css";
 import Source from "./api/models/Source";
 import SourceDisplay from "./components/source/sourceDisplay";
 import SourceInput from "./components/source/sourceInput";
+import UserInput from "./components/user/userInput";
 
 const sources = await Source.find();
 
@@ -18,6 +19,9 @@ export default function Home() {
 
       <p>Add Source</p>
       <SourceInput></SourceInput>
+
+      <p>Register new user</p>
+      <UserInput isRegistering={true}></UserInput>
     </main>
   );
 }
