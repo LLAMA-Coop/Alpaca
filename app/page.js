@@ -16,13 +16,13 @@ export default function Home() {
         return <SourceDisplay key={src._id} source={src}></SourceDisplay>;
       })}
 
-      <p>Add Source</p>
+      <h3>Add Source</h3>
       <SourceInput></SourceInput>
 
-      <p>Register new user</p>
+      <h3>Register new user</h3>
       <UserInput isRegistering={true}></UserInput>
 
-      <p>Adding a note</p>
+      <h3>Add a note</h3>
       <NoteInput
         availableSources={sources.map((src) => {
           let { title, url, _id } = src;

@@ -3,7 +3,7 @@ import makeUniqueId from "@/app/code/uniqueId";
 import { useEffect, useState } from "react";
 import SourceInput from "../source/sourceInput";
 import Link from "next/link";
-import styles from "./noteInput.module.css"
+import styles from "./noteInput.module.css";
 
 export default function NoteInput({ availableSources }) {
   let [text, setText] = useState("");
@@ -26,24 +26,29 @@ export default function NoteInput({ availableSources }) {
         ></textarea>
       </label>
 
-      <div>
-        Current Sources
-        <ul>
-          {sources.map((src) => {
-            return (
-              <li key={src._id}>
-                <Link href={src.url}>{src.title}</Link>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      {sources.length > 0 ? (
+        <div>
+          <h4>Current Sources</h4>
+          <ul>
+            {sources.map((src) => {
+              return (
+                <li key={src._id}>
+                  <Link href={src.url}>{src.title}</Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : (
+        <div>
+          <h4>No Sources Added</h4>
+        </div>
+      )}
 
       <fieldset>
         <legend>Add Another Source</legend>
         <label htmlFor={"sourceOptions_" + uniqueId}>
           Select from a list of sources
-          {/* Here we'll put a component with a set of options for sources */}
         </label>
         <input
           id={"sourceOptions_" + uniqueId}
@@ -61,6 +66,7 @@ export default function NoteInput({ availableSources }) {
 
         <datalist id={"sourceList_" + uniqueId}>
           {availableSources.map((src) => {
+            if (sources.indexOf(src) !== -1) return;
             return (
               <option key={src._id} value={src._id} label={src.title}></option>
             );
