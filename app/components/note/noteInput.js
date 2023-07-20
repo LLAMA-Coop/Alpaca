@@ -3,6 +3,7 @@ import makeUniqueId from "@/app/code/uniqueId";
 import { useEffect, useState } from "react";
 import SourceInput from "../source/sourceInput";
 import Link from "next/link";
+import styles from "./noteInput.module.css"
 
 export default function NoteInput({ availableSources }) {
   let [text, setText] = useState("");
@@ -14,7 +15,7 @@ export default function NoteInput({ availableSources }) {
   }, []);
 
   return (
-    <div>
+    <div className={styles.form}>
       <label htmlFor={"text_" + uniqueId}>
         Text
         <textarea
