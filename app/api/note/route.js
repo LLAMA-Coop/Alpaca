@@ -21,7 +21,9 @@ export async function POST(req) {
 
   // Will need to redesign once images/videos are permitted in notes
 
-  const addedBy = "Joe";
+  // addedBy needs to come from cookie
+  // Should probably verify user real and active
+  const addedBy = "64b841f6f8bfa3dc4d7079e4";
   if (!addedBy) {
     return new Response(
       JSON.stringify({
@@ -56,7 +58,7 @@ export async function POST(req) {
   }
 
   let noteRcvd = {
-    author: addedBy,
+    addedBy,
     text: body.text,
     sources: [...body.sources],
   };

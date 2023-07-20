@@ -14,6 +14,29 @@ export default function NoteInput({ availableSources }) {
     setUniqueId(makeUniqueId());
   }, []);
 
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if(text.length === 0){
+      console.error("Need text")
+    }
+    if(sources.length === 0){
+      console.error("Need at least one source")
+    }
+    if(text.length === 0 || sources.length === 0){
+      return;
+    }
+    const note = { text, sources };
+    let response = await fetch("./api/note", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(note)
+    })
+
+    console.log(await response.json());
+  }
+
   return (
     <div className={styles.form}>
       <label htmlFor={"text_" + uniqueId}>
@@ -64,6 +87,7 @@ export default function NoteInput({ availableSources }) {
           }}
         ></input>
 
+        {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
         <datalist id={"sourceList_" + uniqueId}>
           {availableSources.map((src) => {
             if (sources.indexOf(src) !== -1) return;
@@ -78,6 +102,7 @@ export default function NoteInput({ availableSources }) {
           <SourceInput></SourceInput>
         </div>
       </fieldset>
+      <button onClick={handleSubmit}>Submit Note</button>
     </div>
   );
 }
