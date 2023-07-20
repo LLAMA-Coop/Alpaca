@@ -148,7 +148,7 @@ export default function SourceInput() {
           <button onClick={handleAddContributor}>Add Contributor</button>
         </li>
       </ul>
-      <button onClick={handleSubmit}>Submit</button>
+      <button onClick={handleSubmit}>Submit Source</button>
     </form>
   );
 }

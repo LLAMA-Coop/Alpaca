@@ -30,6 +30,7 @@ export async function POST(req) {
     title: body.title,
     medium: body.medium,
     url: body.url,
+    addedBy: "64b841f6f8bfa3dc4d7079e4" // This needs to be replaced
   };
 
   if (body.contributors && body.contributors.length > 0) {
