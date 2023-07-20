@@ -26,7 +26,7 @@ export default function Home() {
       <NoteInput
         availableSources={sources.map((src) => {
           let { title, url, _id } = src;
-          return { title, url, _id };
+          return { title, url, _id: _id.toString() };
         })}
       ></NoteInput>
     </main>
