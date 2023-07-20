@@ -118,11 +118,9 @@ export default function UserInput({ isRegistering }) {
         </label>
       )}
 
-      <input
-        type="submit"
-        onClick={handleSubmit}
-        defaultValue={isRegistering ? "Register" : "Login"}
-      ></input>
+      <button onClick={handleSubmit}>
+        {isRegistering ? "Register" : "Login"}
+      </button>
     </form>
   );
 }
