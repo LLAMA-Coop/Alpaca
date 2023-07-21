@@ -1,6 +1,7 @@
 "use client";
 import makeUniqueId from "@/app/code/uniqueId";
 import { useEffect, useState } from "react";
+import styles from "./userInput.module.css"
 
 export default function UserInput({ isRegistering }) {
   let [username, setUsername] = useState("");
@@ -68,7 +69,7 @@ export default function UserInput({ isRegistering }) {
 
   return (
     <form>
-      <label htmlFor={"username_" + uniqueId}>
+      <label htmlFor={"username_" + uniqueId} className={styles.required}>
         Username
         <input
           id={"username_" + uniqueId}
@@ -79,7 +80,7 @@ export default function UserInput({ isRegistering }) {
         ></input>
       </label>
 
-      <label htmlFor={"password_" + uniqueId}>
+      <label htmlFor={"password_" + uniqueId} className={styles.required}>
         Password
         <input
           id={"password_" + uniqueId}
@@ -103,7 +104,7 @@ export default function UserInput({ isRegistering }) {
       </label>
 
       {isRegistering && (
-        <label htmlFor={"confirm_" + uniqueId}>
+        <label htmlFor={"confirm_" + uniqueId} className={styles.required}>
           Confirm Password
           <input
             id={"confirm_" + uniqueId}

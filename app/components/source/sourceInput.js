@@ -38,7 +38,7 @@ export default function SourceInput() {
   async function handleSubmit(e) {
     e.preventDefault();
     function formatDate(htmlDate) {
-      if(!htmlDate) return undefined;
+      if (!htmlDate) return undefined;
       let ymd = htmlDate.split("-");
       return new Date(ymd[0], ymd[1] - 1, ymd[2]);
     }
@@ -63,7 +63,7 @@ export default function SourceInput() {
 
   return (
     <form className={styles.form}>
-      <label htmlFor={"title_" + uniqueId}>
+      <label htmlFor={"title_" + uniqueId} className={styles.required}>
         Title
         <input
           id={"title_" + uniqueId}
@@ -74,7 +74,7 @@ export default function SourceInput() {
         ></input>
       </label>
 
-      <label htmlFor={"medium_" + uniqueId}>
+      <label htmlFor={"medium_" + uniqueId} className={styles.required}>
         Medium
         <input
           id={"medium_" + uniqueId}
@@ -85,7 +85,7 @@ export default function SourceInput() {
         ></input>
       </label>
 
-      <label htmlFor={"url_" + uniqueId}>
+      <label htmlFor={"url_" + uniqueId} className={styles.required}>
         URL of Source
         <input
           id={"url_" + uniqueId}
@@ -131,7 +131,7 @@ export default function SourceInput() {
         )}
       </label>
 
-      <p>Contributors</p>
+      <p className={styles.required}>Contributors</p>
       <ul>
         {contributors.map((cont, index) => {
           return <li key={index}>{cont}</li>;

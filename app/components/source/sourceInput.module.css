@@ -15,3 +15,8 @@
     margin-left: 1rem;
     max-width: 100%;
 }
+
+.required::before {
+  content: "*";
+  color: red;
+}

@@ -1,14 +1,20 @@
 .form {
-    padding: 1rem;
-    background-color: lightgreen;
+  padding: 1rem;
+  background-color: lightgreen;
 }
 
-.form label, .form div {
-    display: block;
-    margin: 1rem;
+.form label,
+.form div {
+  display: block;
+  margin: 1rem;
 }
 
 .form label > textarea {
-    display: block;
-    width: 100%;
+  display: block;
+  width: 100%;
+}
+
+.required::before {
+  content: "*";
+  color: red;
 }

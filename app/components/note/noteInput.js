@@ -39,19 +39,20 @@ export default function NoteInput({ availableSources }) {
 
   return (
     <div className={styles.form}>
-      <label htmlFor={"text_" + uniqueId}>
+      <label htmlFor={"text_" + uniqueId} className={styles.required}>
         Text
         <textarea
           id={"text_" + uniqueId}
           defaultValue={text}
           onChange={(e) => setText(e.target.value)}
           rows={4}
+          required
         ></textarea>
       </label>
 
       {sources.length > 0 ? (
         <div>
-          <h4>Current Sources</h4>
+          <h4 className={styles.required}>Current Sources</h4>
           <ul>
             {sources.map((src) => {
               return (
@@ -64,7 +65,7 @@ export default function NoteInput({ availableSources }) {
         </div>
       ) : (
         <div>
-          <h4>No Sources Added</h4>
+          <h4 className={styles.required}>No Sources Added</h4>
         </div>
       )}
 
