@@ -1,4 +1,26 @@
+.form {
+    background-color: black;
+    color: white;
+    padding: 1rem;
+}
+
+.form label {
+    display: block;
+    margin: 1rem;
+    background-color: purple;
+    padding: 0.5rem;
+}
+
+.form label > input, .form li input {
+    margin-left: 1rem;
+    max-width: 100%;
+}
+
 .required::before {
-    content: "*";
-    color: red;
-  }
+  content: "*";
+  color: red;
+}
+
+.warn {
+    color: darkorange;
+}

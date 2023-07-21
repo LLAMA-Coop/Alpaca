@@ -1,7 +1,7 @@
 "use client";
 import makeUniqueId from "@/app/code/uniqueId";
 import { useEffect, useState } from "react";
-import styles from "./userInput.module.css"
+import styles from "./userInput.module.css";
 
 export default function UserInput({ isRegistering }) {
   let [username, setUsername] = useState("");
@@ -21,12 +21,16 @@ export default function UserInput({ isRegistering }) {
   }, []);
 
   useEffect(() => {
-    setValidPassword(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:])[A-Za-z\d@$!%*?&:]{8,}$/.test(
-        password
-      )
-    );
-    setConfirmMatch(password === confirm);
+    if (password.length > 4) {
+      setValidPassword(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:])[A-Za-z\d@$!%*?&:]{8,}$/.test(
+          password
+        )
+      );
+    }
+    if (confirm.length > 4) {
+      setConfirmMatch(password === confirm);
+    }
   }, [password, confirm]);
 
   function passwordWeaknesses() {
@@ -68,7 +72,7 @@ export default function UserInput({ isRegistering }) {
   }
 
   return (
-    <form>
+    <form className={styles.form}>
       <label htmlFor={"username_" + uniqueId} className={styles.required}>
         Username
         <input
@@ -92,7 +96,7 @@ export default function UserInput({ isRegistering }) {
           required
         ></input>
         {validPassword ? null : (
-          <div>
+          <div className={styles.warn}>
             Please use a stronger password.
             <ul>
               {passwordWeaknesses().map((weakness, index) => {
@@ -115,7 +119,7 @@ export default function UserInput({ isRegistering }) {
             }}
             required
           ></input>
-          {confirmMatch ? null : <span>Both passwords must match</span>}
+          {confirmMatch ? null : <span className={styles.warn}>Both passwords must match</span>}
         </label>
       )}
 

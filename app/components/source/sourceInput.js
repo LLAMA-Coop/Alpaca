@@ -97,7 +97,7 @@ export default function SourceInput() {
           required
         ></input>
         {validUrl ? null : (
-          <span style={{ color: "red" }}>Please use valid URL format</span>
+          <span className={styles.warn}>Please use valid URL format</span>
         )}
       </label>
 
@@ -112,7 +112,7 @@ export default function SourceInput() {
           }}
         ></input>
         {validAccessed ? null : (
-          <span style={{ color: "red" }}>Please use YYYY-MM-DD format</span>
+          <span className={styles.warn}>Please use YYYY-MM-DD format</span>
         )}
       </label>
 
@@ -127,7 +127,7 @@ export default function SourceInput() {
           }}
         ></input>
         {validPublish ? null : (
-          <span style={{ color: "red" }}>Please use YYYY-MM-DD format</span>
+          <span className={styles.warn}>Please use YYYY-MM-DD format</span>
         )}
       </label>
 
