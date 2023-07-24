@@ -26,6 +26,11 @@ export default function Header() {
               <span>Sources</span>
             </Link>
           </li>
+          <li>
+            <Link href="/notes">
+              <span>Notes</span>
+            </Link>
+          </li>
         </menu>
       </nav>
     </header>

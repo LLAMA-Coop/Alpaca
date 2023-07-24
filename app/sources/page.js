@@ -9,12 +9,23 @@ export default function SourcesPage() {
   return (
     <main>
       <h2>Sources</h2>
-      {sources.map((src) => {
-        return <SourceDisplay key={src._id} source={src}></SourceDisplay>;
-      })}
+      <ul>
+        {sources.map((src) => {
+          return (
+            <li key={src._id}>
+              <SourceDisplay source={src}></SourceDisplay>
+            </li>
+          );
+        })}
+      </ul>
 
       <h2>Add Source</h2>
-      <SourceInput></SourceInput>
+      <SourceInput
+        availableSources={sources.map((src) => {
+          let { title, url, _id } = src;
+          return { title, url, _id: _id.toString() };
+        })}
+      ></SourceInput>
     </main>
   );
 }
