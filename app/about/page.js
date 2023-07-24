@@ -5,7 +5,7 @@ import styles from "../page.module.css";
 export default function About() {
   return (
     <main className={styles.main}>
-      <h1>About Mneme Feast</h1>
+      <h2>About Mneme Feast</h2>
       <p>
         Named for the{" "}
         <Link href="https://en.wikipedia.org/wiki/Mneme" target="_blank">

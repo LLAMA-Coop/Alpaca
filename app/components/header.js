@@ -21,6 +21,11 @@ export default function Header() {
               <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
             </Link>
           </li>
+          <li>
+            <Link href="/sources">
+              <span>Sources</span>
+            </Link>
+          </li>
         </menu>
       </nav>
     </header>
