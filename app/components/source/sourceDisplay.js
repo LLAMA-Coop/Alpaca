@@ -21,7 +21,7 @@ export default function SourceDisplay({ source }) {
           <p>No contributors listed</p>
         )}
       </div>
-      <Link href={source.url}>Click here to visit source page</Link>
+      <Link href={source.url} target="_blank">Click here to visit source page</Link>
     </div>
   );
 }

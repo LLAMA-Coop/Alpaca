@@ -57,7 +57,7 @@ export default function NoteInput({ availableSources }) {
             {sources.map((src) => {
               return (
                 <li key={src._id}>
-                  <Link href={src.url}>{src.title}</Link>
+                  <Link href={src.url} target="_blank">{src.title}</Link>
                 </li>
               );
             })}
