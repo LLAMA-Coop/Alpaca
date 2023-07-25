@@ -11,7 +11,7 @@ export default function QuizInput({
   availableSources,
   availableNotes,
 }) {
-  let [type, setType] = useState("");
+  let [type, setType] = useState("prompt-response");
   let [prompt, setPrompt] = useState("");
   let [responses, setResponses] = useState([]);
   let [sources, setSources] = useState([]);
@@ -26,6 +26,26 @@ export default function QuizInput({
 
   async function handleSubmit(e) {
     e.preventDefault();
+    let cannotSend = false;
+    if(type === ""){
+      console.error("Need a 'type'");
+      cannotSend = true;
+    }
+    if(prompt === ""){
+      console.error("Need a 'prompt'");
+      cannotSend = true;
+    }
+    if(responses.length === 0){
+      console.error("Need at least one response");
+      cannotSend = true;
+    }
+    if(sources.length === 0 && notes.length === 0){
+      console.error("Need at least one note or source");
+      cannotSend = true;
+    }
+    if(cannotSend){
+      return;
+    }
 
     let quiz = {
       type,
@@ -54,7 +74,12 @@ export default function QuizInput({
 
   function handleAddResponse(e) {
     e.preventDefault();
-    setResponses([...responses, addResponseRef.current.value]);
+    let answer = addResponseRef.current.value.trim()
+    if(responses.indexOf(answer) !== -1){
+      return;
+    }
+    setResponses([...responses, answer]);
+    addResponseRef.current.value = "";
   }
 
   const types = [{ label: "Prompt/Response", value: "prompt-response" }];
@@ -89,6 +114,7 @@ export default function QuizInput({
           onChange={(e) => {
             setPrompt(e.target.value);
           }}
+          required
         ></input>
       </label>
 
@@ -119,7 +145,7 @@ export default function QuizInput({
 
               return (
                 <li key={source._id}>
-                  <Link href={source.url}>{source.title}</Link>
+                  <Link href={source.url} target="_blank">{source.title}</Link>
                 </li>
               );
             })}
