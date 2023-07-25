@@ -26,6 +26,7 @@ export default function QuizInput({
 
   async function handleSubmit(e) {
     e.preventDefault();
+    // Will need to have an error modal and validation state
     let cannotSend = false;
     if(type === ""){
       console.error("Need a 'type'");
@@ -50,7 +51,7 @@ export default function QuizInput({
     let quiz = {
       type,
       prompt,
-      responses,
+      correctResponses: responses,
     };
     if (sources.length > 0) {
       quiz.sources = sources;
@@ -59,17 +60,15 @@ export default function QuizInput({
       quiz.notes = notes;
     }
 
-    console.log(quiz);
+    let response = await fetch("./api/quiz", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quiz),
+    });
 
-    // let response = await fetch("./api/quiz", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(quiz),
-    // });
-
-    // console.log(await response.json());
+    console.log(await response.json());
   }
 
   function handleAddResponse(e) {
