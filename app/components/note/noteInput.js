@@ -103,6 +103,7 @@ export default function NoteInput({ availableSources }) {
           <SourceInput></SourceInput>
         </div>
       </fieldset>
+      
       <button onClick={handleSubmit}>Submit Note</button>
     </div>
   );

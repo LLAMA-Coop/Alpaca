@@ -15,12 +15,13 @@ export default function SourceInput() {
   let [validAccessed, setValidAccessed] = useState(true);
   let [validPublish, setValidPublish] = useState(true);
 
+  const addContributorRef = useRef();
+
   let [uniqueId, setUniqueId] = useState("");
   useEffect(() => {
     setUniqueId(makeUniqueId());
     setLastAccessed(new Date().toISOString().split("T")[0]);
   }, []);
-  const addContributorRef = useRef();
 
   useEffect(() => {
     setValidUrl(/^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(url));
@@ -42,6 +43,7 @@ export default function SourceInput() {
       let ymd = htmlDate.split("-");
       return new Date(ymd[0], ymd[1] - 1, ymd[2]);
     }
+
     const src = {
       title,
       medium,

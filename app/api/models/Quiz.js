@@ -6,6 +6,10 @@ export default models.quiz ||
   model(
     "quiz",
     new Schema({
+      // type: {
+      //   type: String,
+      //   default: "prompt-response"
+      // },
       prompt: String,
       correctResponses: [String],
       sources: [{ type: Schema.Types.ObjectId, ref: "source" }],

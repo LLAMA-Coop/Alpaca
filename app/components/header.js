@@ -33,6 +33,11 @@ export default function Header() {
               <FontAwesomeIcon icon={faNoteSticky}></FontAwesomeIcon>
             </Link>
           </li>
+          <li>
+            <Link href="/quizzes">
+              <span>Quizzes</span>
+            </Link>
+          </li>
         </menu>
       </nav>
     </header>
