@@ -1,3 +1,5 @@
+import styles from './quizDisplay.module.css'
+
 // What the quiz displays depends on whether it is a client-checked or server-checked quiz component
 // If client-checked, everything is rendered from the Quiz object
 // If server-checked, only enough data for the prompt is displayed until the response is sent to the server

@@ -2,11 +2,9 @@
 import makeUniqueId from "@/app/code/uniqueId";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-// import NoteDisplay from "../note/noteDisplay";
-// import Note from "@/app/api/models/Note";
-// import Source from "@/app/api/models/Source";
 import NoteInput from "../note/noteInput";
 import SourceInput from "../source/sourceInput";
+import styles from "./quizInput.module.css"
 
 export default function QuizInput({
   isEditing,
@@ -62,7 +60,7 @@ export default function QuizInput({
   const types = [{ label: "Prompt/Response", value: "prompt-response" }];
 
   return (
-    <div>
+    <div className={styles.form}>
       <label htmlFor={"type_" + uniqueId}>
         Type:
         <select
