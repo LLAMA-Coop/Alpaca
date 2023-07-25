@@ -129,8 +129,8 @@ export default function QuizInput({
         <div>No Sources Added</div>
       )}
 
-      <fieldset>
-        <legend>Add Another Source</legend>
+      <details>
+        <summary>Add Another Source</summary>
         <label htmlFor={"sourceOptions_" + uniqueId}>
           Select from a list of sources
         </label>
@@ -160,11 +160,11 @@ export default function QuizInput({
           })}
         </datalist>
 
-        <div>
-          Add New Source
+        <details>
+          <summary>Add New Source</summary>
           <SourceInput></SourceInput>
-        </div>
-      </fieldset>
+        </details>
+      </details>
 
       {notes.length > 0 ? (
         <div>
@@ -181,8 +181,8 @@ export default function QuizInput({
         </div>
       )}
 
-      <fieldset>
-        <legend>Add Another Note</legend>
+      <details>
+        <summary>Add Another Note</summary>
         <label htmlFor={"noteOptions_" + uniqueId}>
           Select from a list of notes
         </label>
@@ -216,7 +216,7 @@ export default function QuizInput({
           Add New Note
           <NoteInput availableSources={availableSources}></NoteInput>
         </div>
-      </fieldset>
+      </details>
 
       <button onClick={handleSubmit}>Submit Quiz</button>
     </div>

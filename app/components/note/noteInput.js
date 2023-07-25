@@ -69,8 +69,8 @@ export default function NoteInput({ availableSources }) {
         </div>
       )}
 
-      <fieldset>
-        <legend>Add Another Source</legend>
+      <details>
+        <summary>Add Another Source</summary>
         <label htmlFor={"sourceOptions_" + uniqueId}>
           Select from a list of sources
         </label>
@@ -98,11 +98,11 @@ export default function NoteInput({ availableSources }) {
           })}
         </datalist>
 
-        <div>
-          Add New Source
+        <details>
+          <summary>Add New Source</summary>
           <SourceInput></SourceInput>
-        </div>
-      </fieldset>
+        </details>
+      </details>
       
       <button onClick={handleSubmit}>Submit Note</button>
     </div>
