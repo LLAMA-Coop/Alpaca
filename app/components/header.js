@@ -1,7 +1,13 @@
 import Link from "next/link";
 import styles from "./header.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook, faHome, faInfoCircle, faNoteSticky } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBook,
+  faClipboardQuestion,
+  faHome,
+  faInfoCircle,
+  faNoteSticky,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {
   return (
@@ -36,6 +42,7 @@ export default function Header() {
           <li>
             <Link href="/quizzes">
               <span>Quizzes</span>
+              <FontAwesomeIcon icon={faClipboardQuestion}></FontAwesomeIcon>
             </Link>
           </li>
         </menu>
