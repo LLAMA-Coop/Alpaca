@@ -93,21 +93,21 @@ export default function NoteInput({ availableSources }) {
                 }
                 e.target.value = "";
               }}
-            ></input>
+            />
 
             {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
             <datalist id={"sourceList_" + uniqueId}>
               {availableSources.map((src) => {
                 if (sources.indexOf(src) !== -1) return;
                 return (
-                  <option key={src._id} value={src._id} label={src.title}></option>
+                  <option key={src._id} value={src._id} label={src.title} />
                 );
               })}
             </datalist>
 
             <details>
               <summary>Add New Source</summary>
-              <SourceInput></SourceInput>
+              <SourceInput />
             </details>
           </details>
 
