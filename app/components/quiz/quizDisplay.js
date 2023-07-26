@@ -13,18 +13,27 @@ import styles from "./quizDisplay.module.css";
 
 export default function Quiz({ canClientCheck, quiz }) {
   let [userResponse, setUserResponse] = useState("");
+  let [responseCorrect, setResponseCorrect] = useState(false);
 
   let [uniqueId, setUniqueId] = useState("");
   useEffect(() => {
     setUniqueId(makeUniqueId());
   }, []);
 
+  function handleCheckAnswer() {
+    let isCorrect = quiz.correctResponses.find(
+      (x) => x.toLowerCase() === userResponse.toLowerCase()
+    );
+    setResponseCorrect(isCorrect != undefined);
+  }
+
   return (
     <div className={styles.quiz}>
       <p>{quiz.prompt}</p>
-      <label>
+      <label htmlFor={"response_" + uniqueId}>
         Your Response
         <input
+          id={"response_" + uniqueId}
           type="text"
           defaultValue={userResponse}
           onChange={(e) => {
@@ -32,6 +41,21 @@ export default function Quiz({ canClientCheck, quiz }) {
           }}
         ></input>
       </label>
+      <button onClick={handleCheckAnswer}>Check Answer</button>
+
+    {/* multiple states to consider: 1. not answered, 2. wrong, 3. correct */}
+      {responseCorrect && userResponse.length > 0 ? (
+        <div>Correct!</div>
+      ) : (
+        <div>
+          Incorrect. Acceptable answers are
+          <ul>
+            {quiz.correctResponses.map((ans) => {
+              return <li key={ans}>{ans}</li>;
+            })}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

@@ -27,11 +27,11 @@ export default async function QuizzesPage() {
       <h2>Quiz Cards</h2>
       <ul>
         {quizzes.map((quiz) => {
-          let { _id, prompt, responses, sources, notes } = quiz;
+          let { _id, prompt, correctResponses, sources, notes } = quiz;
           let quizForClient = {
             _id: _id.toString(),
             prompt,
-            responses,
+            correctResponses,
             sources: sources.map(x => x.toString()),
             notes: notes.map(x => x.toString()),
           };
