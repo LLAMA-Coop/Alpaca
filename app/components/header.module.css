@@ -6,10 +6,13 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: rgb(158, 156, 156);
+    background-color: hsl(0, 0%, 68%);
+    padding: 40px;
 }
-.header h1
-{
+
+.header h1 {
+    font-size: 48px;
+    margin-bottom: 24px;
     color: black;
 }
 
@@ -18,31 +21,79 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: fit-content;
-    background-color: blue;
-    height: fit-content;
-    padding-left: 0;
-    margin: 20px 0px;
+    gap: 12px;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: hsl(0, 0%, 14%);
 }
 
-.header menu li {
-    margin: 0px 10px;
+.header li > a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    padding: 8px;
 }
 
-.header menu li > * {
-    padding: 0.1rem 0.5rem;
-    background-color: purple;
-    color: white;
-    text-decoration: none;
-    border: 2px outset lightgreen;
-    border-radius: 0.5rem;
-    /* Can be moved to media query that targets touch */
-    min-height: 45px;
-    min-width: 45px;
+.header li > a:hover {
+    background-color: hsl(0, 0%, 22%);
 }
 
-.header menu li > *:hover {
+.header li > a > span {
+    font-size: 20px;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    user-select: none;
+}
+
+.header li > a:hover > span {
     background-color: lightblue;
-    color: purple;
-    border: 2px outset green;
+    color: hsl(0, 0%, 0%);
+}
+
+.header svg {
+    width: 58px;
+    height: 58px;
+}
+
+.header li > a:hover svg path {
+    fill: lightblue;
+}
+
+@media screen and (max-width: 768px) {
+    .header li > a > span {
+        padding: 4px 8px;
+        font-size: 14px;
+    }
+
+    .header svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .header h1 {
+        font-size: 32px;
+    }
+
+    .header li > a > span {
+        padding: 2px 4px;
+        font-size: 12px;
+    }
+
+    .header menu {
+        padding: 6px;
+    }
+
+    .header li > a {
+        padding: 6px;
+    }
+
+    .header svg {
+        width: 16px;
+        height: 16px;
+    }
 }

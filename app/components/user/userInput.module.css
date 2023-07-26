@@ -1,26 +1,58 @@
-.form {
-    background-color: black;
-    color: white;
-    padding: 1rem;
+.container {
+    background-color: lightsalmon;
+    color: black;
 }
 
-.form label {
-    display: block;
-    margin: 1rem;
-    background-color: purple;
-    padding: 0.5rem;
+.formContainer {
+    /* Padding should be changed based on window's width */
+    /* Would be best to create a variable and change it accordingly */
+    max-width: var(--max-width);
+    padding: 40px;
+    margin: 0 auto;
 }
 
-.form label > input, .form li input {
-    margin-left: 1rem;
-    max-width: 100%;
+.formContainer > h3 {
+    font-size: 24px;
+    margin-bottom: 24px;
 }
 
-.required::before {
-  content: "*";
-  color: red;
+.inputContainer {
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputContainer > label {
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.02rem;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    user-select: none;
+}
+
+.inputContainer > input {
+    height: 40px;
+    border-radius: 4px;
+    border: none;
+    max-width: 480px;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.inputContainer > input:focus {
+    outline: 3px solid lightblue;
+}
+
+.required::after {
+    content: '*';
+    color: red;
+    margin-left: 4px;
 }
 
 .warn {
-    color: darkorange;
+    margin-top: 5px;
+    color: lightsalmon;
 }

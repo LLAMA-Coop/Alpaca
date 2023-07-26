@@ -18,31 +18,31 @@ export default function Header() {
           <li>
             <Link href="/">
               <span>Home</span>
-              <FontAwesomeIcon icon={faHome}></FontAwesomeIcon>
+              <FontAwesomeIcon icon={faHome} />
             </Link>
           </li>
           <li>
             <Link href="/about">
               <span>About</span>
-              <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
+              <FontAwesomeIcon icon={faInfoCircle} />
             </Link>
           </li>
           <li>
             <Link href="/sources">
               <span>Sources</span>
-              <FontAwesomeIcon icon={faBook}></FontAwesomeIcon>
+              <FontAwesomeIcon icon={faBook} />
             </Link>
           </li>
           <li>
             <Link href="/notes">
               <span>Notes</span>
-              <FontAwesomeIcon icon={faNoteSticky}></FontAwesomeIcon>
+              <FontAwesomeIcon icon={faNoteSticky} />
             </Link>
           </li>
           <li>
             <Link href="/quizzes">
               <span>Quizzes</span>
-              <FontAwesomeIcon icon={faClipboardQuestion}></FontAwesomeIcon>
+              <FontAwesomeIcon icon={faClipboardQuestion} />
             </Link>
           </li>
         </menu>
