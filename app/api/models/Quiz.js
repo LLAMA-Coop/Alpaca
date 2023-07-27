@@ -11,6 +11,7 @@ export default models.quiz ||
         default: "prompt-response"
       },
       prompt: String,
+      choices: [String],
       correctResponses: [String],
       sources: [{ type: Schema.Types.ObjectId, ref: "source" }],
       notes: [{ type: Schema.Types.ObjectId, ref: "note" }],
