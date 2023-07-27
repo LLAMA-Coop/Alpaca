@@ -38,9 +38,9 @@ export default function PromptResponse({ canClientCheck, quiz }) {
           onChange={handleInput}
         ></input>
       </label>
+      
       <button onClick={handleCheckAnswer}>Check Answer</button>
 
-      {/* multiple states to consider: 1. not answered, 2. wrong, 3. correct */}
       {responseCorrect && responseStatus === "complete" && <div>Correct!</div>}
       {!responseCorrect && responseStatus === "complete" && (
         <div>
