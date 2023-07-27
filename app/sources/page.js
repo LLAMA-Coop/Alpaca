@@ -7,7 +7,12 @@ const sources = await Source.find();
 export default function SourcesPage() {
   return (
     <main>
-      <SourceDisplay sources={sources} />
+      {/* <SourceDisplay sources={sources} /> */}
+      {sources.map(src => {
+        return (
+          <SourceDisplay key={src._id} source={src}></SourceDisplay>
+        )
+      })}
 
       <SourceInput
         availableSources={sources.map((src) => {

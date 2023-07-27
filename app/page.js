@@ -12,8 +12,10 @@ export default function Home() {
     <main className={styles.main}>
       <h2>Let's take it for a spin!</h2>
 
-
-      <SourceDisplay sources={sources} />
+      {sources.map((src) => {
+        return <SourceDisplay key={src._id} source={src}></SourceDisplay>;
+      })}
+      {/* <SourceDisplay sources={sources} /> */}
 
       {/* Add the title to the SourceInput component so it stays in the same container */}
       <SourceInput />
