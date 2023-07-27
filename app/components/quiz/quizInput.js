@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import NoteInput from "../note/noteInput";
 import SourceInput from "../source/sourceInput";
-import styles from "./quizInput.module.css"
+import styles from "./quizInput.module.css";
 
 export default function QuizInput({
   isEditing,
@@ -28,23 +28,23 @@ export default function QuizInput({
     e.preventDefault();
     // Will need to have an error modal and validation state
     let cannotSend = false;
-    if(type === ""){
+    if (type === "") {
       console.error("Need a 'type'");
       cannotSend = true;
     }
-    if(prompt === ""){
+    if (prompt === "") {
       console.error("Need a 'prompt'");
       cannotSend = true;
     }
-    if(responses.length === 0){
+    if (responses.length === 0) {
       console.error("Need at least one response");
       cannotSend = true;
     }
-    if(sources.length === 0 && notes.length === 0){
+    if (sources.length === 0 && notes.length === 0) {
       console.error("Need at least one note or source");
       cannotSend = true;
     }
-    if(cannotSend){
+    if (cannotSend) {
       return;
     }
 
@@ -73,15 +73,18 @@ export default function QuizInput({
 
   function handleAddResponse(e) {
     e.preventDefault();
-    let answer = addResponseRef.current.value.trim()
-    if(responses.indexOf(answer) !== -1){
+    let answer = addResponseRef.current.value.trim();
+    if (responses.indexOf(answer) !== -1) {
       return;
     }
     setResponses([...responses, answer]);
     addResponseRef.current.value = "";
   }
 
-  const types = [{ label: "Prompt/Response", value: "prompt-response" }];
+  const types = [
+    { label: "Prompt/Response", value: "prompt-response" },
+    { label: "Multiple Choice", value: "multiple-choice" },
+  ];
 
   return (
     <div className={styles.form}>
@@ -144,7 +147,9 @@ export default function QuizInput({
 
               return (
                 <li key={source._id}>
-                  <Link href={source.url} target="_blank">{source.title}</Link>
+                  <Link href={source.url} target="_blank">
+                    {source.title}
+                  </Link>
                 </li>
               );
             })}

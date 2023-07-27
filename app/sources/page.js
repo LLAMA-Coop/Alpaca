@@ -8,16 +8,13 @@ export default function SourcesPage() {
   return (
     <main>
       {/* <SourceDisplay sources={sources} /> */}
-      {sources.map(src => {
-        return (
-          <SourceDisplay key={src._id} source={src}></SourceDisplay>
-        )
+      {sources.map((src) => {
+        return <SourceDisplay key={src._id} source={src}></SourceDisplay>;
       })}
 
       <SourceInput
         availableSources={sources.map((src) => {
-          let { title, url, _id } = src;
-          return { title, url, _id: _id.toString() };
+          return JSON.parse(JSON.stringify(src));
         })}
       />
     </main>

@@ -13,7 +13,6 @@ import MultipleChoice from "./multiple-choice";
 // sent into component via canClientCheck boolean
 
 export default function Quiz({ canClientCheck, quiz }) {
-  console.log(quiz)
   if (quiz.type === "prompt-response") {
     return (
       <PromptResponse
