@@ -72,60 +72,73 @@ export default function UserInput({ isRegistering }) {
   }
 
   return (
-    <form className={styles.form}>
-      <label htmlFor={"username_" + uniqueId} className={styles.required}>
-        Username
-        <input
-          id={"username_" + uniqueId}
-          type="text"
-          defaultValue={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        ></input>
-      </label>
-
-      <label htmlFor={"password_" + uniqueId} className={styles.required}>
-        Password
-        <input
-          id={"password_" + uniqueId}
-          type="password"
-          defaultValue={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-          required
-        ></input>
-        {validPassword ? null : (
-          <div className={styles.warn}>
-            Please use a stronger password.
-            <ul>
-              {passwordWeaknesses().map((weakness, index) => {
-                return <li key={index}>{weakness}</li>;
-              })}
-            </ul>
+    <div className={styles.container}>
+      <div className={styles.formContainer}>
+        <h3>Register new user</h3>
+        <form className={styles.form}>
+          <div className={styles.inputContainer}>
+            <label htmlFor={"username_" + uniqueId} className={styles.required}>
+              Username
+            </label>
+            <input
+              id={"username_" + uniqueId}
+              type="text"
+              defaultValue={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
-        )}
-      </label>
 
-      {isRegistering && (
-        <label htmlFor={"confirm_" + uniqueId} className={styles.required}>
-          Confirm Password
-          <input
-            id={"confirm_" + uniqueId}
-            type="password"
-            defaultValue={confirm}
-            onChange={(e) => {
-              setConfirm(e.target.value);
-            }}
-            required
-          ></input>
-          {confirmMatch ? null : <span className={styles.warn}>Both passwords must match</span>}
-        </label>
-      )}
+          <div className={styles.inputContainer}>
+            <label htmlFor={"password_" + uniqueId} className={styles.required}>
+              Password
+            </label>
 
-      <button onClick={handleSubmit}>
-        {isRegistering ? "Register" : "Login"}
-      </button>
-    </form>
+            <input
+              id={"password_" + uniqueId}
+              type="password"
+              defaultValue={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              required
+            />
+
+            {validPassword ? null : (
+              <div className={styles.warn}>
+                Please use a stronger password.
+                <ul>
+                  {passwordWeaknesses().map((weakness, index) => {
+                    return <li key={index}>{weakness}</li>;
+                  })}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {isRegistering && (
+            <div className={styles.inputContainer}>
+              <label htmlFor={"confirm_" + uniqueId} className={styles.required}>
+                Confirm Password
+              </label>
+              <input
+                id={"confirm_" + uniqueId}
+                type="password"
+                defaultValue={confirm}
+                onChange={(e) => {
+                  setConfirm(e.target.value);
+                }}
+                required
+              />
+              {confirmMatch ? null : <span className={styles.warn}>Both passwords must match</span>}
+            </div>
+          )}
+
+          <button onClick={handleSubmit}>
+            {isRegistering ? "Register" : "Login"}
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }

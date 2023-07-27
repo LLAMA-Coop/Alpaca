@@ -11,24 +11,23 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <h2>Let's take it for a spin!</h2>
-      <h3>Sources</h3>
-      {sources.map((src) => {
-        return <SourceDisplay key={src._id} source={src}></SourceDisplay>;
-      })}
 
-      <h3>Add Source</h3>
-      <SourceInput></SourceInput>
 
-      <h3>Register new user</h3>
-      <UserInput isRegistering={true}></UserInput>
+      <SourceDisplay sources={sources} />
 
-      <h3>Add a note</h3>
+      {/* Add the title to the SourceInput component so it stays in the same container */}
+      <SourceInput />
+
+      {/* Same as above */}
+      <UserInput isRegistering={true} />
+
+      {/* Still same as above */}
       <NoteInput
         availableSources={sources.map((src) => {
           let { title, url, _id } = src;
           return { title, url, _id: _id.toString() };
         })}
-      ></NoteInput>
+      />
     </main>
   );
 }

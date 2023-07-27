@@ -16,13 +16,13 @@ export default function NoteInput({ availableSources }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if(text.length === 0){
+    if (text.length === 0) {
       console.error("Need text")
     }
-    if(sources.length === 0){
+    if (sources.length === 0) {
       console.error("Need at least one source")
     }
-    if(text.length === 0 || sources.length === 0){
+    if (text.length === 0 || sources.length === 0) {
       return;
     }
     const note = { text, sources };
@@ -38,73 +38,82 @@ export default function NoteInput({ availableSources }) {
   }
 
   return (
-    <div className={styles.form}>
-      <label htmlFor={"text_" + uniqueId} className={styles.required}>
-        Text
-        <textarea
-          id={"text_" + uniqueId}
-          defaultValue={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={4}
-          required
-        ></textarea>
-      </label>
+    <div className={styles.container}>
+      <div className={styles.formContainer}>
+        <h3>Add a note</h3>
+        <div className={styles.form}>
 
-      {sources.length > 0 ? (
-        <div>
-          <h4 className={styles.required}>Current Sources</h4>
-          <ul>
-            {sources.map((src) => {
-              return (
-                <li key={src._id}>
-                  <Link href={src.url} target="_blank">{src.title}</Link>
-                </li>
-              );
-            })}
-          </ul>
+          <div className={styles.inputContainer}>
+            <label htmlFor={"text_" + uniqueId} className={styles.required}>
+              Text
+            </label>
+            <textarea
+              id={"text_" + uniqueId}
+              defaultValue={text}
+              onChange={(e) => setText(e.target.value)}
+              rows={4}
+              required
+            />
+          </div>
+
+
+          {sources.length > 0 ? (
+            <div>
+              <h4 className={styles.required}>Current Sources</h4>
+              <ul>
+                {sources.map((src) => {
+                  return (
+                    <li key={src._id}>
+                      <Link href={src.url} target="_blank">{src.title}</Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ) : (
+            <div>
+              <h4 className={styles.required}>No Sources Added</h4>
+            </div>
+          )}
+
+          <details>
+            <summary>Add Another Source</summary>
+            <label htmlFor={"sourceOptions_" + uniqueId}>
+              Select from a list of sources
+            </label>
+            <input
+              id={"sourceOptions_" + uniqueId}
+              list={"sourceList_" + uniqueId}
+              onChange={(e) => {
+                let newSource = availableSources.find(
+                  (x) => x._id === e.target.value
+                );
+                if (newSource && sources.indexOf(newSource) === -1) {
+                  setSources([...sources, newSource]);
+                }
+                e.target.value = "";
+              }}
+            />
+
+            {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
+            <datalist id={"sourceList_" + uniqueId}>
+              {availableSources.map((src) => {
+                if (sources.indexOf(src) !== -1) return;
+                return (
+                  <option key={src._id} value={src._id} label={src.title} />
+                );
+              })}
+            </datalist>
+
+            <details>
+              <summary>Add New Source</summary>
+              <SourceInput />
+            </details>
+          </details>
+
+          <button onClick={handleSubmit}>Submit Note</button>
         </div>
-      ) : (
-        <div>
-          <h4 className={styles.required}>No Sources Added</h4>
-        </div>
-      )}
-
-      <details>
-        <summary>Add Another Source</summary>
-        <label htmlFor={"sourceOptions_" + uniqueId}>
-          Select from a list of sources
-        </label>
-        <input
-          id={"sourceOptions_" + uniqueId}
-          list={"sourceList_" + uniqueId}
-          onChange={(e) => {
-            let newSource = availableSources.find(
-              (x) => x._id === e.target.value
-            );
-            if (newSource && sources.indexOf(newSource) === -1) {
-              setSources([...sources, newSource]);
-            }
-            e.target.value = "";
-          }}
-        ></input>
-
-        {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
-        <datalist id={"sourceList_" + uniqueId}>
-          {availableSources.map((src) => {
-            if (sources.indexOf(src) !== -1) return;
-            return (
-              <option key={src._id} value={src._id} label={src.title}></option>
-            );
-          })}
-        </datalist>
-
-        <details>
-          <summary>Add New Source</summary>
-          <SourceInput></SourceInput>
-        </details>
-      </details>
-      
-      <button onClick={handleSubmit}>Submit Note</button>
+      </div>
     </div>
   );
 }

@@ -64,93 +64,108 @@ export default function SourceInput() {
   }
 
   return (
-    <form className={styles.form}>
-      <label htmlFor={"title_" + uniqueId} className={styles.required}>
-        Title
-        <input
-          id={"title_" + uniqueId}
-          type="text"
-          defaultValue={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        ></input>
-      </label>
-
-      <label htmlFor={"medium_" + uniqueId} className={styles.required}>
-        Medium
-        <input
-          id={"medium_" + uniqueId}
-          type="text"
-          defaultValue={medium}
-          onChange={(e) => setMedium(e.target.value)}
-          required
-        ></input>
-      </label>
-
-      <label htmlFor={"url_" + uniqueId} className={styles.required}>
-        URL of Source
-        <input
-          id={"url_" + uniqueId}
-          type="text"
-          defaultValue={url}
-          onChange={(e) => {
-            setUrl(e.target.value);
-          }}
-          required
-        ></input>
-        {validUrl ? null : (
-          <span className={styles.warn}>Please use valid URL format</span>
-        )}
-      </label>
-
-      <label htmlFor={"lastAccessed_" + uniqueId}>
-        Last Accessed
-        <input
-          id={"lastAccessed_" + uniqueId}
-          type="date"
-          defaultValue={lastAccessed}
-          onChange={(e) => {
-            setLastAccessed(e.target.value);
-          }}
-        ></input>
-        {validAccessed ? null : (
-          <span className={styles.warn}>Please use YYYY-MM-DD format</span>
-        )}
-      </label>
-
-      <label htmlFor={"publishDate_" + uniqueId}>
-        Published
-        <input
-          id={"publishDate_" + uniqueId}
-          type="date"
-          defaultValue={publishDate}
-          onChange={(e) => {
-            setPublishDate(e.target.value);
-          }}
-        ></input>
-        {validPublish ? null : (
-          <span className={styles.warn}>Please use YYYY-MM-DD format</span>
-        )}
-      </label>
-
-      <p className={styles.required}>Contributors</p>
-      <ul>
-        {contributors.map((cont, index) => {
-          return <li key={index}>{cont}</li>;
-        })}
-        <li>
-          <label htmlFor={"contributor_" + uniqueId}>
-            New Contributor
+    <div className={styles.container}>
+      <div className={styles.formContainer}>
+        <h3>Add Source</h3>
+        <form className={styles.form}>
+          <div className={styles.inputContainer}>
+            <label htmlFor={"title_" + uniqueId} className={styles.required}>
+              Title
+            </label>
             <input
-              id={"contributor_" + uniqueId}
+              id={"title_" + uniqueId}
               type="text"
-              ref={addContributorRef}
-            ></input>
-          </label>
-          <button onClick={handleAddContributor}>Add Contributor</button>
-        </li>
-      </ul>
-      <button onClick={handleSubmit}>Submit Source</button>
-    </form>
+              defaultValue={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className={styles.inputContainer}>
+            <label htmlFor={"medium_" + uniqueId} className={styles.required}>
+              Medium</label>
+            <input
+              id={"medium_" + uniqueId}
+              type="text"
+              defaultValue={medium}
+              onChange={(e) => setMedium(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className={styles.inputContainer}>
+            <label htmlFor={"url_" + uniqueId} className={styles.required}>
+              URL of Source
+            </label>
+            <input
+              id={"url_" + uniqueId}
+              type="text"
+              defaultValue={url}
+              onChange={(e) => {
+                setUrl(e.target.value);
+              }}
+              required
+            />
+            {validUrl ? null : (
+              <span className={styles.warn}>Please use valid URL format</span>
+            )}
+          </div>
+
+          <div className={styles.inputContainer}>
+            <label htmlFor={"lastAccessed_" + uniqueId}>
+              Last Accessed
+            </label>
+            <input
+              id={"lastAccessed_" + uniqueId}
+              type="date"
+              defaultValue={lastAccessed}
+              onChange={(e) => {
+                setLastAccessed(e.target.value);
+              }}
+            />
+            {validAccessed ? null : (
+              <span className={styles.warn}>Please use YYYY-MM-DD format</span>
+            )}
+          </div>
+
+          <div className={styles.inputContainer}>
+            <label htmlFor={"publishDate_" + uniqueId}>
+              Published
+            </label>
+
+            <input
+              id={"publishDate_" + uniqueId}
+              type="date"
+              defaultValue={publishDate}
+              onChange={(e) => {
+                setPublishDate(e.target.value);
+              }}
+            />
+            {validPublish ? null : (
+              <span className={styles.warn}>Please use YYYY-MM-DD format</span>
+            )}
+          </div>
+
+          <p className={styles.required}>Contributors</p>
+          <ul>
+            {contributors.map((cont, index) => {
+              return <li key={index}>{cont}</li>;
+            })}
+            <li>
+              <label htmlFor={"contributor_" + uniqueId}>
+                New Contributor
+                <input
+                  id={"contributor_" + uniqueId}
+                  type="text"
+                  ref={addContributorRef}
+                ></input>
+              </label>
+              <button onClick={handleAddContributor}>Add Contributor</button>
+            </li>
+          </ul>
+          <button onClick={handleSubmit}>Submit Source</button>
+        </form>
+      </div>
+    </div>
   );
 }

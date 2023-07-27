@@ -20,11 +20,10 @@ export default function NotePage() {
         })}
       </ul>
 
-      <h2>Add Note</h2>
       <NoteInput availableSources={sources.map((src) => {
-          let { title, url, _id } = src;
-          return { title, url, _id: _id.toString() };
-        })}></NoteInput>
+        let { title, url, _id } = src;
+        return { title, url, _id: _id.toString() };
+      })} />
     </main>
   );
 }
