@@ -1,5 +1,4 @@
 import PromptResponse from "./prompt-response";
-import { useEffect, useState } from "react";
 import styles from "./quizDisplay.module.css";
 import MultipleChoice from "./multiple-choice";
 
