@@ -16,6 +16,8 @@ export default function NoteInput({ availableSources }) {
   const [textError, setTextError] = useState("");
   const [sourceError, setSourceError] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const addSourceRef = useRef(null);
 
   useEffect(() => {
@@ -47,6 +49,8 @@ export default function NoteInput({ availableSources }) {
 
     const note = { text, sources };
 
+    setLoading(true);
+
     let response = await fetch("./api/note", {
       method: "POST",
       headers: {
@@ -54,6 +58,8 @@ export default function NoteInput({ availableSources }) {
       },
       body: JSON.stringify(note)
     })
+
+    setLoading(false);
 
     setText("");
     setSourceError("");
@@ -148,7 +154,9 @@ export default function NoteInput({ availableSources }) {
         </details>
       </div>
 
-      <button onClick={handleSubmit}>Submit Note</button>
+      <button onClick={handleSubmit}>
+        {loading ? "Sending..." : "Submit Note"}
+      </button>
     </div>
   );
 }

@@ -19,6 +19,8 @@ export default function QuizInput({
   let [sources, setSources] = useState([]);
   let [notes, setNotes] = useState([]);
 
+  const [loading, setLoading] = useState(false);
+
   let [uniqueId, setUniqueId] = useState("");
   useEffect(() => {
     setUniqueId(makeUniqueId());
@@ -60,6 +62,8 @@ export default function QuizInput({
       quiz.notes = notes;
     }
 
+    setLoading(true);
+
     let response = await fetch("./api/quiz", {
       method: "POST",
       headers: {
@@ -67,6 +71,8 @@ export default function QuizInput({
       },
       body: JSON.stringify(quiz),
     });
+
+    setLoading(false);
 
     console.log(await response.json());
   }
@@ -240,7 +246,9 @@ export default function QuizInput({
           </div>
         </details>
 
-        <button onClick={handleSubmit}>Submit Quiz</button>
+        <button onClick={handleSubmit}>
+          {loading ? "Sending..." : "Submit Quiz"}
+        </button>
       </div>
     </div>
   );

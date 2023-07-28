@@ -16,6 +16,8 @@ export default function UserInput({ isRegistering }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const [passwordFocus, setPasswordFocus] = useState(false);
   const passwordTooltip = useRef(null);
   const passwordInput = useRef(null);
@@ -92,6 +94,8 @@ export default function UserInput({ isRegistering }) {
 
     const user = { username, password };
 
+    setLoading(true);
+
     let response = await fetch("./api/user", {
       method: "POST",
       headers: {
@@ -99,6 +103,8 @@ export default function UserInput({ isRegistering }) {
       },
       body: JSON.stringify(user),
     });
+
+    setLoading(false);
 
     setUsername("");
     setPassword("");
@@ -184,7 +190,7 @@ export default function UserInput({ isRegistering }) {
         )}
 
         <button onClick={handleSubmit}>
-          {isRegistering ? "Register" : "Login"}
+          {loading ? 'Sending...' : isRegistering ? "Register" : "Login"}
         </button>
       </form>
     </div>
