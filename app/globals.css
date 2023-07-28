@@ -6,8 +6,8 @@
         'Ubuntu Monospace', 'Source Code Pro', 'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
     --background-primary: hsl(0, 0%, 98%);
-    --background-secondary: hsl(240, 5%, 96%);
-    --background-tertiary: hsl(240, 6%, 90%);
+    --background-secondary: hsl(0, 0%, 72%);
+    --background-tertiary: hsl(0, 1%, 60%);
 
     --foreground-primary: hsl(240, 10%, 4%);
     --foreground-secondary: hsl(240, 6%, 10%);
@@ -147,4 +147,7 @@ input[type='date'] {
     display: flex;
     align-items: center;
     user-select: none;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

@@ -25,6 +25,8 @@ export default function SourceInput() {
   const [contributors, setContributors] = useState([]);
   const [newContributor, setNewContributor] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const urlRegex = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i;
   const accessedRegex = /^\d{4}-\d{2}-\d{2}$/;
   const publishRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -63,7 +65,7 @@ export default function SourceInput() {
       setPublishDateError("Invalid Date");
     }
 
-    if (!title || !medium || !url || !validUrl) {
+    if (!title || !medium || !url || !lastAccessed) {
       return;
     }
 
@@ -82,6 +84,8 @@ export default function SourceInput() {
       publishDate: formatDate(publishDate),
     };
 
+    setLoading(true);
+
     const response = await fetch("./api/source", {
       method: "POST",
       headers: {
@@ -89,6 +93,8 @@ export default function SourceInput() {
       },
       body: JSON.stringify(src),
     });
+
+    setLoading(false);
 
     setTitle("");
     setMedium("");
@@ -192,7 +198,9 @@ export default function SourceInput() {
           onSubmit={handleAddContributor}
         />
 
-        <button onClick={handleSubmit}>Submit Source</button>
+        <button onClick={handleSubmit}>
+          {loading ? "Sending..." : "Submit Source"}
+        </button>
       </form>
     </div>
   );
