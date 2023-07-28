@@ -129,6 +129,7 @@ export default function UserInput({ isRegistering }) {
 
         <div style={{ position: 'relative' }} ref={passwordInput}>
           <Input
+            type={"password"}
             required={true}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -168,19 +169,9 @@ export default function UserInput({ isRegistering }) {
           )}
         </div>
 
-        {/* {validPassword ? null : (
-            <div className='error'>
-              Please use a stronger password.
-              <ul>
-                {passwordWeaknesses().map((weakness, index) => {
-                  return <li key={index}>{weakness}</li>;
-                })}
-              </ul>
-            </div>
-          )} */}
-
         {isRegistering && (
           <Input
+            type={"password"}
             required={true}
             onChange={(e) => {
               setConfirmPassword(e.target.value);

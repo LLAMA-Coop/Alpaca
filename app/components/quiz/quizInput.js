@@ -5,6 +5,7 @@ import Link from "next/link";
 import NoteInput from "../note/noteInput";
 import SourceInput from "../source/sourceInput";
 import styles from "./quizInput.module.css";
+import { Input, Label } from "../Input/Input";
 
 export default function QuizInput({
   isEditing,
@@ -14,10 +15,9 @@ export default function QuizInput({
   let [type, setType] = useState("prompt-response");
   let [prompt, setPrompt] = useState("");
   let [responses, setResponses] = useState([]);
+  let [newResponse, setNewResponse] = useState("");
   let [sources, setSources] = useState([]);
   let [notes, setNotes] = useState([]);
-
-  const addResponseRef = useRef();
 
   let [uniqueId, setUniqueId] = useState("");
   useEffect(() => {
@@ -73,12 +73,12 @@ export default function QuizInput({
 
   function handleAddResponse(e) {
     e.preventDefault();
-    let answer = addResponseRef.current.value.trim()
+    let answer = newResponse.trim();
     if (responses.indexOf(answer) !== -1) {
       return;
     }
     setResponses([...responses, answer]);
-    addResponseRef.current.value = "";
+    setNewResponse("");
   }
 
   const types = [
@@ -92,9 +92,7 @@ export default function QuizInput({
       <div className={styles.form}>
 
         <div className={styles.inputContainer}>
-          <label htmlFor={"type_" + uniqueId}>
-            Type:
-          </label>
+          <Label label='Type' />
 
           <select
             id={"type_" + uniqueId}
@@ -113,43 +111,26 @@ export default function QuizInput({
           </select>
         </div>
 
-        <div className={styles.inputContainer}>
-          <label htmlFor={"prompt_" + uniqueId}>
-            Prompt
-          </label>
+        <Input
+          required={true}
+          label="Prompt"
+          onChange={(e) => setPrompt(e.target.value)}
+          value={prompt}
+        />
 
-          <input
-            id={"prompt_" + uniqueId}
-            type="text"
-            defaultValue={prompt}
-            onChange={(e) => {
-              setPrompt(e.target.value);
-            }}
-            required
-          />
-        </div>
-
-        <p>Correct Responses</p>
-        <ul>
+        <Label label='Correct Responses' />
+        <ul className='chipGrid'>
           {responses.map((res, index) => {
             return <li key={index}>{res}</li>;
           })}
-          <li>
-            <div className={styles.inputContainer}>
-              <label htmlFor={"response_" + uniqueId}>
-                New Correct Response
-              </label>
-
-              <input
-                id={"response_" + uniqueId}
-                type="text"
-                ref={addResponseRef}
-              />
-
-              <button onClick={handleAddResponse}>Add Response</button>
-            </div>
-          </li>
         </ul>
+
+        <Input
+          label="Add a correct response"
+          onChange={(e) => setNewResponse(e.target.value)}
+          value={newResponse}
+          onSubmit={handleAddResponse}
+        />
 
         {sources.length > 0 ? (
           <div>

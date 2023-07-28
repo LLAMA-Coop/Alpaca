@@ -96,9 +96,19 @@ button:active {
     background-color: var(--accent-primary-3);
 }
 
-input:focus,
-textarea:focus,
-select:focus,
+select {
+    border-radius: 4px;
+    background-color: var(--background-secondary);
+    max-width: 480px;
+    height: 40px;
+    padding: 10px;
+    border: none;
+    font-size: 16px;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
 button:focus-visible,
 a:focus-visible {
     outline: 4px solid var(--accent-primary-1);
