@@ -1,75 +1,89 @@
-.container {
-    background-color: lightgreen;
-    color: rgb(27, 27, 27);
-}
-
-.formContainer {
-    /* Padding should be changed based on window's width */
-    /* Would be best to create a variable and change it accordingly */
-    max-width: var(--max-width);
-    padding: 40px;
-    margin: 0 auto;
-}
-
-.formContainer > h3 {
-    font-size: 24px;
+.addSources {
+    display: flex;
     margin-bottom: 24px;
 }
 
-.inputContainer {
-    border-radius: 4px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
+.addSources > div {
+    width: 50%;
 }
 
-.inputContainer > label {
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 0.02rem;
-    text-transform: uppercase;
-    margin-bottom: 8px;
+.chipGrid {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chipGrid > li {
+    background-color: var(--accent-tertiary-1);
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 4px;
+    height: 28px;
+    margin: 0 4px 4px 0;
+    padding: 8px 6px 8px 12px;
+    display: flex;
+    align-items: center;
     user-select: none;
 }
 
-.inputContainer > input {
-    height: 40px;
-    border-radius: 4px;
-    border: none;
-    max-width: 480px;
-    padding: 10px;
-    font-size: 16px;
-    line-height: 20px;
+.chipGrid > li.addChip {
+    position: relative;
+    cursor: pointer;
+    background-color: var(--accent-tertiary-3);
 }
 
-.inputContainer > input:focus {
-    outline: 3px solid lightblue;
-}
-
-.inputContainer > textarea {
-    height: 80px;
-    border-radius: 4px;
-    border: none;
-    min-width: clamp(100px, 100%, 480px);
-    max-width: 100%;
-    min-height: 80px;
-    max-height: 800px;
-    padding: 10px;
-    font-size: 16px;
-    line-height: 20px;
-}
-
-.inputContainer > textarea:focus {
-    outline: 3px solid lightblue;
-}
-
-.required::after {
-    content: '*';
-    color: red;
+.chipGrid > li > div:not(.sourcePicker) {
     margin-left: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 3px;
 }
 
-.warn {
-    margin-top: 5px;
-    color: lightsalmon;
+.chipGrid > li > div:not(.sourcePicker):hover {
+    background-color: var(--accent-tertiary-2);
+}
+
+.chipGrid > li > div > svg {
+    width: 14px;
+    height: 14px;
+}
+
+.sourcePicker {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 0;
+    width: 220px;
+    background-color: var(--background-primary);
+    border-radius: 4px;
+    box-shadow: var(--boxshadow-dark);
+    z-index: 1;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.sourcePicker > div {
+    padding: 8px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.sourcePicker > div:hover {
+    background-color: var(--background-secondary);
+}
+
+.sourcePicker > div:active {
+    background-color: var(--background-tertiary);
+}
+
+.sourcePicker > div.selected {
+    background-color: var(--accent-primary-3);
 }

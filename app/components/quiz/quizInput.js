@@ -5,6 +5,7 @@ import Link from "next/link";
 import NoteInput from "../note/noteInput";
 import SourceInput from "../source/sourceInput";
 import styles from "./quizInput.module.css";
+import { Input, Label } from "../Input/Input";
 
 export default function QuizInput({
   isEditing,
@@ -14,10 +15,9 @@ export default function QuizInput({
   let [type, setType] = useState("prompt-response");
   let [prompt, setPrompt] = useState("");
   let [responses, setResponses] = useState([]);
+  let [newResponse, setNewResponse] = useState("");
   let [sources, setSources] = useState([]);
   let [notes, setNotes] = useState([]);
-
-  const addResponseRef = useRef();
 
   let [uniqueId, setUniqueId] = useState("");
   useEffect(() => {
@@ -73,12 +73,12 @@ export default function QuizInput({
 
   function handleAddResponse(e) {
     e.preventDefault();
-    let answer = addResponseRef.current.value.trim();
+    let answer = newResponse.trim();
     if (responses.indexOf(answer) !== -1) {
       return;
     }
     setResponses([...responses, answer]);
-    addResponseRef.current.value = "";
+    setNewResponse("");
   }
 
   const types = [
@@ -87,168 +87,161 @@ export default function QuizInput({
   ];
 
   return (
-    <div className={styles.form}>
-      <label htmlFor={"type_" + uniqueId}>
-        Type:
-        <select
-          id={"type_" + uniqueId}
-          defaultValue={type}
-          onChange={(e) => {
-            setType(e.target.value);
-          }}
-        >
-          {types.map((t) => {
-            return (
-              <option key={t.value} value={t.value}>
-                {t.label}
-              </option>
-            );
-          })}
-        </select>
-      </label>
+    <div className='centeredContainer'>
+      <h3>Add new quiz card</h3>
+      <div className={styles.form}>
 
-      <label htmlFor={"prompt_" + uniqueId}>
-        Prompt:
-        <input
-          id={"prompt_" + uniqueId}
-          type="text"
-          defaultValue={prompt}
-          onChange={(e) => {
-            setPrompt(e.target.value);
-          }}
-          required
-        ></input>
-      </label>
+        <div className={styles.inputContainer}>
+          <Label label='Type' />
 
-      <p>Correct Responses</p>
-      <ul>
-        {responses.map((res, index) => {
-          return <li key={index}>{res}</li>;
-        })}
-        <li>
-          <label htmlFor={"response_" + uniqueId}>
-            New Correct Response
-            <input
-              id={"response_" + uniqueId}
-              type="text"
-              ref={addResponseRef}
-            ></input>
-            <button onClick={handleAddResponse}>Add Response</button>
-          </label>
-        </li>
-      </ul>
-
-      {sources.length > 0 ? (
-        <div>
-          <p>Current Sources</p>
-          <ul>
-            {sources.map((srcId) => {
-              const source = availableSources.find((x) => x._id === srcId);
-
+          <select
+            id={"type_" + uniqueId}
+            defaultValue={type}
+            onChange={(e) => {
+              setType(e.target.value);
+            }}
+          >
+            {types.map((t) => {
               return (
-                <li key={source._id}>
-                  <Link href={source.url} target="_blank">
-                    {source.title}
-                  </Link>
-                </li>
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
               );
             })}
-          </ul>
+          </select>
         </div>
-      ) : (
-        <div>No Sources Added</div>
-      )}
 
-      <details>
-        <summary>Add Another Source</summary>
-        <label htmlFor={"sourceOptions_" + uniqueId}>
-          Select from a list of sources
-        </label>
-        <input
-          id={"sourceOptions_" + uniqueId}
-          list={"sourceList_" + uniqueId}
-          onChange={(e) => {
-            let newSource = availableSources.find(
-              (x) => x._id === e.target.value
-            );
-            if (newSource) {
-              setSources((arr) => {
-                return [...arr, newSource._id];
-              });
-            }
-            e.target.value = "";
-          }}
-        ></input>
+        <Input
+          required={true}
+          label="Prompt"
+          onChange={(e) => setPrompt(e.target.value)}
+          value={prompt}
+        />
 
-        {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
-        <datalist id={"sourceList_" + uniqueId}>
-          {availableSources.map((src) => {
-            if (sources.indexOf(src._id) !== -1) return;
-            return (
-              <option key={src._id} value={src._id} label={src.title}></option>
-            );
+        <Label label='Correct Responses' />
+        <ul className='chipGrid'>
+          {responses.map((res, index) => {
+            return <li key={index}>{res}</li>;
           })}
-        </datalist>
+        </ul>
+
+        <Input
+          label="Add a correct response"
+          onChange={(e) => setNewResponse(e.target.value)}
+          value={newResponse}
+          onSubmit={handleAddResponse}
+        />
+
+        {sources.length > 0 ? (
+          <div>
+            <p>Current Sources</p>
+            <ul>
+              {sources.map((srcId) => {
+                const source = availableSources.find((x) => x._id === srcId);
+
+                return (
+                  <li key={source._id}>
+                    <Link href={source.url} target="_blank">{source.title}</Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ) : (
+          <div>No Sources Added</div>
+        )}
 
         <details>
-          <summary>Add New Source</summary>
-          <SourceInput></SourceInput>
-        </details>
-      </details>
+          <summary>Add Another Source</summary>
+          <label htmlFor={"sourceOptions_" + uniqueId}>
+            Select from a list of sources
+          </label>
+          <input
+            id={"sourceOptions_" + uniqueId}
+            list={"sourceList_" + uniqueId}
+            onChange={(e) => {
+              let newSource = availableSources.find(
+                (x) => x._id === e.target.value
+              );
+              if (newSource) {
+                setSources((arr) => {
+                  return [...arr, newSource._id];
+                });
+              }
+              e.target.value = "";
+            }}
+          />
 
-      {notes.length > 0 ? (
-        <div>
-          <p>Current Notes</p>
-          <ul>
-            {notes.map((note) => {
-              return <li key={note._id}>{note.text}</li>;
+          {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
+          <datalist id={"sourceList_" + uniqueId}>
+            {availableSources.map((src) => {
+              if (sources.indexOf(src._id) !== -1) return;
+              return (
+                <option key={src._id} value={src._id} label={src.title}></option>
+              );
             })}
-          </ul>
-        </div>
-      ) : (
-        <div>
-          <p>No Notes Added</p>
-        </div>
-      )}
+          </datalist>
 
-      <details>
-        <summary>Add Another Note</summary>
-        <label htmlFor={"noteOptions_" + uniqueId}>
-          Select from a list of notes
-        </label>
-        <input
-          id={"noteOptions_" + uniqueId}
-          list={"noteList_" + uniqueId}
-          onChange={(e) => {
-            let newNote = availableNotes.find((x) => x._id === e.target.value);
-            if (newNote && notes.indexOf(newNote) === -1) {
-              setNotes([...notes, newNote]);
-            }
-            e.target.value = "";
-          }}
-        ></input>
+          <details>
+            <summary>Add New Source</summary>
+            <SourceInput></SourceInput>
+          </details>
+        </details>
 
-        {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
-        <datalist id={"noteList_" + uniqueId}>
-          {availableNotes.map((note) => {
-            if (notes.indexOf(note) !== -1) return;
-            return (
-              <option
-                key={note._id}
-                value={note._id}
-                label={note.text}
-              ></option>
-            );
-          })}
-        </datalist>
+        {notes.length > 0 ? (
+          <div>
+            <p>Current Notes</p>
+            <ul>
+              {notes.map((note) => {
+                return <li key={note._id}>{note.text}</li>;
+              })}
+            </ul>
+          </div>
+        ) : (
+          <div>
+            <p>No Notes Added</p>
+          </div>
+        )}
 
-        <div>
-          Add New Note
-          <NoteInput availableSources={availableSources}></NoteInput>
-        </div>
-      </details>
+        <details>
+          <summary>Add Another Note</summary>
+          <label htmlFor={"noteOptions_" + uniqueId}>
+            Select from a list of notes
+          </label>
+          <input
+            id={"noteOptions_" + uniqueId}
+            list={"noteList_" + uniqueId}
+            onChange={(e) => {
+              let newNote = availableNotes.find((x) => x._id === e.target.value);
+              if (newNote && notes.indexOf(newNote) === -1) {
+                setNotes([...notes, newNote]);
+              }
+              e.target.value = "";
+            }}
+          />
 
-      <button onClick={handleSubmit}>Submit Quiz</button>
+          {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
+          <datalist id={"noteList_" + uniqueId}>
+            {availableNotes.map((note) => {
+              if (notes.indexOf(note) !== -1) return;
+              return (
+                <option
+                  key={note._id}
+                  value={note._id}
+                  label={note.text}
+                />
+              );
+            })}
+          </datalist>
+
+          <div>
+            Add New Note
+            <NoteInput availableSources={availableSources}></NoteInput>
+          </div>
+        </details>
+
+        <button onClick={handleSubmit}>Submit Quiz</button>
+      </div>
     </div>
   );
 }

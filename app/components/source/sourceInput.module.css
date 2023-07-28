@@ -1,20 +1,3 @@
-.container {
-    background-color: lightslategray;
-}
-
-.formContainer {
-    /* Padding should be changed based on window's width */
-    /* Would be best to create a variable and change it accordingly */
-    max-width: var(--max-width);
-    padding: 40px;
-    margin: 0 auto;
-}
-
-.formContainer > h3 {
-    font-size: 24px;
-    margin-bottom: 24px;
-}
-
 .inputContainer {
     border-radius: 4px;
     margin-bottom: 20px;
@@ -22,36 +5,40 @@
     flex-direction: column;
 }
 
-.inputContainer > label {
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 0.02rem;
-    text-transform: uppercase;
-    margin-bottom: 8px;
+.chipGrid {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chipGrid > li {
+    background-color: var(--accent-tertiary-1);
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 4px;
+    height: 28px;
+    margin: 0 4px 4px 0;
+    padding: 8px 6px 8px 12px;
+    display: flex;
+    align-items: center;
     user-select: none;
 }
 
-.inputContainer > input {
-    height: 40px;
-    border-radius: 4px;
-    border: none;
-    max-width: 480px;
-    padding: 10px;
-    font-size: 16px;
-    line-height: 20px;
-}
-
-.inputContainer > input:focus {
-    outline: 3px solid lightblue;
-}
-
-.required::after {
-    content: '*';
-    color: red;
+.chipGrid > li > div {
     margin-left: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 3px;
 }
 
-.warn {
-    margin-top: 5px;
-    color: lightsalmon;
+.chipGrid > li > div:hover {
+    background-color: var(--accent-tertiary-2);
+}
+
+.chipGrid > li > div > svg {
+    width: 14px;
+    height: 14px;
 }

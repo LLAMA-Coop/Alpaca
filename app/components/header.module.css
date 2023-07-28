@@ -6,14 +6,12 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: hsl(0, 0%, 68%);
-    padding: 40px;
+    padding: 80px 24px;
 }
 
 .header h1 {
     font-size: 48px;
     margin-bottom: 24px;
-    color: black;
 }
 
 .header menu {
@@ -24,7 +22,7 @@
     gap: 12px;
     border-radius: 12px;
     padding: 10px;
-    background-color: hsl(0, 0%, 14%);
+    background-color: var(--background-secondary);
 }
 
 .header li > a {
@@ -37,7 +35,7 @@
 }
 
 .header li > a:hover {
-    background-color: hsl(0, 0%, 22%);
+    background-color: var(--background-primary);
 }
 
 .header li > a > span {
@@ -50,8 +48,7 @@
 }
 
 .header li > a:hover > span {
-    background-color: lightblue;
-    color: hsl(0, 0%, 0%);
+    background-color: var(--accent-primary-3);
 }
 
 .header svg {
@@ -64,7 +61,7 @@
 }
 
 .header li > a:hover svg path {
-    fill: lightblue;
+    fill: var(--accent-primary-3);
 }
 
 @media screen and (max-width: 768px) {

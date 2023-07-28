@@ -1,52 +1,28 @@
-.container {
-    background-color: lightblue;
-    color: black;
-}
-
-.formContainer {
-    /* Padding should be changed based on window's width */
-    /* Would be best to create a variable and change it accordingly */
-    max-width: var(--max-width);
-    padding: 40px;
-    margin: 0 auto;
-}
-
-.formContainer > h3 {
-    font-size: 24px;
-    margin-bottom: 24px;
-}
-
-.sourceGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    grid-gap: 1rem;
-}
-
 .source {
-    border: 1px solid black;
     border-radius: 4px;
-    background-color: skyblue;
+    background-color: var(--background-secondary);
     padding: 16px;
     height: fit-content;
+    box-shadow: 0 0 4px 0 var(--boxshadow-dark);
 }
 
 .source h4 {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
+}
+
+.source > p {
+    margin-bottom: 4px;
 }
 
 .contributors {
-    background-color: black;
+    background-color: var(--background-primary);
     color: white;
     padding: 10px;
     border-radius: 4px;
 }
 
-.contributors > ol {
-    list-style: none;
-}
-
-.contributors::first-line {
-    font-style: italic;
+.contributors > h5 {
+    margin-bottom: 10px;
 }
 
 .source > a {
@@ -54,10 +30,16 @@
     padding: 6px 12px;
     margin-top: 20px;
     border-radius: 4px;
-    background-color: darkcyan;
+    background-color: var(--accent-primary-1);
     width: fit-content;
+    transition: background-color 0.2s ease-in-out;
+    user-select: none;
 }
 
 .source > a:hover {
-    background-color: darkslategray;
+    background-color: var(--accent-primary-2);
+}
+
+.source > a:active {
+    background-color: var(--accent-primary-3);
 }
