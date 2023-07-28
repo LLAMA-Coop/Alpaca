@@ -31,14 +31,7 @@ export default async function QuizzesPage() {
         <section>
           <ul>
             {quizzes.map((quiz) => {
-              let { _id, prompt, correctResponses, sources, notes } = quiz;
-              let quizForClient = {
-                _id: _id.toString(),
-                prompt,
-                correctResponses,
-                sources: sources.map(x => x.toString()),
-                notes: notes.map(x => x.toString()),
-              };
+              let quizForClient = JSON.parse(JSON.stringify(quiz))
               return (
                 <li key={quiz._id}>
                   <QuizDisplay quiz={quizForClient} canClientCheck={true}></QuizDisplay>

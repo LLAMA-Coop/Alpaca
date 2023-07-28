@@ -25,6 +25,12 @@
     margin-bottom: 10px;
 }
 
+.contributors li {
+    word-break: break-all;
+    box-sizing: content-box;
+    padding: 1rem;
+}
+
 .source > a {
     display: block;
     padding: 6px 12px;

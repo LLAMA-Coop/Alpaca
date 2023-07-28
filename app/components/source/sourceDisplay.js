@@ -15,14 +15,22 @@ export default function SourceDisplay({ source }) {
         <h5>Contributors</h5>
         {source.contributors.length > 0 ? (
           <ol className="chipGrid">
-            {source.contributors.map((cont, index) => <li key={cont + index.toString()}>{cont}</li>)}
+            {source.contributors.map((cont, index) => {
+              let contDisp = cont;
+              if(/^http/.test(cont)){
+                contDisp = <Link href={cont}>{cont}</Link>
+              }
+              return <li key={cont + index.toString()}>{contDisp}</li>;
+            })}
           </ol>
         ) : (
           <p>No contributors listed</p>
         )}
       </div>
 
-      <Link href={source.url} target="_blank">Visit the source page</Link>
+      <Link href={source.url} target="_blank">
+        Visit the source page
+      </Link>
     </div>
   );
 }
