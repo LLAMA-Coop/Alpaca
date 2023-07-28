@@ -1,9 +1,10 @@
 "use client";
-import makeUniqueId from "@/app/code/uniqueId";
+import PromptResponse from "./prompt-response";
 import { useEffect, useState } from "react";
 import styles from "./quizDisplay.module.css";
+import MultipleChoice from "./multiple-choice";
 
-// What the quiz displays depends on whether it is a client-checked or server-checked quiz component
+// The quiz displays depends on whether it is a client-checked or server-checked quiz component
 // If client-checked, everything is rendered from the Quiz object
 // If server-checked, only enough data for the prompt is displayed until the response is sent to the server
 //  after which, the server provides the remaining data for the Quiz object
@@ -12,50 +13,20 @@ import styles from "./quizDisplay.module.css";
 // sent into component via canClientCheck boolean
 
 export default function Quiz({ canClientCheck, quiz }) {
-  let [userResponse, setUserResponse] = useState("");
-  let [responseCorrect, setResponseCorrect] = useState(false);
-
-  let [uniqueId, setUniqueId] = useState("");
-  useEffect(() => {
-    setUniqueId(makeUniqueId());
-  }, []);
-
-  function handleCheckAnswer() {
-    let isCorrect = quiz.correctResponses.find(
-      (x) => x.toLowerCase() === userResponse.toLowerCase()
+  if (quiz.type === "prompt-response") {
+    return (
+      <PromptResponse
+        canClientCheck={canClientCheck}
+        quiz={quiz}
+      ></PromptResponse>
     );
-    setResponseCorrect(isCorrect != undefined);
   }
-
-  return (
-    <div className={styles.quiz}>
-      <p>{quiz.prompt}</p>
-      <label htmlFor={"response_" + uniqueId}>
-        Your Response
-        <input
-          id={"response_" + uniqueId}
-          type="text"
-          defaultValue={userResponse}
-          onChange={(e) => {
-            setUserResponse(e.target.value);
-          }}
-        ></input>
-      </label>
-      <button onClick={handleCheckAnswer}>Check Answer</button>
-
-    {/* multiple states to consider: 1. not answered, 2. wrong, 3. correct */}
-      {responseCorrect && userResponse.length > 0 ? (
-        <div>Correct!</div>
-      ) : (
-        <div>
-          Incorrect. Acceptable answers are
-          <ul>
-            {quiz.correctResponses.map((ans) => {
-              return <li key={ans}>{ans}</li>;
-            })}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
+  if (quiz.type === "multiple-choice") {
+    return (
+      <MultipleChoice
+        canClientCheck={canClientCheck}
+        quiz={quiz}
+      ></MultipleChoice>
+    );
+  }
 }

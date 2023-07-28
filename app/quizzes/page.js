@@ -24,29 +24,25 @@ export default async function QuizzesPage() {
   });
 
   return (
-    <main className={styles.main}>
-      <h2>Quizzes</h2>
-
-      <section>
-        <ul>
-          {quizzes.map((quiz) => {
-            let { _id, prompt, correctResponses, sources, notes } = quiz;
-            let quizForClient = {
-              _id: _id.toString(),
-              prompt,
-              correctResponses,
-              sources: sources.map(x => x.toString()),
-              notes: notes.map(x => x.toString()),
-            };
-
-            return (
-              <li key={quiz._id}>
-                <QuizDisplay quiz={quizForClient} canClientCheck={true}></QuizDisplay>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+    <main>
+      <h2>Quiz Cards</h2>
+      <ul>
+        {quizzes.map((quiz) => {
+          let { _id, prompt, correctResponses, sources, notes } = quiz;
+          let quizForClient = {
+            _id: _id.toString(),
+            prompt,
+            correctResponses,
+            sources: sources.map(x => x.toString()),
+            notes: notes.map(x => x.toString()),
+          };
+          return (
+            <li key={quiz._id}>
+              <QuizDisplay quiz={quizForClient} canClientCheck={true}></QuizDisplay>
+            </li>
+          );
+        })}
+      </ul>
 
       <section>
         <QuizInput
