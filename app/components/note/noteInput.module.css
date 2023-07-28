@@ -85,5 +85,13 @@
 }
 
 .sourcePicker > div.selected {
+    background-color: var(--accent-primary-1);
+}
+
+.sourcePicker > div.selected:hover {
+    background-color: var(--accent-primary-2);
+}
+
+.sourcePicker > div.selected:active {
     background-color: var(--accent-primary-3);
 }

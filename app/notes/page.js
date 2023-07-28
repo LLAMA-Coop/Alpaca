@@ -14,15 +14,17 @@ export default function NotePage() {
 
       {notes.length > 0 && (
         <section>
-          <ul>
-            {notes.map((note) => {
-              return (
-                <li key={note._id}>
-                  <NoteDisplay note={note}></NoteDisplay>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="centeredContainer">
+            <ul>
+              {notes.map((note) => {
+                return (
+                  <li key={note._id}>
+                    <NoteDisplay note={note}></NoteDisplay>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </section>
       )}
 

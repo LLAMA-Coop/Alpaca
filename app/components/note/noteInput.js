@@ -108,10 +108,10 @@ export default function NoteInput({ availableSources }) {
                   {availableSources.map((src) =>
                   (
                     <div
-                      className={sources.indexOf(src) !== -1 ? styles.selected : ""}
+                      className={sources.find((x) => x._id === src._id) ? styles.selected : ""}
                       key={src._id}
                       onClick={() => {
-                        if (sources.indexOf(src) === -1) {
+                        if (!sources.find((x) => x._id === src._id)) {
                           setSources([...sources, src]);
                           setSourceError("");
                         } else {

@@ -63,7 +63,7 @@ export default function SourceInput() {
       setPublishDateError("Invalid Date");
     }
 
-    if (!title || !medium || !url || !validUrl) {
+    if (!title || !medium || !url || !lastAccessed) {
       return;
     }
 
