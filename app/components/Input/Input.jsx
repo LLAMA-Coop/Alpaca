@@ -27,7 +27,7 @@ export const Input = ({ type, required, onChange, value, error, label, onFocus, 
                     onChange={onChange}
                     onFocus={onFocus}
                     onBlur={onBlur}
-                    value={value}
+                    value={value || ''}
                     style={{
                         paddingRight: onSubmit ? '44px' : ''
                     }}
@@ -57,7 +57,7 @@ export const TextArea = ({ required, onChange, value, error, label, onFocus, onB
                 onChange={onChange}
                 onFocus={onFocus}
                 onBlur={onBlur}
-                value={value}
+                value={value || ''}
             />
         </div>
     );
