@@ -1,46 +1,75 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 import styles from "./sourceInput.module.css";
-import makeUniqueId from "@/app/code/uniqueId";
+import { Input, Label } from "../Input/Input";
+import { useState, useEffect } from "react";
 
 export default function SourceInput() {
-  let [title, setTitle] = useState("");
-  let [medium, setMedium] = useState("");
-  let [url, setUrl] = useState("");
-  let [contributors, setContributors] = useState([]);
-  let [lastAccessed, setLastAccessed] = useState();
-  let [publishDate, setPublishDate] = useState();
+  const [title, setTitle] = useState("");
+  const [titleError, setTitleError] = useState("");
 
-  let [validUrl, setValidUrl] = useState(true);
-  let [validAccessed, setValidAccessed] = useState(true);
-  let [validPublish, setValidPublish] = useState(true);
+  const [medium, setMedium] = useState("");
+  const [mediumError, setMediumError] = useState("");
 
-  const addContributorRef = useRef();
+  const [url, setUrl] = useState("");
+  const [urlError, setUrlError] = useState("");
 
-  let [uniqueId, setUniqueId] = useState("");
+  const [lastAccessed, setLastAccessed] = useState();
+  const [lastAccessedError, setLastAccessedError] = useState("");
+
+  const [publishDate, setPublishDate] = useState();
+  const [publishDateError, setPublishDateError] = useState("");
+
+  const [contributors, setContributors] = useState([]);
+  const [newContributor, setNewContributor] = useState("");
+
+  const urlRegex = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i;
+  const accessedRegex = /^\d{4}-\d{2}-\d{2}$/;
+  const publishRegex = /^\d{4}-\d{2}-\d{2}$/;
+
   useEffect(() => {
-    setUniqueId(makeUniqueId());
     setLastAccessed(new Date().toISOString().split("T")[0]);
   }, []);
 
-  useEffect(() => {
-    setValidUrl(/^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(url));
-
-    setValidAccessed(/^\d{4}-\d{2}-\d{2}$/.test(lastAccessed));
-
-    setValidPublish(/^\d{4}-\d{2}-\d{2}$/.test(publishDate));
-  }, [url, lastAccessed, publishDate]);
-
   function handleAddContributor(e) {
     e.preventDefault();
-    setContributors([...contributors, addContributorRef.current.value]);
+    if (!newContributor) return;
+    setContributors([...contributors, newContributor]);
+    setNewContributor("");
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (!title) {
+      setTitleError("Title is required");
+    }
+
+    if (!medium) {
+      setMediumError("Medium is required");
+    }
+
+    if (!urlRegex.test(url)) {
+      setUrlError("Invalid URL");
+    }
+
+    if (!accessedRegex.test(lastAccessed)) {
+      setLastAccessedError("Invalid Date");
+    }
+
+    if (!publishRegex.test(publishDate)) {
+      setPublishDateError("Invalid Date");
+    }
+
+    if (!title || !medium || !url || !validUrl || !validAccessed || !validPublish) {
+      return;
+    }
+
     function formatDate(htmlDate) {
       if (!htmlDate) return undefined;
-      let ymd = htmlDate.split("-");
+      const ymd = htmlDate.split("-");
       return new Date(ymd[0], ymd[1] - 1, ymd[2]);
     }
 
@@ -52,7 +81,8 @@ export default function SourceInput() {
       lastAccessed: formatDate(lastAccessed),
       publishDate: formatDate(publishDate),
     };
-    let response = await fetch("./api/source", {
+
+    const response = await fetch("./api/source", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -60,112 +90,110 @@ export default function SourceInput() {
       body: JSON.stringify(src),
     });
 
+    setTitle("");
+    setMedium("");
+    setUrl("");
+    setLastAccessed("");
+    setPublishDate("");
+    setNewContributor("");
+    setContributors([]);
+    setTitleError("");
+    setMediumError("");
+    setUrlError("");
+    setLastAccessedError("");
+    setPublishDateError("");
+
     console.log(await response.json());
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.formContainer}>
-        <h3>Add Source</h3>
-        <form className={styles.form}>
-          <div className={styles.inputContainer}>
-            <label htmlFor={"title_" + uniqueId} className={styles.required}>
-              Title
-            </label>
-            <input
-              id={"title_" + uniqueId}
-              type="text"
-              defaultValue={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
+    <div className='centeredContainer'>
+      <h3>Add Source</h3>
+      <form className={styles.form}>
+        <Input
+          required={true}
+          label={"Title"}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            setTitleError("");
+          }}
+          value={title}
+          error={titleError}
+        />
 
-          <div className={styles.inputContainer}>
-            <label htmlFor={"medium_" + uniqueId} className={styles.required}>
-              Medium</label>
-            <input
-              id={"medium_" + uniqueId}
-              type="text"
-              defaultValue={medium}
-              onChange={(e) => setMedium(e.target.value)}
-              required
-            />
-          </div>
+        <Input
+          required={true}
+          label={"Medium"}
+          onChange={(e) => {
+            setMedium(e.target.value);
+            setMediumError("");
+          }}
+          value={medium}
+          error={mediumError}
+        />
 
-          <div className={styles.inputContainer}>
-            <label htmlFor={"url_" + uniqueId} className={styles.required}>
-              URL of Source
-            </label>
-            <input
-              id={"url_" + uniqueId}
-              type="text"
-              defaultValue={url}
-              onChange={(e) => {
-                setUrl(e.target.value);
-              }}
-              required
-            />
-            {validUrl ? null : (
-              <span className={styles.warn}>Please use valid URL format</span>
-            )}
-          </div>
+        <Input
+          required={true}
+          label={"URL of Source"}
+          onChange={(e) => {
+            setUrl(e.target.value);
+            setUrlError("");
+          }}
+          value={url}
+          error={urlError}
+        />
 
-          <div className={styles.inputContainer}>
-            <label htmlFor={"lastAccessed_" + uniqueId}>
-              Last Accessed
-            </label>
-            <input
-              id={"lastAccessed_" + uniqueId}
-              type="date"
-              defaultValue={lastAccessed}
-              onChange={(e) => {
-                setLastAccessed(e.target.value);
-              }}
-            />
-            {validAccessed ? null : (
-              <span className={styles.warn}>Please use YYYY-MM-DD format</span>
-            )}
-          </div>
+        <Input
+          label={"Last Accessed"}
+          onChange={(e) => {
+            setLastAccessed(e.target.value);
+            setLastAccessedError("");
+          }}
+          value={lastAccessed}
+          type="date"
+          error={lastAccessedError}
+        />
 
-          <div className={styles.inputContainer}>
-            <label htmlFor={"publishDate_" + uniqueId}>
-              Published
-            </label>
+        <Input
+          label={"Published"}
+          onChange={(e) => {
+            setPublishDate(e.target.value);
+            setPublishDateError("");
+          }}
+          value={publishDate}
+          type="date"
+          error={publishDateError}
+        />
 
-            <input
-              id={"publishDate_" + uniqueId}
-              type="date"
-              defaultValue={publishDate}
-              onChange={(e) => {
-                setPublishDate(e.target.value);
-              }}
-            />
-            {validPublish ? null : (
-              <span className={styles.warn}>Please use YYYY-MM-DD format</span>
-            )}
-          </div>
+        <Label label='Contributors' />
 
-          <p className={styles.required}>Contributors</p>
-          <ul>
-            {contributors.map((cont, index) => {
-              return <li key={index}>{cont}</li>;
-            })}
-            <li>
-              <label htmlFor={"contributor_" + uniqueId}>
-                New Contributor
-                <input
-                  id={"contributor_" + uniqueId}
-                  type="text"
-                  ref={addContributorRef}
-                ></input>
-              </label>
-              <button onClick={handleAddContributor}>Add Contributor</button>
+        <ul className={styles.chipGrid}>
+          {contributors.map((cont, index) => (
+            <li key={index}>
+              {cont}
+
+              <div
+                onClick={() => {
+                  setContributors(
+                    contributors.filter((_, i) => i !== index)
+                  );
+                }}
+              >
+                <FontAwesomeIcon icon={faClose} />
+              </div>
             </li>
-          </ul>
-          <button onClick={handleSubmit}>Submit Source</button>
-        </form>
-      </div>
+          ))}
+        </ul>
+
+        <Input
+          label={"Add Contributor"}
+          onChange={(e) => setNewContributor(e.target.value)}
+          value={newContributor}
+          onSubmit={handleAddContributor}
+        />
+
+        <button onClick={handleSubmit}>Submit Source</button>
+      </form>
     </div>
   );
 }

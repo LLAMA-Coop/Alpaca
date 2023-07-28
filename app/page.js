@@ -12,24 +12,32 @@ export default function Home() {
     <main className={styles.main}>
       <h2>Let's take it for a spin!</h2>
 
-      {sources.map((src) => {
-        return <SourceDisplay key={src._id} source={src}></SourceDisplay>;
-      })}
-      {/* <SourceDisplay sources={sources} /> */}
+      <section>
+        <div className='centeredContainer'>
+          <h3>Sources</h3>
 
-      {/* Add the title to the SourceInput component so it stays in the same container */}
-      <SourceInput />
+          <div className={styles.sourceGrid}>
+            {sources.map((src) => <SourceDisplay key={src._id} source={src} />)}
+          </div>
+        </div>
+      </section>
 
-      {/* Same as above */}
-      <UserInput isRegistering={true} />
+      <section>
+        <SourceInput />
+      </section>
 
-      {/* Still same as above */}
-      <NoteInput
-        availableSources={sources.map((src) => {
-          let { title, url, _id } = src;
-          return { title, url, _id: _id.toString() };
-        })}
-      />
+      <section>
+        <UserInput isRegistering={true} />
+      </section>
+
+      <section>
+        <NoteInput
+          availableSources={sources.map((src) => {
+            let { title, url, _id } = src;
+            return { title, url, _id: _id.toString() };
+          })}
+        />
+      </section>
     </main>
   );
 }

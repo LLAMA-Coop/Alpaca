@@ -1,4 +1,6 @@
-.form {
-    background-color: blueviolet;
-    color: white;
+.inputContainer {
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }

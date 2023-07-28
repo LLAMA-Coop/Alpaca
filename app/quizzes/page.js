@@ -3,6 +3,7 @@ import QuizDisplay from "../components/quiz/quizDisplay";
 import Source from "../api/models/Source";
 import Note from "../api/models/Note";
 import Quiz from "../api/models/Quiz";
+import styles from "../page.module.css";
 
 export default async function QuizzesPage() {
   const sources = await Source.find();
@@ -23,32 +24,37 @@ export default async function QuizzesPage() {
   });
 
   return (
-    <main>
-      <h2>Quiz Cards</h2>
-      <ul>
-        {quizzes.map((quiz) => {
-          let { _id, prompt, correctResponses, sources, notes } = quiz;
-          let quizForClient = {
-            _id: _id.toString(),
-            prompt,
-            correctResponses,
-            sources: sources.map(x => x.toString()),
-            notes: notes.map(x => x.toString()),
-          };
-          return (
-            <li key={quiz._id}>
-              <QuizDisplay quiz={quizForClient} canClientCheck={true}></QuizDisplay>
-            </li>
-          );
-        })}
-      </ul>
+    <main className={styles.main}>
+      <h2>Quizzes</h2>
 
-      <h2>Add New Quiz Card</h2>
-      <QuizInput
-        isEditing={false}
-        availableSources={availableSources}
-        availableNotes={availableNotes}
-      ></QuizInput>
+      <section>
+        <ul>
+          {quizzes.map((quiz) => {
+            let { _id, prompt, correctResponses, sources, notes } = quiz;
+            let quizForClient = {
+              _id: _id.toString(),
+              prompt,
+              correctResponses,
+              sources: sources.map(x => x.toString()),
+              notes: notes.map(x => x.toString()),
+            };
+
+            return (
+              <li key={quiz._id}>
+                <QuizDisplay quiz={quizForClient} canClientCheck={true}></QuizDisplay>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section>
+        <QuizInput
+          isEditing={false}
+          availableSources={availableSources}
+          availableNotes={availableNotes}
+        />
+      </section>
     </main>
   );
 }

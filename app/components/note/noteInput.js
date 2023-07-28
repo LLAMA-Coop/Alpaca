@@ -1,31 +1,52 @@
 "use client";
-import makeUniqueId from "@/app/code/uniqueId";
-import { useEffect, useState } from "react";
+
+import { faAdd, faClose } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState, useRef } from "react";
+import { TextArea, Label } from "../Input/Input";
 import SourceInput from "../source/sourceInput";
-import Link from "next/link";
+import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./noteInput.module.css";
+import Link from "next/link";
 
 export default function NoteInput({ availableSources }) {
-  let [text, setText] = useState("");
-  let [sources, setSources] = useState([]);
+  const [text, setText] = useState("");
+  const [sources, setSources] = useState([]);
+  const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [textError, setTextError] = useState("");
+  const [sourceError, setSourceError] = useState("");
 
-  let [uniqueId, setUniqueId] = useState();
+  const addSourceRef = useRef(null);
+
   useEffect(() => {
-    setUniqueId(makeUniqueId());
-  }, []);
+    const handleOutsideClick = (e) => {
+      if (isSelectOpen && !addSourceRef.current.contains(e.target)) {
+        setIsSelectOpen(false);
+      }
+    }
+
+    document.addEventListener("click", handleOutsideClick);
+
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, [isSelectOpen]);
 
   async function handleSubmit(e) {
     e.preventDefault();
+
     if (text.length === 0) {
-      console.error("Need text")
+      setTextError("Text cannot be empty");
     }
+
     if (sources.length === 0) {
-      console.error("Need at least one source")
+      setSourceError("You must add at least one source");
     }
+
     if (text.length === 0 || sources.length === 0) {
       return;
     }
+
     const note = { text, sources };
+
     let response = await fetch("./api/note", {
       method: "POST",
       headers: {
@@ -34,86 +55,100 @@ export default function NoteInput({ availableSources }) {
       body: JSON.stringify(note)
     })
 
+    setText("");
+    setSourceError("");
+    setSources([]);
+    setText("");
+
     console.log(await response.json());
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.formContainer}>
-        <h3>Add a note</h3>
-        <div className={styles.form}>
-
-          <div className={styles.inputContainer}>
-            <label htmlFor={"text_" + uniqueId} className={styles.required}>
-              Text
-            </label>
-            <textarea
-              id={"text_" + uniqueId}
-              defaultValue={text}
-              onChange={(e) => setText(e.target.value)}
-              rows={4}
-              required
-            />
-          </div>
-
-
-          {sources.length > 0 ? (
-            <div>
-              <h4 className={styles.required}>Current Sources</h4>
-              <ul>
-                {sources.map((src) => {
-                  return (
-                    <li key={src._id}>
-                      <Link href={src.url} target="_blank">{src.title}</Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ) : (
-            <div>
-              <h4 className={styles.required}>No Sources Added</h4>
-            </div>
-          )}
-
-          <details>
-            <summary>Add Another Source</summary>
-            <label htmlFor={"sourceOptions_" + uniqueId}>
-              Select from a list of sources
-            </label>
-            <input
-              id={"sourceOptions_" + uniqueId}
-              list={"sourceList_" + uniqueId}
-              onChange={(e) => {
-                let newSource = availableSources.find(
-                  (x) => x._id === e.target.value
-                );
-                if (newSource && sources.indexOf(newSource) === -1) {
-                  setSources([...sources, newSource]);
-                }
-                e.target.value = "";
-              }}
-            />
-
-            {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
-            <datalist id={"sourceList_" + uniqueId}>
-              {availableSources.map((src) => {
-                if (sources.indexOf(src) !== -1) return;
-                return (
-                  <option key={src._id} value={src._id} label={src.title} />
-                );
-              })}
-            </datalist>
-
-            <details>
-              <summary>Add New Source</summary>
-              <SourceInput />
-            </details>
-          </details>
-
-          <button onClick={handleSubmit}>Submit Note</button>
-        </div>
+    <div className='centeredContainer'>
+      <h3>Add a note</h3>
+      <div className={styles.form}>
+        <TextArea
+          required={true}
+          onChange={(e) => {
+            setText(e.target.value);
+            setTextError("");
+          }}
+          value={text}
+          error={textError}
+          label={'Text'}
+        />
       </div>
+
+
+
+      <div className={styles.addSources}>
+        <div className={styles.inputContainer}>
+          <Label required={true} error={sourceError} label='Current Sources' />
+
+          <ol className={styles.chipGrid}>
+            <li
+              ref={addSourceRef}
+              className={styles.addChip}
+              onClick={() => {
+                setIsSelectOpen(prev => !prev);
+              }}
+            >
+              Add a source
+              <div>
+                <FontAwesomeIcon icon={faAdd} />
+              </div>
+
+              {isSelectOpen && (
+                <div
+                  className={styles.sourcePicker}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  {availableSources.map((src) =>
+                  (
+                    <div
+                      className={sources.indexOf(src) !== -1 ? styles.selected : ""}
+                      key={src._id}
+                      onClick={() => {
+                        if (sources.indexOf(src) === -1) {
+                          setSources([...sources, src]);
+                          setSourceError("");
+                        } else {
+                          setSources(sources.filter((x) => x._id !== src._id));
+                        }
+                      }}
+                    >
+                      {src.title}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </li>
+
+            {sources.length > 0 && sources.map((src) => (
+              <li key={src._id}>
+                <Link href={src.url} target="_blank">{src.title}</Link>
+
+                <div
+                  onClick={() => {
+                    setSources(sources.filter((x) => x._id !== src._id));
+                  }}
+                >
+                  <FontAwesomeIcon icon={faClose} />
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <details>
+          <summary>Create a new source</summary>
+          <SourceInput />
+        </details>
+      </div>
+
+      <button onClick={handleSubmit}>Submit Note</button>
     </div>
   );
 }
