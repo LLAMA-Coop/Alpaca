@@ -9,11 +9,12 @@ export default async function NoteDisplay({ note }) {
   return (
     <div className={styles.note}>
       <p>{note.text}</p>
-      <p>Added By: {user.username}</p>
+      <p>Added By: {user?.username ?? 'Not provided'}</p>
+
       <ul>
         {note.sources.map(async (srcId) => {
           const src = await Source.findOne({ _id: srcId });
-          console.log(src);
+
           return (
             <li key={srcId}>
               <SourceDisplay source={src}></SourceDisplay>

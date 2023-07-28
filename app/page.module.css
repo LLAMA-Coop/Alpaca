@@ -19,6 +19,12 @@
     background-color: var(--background-secondary);
 }
 
+.main > section:nth-child(odd) input,
+.main > section:nth-child(odd) textarea,
+.main > section:nth-child(odd) select {
+    background-color: var(--background-primary);
+}
+
 .sourceGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
