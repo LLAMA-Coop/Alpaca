@@ -12,22 +12,26 @@ export default function NotePage() {
     <main className={styles.main}>
       <h2>Notes</h2>
 
-      <section>
-        <ul>
-          {notes.map((note) => {
-            return (
-              <li key={note._id}>
-                <NoteDisplay note={note}></NoteDisplay>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+      {notes.length > 0 && (
+        <section>
+          <ul>
+            {notes.map((note) => {
+              return (
+                <li key={note._id}>
+                  <NoteDisplay note={note}></NoteDisplay>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
 
-      <NoteInput availableSources={sources.map((src) => {
-        let { title, url, _id } = src;
-        return { title, url, _id: _id.toString() };
-      })} />
+      <section>
+        <NoteInput availableSources={sources.map((src) => {
+          let { title, url, _id } = src;
+          return { title, url, _id: _id.toString() };
+        })} />
+      </section>
     </main>
   );
 }

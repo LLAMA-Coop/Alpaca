@@ -13,7 +13,9 @@
     background-color: var(--background-secondary);
 }
 
-.main > section:nth-child(even) input {
+.main > section:nth-child(even) input,
+.main > section:nth-child(even) textarea,
+.main > section:nth-child(even) select {
     background-color: var(--background-secondary);
 }
 
