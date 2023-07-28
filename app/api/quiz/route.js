@@ -1,10 +1,10 @@
 import Quiz from "../models/Quiz";
 
 export async function GET(req) {
-  return new Response(
-    JSON.stringify({
+  return NextResponse.json(
+    {
       message: "You have successfully received a response from /api/quiz",
-    })
+    }
   );
 }
 
@@ -13,13 +13,13 @@ export async function POST(req) {
 
   const addedBy = "64b841f6f8bfa3dc4d7079e4";
   if (!addedBy) {
-    return new Response(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         400: {
           message:
             "User information was not submitted. This may be because the user is not signed in.",
         },
-      })
+      }
     );
   }
 
@@ -41,5 +41,5 @@ export async function POST(req) {
 
   const quiz = new Quiz(quizRcvd);
   let content = await quiz.save();
-  return new Response(JSON.stringify({ 200: { content } }));
+  return NextResponse.json({ 200: { content } });
 }

@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 
@@ -5,12 +6,12 @@ export async function GET(req) {
   // Will need to authorize administrator first
 
   const content = await User.find();
-  return new Response(
-    JSON.stringify({
+  return NextResponse.json(
+    {
       200: {
         content,
       },
-    })
+    }
   );
 }
 
@@ -20,12 +21,12 @@ export async function POST(req) {
 
   const body = await req.json();
   if (!(body.username && body.password)) {
-    return new Response(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         400: {
           message: "Please provide a username and password",
         },
-      }),
+      },
       {
         status: 400,
       }
@@ -41,12 +42,12 @@ export async function POST(req) {
 
   const user = new User(userRcvd);
   let content = await user.save();
-  return new Response(
-    JSON.stringify({
+  return NextResponse.json(
+    {
       201: {
         content,
       },
-    }),
+    },
     {
       status: 201,
     }

@@ -2,24 +2,24 @@ import Source from "../models/Source";
 
 export async function GET(req) {
   const content = await Source.find();
-  return new Response(
-    JSON.stringify({
+  return NextResponse.json(
+    {
       200: {
         content,
       },
-    })
+    }
   );
 }
 
 export async function POST(req) {
   const body = await req.json();
   if (!(body.title && body.medium && body.url)) {
-    return new Response(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         400: {
           message: "Missing required information",
         },
-      }),
+      },
       {
         status: 400,
       }
@@ -45,11 +45,11 @@ export async function POST(req) {
 
   const source = new Source(srcRcvd);
   let content = await source.save();
-  return new Response(
-    JSON.stringify({
+  return NextResponse.json(
+    {
       200: {
         content,
       },
-    })
+    }
   );
 }

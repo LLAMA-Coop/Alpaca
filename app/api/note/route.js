@@ -1,14 +1,13 @@
+import { NextResponse } from "next/server";
 import Note from "../models/Note";
 
 export async function GET(req) {
   const content = await Note.find();
-  return new Response(
-    JSON.stringify({
-      200: {
-        content,
-      },
-    })
-  );
+  return NextResponse.json({
+    200: {
+      content,
+    },
+  });
 }
 
 export async function POST(req) {
@@ -25,34 +24,35 @@ export async function POST(req) {
   // Should probably verify user real and active
   const addedBy = "64b841f6f8bfa3dc4d7079e4";
   if (!addedBy) {
-    return new Response(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         400: {
           message:
             "User information was not submitted. This may be because the user is not signed in.",
         },
-      })
+      },
+      { status: 400 }
     );
   }
 
   if (!body.text) {
-    return new Response(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         400: {
           message: "No text was added to this note",
         },
-      }),
+      },
       { status: 400 }
     );
   }
 
   if (body.sources.length < 1) {
-    return new Response(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         400: {
           message: "At least one source is required to create a note",
         },
-      }),
+      },
       { status: 400 }
     );
   }
@@ -65,5 +65,5 @@ export async function POST(req) {
 
   const note = new Note(noteRcvd);
   let content = await note.save();
-  return new Response(JSON.stringify({ 200: { content } }));
+  return NextResponse.json({ 200: { content } });
 }
