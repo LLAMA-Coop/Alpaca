@@ -1,3 +1,6 @@
 .quiz {
     background-color: aquamarine;
+    padding: 1rem;
+    max-width: 500px;
+    margin: 2rem;
 }

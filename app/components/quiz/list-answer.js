@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import styles from "./quizDisplay.module.css"
 
 export default function ListAnswer({ canClientCheck, quiz, isOrdered }) {
   let [userResponse, setUserResponse] = useState(
@@ -40,7 +41,7 @@ export default function ListAnswer({ canClientCheck, quiz, isOrdered }) {
   }
 
   return (
-    <div>
+    <div className={styles.quiz}>
       <p id="prompt">{quiz.prompt}</p>
       <ul>
         {quiz.correctResponses.map((ans, index) => {

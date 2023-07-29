@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import styles from "./quizDisplay.module.css"
 
 export default function MultipleChoice({ canClientCheck, quiz }) {
   let [userResponse, setUserResponse] = useState("");
@@ -19,7 +20,7 @@ export default function MultipleChoice({ canClientCheck, quiz }) {
   }
 
   return (
-    <div>
+    <div className={styles.quiz}>
       <p>{quiz.prompt}</p>
       <ul>
         {quiz.choices.map((choice) => {

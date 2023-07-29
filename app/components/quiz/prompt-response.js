@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import makeUniqueId from "@/app/code/uniqueId";
+import styles from "./quizDisplay.module.css"
 
 export default function PromptResponse({ canClientCheck, quiz }) {
   let [userResponse, setUserResponse] = useState("");
@@ -27,7 +28,7 @@ export default function PromptResponse({ canClientCheck, quiz }) {
   }
 
   return (
-    <div>
+    <div className={styles.quiz}>
       <p>{quiz.prompt}</p>
       <label htmlFor={"response_" + uniqueId}>
         Your Response
