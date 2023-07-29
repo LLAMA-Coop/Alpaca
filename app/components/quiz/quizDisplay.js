@@ -1,6 +1,7 @@
 import PromptResponse from "./prompt-response";
 import styles from "./quizDisplay.module.css";
 import MultipleChoice from "./multiple-choice";
+import ListAnswer from "./list-answer";
 
 // The quiz displays depends on whether it is a client-checked or server-checked quiz component
 // If client-checked, everything is rendered from the Quiz object
@@ -11,7 +12,7 @@ import MultipleChoice from "./multiple-choice";
 // sent into component via canClientCheck boolean
 
 export default function Quiz({ canClientCheck, quiz }) {
-  console.log(quiz)
+  console.log(quiz);
   if (quiz.type === "prompt-response") {
     return (
       <PromptResponse
@@ -26,6 +27,24 @@ export default function Quiz({ canClientCheck, quiz }) {
         canClientCheck={canClientCheck}
         quiz={quiz}
       ></MultipleChoice>
+    );
+  }
+  if (quiz.type === "unordered-list") {
+    return (
+      <ListAnswer
+        canClientCheck={canClientCheck}
+        quiz={quiz}
+        isOrdered={false}
+      ></ListAnswer>
+    );
+  }
+  if (quiz.type === "ordered-list") {
+    return (
+      <ListAnswer
+        canClientCheck={canClientCheck}
+        quiz={quiz}
+        isOrdered={true}
+      ></ListAnswer>
     );
   }
 }

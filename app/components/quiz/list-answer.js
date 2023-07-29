@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import styles from "./quizDisplay.module.css"
+import styles from "./quizDisplay.module.css";
 
 export default function ListAnswer({ canClientCheck, quiz, isOrdered }) {
   let [userResponse, setUserResponse] = useState(
@@ -8,6 +8,8 @@ export default function ListAnswer({ canClientCheck, quiz, isOrdered }) {
   );
   let [responseStatus, setResponseStatus] = useState("empty");
   let [responseCorrect, setResponseCorrect] = useState(false);
+
+  console.log("list answer", quiz, quiz.correctResponses);
 
   function handleChange(index, value) {
     setResponseStatus("incomplete");
@@ -19,24 +21,30 @@ export default function ListAnswer({ canClientCheck, quiz, isOrdered }) {
   function handleCheckAnswer() {
     setResponseStatus("complete");
     if (isOrdered) {
-      isIncorrect = userResponse.find((res, index) => {
+      let isIncorrect = userResponse.find((res, index) => {
         return res.toLowerCase() !== quiz.correctResponses[index].toLowerCase();
       });
-      if(isIncorrect == undefined){
+      if (isIncorrect == undefined) {
         setResponseCorrect(true);
       }
     }
 
-    if(!isOrdered){
-        let userAnswers = Set(userResponse);
-        let correctAnswers = Set(quiz.correctAnswers);
-        if(userAnswers.length !== correctAnswers.length){
-            setResponseCorrect(false);
-            return;
-        }
-        userAnswers.forEach((ans) => {
-            // Finish this
-        })
+    if (!isOrdered) {
+      const sortLowerCase = (a, b) => {
+        let al = a.toLowerCase();
+        let bl = b.toLowerCase();
+        if (al < bl) return -1;
+        if (al > bl) return 1;
+        return 0;
+      };
+      let userAnswers = userResponse.sort(sortLowerCase);
+      let correctAnswers = quiz.correctResponses.sort(sortLowerCase);
+      let isIncorrect = userAnswers.find((res, index) => {
+        return res.toLowerCase() !== correctAnswers[index].toLowerCase();
+      });
+      if (isIncorrect == undefined) {
+        setResponseCorrect(true);
+      }
     }
   }
 
@@ -45,14 +53,17 @@ export default function ListAnswer({ canClientCheck, quiz, isOrdered }) {
       <p id="prompt">{quiz.prompt}</p>
       <ul>
         {quiz.correctResponses.map((ans, index) => {
-          <li key={index}>
-            <input
-              type="text"
-              aria-labelledby="prompt"
-              id={"ans_" + index}
-              onChange={(e) => handleChange(index, e.target.value)}
-            ></input>
-          </li>;
+          return (
+            <li key={index}>
+              <input
+                type="text"
+                aria-labelledby="prompt"
+                id={"ans_" + index}
+                defaultValue={userResponse[index]}
+                onChange={(e) => handleChange(index, e.target.value)}
+              ></input>
+            </li>
+          );
         })}
       </ul>
 
