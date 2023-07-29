@@ -8,7 +8,7 @@ export default async function NoteDisplay({ note }) {
 
   return (
     <div className={styles.note}>
-      <p>{note.text}</p>
+      <h4>{note.text}</h4>
       <p>Added By: {user?.username ?? 'Not provided'}</p>
 
       <ul>

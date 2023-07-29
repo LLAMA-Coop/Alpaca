@@ -12,7 +12,25 @@ export default function NotePage() {
     <main className={styles.main}>
       <h2>Notes</h2>
 
-      {notes.length > 0 && (
+      <section>
+        <div className="centeredContainer">
+          <h3>Notes</h3>
+
+          <div className={styles.sourceGrid}>
+            {notes.map((note) => {
+              return <NoteDisplay key={note._id} note={note}></NoteDisplay>;
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <NoteInput
+          availableSources={JSON.parse(JSON.stringify(sources))}
+        ></NoteInput>
+      </section>
+
+      {/* {notes.length > 0 && (
         <section>
           <div className="centeredContainer">
             <ul>
@@ -29,11 +47,13 @@ export default function NotePage() {
       )}
 
       <section>
-        <NoteInput availableSources={sources.map((src) => {
-          let { title, url, _id } = src;
-          return { title, url, _id: _id.toString() };
-        })} />
-      </section>
+        <NoteInput
+          availableSources={sources.map((src) => {
+            let { title, url, _id } = src;
+            return { title, url, _id: _id.toString() };
+          })}
+        />
+      </section> */}
     </main>
   );
 }

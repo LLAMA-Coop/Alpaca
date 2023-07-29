@@ -4,21 +4,24 @@ import SourceDisplay from "./components/source/sourceDisplay";
 import SourceInput from "./components/source/sourceInput";
 import UserInput from "./components/user/userInput";
 import NoteInput from "./components/note/noteInput";
+import Note from "./api/models/Note";
+import NoteDisplay from "./components/note/noteDisplay";
 
 const sources = await Source.find();
+const notes = await Note.find();
 
 export default function Home() {
   return (
     <main className={styles.main}>
       <h2>Let's take it for a spin!</h2>
 
-      <section>
-        <div className='centeredContainer'>
-          <h3>Sources</h3>
+      <section className="centeredContainer">
+        <h3>Sources</h3>
 
-          <div className={styles.sourceGrid}>
-            {sources.map((src) => <SourceDisplay key={src._id} source={src} />)}
-          </div>
+        <div className={styles.sourceGrid}>
+          {sources.map((src) => (
+            <SourceDisplay key={src._id} source={src} />
+          ))}
         </div>
       </section>
 
@@ -26,17 +29,21 @@ export default function Home() {
         <SourceInput />
       </section>
 
-      <section>
-        <UserInput isRegistering={true} />
+      <section className="centeredContainer">
+        <h3>Notes</h3>
+        <div className={styles.sourceGrid}>
+          {notes.map((note) => (
+            <NoteDisplay key={note._id} note={note}></NoteDisplay>
+          ))}
+        </div>
       </section>
 
       <section>
-        <NoteInput
-          availableSources={sources.map((src) => {
-            let { title, url, _id } = src;
-            return { title, url, _id: _id.toString() };
-          })}
-        />
+        <NoteInput availableSources={JSON.parse(JSON.stringify(sources))} />
+      </section>
+
+      <section>
+        <UserInput isRegistering={true} />
       </section>
     </main>
   );

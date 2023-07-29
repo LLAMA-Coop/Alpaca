@@ -1,5 +1,14 @@
+.note {
+    border-radius: 4px;
+    background-color: var(--background-secondary);
+    padding: 16px;
+    height: fit-content;
+    box-shadow: 0 0 4px 0 var(--boxshadow-dark);
+}
+
 .note > ul {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 500px));
     grid-gap: 1rem;
+    list-style-type: none;
 }

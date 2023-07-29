@@ -18,7 +18,7 @@ export default function SourceDisplay({ source }) {
             {source.contributors.map((cont, index) => {
               let contDisp = cont;
               if(/^http/.test(cont)){
-                contDisp = <Link href={cont}>{cont}</Link>
+                contDisp = <Link href={cont}>Click here to see list of contributors</Link>
               }
               return <li key={cont + index.toString()}>{contDisp}</li>;
             })}
