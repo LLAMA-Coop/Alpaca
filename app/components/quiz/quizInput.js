@@ -5,7 +5,9 @@ import Link from "next/link";
 import NoteInput from "../note/noteInput";
 import SourceInput from "../source/sourceInput";
 import styles from "./quizInput.module.css";
-import { Input, Label } from "../Input/Input";
+import { Input, Label, ListItem } from "../Input/Input";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSubtract } from "@fortawesome/free-solid-svg-icons";
 
 export default function QuizInput({
   isEditing,
@@ -87,18 +89,27 @@ export default function QuizInput({
     setNewResponse("");
   }
 
+  function handleDeleteResponse(index) {
+    return function (event) {
+      event.preventDefault();
+      setResponses([
+        ...responses.slice(0, index),
+        ...responses.slice(index + 1),
+      ]);
+    };
+  }
+
   const types = [
     { label: "Prompt/Response", value: "prompt-response" },
     { label: "Multiple Choice", value: "multiple-choice" },
   ];
 
   return (
-    <div className='centeredContainer'>
+    <div className="centeredContainer">
       <h3>Add new quiz card</h3>
       <div className={styles.form}>
-
         <div className={styles.inputContainer}>
-          <Label label='Type' />
+          <Label label="Type" />
 
           <select
             id={"type_" + uniqueId}
@@ -124,17 +135,29 @@ export default function QuizInput({
           value={prompt}
         />
 
-        <Label label='Correct Responses' />
-        <ul className='chipGrid'>
+        <Label label="Correct Responses" />
+        <ul className="chipGrid">
           {responses.map((res, index) => {
-            return <li key={index}>{res}</li>;
+            return (
+              <ListItem
+                onDelete={handleDeleteResponse(index)}
+                key={index}
+                item={res}
+              ></ListItem>
+            );
           })}
         </ul>
 
         <Input
           label="Add a correct response"
           onChange={(e) => setNewResponse(e.target.value)}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              handleAddResponse(e);
+            }
+          }}
           value={newResponse}
+          required={responses.length === 0}
           onSubmit={handleAddResponse}
         />
 
@@ -147,7 +170,9 @@ export default function QuizInput({
 
                 return (
                   <li key={source._id}>
-                    <Link href={source.url} target="_blank">{source.title}</Link>
+                    <Link href={source.url} target="_blank">
+                      {source.title}
+                    </Link>
                   </li>
                 );
               })}
@@ -183,7 +208,11 @@ export default function QuizInput({
             {availableSources.map((src) => {
               if (sources.indexOf(src._id) !== -1) return;
               return (
-                <option key={src._id} value={src._id} label={src.title}></option>
+                <option
+                  key={src._id}
+                  value={src._id}
+                  label={src.title}
+                ></option>
               );
             })}
           </datalist>
@@ -218,7 +247,9 @@ export default function QuizInput({
             id={"noteOptions_" + uniqueId}
             list={"noteList_" + uniqueId}
             onChange={(e) => {
-              let newNote = availableNotes.find((x) => x._id === e.target.value);
+              let newNote = availableNotes.find(
+                (x) => x._id === e.target.value
+              );
               if (newNote && notes.indexOf(newNote) === -1) {
                 setNotes([...notes, newNote]);
               }
@@ -231,11 +262,7 @@ export default function QuizInput({
             {availableNotes.map((note) => {
               if (notes.indexOf(note) !== -1) return;
               return (
-                <option
-                  key={note._id}
-                  value={note._id}
-                  label={note.text}
-                />
+                <option key={note._id} value={note._id} label={note.text} />
               );
             })}
           </datalist>
