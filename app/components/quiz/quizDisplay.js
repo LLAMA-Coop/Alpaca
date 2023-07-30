@@ -13,38 +13,42 @@ import ListAnswer from "./list-answer";
 
 export default function Quiz({ canClientCheck, quiz }) {
   console.log(quiz);
+
   if (quiz.type === "prompt-response") {
     return (
       <PromptResponse
         canClientCheck={canClientCheck}
         quiz={quiz}
-      ></PromptResponse>
+      />
     );
   }
+
   if (quiz.type === "multiple-choice") {
     return (
       <MultipleChoice
         canClientCheck={canClientCheck}
         quiz={quiz}
-      ></MultipleChoice>
+      />
     );
   }
+
   if (quiz.type === "unordered-list") {
     return (
       <ListAnswer
         canClientCheck={canClientCheck}
         quiz={quiz}
         isOrdered={false}
-      ></ListAnswer>
+      />
     );
   }
+
   if (quiz.type === "ordered-list") {
     return (
       <ListAnswer
         canClientCheck={canClientCheck}
         quiz={quiz}
         isOrdered={true}
-      ></ListAnswer>
+      />
     );
   }
 }

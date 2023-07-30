@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef, useEffect } from "react";
 import styles from "./userInput.module.css";
-import { Input } from "../Input/Input";
+import { Input } from "../form/Form";
 
 export default function UserInput({ isRegistering }) {
   const [username, setUsername] = useState("");
@@ -189,7 +189,7 @@ export default function UserInput({ isRegistering }) {
           />
         )}
 
-        <button onClick={handleSubmit}>
+        <button onClick={handleSubmit} className="submitButton">
           {loading ? 'Sending...' : isRegistering ? "Register" : "Login"}
         </button>
       </form>

@@ -29,16 +29,19 @@ export default async function QuizzesPage() {
 
       {quizzes.length > 0 && (
         <section>
-          <ul>
-            {quizzes.map((quiz) => {
-              let quizForClient = JSON.parse(JSON.stringify(quiz))
-              return (
-                <li key={quiz._id}>
-                  <QuizDisplay quiz={quizForClient} canClientCheck={true}></QuizDisplay>
-                </li>
-              );
-            })}
-          </ul>
+          <div className='centeredContainer'>
+            <h3>Answer these questions</h3>
+            <ul>
+              {quizzes.map((quiz) => {
+                let quizForClient = JSON.parse(JSON.stringify(quiz))
+                return (
+                  <li key={quiz._id}>
+                    <QuizDisplay quiz={quizForClient} canClientCheck={true}></QuizDisplay>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </section>
       )}
 

@@ -3,7 +3,7 @@
 import { faAdd, faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState, useRef } from "react";
-import { TextArea, Label } from "../Input/Input";
+import { TextArea, Label } from "../form/Form";
 import SourceInput from "../source/sourceInput";
 import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./noteInput.module.css";
@@ -106,7 +106,7 @@ export default function NoteInput({ availableSources }) {
 
               {isSelectOpen && (
                 <div
-                  className={styles.sourcePicker}
+                  className={`${styles.sourcePicker} thinScroller`}
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
@@ -154,7 +154,7 @@ export default function NoteInput({ availableSources }) {
         </details>
       </div>
 
-      <button onClick={handleSubmit}>
+      <button onClick={handleSubmit} className="submitButton">
         {loading ? "Sending..." : "Submit Note"}
       </button>
     </div>

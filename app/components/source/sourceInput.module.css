@@ -1,3 +1,11 @@
+.form > div {
+    display: flex;
+}
+
+.form > div > div {
+    flex: 1;
+}
+
 .inputContainer {
     border-radius: 4px;
     margin-bottom: 20px;
@@ -41,4 +49,14 @@
 .chipGrid > li > div > svg {
     width: 14px;
     height: 14px;
+}
+
+@media (max-width: 1120px) {
+    .form > div {
+        display: block;
+    }
+
+    .form > button {
+        margin-top: 24px;
+    }
 }

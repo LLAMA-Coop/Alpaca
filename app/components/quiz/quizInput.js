@@ -1,13 +1,12 @@
 "use client";
-import makeUniqueId from "@/app/code/uniqueId";
-import { useEffect, useState, useRef } from "react";
-import Link from "next/link";
-import NoteInput from "../note/noteInput";
+
+import { Input, Label, ListItem } from "../form/Form";
 import SourceInput from "../source/sourceInput";
+import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./quizInput.module.css";
-import { Input, Label, ListItem } from "../Input/Input";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSubtract } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import NoteInput from "../note/noteInput";
+import Link from "next/link";
 
 export default function QuizInput({
   isEditing,
@@ -135,19 +134,6 @@ export default function QuizInput({
           value={prompt}
         />
 
-        <Label label="Correct Responses" />
-        <ul className="chipGrid">
-          {responses.map((res, index) => {
-            return (
-              <ListItem
-                onDelete={handleDeleteResponse(index)}
-                key={index}
-                item={res}
-              ></ListItem>
-            );
-          })}
-        </ul>
-
         <Input
           label="Add a correct response"
           onChange={(e) => setNewResponse(e.target.value)}
@@ -160,6 +146,23 @@ export default function QuizInput({
           required={responses.length === 0}
           onSubmit={handleAddResponse}
         />
+
+        <Label label="Correct Responses" />
+        <ul className="chipGrid">
+          {responses.map((res, index) => (
+            <ListItem
+              key={index}
+              item={res}
+              onDelete={handleDeleteResponse(index)}
+            />
+          ))}
+
+          {responses.length === 0 && (
+            <ListItem
+              item={'No responses added yet.'}
+            />
+          )}
+        </ul>
 
         {sources.length > 0 ? (
           <div>
@@ -273,7 +276,7 @@ export default function QuizInput({
           </div>
         </details>
 
-        <button onClick={handleSubmit}>
+        <button onClick={handleSubmit} className="submitButton">
           {loading ? "Sending..." : "Submit Quiz"}
         </button>
       </div>

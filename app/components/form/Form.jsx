@@ -24,12 +24,22 @@ export const Input = ({
   onBlur,
   onSubmit,
   onKeyUp,
+  disabled,
 }) => {
   return (
-    <div className={styles.inputContainer}>
+    <div className={styles.inputContainer}
+      style={{
+        opacity: disabled ? "0.3" : "",
+        cursor: disabled ? "not-allowed" : "",
+      }}
+    >
       {label && <Label required={required} error={error} label={label} />}
 
-      <div>
+      <div
+        style={{
+          pointerEvents: disabled ? "none" : "",
+        }}
+      >
         <input
           type={type || "text"}
           required={required}
@@ -55,14 +65,18 @@ export const Input = ({
 
 export const ListItem = ({ item, onDelete }) => {
   return (
-    <li className={styles.inputContainer}>
+    <li className={styles.listItem}>
       <div>
-        <span 
+        <span
           style={{
             padding: onDelete ? "0 44px 0 4px" : "",
-          }}>{item}</span>
+          }}
+        >
+          {item}
+        </span>
+
         {onDelete && (
-          <button className={styles.submitButton} onClick={onDelete}>
+          <button className={styles.action} onClick={onDelete}>
             <FontAwesomeIcon icon={faSubtract}></FontAwesomeIcon>
           </button>
         )}
@@ -85,6 +99,7 @@ export const TextArea = ({
       {label && <Label required={required} error={error} label={label} />}
 
       <textarea
+        className="thinScroller"
         required={required}
         onChange={onChange}
         onFocus={onFocus}

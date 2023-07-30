@@ -1,6 +1,7 @@
-.quiz {
-    background-color: aquamarine;
-    padding: 1rem;
-    max-width: 500px;
-    margin: 2rem;
+.quizCard {
+    padding: 16px;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    border: 1px solid var(--background-tertiary);
+    box-shadow: var(--boxshadow-light);
 }

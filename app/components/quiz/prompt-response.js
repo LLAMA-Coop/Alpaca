@@ -1,17 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
-import makeUniqueId from "@/app/code/uniqueId";
+
+
 import styles from "./quizDisplay.module.css"
+import { Input } from "../form/Form";
+import { useState } from "react";
 
 export default function PromptResponse({ canClientCheck, quiz }) {
-  let [userResponse, setUserResponse] = useState("");
-  let [responseStatus, setResponseStatus] = useState("empty");
-  let [responseCorrect, setResponseCorrect] = useState(false);
-
-  let [uniqueId, setUniqueId] = useState("");
-  useEffect(() => {
-    setUniqueId(makeUniqueId());
-  }, []);
+  const [userResponse, setUserResponse] = useState("");
+  const [responseStatus, setResponseStatus] = useState("empty");
+  const [responseCorrect, setResponseCorrect] = useState(false);
 
   function handleInput(e) {
     e.preventDefault();
@@ -21,26 +18,39 @@ export default function PromptResponse({ canClientCheck, quiz }) {
 
   function handleCheckAnswer() {
     setResponseStatus("complete");
-    let isCorrect = quiz.correctResponses.find(
+
+    const isCorrect = quiz.correctResponses.find(
       (x) => x.toLowerCase() === userResponse.toLowerCase()
     );
+
+    if (isCorrect) {
+      const party = new Particle('particles', { number: 200 });
+      party.start();
+
+      setTimeout(() => {
+        party.stop();
+      }, 10000);
+
+      const audio = new Audio("/assets/sounds/clap.wav");
+      audio.volume = 0.2;
+      audio.play();
+    }
     setResponseCorrect(isCorrect != undefined);
   }
 
   return (
-    <div className={styles.quiz}>
-      <p>{quiz.prompt}</p>
-      <label htmlFor={"response_" + uniqueId}>
-        Your Response
-        <input
-          id={"response_" + uniqueId}
-          type="text"
-          defaultValue={userResponse}
-          onChange={handleInput}
-        ></input>
-      </label>
-      
-      <button onClick={handleCheckAnswer}>Check Answer</button>
+    <div className={styles.quizCard}>
+      <h4>{quiz.prompt}</h4>
+
+      <Input
+        label='Your Response'
+        value={userResponse}
+        onChange={handleInput}
+      />
+
+      <div id="particles"></div>
+
+      <button onClick={handleCheckAnswer} className="submitButton">Check Answer</button>
 
       {responseCorrect && responseStatus === "complete" && <div>Correct!</div>}
       {!responseCorrect && responseStatus === "complete" && (
@@ -55,4 +65,57 @@ export default function PromptResponse({ canClientCheck, quiz }) {
       )}
     </div>
   );
+}
+
+class Particle {
+  constructor(id, opt) {
+    this.box = document.getElementById(id);
+    this.number = opt.number || 100;
+    this.colors = ['#ffca76', '#ffb9b9', '#fff180'];
+    this.width = opt.width || 15;
+    this.height = opt.height || 7;
+    this.duration = opt.duration || 6000;
+    this.delay = opt.delay || 200;
+  }
+
+  handleArrayParams(arr) {
+    return Array.isArray(arr) && arr.length > 0 && arr.every(el => el[0] === '#') ? arr : false;
+  }
+
+  getRandom(max, min = 0) {
+    min = Math.ceil(min);
+    max = Math.floor(max + 1);
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  getRange(num, range = 0.5) {
+    const symbol = Math.random() > 0.5 ? +1 : -1;
+    return num + this.getRandom(Math.floor(num * range)) * symbol;
+  }
+
+  start() {
+    for (let i = 0; i < this.number; i++) {
+      const temp = document.createElement('span');
+      temp.style.cssText += `
+        position: absolute;
+        z-index: 100;
+        transform-style: preserve-3d;
+        animation-timing-function: cubic-bezier(${this.getRandom(3) * 0.1}, 0, 1, 1);
+        animation-iteration-count: infinite;
+        width: ${this.getRange(this.width, 0.7)}px;
+        height: ${this.getRange(this.height, 0.7)}px;
+        top: -${this.width * 2}px;
+        left: calc(${this.getRandom(100)}% - ${this.width * 0.5}px);
+        background-color: ${this.colors[this.getRandom(this.colors.length - 1)]};
+        animation-name: fallen_${this.getRandom(5, 1)};
+        animation-duration: ${this.getRange(this.duration)}ms;
+        animation-delay: ${this.getRange(this.delay)}ms;
+       `;
+      this.box.append(temp);
+    }
+  }
+
+  stop() {
+    this.box.innerHTML = '';
+  }
 }
