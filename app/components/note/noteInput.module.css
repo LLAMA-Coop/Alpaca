@@ -13,36 +13,34 @@
     flex-wrap: wrap;
 }
 
-.chipGrid > li {
-    background-color: var(--accent-tertiary-1);
+.chipGrid > .addChip {
     font-size: 14px;
     font-weight: 400;
     border-radius: 4px;
     height: 28px;
     margin: 0 4px 4px 0;
-    padding: 8px 6px 8px 12px;
+    padding: 8px;
     display: flex;
     align-items: center;
     user-select: none;
-}
-
-.chipGrid > li.addChip {
     position: relative;
     cursor: pointer;
     background-color: var(--accent-tertiary-3);
 }
 
-.chipGrid > li > div:not(.sourcePicker) {
-    margin-left: 4px;
+.chipGrid > .addChip > div:not(.sourcePicker) {
+    margin-left: 8px;
+    margin-right: -4px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     border-radius: 4px;
-    padding: 3px;
+    width: 20px;
+    height: 20px;
 }
 
-.chipGrid > li > div:not(.sourcePicker):hover {
+.chipGrid > .addChip > div:not(.sourcePicker):hover {
     background-color: var(--accent-tertiary-2);
 }
 

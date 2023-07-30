@@ -19,38 +19,6 @@
     flex-wrap: wrap;
 }
 
-.chipGrid > li {
-    background-color: var(--accent-tertiary-1);
-    font-size: 14px;
-    font-weight: 400;
-    border-radius: 4px;
-    height: 28px;
-    margin: 0 4px 4px 0;
-    padding: 8px 6px 8px 12px;
-    display: flex;
-    align-items: center;
-    user-select: none;
-}
-
-.chipGrid > li > div {
-    margin-left: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 3px;
-}
-
-.chipGrid > li > div:hover {
-    background-color: var(--accent-tertiary-2);
-}
-
-.chipGrid > li > div > svg {
-    width: 14px;
-    height: 14px;
-}
-
 @media (max-width: 1120px) {
     .form > div {
         display: block;

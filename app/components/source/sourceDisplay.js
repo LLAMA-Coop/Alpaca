@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./sourceDisplay.module.css";
+import { ListItem } from "../form/Form";
 
 export default function SourceDisplay({ source }) {
   return (
@@ -15,13 +16,13 @@ export default function SourceDisplay({ source }) {
         <h5>Contributors</h5>
         {source.contributors.length > 0 ? (
           <ol className="chipGrid">
-            {source.contributors.map((cont, index) => {
-              let contDisp = cont;
-              if(/^http/.test(cont)){
-                contDisp = <Link href={cont}>Click here to see list of contributors</Link>
-              }
-              return <li key={cont + index.toString()}>{contDisp}</li>;
-            })}
+            {source.contributors.map((cont, index) => (
+              <ListItem
+                key={cont}
+                item={cont}
+                link={/^http/.test(cont) ? cont : null}
+              />
+            ))}
           </ol>
         ) : (
           <p>No contributors listed</p>

@@ -13,12 +13,19 @@ export default function QuizInput({
   availableSources,
   availableNotes,
 }) {
-  let [type, setType] = useState("prompt-response");
-  let [prompt, setPrompt] = useState("");
-  let [responses, setResponses] = useState([]);
-  let [newResponse, setNewResponse] = useState("");
-  let [sources, setSources] = useState([]);
-  let [notes, setNotes] = useState([]);
+  const [type, setType] = useState("prompt-response");
+  const [typeError, setTypeError] = useState('');
+
+  const [prompt, setPrompt] = useState("");
+  const [promptError, setPromptError] = useState('');
+
+  const [responses, setResponses] = useState([]);
+  const [newResponse, setNewResponse] = useState("");
+  const [responsesError, setResponsesError] = useState('');
+
+  const [sources, setSources] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [sourcesError, setSourcesError] = useState('');
 
   const [loading, setLoading] = useState(false);
 
@@ -32,21 +39,25 @@ export default function QuizInput({
     // Will need to have an error modal and validation state
     let cannotSend = false;
     if (type === "") {
-      console.error("Need a 'type'");
+      setTypeError("Invalid type selected");
       cannotSend = true;
     }
+
     if (prompt === "") {
-      console.error("Need a 'prompt'");
+      setPromptError("Prompt cannot be empty");
       cannotSend = true;
     }
+
     if (responses.length === 0) {
-      console.error("Need at least one response");
+      setResponsesError("Need at least one correct response")
       cannotSend = true;
     }
+
     if (sources.length === 0 && notes.length === 0) {
-      console.error("Need at least one note or source");
+      setSourcesError("Need at least one note or source");
       cannotSend = true;
     }
+
     if (cannotSend) {
       return;
     }
@@ -80,12 +91,16 @@ export default function QuizInput({
 
   function handleAddResponse(e) {
     e.preventDefault();
+
     let answer = newResponse.trim();
-    if (responses.indexOf(answer) !== -1) {
+
+    if (!answer || responses.indexOf(answer) !== -1) {
       return;
     }
+
     setResponses([...responses, answer]);
     setNewResponse("");
+    setResponsesError("");
   }
 
   function handleDeleteResponse(index) {
@@ -107,62 +122,64 @@ export default function QuizInput({
     <div className="centeredContainer">
       <h3>Add new quiz card</h3>
       <div className={styles.form}>
-        <div className={styles.inputContainer}>
-          <Label label="Type" />
+        <div className={styles.flexContainer}>
+          <div>
+            <Input
+              type={"select"}
+              choices={types}
+              required={true}
+              label="Type"
+              value={type}
+              error={typeError}
+              onChange={(e) => setType(e.target.value)}
+            />
 
-          <select
-            id={"type_" + uniqueId}
-            defaultValue={type}
-            onChange={(e) => {
-              setType(e.target.value);
-            }}
-          >
-            {types.map((t) => {
-              return (
-                <option key={t.value} value={t.value}>
-                  {t.label}
-                </option>
-              );
-            })}
-          </select>
+            <Input
+              required={true}
+              label="Prompt"
+              value={prompt}
+              error={promptError}
+              onChange={(e) => {
+                setPrompt(e.target.value);
+                setPromptError("");
+              }}
+            />
+          </div>
+
+          <div>
+            <Input
+              label="Add a correct response"
+              value={newResponse}
+              required={responses.length === 0}
+              onSubmit={handleAddResponse}
+              error={responsesError}
+              onChange={(e) => setNewResponse(e.target.value)}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  handleAddResponse(e);
+                }
+              }}
+            />
+
+            <Label label="Correct Responses" />
+            <ul className="chipGrid">
+              {responses.map((res, index) => (
+                <ListItem
+                  key={index}
+                  item={res}
+                  actionType={"delete"}
+                  action={handleDeleteResponse(index)}
+                />
+              ))}
+
+              {responses.length === 0 && (
+                <ListItem
+                  item={'No responses added yet.'}
+                />
+              )}
+            </ul>
+          </div>
         </div>
-
-        <Input
-          required={true}
-          label="Prompt"
-          onChange={(e) => setPrompt(e.target.value)}
-          value={prompt}
-        />
-
-        <Input
-          label="Add a correct response"
-          onChange={(e) => setNewResponse(e.target.value)}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              handleAddResponse(e);
-            }
-          }}
-          value={newResponse}
-          required={responses.length === 0}
-          onSubmit={handleAddResponse}
-        />
-
-        <Label label="Correct Responses" />
-        <ul className="chipGrid">
-          {responses.map((res, index) => (
-            <ListItem
-              key={index}
-              item={res}
-              onDelete={handleDeleteResponse(index)}
-            />
-          ))}
-
-          {responses.length === 0 && (
-            <ListItem
-              item={'No responses added yet.'}
-            />
-          )}
-        </ul>
 
         {sources.length > 0 ? (
           <div>

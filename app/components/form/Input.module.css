@@ -30,7 +30,8 @@
     background-color: var(--background-primary);
 }
 
-.inputContainer > div:not(.labelContainer) > input {
+.inputContainer > div:not(.labelContainer) > input,
+.inputContainer > div:not(.labelContainer) > select {
     width: 100%;
     height: 100%;
     border: none;
@@ -93,7 +94,7 @@
     font-size: 14px;
     font-weight: 400;
     border-radius: 4px;
-    height: 24px;
+    height: 28px;
     margin: 0 4px 4px 0;
     padding: 8px;
     display: flex;
@@ -104,6 +105,33 @@
     text-overflow: ellipsis;
 }
 
-.listItem > .action {
-    background-color: red;
+.listItem > .itemContent {
+    display: flex;
+    align-items: center;
+}
+
+a.listItem {
+    cursor: pointer;
+}
+
+.listItem > .itemContent > .action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    margin-right: -4px;
+    border-radius: 2px;
+    cursor: pointer;
+    background-color: var(--accent-tertiary-2);
+}
+
+.listItem > .itemContent > .action:hover {
+    background-color: var(--accent-tertiary-3);
+}
+
+.listItem > .itemContent > .action > svg {
+    width: 12px;
+    height: 12px;
 }

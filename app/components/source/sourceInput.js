@@ -3,7 +3,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import styles from "./sourceInput.module.css";
-import { Input, Label } from "../form/Form";
+import { Input, Label, ListItem } from "../form/Form";
 import { useState, useEffect } from "react";
 
 export default function SourceInput() {
@@ -37,7 +37,7 @@ export default function SourceInput() {
 
   function handleAddContributor(e) {
     e.preventDefault();
-    if (!newContributor) return;
+    if (!newContributor || contributors.includes(newContributor)) return;
     setContributors([...contributors, newContributor]);
     setNewContributor("");
   }
@@ -121,58 +121,58 @@ export default function SourceInput() {
             <Input
               required={true}
               label={"Title"}
+              value={title}
+              error={titleError}
               onChange={(e) => {
                 setTitle(e.target.value);
                 setTitleError("");
               }}
-              value={title}
-              error={titleError}
             />
 
             <Input
               required={true}
               label={"Medium"}
+              value={medium}
+              error={mediumError}
               onChange={(e) => {
                 setMedium(e.target.value);
                 setMediumError("");
               }}
-              value={medium}
-              error={mediumError}
             />
 
             <Input
               required={true}
               label={"URL of Source"}
+              value={url}
+              error={urlError}
               onChange={(e) => {
                 setUrl(e.target.value);
                 setUrlError("");
               }}
-              value={url}
-              error={urlError}
             />
 
             <Input
+              type="date"
               label={"Last Accessed"}
+              value={lastAccessed}
+              error={lastAccessedError}
               onChange={(e) => {
                 setLastAccessed(e.target.value);
                 setLastAccessedError("");
               }}
-              value={lastAccessed}
-              type="date"
-              error={lastAccessedError}
             />
           </div>
 
           <div>
             <Input
+              type="date"
               label={"Published"}
+              value={publishDate}
+              error={publishDateError}
               onChange={(e) => {
                 setPublishDate(e.target.value);
                 setPublishDateError("");
               }}
-              value={publishDate}
-              type="date"
-              error={publishDateError}
             />
 
             <Input
@@ -180,32 +180,26 @@ export default function SourceInput() {
               value={newContributor}
               onChange={(e) => setNewContributor(e.target.value)}
               onSubmit={handleAddContributor}
-              disabled={true}
             />
 
             <Label label='Contributors' />
 
             <ul className={styles.chipGrid}>
               {contributors.length === 0 && (
-                <li>
-                  No Contributors
-                </li>
+                <ListItem item='No Contributors Added' />
               )}
 
-              {contributors.map((cont, index) => (
-                <li key={index}>
-                  {cont}
-
-                  <div
-                    onClick={() => {
-                      setContributors(
-                        contributors.filter((_, i) => i !== index)
-                      );
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faClose} />
-                  </div>
-                </li>
+              {contributors.map((cont) => (
+                <ListItem
+                  key={cont}
+                  item={cont}
+                  action={() => {
+                    setContributors(
+                      contributors.filter((name) => cont !== name)
+                    );
+                  }}
+                  actionType={"delete"}
+                />
               ))}
             </ul>
           </div>

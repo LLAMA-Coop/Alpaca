@@ -3,7 +3,7 @@
 import { faAdd, faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState, useRef } from "react";
-import { TextArea, Label } from "../form/Form";
+import { TextArea, Label, ListItem } from "../form/Form";
 import SourceInput from "../source/sourceInput";
 import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./noteInput.module.css";
@@ -133,17 +133,13 @@ export default function NoteInput({ availableSources }) {
             </li>
 
             {sources.length > 0 && sources.map((src) => (
-              <li key={src._id}>
-                <Link href={src.url} target="_blank">{src.title}</Link>
-
-                <div
-                  onClick={() => {
-                    setSources(sources.filter((x) => x._id !== src._id));
-                  }}
-                >
-                  <FontAwesomeIcon icon={faClose} />
-                </div>
-              </li>
+              <ListItem
+                key={src._id}
+                link={src.url}
+                item={src.title}
+                action={() => setSources(sources.filter((x) => x._id !== src._id))}
+                actionType={'delete'}
+              />
             ))}
           </ol>
         </div>

@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Input.module.css";
-import { faAdd, faSubtract } from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faArrowRight, faSubtract } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 export const Label = ({ required, error, label }) => {
   return (
@@ -15,6 +16,7 @@ export const Label = ({ required, error, label }) => {
 
 export const Input = ({
   type,
+  choices,
   required,
   onChange,
   value,
@@ -40,18 +42,34 @@ export const Input = ({
           pointerEvents: disabled ? "none" : "",
         }}
       >
-        <input
-          type={type || "text"}
-          required={required}
-          onChange={onChange}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          onKeyUp={onKeyUp}
-          value={value || ""}
-          style={{
-            paddingRight: onSubmit ? "44px" : "",
-          }}
-        />
+        {type === "select" && choices ? (
+          <select
+            required={required}
+            onChange={onChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            value={value || ""}
+          >
+            {choices.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type={type || "text"}
+            required={required}
+            onChange={onChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            onKeyUp={onKeyUp}
+            value={value || ""}
+            style={{
+              paddingRight: onSubmit ? "44px" : "",
+            }}
+          />
+        )}
 
         {onSubmit && (
           <button className={styles.submitButton} onClick={(e) => onSubmit(e)}>
@@ -60,28 +78,6 @@ export const Input = ({
         )}
       </div>
     </div>
-  );
-};
-
-export const ListItem = ({ item, onDelete }) => {
-  return (
-    <li className={styles.listItem}>
-      <div>
-        <span
-          style={{
-            padding: onDelete ? "0 44px 0 4px" : "",
-          }}
-        >
-          {item}
-        </span>
-
-        {onDelete && (
-          <button className={styles.action} onClick={onDelete}>
-            <FontAwesomeIcon icon={faSubtract}></FontAwesomeIcon>
-          </button>
-        )}
-      </div>
-    </li>
   );
 };
 
@@ -107,5 +103,44 @@ export const TextArea = ({
         value={value || ""}
       />
     </div>
+  );
+};
+
+export const ListItem = ({ item, action, actionType, link }) => {
+  const content = (
+    <div className={styles.itemContent}>
+      <span>
+        {item}
+      </span>
+
+      {action && (
+        <button className={styles.action} onClick={(e) => {
+          e.preventDefault();
+          action();
+        }}>
+          <FontAwesomeIcon icon={actionType === "add" ? faAdd : faSubtract} />
+        </button>
+      )}
+
+      {link && !action && (
+        <button className={styles.action} onClick={action}>
+          <FontAwesomeIcon icon={faArrowRight} />
+        </button>
+      )}
+    </div>
+  );
+
+  if (link) return (
+    <li>
+      <Link href={link} target="_blank" className={styles.listItem}>
+        {content}
+      </Link>
+    </li>
+  );
+
+  return (
+    <li className={styles.listItem}>
+      {content}
+    </li>
   );
 };
