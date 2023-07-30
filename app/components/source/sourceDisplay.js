@@ -19,7 +19,7 @@ export default function SourceDisplay({ source }) {
             {source.contributors.map((cont, index) => (
               <ListItem
                 key={cont}
-                item={cont}
+                item={/^http/.test(cont) ? 'See all of the contributors' : cont}
                 link={/^http/.test(cont) ? cont : null}
               />
             ))}

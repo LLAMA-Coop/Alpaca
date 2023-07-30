@@ -94,7 +94,7 @@ export default function QuizInput({
 
     let answer = newResponse.trim();
 
-    if (!answer || responses.indexOf(answer) !== -1) {
+    if (!answer || responses.includes(answer)) {
       return;
     }
 
@@ -104,13 +104,10 @@ export default function QuizInput({
   }
 
   function handleDeleteResponse(index) {
-    return function (event) {
-      event.preventDefault();
-      setResponses([
-        ...responses.slice(0, index),
-        ...responses.slice(index + 1),
-      ]);
-    };
+    setResponses([
+      ...responses.slice(0, index),
+      ...responses.slice(index + 1),
+    ]);
   }
 
   const types = [
@@ -163,12 +160,12 @@ export default function QuizInput({
 
             <Label label="Correct Responses" />
             <ul className="chipGrid">
-              {responses.map((res, index) => (
+              {responses.map((res) => (
                 <ListItem
-                  key={index}
+                  key={res}
                   item={res}
                   actionType={"delete"}
-                  action={handleDeleteResponse(index)}
+                  action={() => setResponses(prev => prev.filter(x => x !== res))}
                 />
               ))}
 
