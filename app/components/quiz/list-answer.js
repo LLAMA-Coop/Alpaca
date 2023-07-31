@@ -49,8 +49,8 @@ export default function ListAnswer({ canClientCheck, quiz, isOrdered }) {
   }
 
   return (
-    <div className={styles.quiz}>
-      <p id="prompt">{quiz.prompt}</p>
+    <div className={styles.quizCard}>
+      <h4 id="prompt">{quiz.prompt}</h4>
       <ul>
         {quiz.correctResponses.map((ans, index) => {
           return (
