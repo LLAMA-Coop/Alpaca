@@ -111,8 +111,7 @@ export default function NoteInput({ availableSources }) {
                     e.stopPropagation();
                   }}
                 >
-                  {availableSources.map((src) =>
-                  (
+                  {availableSources.map((src) => (
                     <div
                       className={sources.find((x) => x._id === src._id) ? styles.selected : ""}
                       key={src._id}
@@ -128,6 +127,14 @@ export default function NoteInput({ availableSources }) {
                       {src.title}
                     </div>
                   ))}
+
+                  {availableSources.length === 0 && (
+                    <div className={styles.noSources}>
+                      <p>
+                        You have no sources
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </li>

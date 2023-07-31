@@ -42,6 +42,10 @@
     background-color: transparent;
 }
 
+.inputContainer > div:not(.labelContainer) > select {
+    border-right: 10px solid transparent;
+}
+
 .inputContainer > div > .submitButton {
     position: absolute;
     right: 0;

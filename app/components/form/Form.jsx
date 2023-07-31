@@ -1,6 +1,6 @@
+import { faAdd, faArrowRight, faSubtract } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Input.module.css";
-import { faAdd, faArrowRight, faSubtract } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
 export const Label = ({ required, error, label }) => {
@@ -26,7 +26,9 @@ export const Input = ({
   onBlur,
   onSubmit,
   onKeyUp,
+  onEnter,
   disabled,
+  outlineColor,
 }) => {
   return (
     <div className={styles.inputContainer}
@@ -49,6 +51,13 @@ export const Input = ({
             onFocus={onFocus}
             onBlur={onBlur}
             value={value || ""}
+            style={{
+              outlineColor: outlineColor || "",
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && onSubmit) onSubmit(e);
+              if (e.key === "Enter" && onEnter) onEnter(e);
+            }}
           >
             {choices.map((t) => (
               <option key={t.value} value={t.value}>
@@ -67,6 +76,11 @@ export const Input = ({
             value={value || ""}
             style={{
               paddingRight: onSubmit ? "44px" : "",
+              outlineColor: outlineColor || "",
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && onSubmit) onSubmit(e);
+              if (e.key === "Enter" && onEnter) onEnter(e);
             }}
           />
         )}

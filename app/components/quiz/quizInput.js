@@ -23,6 +23,10 @@ export default function QuizInput({
   const [newResponse, setNewResponse] = useState("");
   const [responsesError, setResponsesError] = useState('');
 
+  const [choices, setChoices] = useState([]);
+  const [newChoice, setNewChoice] = useState("");
+  const [choicesError, setChoicesError] = useState('');
+
   const [sources, setSources] = useState([]);
   const [notes, setNotes] = useState([]);
   const [sourcesError, setSourcesError] = useState('');
@@ -34,11 +38,16 @@ export default function QuizInput({
     setUniqueId(makeUniqueId());
   }, []);
 
+  const types = [
+    { label: "Prompt/Response", value: "prompt-response" },
+    { label: "Multiple Choice", value: "multiple-choice" },
+  ];
+
   async function handleSubmit(e) {
     e.preventDefault();
-    // Will need to have an error modal and validation state
+
     let cannotSend = false;
-    if (type === "") {
+    if (!types.find((x) => x.value === type)) {
       setTypeError("Invalid type selected");
       cannotSend = true;
     }
@@ -58,41 +67,62 @@ export default function QuizInput({
       cannotSend = true;
     }
 
+    if (type === "multiple-choice" && choices.length === 0) {
+      setChoicesError("Need at least one choice");
+      cannotSend = true;
+    }
+
     if (cannotSend) {
       return;
     }
 
-    let quiz = {
-      type,
-      prompt,
+    const quiz = {
+      type: type,
+      prompt: prompt,
+      choices: choices,
       correctResponses: responses,
     };
-    if (sources.length > 0) {
-      quiz.sources = sources;
-    }
-    if (notes.length > 0) {
-      quiz.notes = notes;
-    }
+
+    quiz.sources = sources;
+    quiz.notes = notes;
 
     setLoading(true);
 
-    let response = await fetch("./api/quiz", {
+    const response = await fetch("/api/quiz", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(quiz),
-    });
+    }).then((res) => res.json());
+
+    console.log(response);
+
+    setType("prompt-response");
+    setTypeError('');
+
+    setPrompt("");
+    setPromptError('');
+
+    setResponses([]);
+    setNewResponse("");
+    setResponsesError('');
+
+    setChoices([]);
+    setNewChoice("");
+    setChoicesError('');
+
+    setSources([]);
+    setNotes([]);
+    setSourcesError('');
 
     setLoading(false);
-
-    console.log(await response.json());
   }
 
   function handleAddResponse(e) {
     e.preventDefault();
 
-    let answer = newResponse.trim();
+    const answer = newResponse.trim();
 
     if (!answer || responses.includes(answer)) {
       return;
@@ -103,17 +133,19 @@ export default function QuizInput({
     setResponsesError("");
   }
 
-  function handleDeleteResponse(index) {
-    setResponses([
-      ...responses.slice(0, index),
-      ...responses.slice(index + 1),
-    ]);
-  }
+  function handleAddChoice(e) {
+    e.preventDefault();
 
-  const types = [
-    { label: "Prompt/Response", value: "prompt-response" },
-    { label: "Multiple Choice", value: "multiple-choice" },
-  ];
+    const choice = newChoice.trim();
+
+    if (!choice || choices.includes(choice)) {
+      return;
+    }
+
+    setChoices([...choices, choice]);
+    setNewChoice("");
+    setChoicesError("");
+  }
 
   return (
     <div className="centeredContainer">
@@ -141,6 +173,42 @@ export default function QuizInput({
                 setPromptError("");
               }}
             />
+
+            {type === "multiple-choice" && (
+              <>
+                <Input
+                  label="Add a choice"
+                  value={newChoice}
+                  required={choices.length < 1}
+                  onSubmit={handleAddChoice}
+                  error={choicesError}
+                  onChange={(e) => setNewChoice(e.target.value)}
+                  onKeyUp={(e) => {
+                    if (e.key === "Enter") {
+                      handleAddChoice(e);
+                    }
+                  }}
+                />
+
+                <Label label="Choices" />
+                <ul className="chipGrid">
+                  {choices.map((res) => (
+                    <ListItem
+                      key={res}
+                      item={res}
+                      actionType={"delete"}
+                      action={() => setChoices(prev => prev.filter(x => x !== res))}
+                    />
+                  ))}
+
+                  {choices.length === 0 && (
+                    <ListItem
+                      item={'No responses added yet'}
+                    />
+                  )}
+                </ul>
+              </>
+            )}
           </div>
 
           <div>
@@ -171,7 +239,7 @@ export default function QuizInput({
 
               {responses.length === 0 && (
                 <ListItem
-                  item={'No responses added yet.'}
+                  item={'No responses added yet'}
                 />
               )}
             </ul>

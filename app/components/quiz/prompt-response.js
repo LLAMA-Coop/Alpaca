@@ -1,121 +1,113 @@
 "use client";
 
-
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./quizDisplay.module.css"
+import confetti from 'canvas-confetti';
 import { Input } from "../form/Form";
 import { useState } from "react";
 
 export default function PromptResponse({ canClientCheck, quiz }) {
   const [userResponse, setUserResponse] = useState("");
-  const [responseStatus, setResponseStatus] = useState("empty");
-  const [responseCorrect, setResponseCorrect] = useState(false);
+  const [hasAnswered, setHasAnswered] = useState(false);
+  const [correctAnswer, setCorrectAnswer] = useState(false);
+  const [failures, setFailures] = useState(0);
 
   function handleInput(e) {
     e.preventDefault();
-    setResponseStatus("incomplete");
+    setHasAnswered(false);
     setUserResponse(e.target.value);
   }
 
   function handleCheckAnswer() {
-    setResponseStatus("complete");
+    if (hasAnswered) return;
 
     const isCorrect = quiz.correctResponses.find(
       (x) => x.toLowerCase() === userResponse.toLowerCase()
     );
 
     if (isCorrect) {
-      const party = new Particle('particles', { number: 200 });
-      party.start();
+      setFailures(0);
 
-      setTimeout(() => {
-        party.stop();
-      }, 10000);
+      const duration = 5 * 1000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+      function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      const interval = setInterval(function () {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        // since particles fall down, start a bit higher than random
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+      }, 250);
 
       const audio = new Audio("/assets/sounds/clap.wav");
       audio.volume = 0.2;
       audio.play();
+    } else {
+      setFailures(failures + 1);
     }
-    setResponseCorrect(isCorrect != undefined);
+
+    setCorrectAnswer(isCorrect != undefined);
+    setHasAnswered(true);
   }
 
   return (
-    <div className={styles.quizCard}>
+    <div
+      className={styles.quizCard}
+      style={{
+        borderColor: hasAnswered ? correctAnswer ? "var(--accent-tertiary-1)" : "var(--accent-secondary-1)" : '',
+      }}
+    >
       <h4>{quiz.prompt}</h4>
 
       <Input
         label='Your Response'
         value={userResponse}
         onChange={handleInput}
+        onEnter={handleCheckAnswer}
+        outlineColor={hasAnswered && (correctAnswer ? "var(--accent-tertiary-1)" : "var(--accent-secondary-1)")}
       />
 
       <div id="particles"></div>
 
-      <button onClick={handleCheckAnswer} className="submitButton">Check Answer</button>
+      <button
+        onClick={handleCheckAnswer}
+        className={`submitButton ${hasAnswered && (correctAnswer ? 'green icon' : 'red icon')}`}
+      >
+        {hasAnswered ? correctAnswer ? (
+          <>
+            {"Correct"}
+            <FontAwesomeIcon icon={faCheck} />
+          </>
+        ) : (
+          <>
+            {"Incorrect"}
+            <FontAwesomeIcon icon={faXmark} />
+          </>
+        ) : "Check Answer"}
 
-      {responseCorrect && responseStatus === "complete" && <div>Correct!</div>}
-      {!responseCorrect && responseStatus === "complete" && (
+      </button>
+
+      {!correctAnswer && failures > 2 && (
         <div>
-          Incorrect. Acceptable answers are
+          <p>You're having some trouble. Here are some hints:</p>
           <ul>
-            {quiz.correctResponses.map((ans) => {
-              return <li key={ans}>{ans}</li>;
-            })}
+            {quiz.correctResponses.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
           </ul>
         </div>
       )}
     </div>
   );
-}
-
-class Particle {
-  constructor(id, opt) {
-    this.box = document.getElementById(id);
-    this.number = opt.number || 100;
-    this.colors = ['#ffca76', '#ffb9b9', '#fff180'];
-    this.width = opt.width || 15;
-    this.height = opt.height || 7;
-    this.duration = opt.duration || 6000;
-    this.delay = opt.delay || 200;
-  }
-
-  handleArrayParams(arr) {
-    return Array.isArray(arr) && arr.length > 0 && arr.every(el => el[0] === '#') ? arr : false;
-  }
-
-  getRandom(max, min = 0) {
-    min = Math.ceil(min);
-    max = Math.floor(max + 1);
-    return Math.floor(Math.random() * (max - min)) + min;
-  }
-
-  getRange(num, range = 0.5) {
-    const symbol = Math.random() > 0.5 ? +1 : -1;
-    return num + this.getRandom(Math.floor(num * range)) * symbol;
-  }
-
-  start() {
-    for (let i = 0; i < this.number; i++) {
-      const temp = document.createElement('span');
-      temp.style.cssText += `
-        position: absolute;
-        z-index: 100;
-        transform-style: preserve-3d;
-        animation-timing-function: cubic-bezier(${this.getRandom(3) * 0.1}, 0, 1, 1);
-        animation-iteration-count: infinite;
-        width: ${this.getRange(this.width, 0.7)}px;
-        height: ${this.getRange(this.height, 0.7)}px;
-        top: -${this.width * 2}px;
-        left: calc(${this.getRandom(100)}% - ${this.width * 0.5}px);
-        background-color: ${this.colors[this.getRandom(this.colors.length - 1)]};
-        animation-name: fallen_${this.getRandom(5, 1)};
-        animation-duration: ${this.getRange(this.duration)}ms;
-        animation-delay: ${this.getRange(this.delay)}ms;
-       `;
-      this.box.append(temp);
-    }
-  }
-
-  stop() {
-    this.box.innerHTML = '';
-  }
 }

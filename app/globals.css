@@ -92,12 +92,40 @@ button {
     transition: background-color 0.2s ease-in-out;
 }
 
+.submitButton.icon {
+    gap: 8px;
+}
+
 .submitButton:hover {
     background-color: var(--accent-primary-2);
 }
 
 .submitButton:active {
     background-color: var(--accent-primary-3);
+}
+
+.submitButton.green {
+    background-color: var(--accent-tertiary-1);
+}
+
+.submitButton.green:hover {
+    background-color: var(--accent-tertiary-2);
+}
+
+.submitButton.green:active {
+    background-color: var(--accent-tertiary-3);
+}
+
+.submitButton.red {
+    background-color: var(--accent-secondary-1);
+}
+
+.submitButton.red:hover {
+    background-color: var(--accent-secondary-2);
+}
+
+.submitButton.red:active {
+    background-color: var(--accent-secondary-3);
 }
 
 select {
