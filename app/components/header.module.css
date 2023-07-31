@@ -49,6 +49,7 @@
 
 .header li > a:hover > span {
     background-color: var(--accent-primary-3);
+    color: var(--text-for-accent-background);
 }
 
 .header svg {

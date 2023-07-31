@@ -28,6 +28,8 @@
     --accent-tertiary-3: hsl(164, 86%, 16%);
     --accent-tertiary-light: hsl(160, 84%, 39%);
 
+    --text-for-accent-background: white;
+
     --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
     --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
     --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
@@ -61,7 +63,7 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    background-color: var(--background-primary);
+    background-color: var(--text-for-accent-background);
     color: var(--foreground-primary);
     font-size: 16px;
 }
@@ -89,6 +91,7 @@ button {
     height: 32px;
     user-select: none;
     background-color: var(--accent-primary-1);
+    color: var(--text-for-accent-background);
     transition: background-color 0.2s ease-in-out;
 }
 
@@ -98,34 +101,42 @@ button {
 
 .submitButton:hover {
     background-color: var(--accent-primary-2);
+    color: var(--text-for-accent-background);
 }
 
 .submitButton:active {
     background-color: var(--accent-primary-3);
+    color: var(--text-for-accent-background);
 }
 
 .submitButton.green {
     background-color: var(--accent-tertiary-1);
+    color: var(--text-for-accent-background);
 }
 
 .submitButton.green:hover {
     background-color: var(--accent-tertiary-2);
+    color: var(--text-for-accent-background);
 }
 
 .submitButton.green:active {
     background-color: var(--accent-tertiary-3);
+    color: var(--text-for-accent-background);
 }
 
 .submitButton.red {
     background-color: var(--accent-secondary-1);
+    color: var(--text-for-accent-background);
 }
 
 .submitButton.red:hover {
     background-color: var(--accent-secondary-2);
+    color: var(--text-for-accent-background);
 }
 
 .submitButton.red:active {
     background-color: var(--accent-secondary-3);
+    color: var(--text-for-accent-background);
 }
 
 select {
@@ -183,6 +194,7 @@ input[type='date'] {
 
 .thinScroller::-webkit-scrollbar-thumb {
     background: var(--accent-primary-1);
+    color: var(--text-for-accent-background);
     border: 3px solid var(--background-primary);
     border-radius: 100vw;
 }
