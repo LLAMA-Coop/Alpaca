@@ -1,12 +1,16 @@
-import { faAdd, faArrowRight, faSubtract } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAdd,
+  faArrowRight,
+  faSubtract,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Input.module.css";
 import Link from "next/link";
 
-export const Label = ({ required, error, label }) => {
+export const Label = ({ required, error, label, htmlFor }) => {
   return (
     <div className={styles.labelContainer}>
-      <label>
+      <label htmlFor={htmlFor}>
         {label} {required && <span>*</span>}
       </label>
       {error && <span>{error}</span>}
@@ -15,6 +19,7 @@ export const Label = ({ required, error, label }) => {
 };
 
 export const Input = ({
+  id,
   type,
   choices,
   required,
@@ -31,13 +36,16 @@ export const Input = ({
   outlineColor,
 }) => {
   return (
-    <div className={styles.inputContainer}
+    <div
+      className={styles.inputContainer}
       style={{
         opacity: disabled ? "0.3" : "",
         cursor: disabled ? "not-allowed" : "",
       }}
     >
-      {label && <Label required={required} error={error} label={label} />}
+      {label && (
+        <Label required={required} error={error} label={label} htmlFor={id} />
+      )}
 
       <div
         style={{
@@ -67,6 +75,7 @@ export const Input = ({
           </select>
         ) : (
           <input
+            id={id}
             type={type || "text"}
             required={required}
             onChange={onChange}
@@ -86,7 +95,11 @@ export const Input = ({
         )}
 
         {onSubmit && (
-          <button className={styles.submitButton} onClick={(e) => onSubmit(e)}>
+          <button
+            className={styles.submitButton}
+            onClick={(e) => onSubmit(e)}
+            title={label}
+          >
             <FontAwesomeIcon icon={faAdd} />
           </button>
         )}
@@ -96,6 +109,7 @@ export const Input = ({
 };
 
 export const TextArea = ({
+  id,
   required,
   onChange,
   value,
@@ -106,9 +120,10 @@ export const TextArea = ({
 }) => {
   return (
     <div className={styles.inputContainer}>
-      {label && <Label required={required} error={error} label={label} />}
+      {label && <Label required={required} error={error} label={label} htmlFor={id} />}
 
       <textarea
+        id={id}
         className="thinScroller"
         required={required}
         onChange={onChange}
@@ -121,40 +136,47 @@ export const TextArea = ({
 };
 
 export const ListItem = ({ item, action, actionType, link }) => {
+  let label;
+  if (actionType === "add") {
+    label = "Add item";
+  }
+  if (actionType === "delete") {
+    label = "Delete item";
+  }
+
   const content = (
     <div className={styles.itemContent}>
-      <span>
-        {item}
-      </span>
+      <span>{item}</span>
 
       {action && (
-        <button className={styles.action} onClick={(e) => {
-          e.preventDefault();
-          action();
-        }}>
+        <button
+          className={styles.action}
+          title={label}
+          onClick={(e) => {
+            e.preventDefault();
+            action();
+          }}
+        >
           <FontAwesomeIcon icon={actionType === "add" ? faAdd : faSubtract} />
         </button>
       )}
 
       {link && !action && (
-        <button className={styles.action} onClick={action}>
+        <button className={styles.action} title={label} onClick={action}>
           <FontAwesomeIcon icon={faArrowRight} />
         </button>
       )}
     </div>
   );
 
-  if (link) return (
-    <li>
-      <Link href={link} target="_blank" className={styles.listItem}>
-        {content}
-      </Link>
-    </li>
-  );
+  if (link)
+    return (
+      <li>
+        <Link href={link} target="_blank" className={styles.listItem}>
+          {content}
+        </Link>
+      </li>
+    );
 
-  return (
-    <li className={styles.listItem}>
-      {content}
-    </li>
-  );
+  return <li className={styles.listItem}>{content}</li>;
 };
