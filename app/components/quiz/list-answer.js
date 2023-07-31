@@ -67,7 +67,7 @@ export default function ListAnswer({ canClientCheck, quiz, isOrdered }) {
         })}
       </ul>
 
-      <button onClick={handleCheckAnswer}>Check Answer</button>
+      <button onClick={handleCheckAnswer} className="submitButton">Check Answer</button>
 
       {responseCorrect && responseStatus === "complete" && <div>Correct!</div>}
       {!responseCorrect && responseStatus === "complete" && (

@@ -3,7 +3,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import styles from "./sourceInput.module.css";
-import { Input, Label } from "../Input/Input";
+import { Input, Label, ListItem } from "../form/Form";
 import { useState, useEffect } from "react";
 
 export default function SourceInput() {
@@ -37,7 +37,7 @@ export default function SourceInput() {
 
   function handleAddContributor(e) {
     e.preventDefault();
-    if (!newContributor) return;
+    if (!newContributor || contributors.includes(newContributor)) return;
     setContributors([...contributors, newContributor]);
     setNewContributor("");
   }
@@ -116,89 +116,96 @@ export default function SourceInput() {
     <div className='centeredContainer'>
       <h3>Add Source</h3>
       <form className={styles.form}>
-        <Input
-          required={true}
-          label={"Title"}
-          onChange={(e) => {
-            setTitle(e.target.value);
-            setTitleError("");
-          }}
-          value={title}
-          error={titleError}
-        />
+        <div>
+          <div>
+            <Input
+              required={true}
+              label={"Title"}
+              value={title}
+              error={titleError}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setTitleError("");
+              }}
+            />
 
-        <Input
-          required={true}
-          label={"Medium"}
-          onChange={(e) => {
-            setMedium(e.target.value);
-            setMediumError("");
-          }}
-          value={medium}
-          error={mediumError}
-        />
+            <Input
+              required={true}
+              label={"Medium"}
+              value={medium}
+              error={mediumError}
+              onChange={(e) => {
+                setMedium(e.target.value);
+                setMediumError("");
+              }}
+            />
 
-        <Input
-          required={true}
-          label={"URL of Source"}
-          onChange={(e) => {
-            setUrl(e.target.value);
-            setUrlError("");
-          }}
-          value={url}
-          error={urlError}
-        />
+            <Input
+              required={true}
+              label={"URL of Source"}
+              value={url}
+              error={urlError}
+              onChange={(e) => {
+                setUrl(e.target.value);
+                setUrlError("");
+              }}
+            />
 
-        <Input
-          label={"Last Accessed"}
-          onChange={(e) => {
-            setLastAccessed(e.target.value);
-            setLastAccessedError("");
-          }}
-          value={lastAccessed}
-          type="date"
-          error={lastAccessedError}
-        />
+            <Input
+              type="date"
+              label={"Last Accessed"}
+              value={lastAccessed}
+              error={lastAccessedError}
+              onChange={(e) => {
+                setLastAccessed(e.target.value);
+                setLastAccessedError("");
+              }}
+            />
+          </div>
 
-        <Input
-          label={"Published"}
-          onChange={(e) => {
-            setPublishDate(e.target.value);
-            setPublishDateError("");
-          }}
-          value={publishDate}
-          type="date"
-          error={publishDateError}
-        />
+          <div>
+            <Input
+              type="date"
+              label={"Published"}
+              value={publishDate}
+              error={publishDateError}
+              onChange={(e) => {
+                setPublishDate(e.target.value);
+                setPublishDateError("");
+              }}
+            />
 
-        <Label label='Contributors' />
+            <Input
+              label={"Add Contributor"}
+              value={newContributor}
+              onChange={(e) => setNewContributor(e.target.value)}
+              onSubmit={handleAddContributor}
+            />
 
-        <ul className={styles.chipGrid}>
-          {contributors.map((cont, index) => (
-            <li key={index}>
-              {cont}
+            <Label label='Contributors' />
 
-              <div
-                onClick={() => {
-                  setContributors(
-                    contributors.filter((_, i) => i !== index)
-                  );
-                }}
-              >
-                <FontAwesomeIcon icon={faClose} />
-              </div>
-            </li>
-          ))}
-        </ul>
+            <ul className={styles.chipGrid}>
+              {contributors.length === 0 && (
+                <ListItem item='No Contributors Added' />
+              )}
 
-        <Input
-          label={"Add Contributor"}
-          onChange={(e) => setNewContributor(e.target.value)}
-          value={newContributor}
-          onSubmit={handleAddContributor}
-        />
+              {contributors.map((cont) => (
+                <ListItem
+                  key={cont}
+                  item={cont}
+                  action={() => {
+                    setContributors(
+                      contributors.filter((name) => cont !== name)
+                    );
+                  }}
+                  actionType={"delete"}
+                />
+              ))}
+            </ul>
+          </div>
+        </div>
 
-        <button onClick={handleSubmit}>
+        <button onClick={handleSubmit} className="submitButton">
           {loading ? "Sending..." : "Submit Source"}
         </button>
       </form>

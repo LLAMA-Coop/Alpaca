@@ -72,6 +72,10 @@ a {
 }
 
 button {
+    border: none;
+}
+
+.submitButton {
     padding: 2px 16px;
     border-radius: 3px;
     border: none;
@@ -88,12 +92,40 @@ button {
     transition: background-color 0.2s ease-in-out;
 }
 
-button:hover {
+.submitButton.icon {
+    gap: 8px;
+}
+
+.submitButton:hover {
     background-color: var(--accent-primary-2);
 }
 
-button:active {
+.submitButton:active {
     background-color: var(--accent-primary-3);
+}
+
+.submitButton.green {
+    background-color: var(--accent-tertiary-1);
+}
+
+.submitButton.green:hover {
+    background-color: var(--accent-tertiary-2);
+}
+
+.submitButton.green:active {
+    background-color: var(--accent-tertiary-3);
+}
+
+.submitButton.red {
+    background-color: var(--accent-secondary-1);
+}
+
+.submitButton.red:hover {
+    background-color: var(--accent-secondary-2);
+}
+
+.submitButton.red:active {
+    background-color: var(--accent-secondary-3);
 }
 
 select {
@@ -104,6 +136,11 @@ select {
     padding: 10px;
     border: none;
     font-size: 16px;
+}
+
+ul,
+ol {
+    list-style: none;
 }
 
 input:focus-visible,
@@ -136,18 +173,73 @@ input[type='date'] {
     flex-wrap: wrap;
 }
 
-.chipGrid > li {
-    background-color: var(--accent-tertiary-1);
-    font-size: 14px;
-    font-weight: 400;
-    border-radius: 4px;
-    height: 24px;
-    margin: 0 4px 4px 0;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    user-select: none;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+.thinScroller::-webkit-scrollbar {
+    width: 10px;
+}
+
+.thinScroller::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.thinScroller::-webkit-scrollbar-thumb {
+    background: var(--accent-primary-1);
+    border: 3px solid var(--background-primary);
+    border-radius: 100vw;
+}
+
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+}
+
+@media screen and (max-width: 767px) {
+    :root {
+        --padding: 80px 40px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    :root {
+        --padding: 56px 24px;
+    }
+}
+
+@keyframes fallen_1 {
+    100% {
+        top: calc(100% + 20px);
+        transform: rotateX(1023deg) rotateY(372deg) rotateZ(663deg);
+    }
+}
+
+@keyframes fallen_2 {
+    100% {
+        top: calc(100% + 20px);
+        transform: rotateX(1023deg) rotateY(372deg) rotateZ(663deg);
+    }
+}
+
+@keyframes fallen_3 {
+    100% {
+        top: calc(100% + 20px);
+        transform: rotateX(731deg) rotateY(1000deg) rotateZ(911deg);
+    }
+}
+
+@keyframes fallen_4 {
+    100% {
+        top: calc(100% + 20px);
+        transform: rotateX(403deg) rotateY(707deg) rotateZ(537deg);
+    }
+}
+
+@keyframes fallen_5 {
+    100% {
+        top: calc(100% + 20px);
+        transform: rotateX(399deg) rotateY(1200deg) rotateZ(839deg);
+    }
 }

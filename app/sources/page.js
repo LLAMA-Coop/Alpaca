@@ -6,20 +6,23 @@ import styles from "../page.module.css";
 const sources = await Source.find();
 
 export default function SourcesPage() {
+  console.log(sources);
   return (
     <main className={styles.main}>
 
       <h2>Sources</h2>
 
-      <section>
-        <div className='centeredContainer'>
-          <h3>Sources</h3>
+      {sources.length > 0 && (
+        <section>
+          <div className='centeredContainer'>
+            <h3>Sources</h3>
 
-          <div className={styles.sourceGrid}>
-            {sources.map((src) => <SourceDisplay key={src._id} source={src} />)}
+            <div className={styles.sourceGrid}>
+              {sources.map((src) => <SourceDisplay key={src._id} source={src} />)}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section>
         <SourceInput

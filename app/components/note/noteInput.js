@@ -3,7 +3,7 @@
 import { faAdd, faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState, useRef } from "react";
-import { TextArea, Label } from "../Input/Input";
+import { TextArea, Label, ListItem } from "../form/Form";
 import SourceInput from "../source/sourceInput";
 import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./noteInput.module.css";
@@ -106,13 +106,12 @@ export default function NoteInput({ availableSources }) {
 
               {isSelectOpen && (
                 <div
-                  className={styles.sourcePicker}
+                  className={`${styles.sourcePicker} thinScroller`}
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
                 >
-                  {availableSources.map((src) =>
-                  (
+                  {availableSources.map((src) => (
                     <div
                       className={sources.find((x) => x._id === src._id) ? styles.selected : ""}
                       key={src._id}
@@ -128,22 +127,26 @@ export default function NoteInput({ availableSources }) {
                       {src.title}
                     </div>
                   ))}
+
+                  {availableSources.length === 0 && (
+                    <div className={styles.noSources}>
+                      <p>
+                        You have no sources
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </li>
 
             {sources.length > 0 && sources.map((src) => (
-              <li key={src._id}>
-                <Link href={src.url} target="_blank">{src.title}</Link>
-
-                <div
-                  onClick={() => {
-                    setSources(sources.filter((x) => x._id !== src._id));
-                  }}
-                >
-                  <FontAwesomeIcon icon={faClose} />
-                </div>
-              </li>
+              <ListItem
+                key={src._id}
+                link={src.url}
+                item={src.title}
+                action={() => setSources(sources.filter((x) => x._id !== src._id))}
+                actionType={'delete'}
+              />
             ))}
           </ol>
         </div>
@@ -154,7 +157,7 @@ export default function NoteInput({ availableSources }) {
         </details>
       </div>
 
-      <button onClick={handleSubmit}>
+      <button onClick={handleSubmit} className="submitButton">
         {loading ? "Sending..." : "Submit Note"}
       </button>
     </div>
