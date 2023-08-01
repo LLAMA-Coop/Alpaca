@@ -48,6 +48,7 @@
   margin: 5px 5px 0 0;
   border-radius: 4px;
   background-color: var(--accent-primary-1);
+  color: var(--text-for-accent-background);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -88,6 +89,7 @@
 
 .listItem {
   background-color: var(--accent-tertiary-1);
+  color: var(--text-for-accent-background);
   font-size: 14px;
   font-weight: 400;
   border-radius: 4px;
@@ -122,6 +124,7 @@ a.listItem {
   border-radius: 2px;
   cursor: pointer;
   background-color: var(--accent-tertiary-2);
+  color: var(--text-for-accent-background);
 }
 
 .listItem > .itemContent > .action:hover {

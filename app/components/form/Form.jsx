@@ -7,10 +7,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Input.module.css";
 import Link from "next/link";
 
-export const Label = ({ required, error, label }) => {
+export const Label = ({ required, error, label, htmlFor }) => {
   return (
     <div className={styles.labelContainer}>
-      <label>
+      <label htmlFor={htmlFor}>
         {label} {required && <span>*</span>}
       </label>
       {error && <span>{error}</span>}
@@ -19,6 +19,7 @@ export const Label = ({ required, error, label }) => {
 };
 
 export const Input = ({
+  id,
   type,
   choices,
   required,
@@ -42,7 +43,14 @@ export const Input = ({
         cursor: disabled ? "not-allowed" : "",
       }}
     >
-      {label && <Label required={required} error={error} label={label} />}
+      {label && (
+        <Label
+          required={required}
+          error={error}
+          label={label}
+          htmlFor={id ?? label}
+        />
+      )}
 
       <div
         className={styles.inputContainer}
@@ -73,6 +81,7 @@ export const Input = ({
           </select>
         ) : (
           <input
+            id={id ?? label}
             type={type || "text"}
             required={required}
             onChange={onChange}
@@ -92,7 +101,11 @@ export const Input = ({
         )}
 
         {onSubmit && (
-          <button className={styles.submitButton} onClick={(e) => onSubmit(e)}>
+          <button
+            className={styles.submitButton}
+            onClick={(e) => onSubmit(e)}
+            title={label}
+          >
             <FontAwesomeIcon icon={faAdd} />
           </button>
         )}
@@ -102,6 +115,7 @@ export const Input = ({
 };
 
 export const TextArea = ({
+  id,
   required,
   onChange,
   value,
@@ -112,10 +126,18 @@ export const TextArea = ({
 }) => {
   return (
     <div className={styles.container}>
-      {label && <Label required={required} error={error} label={label} />}
+      {label && (
+        <Label
+          required={required}
+          error={error}
+          htmlFor={id ?? label}
+          label={label}
+        />
+      )}
 
       <div className={styles.inputContainer}>
         <textarea
+          id={id ?? label}
           className="thinScroller"
           required={required}
           onChange={onChange}
@@ -129,6 +151,17 @@ export const TextArea = ({
 };
 
 export const ListItem = ({ item, action, actionType, link }) => {
+  let label;
+  if (actionType === "add") {
+    label = "Add item";
+  }
+  if (actionType === "delete") {
+    label = "Delete item";
+  }
+  if (!action && link) {
+    label = item;
+  }
+
   const content = (
     <div className={styles.itemContent}>
       <span>{item}</span>
@@ -136,6 +169,7 @@ export const ListItem = ({ item, action, actionType, link }) => {
       {action && (
         <button
           className={styles.action}
+          title={label}
           onClick={(e) => {
             e.preventDefault();
             action();
@@ -146,7 +180,7 @@ export const ListItem = ({ item, action, actionType, link }) => {
       )}
 
       {link && !action && (
-        <button className={styles.action} onClick={action}>
+        <button className={styles.action} title={label} onClick={action}>
           <FontAwesomeIcon icon={faArrowRight} />
         </button>
       )}

@@ -154,6 +154,7 @@ export default function QuizInput({
         <div className={styles.flexContainer}>
           <div>
             <Input
+            id={"quizType_" + uniqueId}
               type={"select"}
               choices={types}
               required={true}
@@ -164,6 +165,7 @@ export default function QuizInput({
             />
 
             <Input
+            id={"prompt_" + uniqueId}
               required={true}
               label="Prompt"
               value={prompt}
@@ -177,6 +179,7 @@ export default function QuizInput({
             {type === "multiple-choice" && (
               <>
                 <Input
+                id={"addChoice_" + uniqueId}
                   label="Add a choice"
                   value={newChoice}
                   required={choices.length < 1}
@@ -213,6 +216,7 @@ export default function QuizInput({
 
           <div>
             <Input
+            id={"addCorrect_" + uniqueId}
               label="Add a correct response"
               value={newResponse}
               required={responses.length === 0}
@@ -269,12 +273,17 @@ export default function QuizInput({
 
         <details>
           <summary>Add Another Source</summary>
-          <label htmlFor={"sourceOptions_" + uniqueId}>
+          {/* <label htmlFor={"sourceOptions_" + uniqueId}>
             Select from a list of sources
-          </label>
-          <input
+          </label> */}
+          <Input
+          label="Select from a list of sources"
             id={"sourceOptions_" + uniqueId}
-            list={"sourceList_" + uniqueId}
+            // list={"sourceList_" + uniqueId}
+            type="select"
+            choices={availableSources.map(src => {
+              return { value: src._id, label: src.title}
+            })}
             onChange={(e) => {
               let newSource = availableSources.find(
                 (x) => x._id === e.target.value
@@ -289,7 +298,7 @@ export default function QuizInput({
           />
 
           {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
-          <datalist id={"sourceList_" + uniqueId}>
+          {/* <datalist id={"sourceList_" + uniqueId}>
             {availableSources.map((src) => {
               if (sources.indexOf(src._id) !== -1) return;
               return (
@@ -300,7 +309,7 @@ export default function QuizInput({
                 ></option>
               );
             })}
-          </datalist>
+          </datalist> */}
 
           <details>
             <summary>Add New Source</summary>
@@ -325,12 +334,17 @@ export default function QuizInput({
 
         <details>
           <summary>Add Another Note</summary>
-          <label htmlFor={"noteOptions_" + uniqueId}>
+          {/* <label htmlFor={"noteOptions_" + uniqueId}>
             Select from a list of notes
-          </label>
-          <input
+          </label> */}
+          <Input
             id={"noteOptions_" + uniqueId}
-            list={"noteList_" + uniqueId}
+            // list={"noteList_" + uniqueId}
+            type="select"
+            label="Select from a list of notes"
+            choices={availableNotes.map(note => {
+              return {value: note._id, label: note.text}
+            })}
             onChange={(e) => {
               let newNote = availableNotes.find(
                 (x) => x._id === e.target.value
@@ -343,14 +357,14 @@ export default function QuizInput({
           />
 
           {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
-          <datalist id={"noteList_" + uniqueId}>
+          {/* <datalist id={"noteList_" + uniqueId}>
             {availableNotes.map((note) => {
               if (notes.indexOf(note) !== -1) return;
               return (
                 <option key={note._id} value={note._id} label={note.text} />
               );
             })}
-          </datalist>
+          </datalist> */}
 
           <div>
             Add New Note

@@ -34,6 +34,10 @@
   --accent-tertiary-light: hsl(160, 84%, 39%);
   --accent-tertiary-opacity-2: hsl(163, 94%, 24%, 0.2);
 
+  --text-for-accent-background: white;
+
+  --anchor: hsl(226, 71%, 40%);
+
   --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
   --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
   --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
@@ -48,6 +52,8 @@
     --foreground-primary: hsl(0, 0%, 98%);
     --foreground-secondary: hsl(240, 5%, 96%);
     --foreground-tertiary: hsl(240, 6%, 90%);
+
+    --anchor: hsl(217, 91%, 60%);
   }
 
   html {
@@ -73,7 +79,7 @@ body {
 }
 
 a {
-  color: inherit;
+  color: var(--anchor);
   text-decoration: none;
 }
 
@@ -95,6 +101,7 @@ button {
   height: 32px;
   user-select: none;
   background-color: var(--accent-primary-1);
+  color: var(--text-for-accent-background);
   transition: background-color 0.2s ease-in-out;
 }
 

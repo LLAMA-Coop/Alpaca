@@ -26,6 +26,7 @@
     position: relative;
     cursor: pointer;
     background-color: var(--accent-tertiary-3);
+    color:var(--text-for-accent-background);
 }
 
 .chipGrid > .addChip > div:not(.sourcePicker) {
@@ -42,6 +43,7 @@
 
 .chipGrid > .addChip > div:not(.sourcePicker):hover {
     background-color: var(--accent-tertiary-2);
+    color:var(--text-for-accent-background);
 }
 
 .chipGrid > li > div > svg {
@@ -82,14 +84,46 @@
     background-color: var(--background-tertiary);
 }
 
+.sourcePicker > div:not(.selected) {
+    background-color: var(--background-primary);
+    color: var(--foreground-primary);
+}
+
 .sourcePicker > div.selected {
     background-color: var(--accent-primary-1);
+    color:var(--text-for-accent-background);
 }
 
 .sourcePicker > div.selected:hover {
     background-color: var(--accent-primary-2);
+    color:var(--text-for-accent-background);
 }
 
 .sourcePicker > div.selected:active {
     background-color: var(--accent-primary-3);
+    color:var(--text-for-accent-background);
+}
+
+.action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    margin-right: -4px;
+    border-radius: 2px;
+    cursor: pointer;
+    background-color: var(--accent-tertiary-2);
+    color:var(--text-for-accent-background);
+}
+
+.action:hover {
+    background-color: var(--accent-tertiary-3);
+    color:var(--text-for-accent-background);
+}
+
+.action > svg {
+    width: 12px;
+    height: 12px;
 }

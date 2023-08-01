@@ -20,7 +20,7 @@ export default function SourceDisplay({ source }) {
             <h5>Contributors</h5>
             {source.contributors.length > 0 ? (
               <ol className="chipGrid">
-                {source.contributors.map((cont, index) => (
+                {source.contributors.map((cont) => (
                   <ListItem
                     key={cont}
                     item={

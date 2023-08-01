@@ -70,6 +70,7 @@
   margin-top: 20px;
   border-radius: 4px;
   background-color: var(--accent-primary-1);
+  color: var(--text-for-accent-background);
   width: fit-content;
   transition: background-color 0.2s ease-in-out;
   user-select: none;
