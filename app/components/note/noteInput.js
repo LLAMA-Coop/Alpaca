@@ -17,6 +17,7 @@ export default function NoteInput({ availableSources }) {
   const [sourceError, setSourceError] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [uniqueId, setUniqueId] = useState();
 
   const addSourceRef = useRef(null);
 
@@ -31,6 +32,10 @@ export default function NoteInput({ availableSources }) {
 
     return () => document.removeEventListener("click", handleOutsideClick);
   }, [isSelectOpen]);
+
+  useEffect(() => {
+    setUniqueId(makeUniqueId());
+  }, [])
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -74,6 +79,7 @@ export default function NoteInput({ availableSources }) {
       <h3>Add a note</h3>
       <div className={styles.form}>
         <TextArea
+          id={"text_" + uniqueId}
           required={true}
           onChange={(e) => {
             setText(e.target.value);
@@ -100,9 +106,9 @@ export default function NoteInput({ availableSources }) {
               }}
             >
               Add a source
-              <div>
+              <button className={styles.action} title="Toggle Source List">
                 <FontAwesomeIcon icon={faAdd} />
-              </div>
+              </button>
 
               {isSelectOpen && (
                 <div

@@ -120,10 +120,10 @@ export const TextArea = ({
 }) => {
   return (
     <div className={styles.inputContainer}>
-      {label && <Label required={required} error={error} label={label} htmlFor={id} />}
+      {label && <Label required={required} error={error} htmlFor={id ?? label} label={label} />}
 
       <textarea
-        id={id}
+        id={id ?? label}
         className="thinScroller"
         required={required}
         onChange={onChange}
