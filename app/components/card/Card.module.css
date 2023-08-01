@@ -1,0 +1,124 @@
+.container {
+  position: relative;
+  border-radius: 6px;
+  max-width: 550px;
+}
+
+.container > div:first-child {
+  background: linear-gradient(
+    var(--gradient-angle),
+    hsla(0, 0%, 100%, 0.5),
+    hsla(0, 0%, 100%, 0.1),
+    hsl(0, 0%, 100%),
+    hsla(0, 0%, 100%, 0.3)
+  );
+  border-radius: 14px;
+  height: calc(100% + 2px);
+  width: calc(100% + 2px);
+  left: 0;
+  top: 0;
+  position: absolute;
+  opacity: 0;
+  transform: translate(-1px, -1px);
+  z-index: 0;
+}
+
+.container:hover > div:first-child {
+  opacity: 1;
+  animation: gradientRotate 5s linear 0s infinite reverse;
+  transition: all 0.3s linear;
+}
+
+.content {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  transition: all 0.2s;
+  border-radius: 12px;
+  height: 100%;
+  padding: 24px;
+  background-color: var(--background-secondary);
+  border: 1px solid var(--background-tertiary);
+}
+
+.container:hover > .content {
+  background-color: var(--background-tertiary);
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.textContent > header {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+}
+
+.buttonContainer {
+  display: flex;
+  margin-top: 24px;
+  gap: 16px;
+}
+
+.buttonContainer > * {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border: none;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--accent-foreground);
+  background-color: var(--accent-primary-1);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.buttonContainer > *:hover {
+  background-color: var(--accent-primary-2);
+}
+
+.buttonContainer > *:active {
+  background-color: var(--accent-primary-3);
+}
+
+.childrenContent {
+  margin-top: 24px;
+}
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 360deg;
+  inherits: false;
+}
+
+@keyframes gradientRotate {
+  0% {
+    --gradient-angle: 360deg;
+  }
+  100% {
+    --gradient-angle: 0deg;
+  }
+}
+
+[data-theme="light"] .container > div:first-child {
+  background: linear-gradient(
+    var(--gradient-angle),
+    var(--accent-primary-outline),
+    hsla(0, 0%, 100%, 0.1),
+    var(--accent-primary-1),
+    hsla(0, 0%, 100%, 0.3)
+  );
+}
+
+[data-theme="light"] .content {
+  background-color: var(--background-primary);
+  border: 1px solid var(--background-tertiary);
+}
+
+[data-theme="light"] .container:hover > .content {
+  background-color: var(--background-primary);
+}

@@ -39,7 +39,7 @@ export const Input = ({
 }) => {
   return (
     <div
-      className={styles.inputContainer}
+      className={styles.container}
       style={{
         opacity: disabled ? "0.3" : "",
         cursor: disabled ? "not-allowed" : "",
@@ -55,6 +55,7 @@ export const Input = ({
       )}
 
       <div
+        className={styles.inputContainer}
         style={{
           pointerEvents: disabled ? "none" : "",
         }}
@@ -126,7 +127,7 @@ export const TextArea = ({
   onBlur,
 }) => {
   return (
-    <div className={styles.inputContainer}>
+    <div className={styles.container}>
       {label && (
         <Label
           required={required}
@@ -136,15 +137,17 @@ export const TextArea = ({
         />
       )}
 
-      <textarea
-        id={id ?? label}
-        className="thinScroller"
-        required={required}
-        onChange={onChange}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        value={value || ""}
-      />
+      <div className={styles.inputContainer}>
+        <textarea
+          id={id ?? label}
+          className="thinScroller"
+          required={required}
+          onChange={onChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          value={value || ""}
+        />
+      </div>
     </div>
   );
 };

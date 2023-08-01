@@ -4,8 +4,8 @@ import Link from "next/link";
 export default function About() {
   return (
     <main className={styles.main}>
+      <h2>About Mneme</h2>
       <div className="centeredContainer">
-        <h2>About Mneme</h2>
         <div className={styles.description}>
           <p>
             There are plenty of flashcard apps available, and plenty that make
@@ -24,9 +24,9 @@ export default function About() {
           </p>
 
           <p>
-            This, along with short notes to condense information from sources, is
-            the vision behind Mneme. It is not just for taking quizzes. It's for
-            making them easily for yourself or anyone else.
+            This, along with short notes to condense information from sources,
+            is the vision behind Mneme. It is not just for taking quizzes. It's
+            for making them easily for yourself or anyone else.
           </p>
 
           <p>
@@ -34,13 +34,13 @@ export default function About() {
             <Link href="https://en.wikipedia.org/wiki/Mneme" target="_blank">
               Greek Muse for memory
             </Link>
-            , Mneme will be a web application and API for submitting,
-            storing, and retrieving learning materials in a database. These
-            learning materials can be sources of information, such as articles,
-            news reports, official documents, scientific papers, specifications,
-            etc; notes to condense and clarify the information in those sources;
-            and questions or prompts to challenge a student to recall and use
-            the information.
+            , Mneme will be a web application and API for submitting, storing,
+            and retrieving learning materials in a database. These learning
+            materials can be sources of information, such as articles, news
+            reports, official documents, scientific papers, specifications, etc;
+            notes to condense and clarify the information in those sources; and
+            questions or prompts to challenge a student to recall and use the
+            information.
           </p>
 
           <p>
@@ -60,7 +60,7 @@ export default function About() {
             .
           </p>
 
-          <p>This application is using NextJS 13 and Mongoose.</p>
+          <p>This application is using NextJs 13 and Mongoose.</p>
         </div>
       </div>
     </main>

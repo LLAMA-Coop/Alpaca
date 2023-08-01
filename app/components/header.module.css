@@ -1,103 +1,111 @@
 .header {
-    width: 100%;
-    height: fit-content;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 80px 24px;
+  width: 100%;
+  height: fit-content;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 80px 24px;
 }
 
 .header h1 {
-    font-size: 48px;
-    margin-bottom: 24px;
+  font-size: 48px;
+  margin-bottom: 24px;
 }
 
 .header menu {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    border-radius: 12px;
-    padding: 10px;
-    background-color: var(--background-secondary);
-    color: var(--foreground-secondary);
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  padding: 10px;
+  background-color: var(--background-secondary);
+  color: var(--foreground-secondary);
 }
 
 .header li > a {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px;
-    padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  padding: 8px;
 }
 
 .header li > a:hover {
-    background-color: var(--background-primary);
+  background-color: var(--background-primary);
 }
 
 .header li > a > span {
-    font-size: 20px;
-    margin-bottom: 8px;
-    padding: 6px 12px;
-    border-radius: 4px;
-    user-select: none;
-    color: var(--foreground-secondary);
+  font-size: 20px;
+  margin-bottom: 8px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  user-select: none;
+  color: var(--foreground-secondary);
 }
 
 .header li > a:hover > span {
-    background-color: var(--accent-primary-3);
-    color: var(--text-for-accent-background);
+  background-color: var(--accent-primary-3);
+  color: var(--accent-foreground);
 }
 
 .header svg {
-    width: 58px;
-    height: 58px;
+  width: 58px;
+  height: 58px;
 }
 
 .header svg path {
-    fill: var(--foreground-secondary);
+  fill: var(--foreground-secondary);
 }
 
 .header li > a:hover svg path {
-    fill: var(--accent-primary-3);
+  fill: var(--accent-primary-3);
 }
 
 @media screen and (max-width: 768px) {
-    .header li > a > span {
-        padding: 4px 8px;
-        font-size: 14px;
-    }
+  .header li > a > span {
+    padding: 4px 8px;
+    font-size: 14px;
+  }
 
-    .header svg {
-        width: 24px;
-        height: 24px;
-    }
+  .header svg {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 @media screen and (max-width: 500px) {
-    .header h1 {
-        font-size: 32px;
-    }
+  .header h1 {
+    font-size: 32px;
+  }
 
-    .header li > a > span {
-        padding: 2px 4px;
-        font-size: 12px;
-    }
+  .header li > a > span {
+    padding: 2px 4px;
+    font-size: 12px;
+  }
 
-    .header menu {
-        padding: 6px;
-    }
+  .header menu {
+    padding: 6px;
+  }
 
-    .header li > a {
-        padding: 6px;
-    }
+  .header li > a {
+    padding: 6px;
+  }
 
-    .header svg {
-        width: 16px;
-        height: 16px;
-    }
+  .header svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+[data-theme="light"] .header menu {
+  border: 1px solid var(--foreground-primary);
+}
+
+[data-theme="light"] .header li > a:hover {
+  outline: 1px solid var(--foreground-tertiary);
 }

@@ -1,80 +1,84 @@
 .inputContainer {
-    border-radius: 4px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .flexContainer {
-    display: flex;
+  display: flex;
 }
 
 .addSources {
-    display: flex;
-    margin-bottom: 24px;
+  display: flex;
+  margin-bottom: 24px;
 }
 
 .addSources > div {
-    width: 50%;
+  width: 50%;
 }
 
 .chipGrid {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .chipGrid > .addChip {
-    font-size: 14px;
-    font-weight: 400;
-    border-radius: 4px;
-    height: 28px;
-    margin: 0 4px 4px 0;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    user-select: none;
-    position: relative;
-    cursor: pointer;
-    background-color: var(--accent-tertiary-3);
-    color:var(--text-for-accent-background);
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 4px;
+  height: 28px;
+  margin: 0 4px 4px 0;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  position: relative;
+  cursor: pointer;
+  background-color: var(--accent-tertiary-3);
+  color: var(--accent-foreground);
+}
+
+.chipGrid > .addChip > button:hover {
+  background-color: var(--accent-tertiary-1);
 }
 
 .chipGrid > li > div > svg {
-    width: 14px;
-    height: 14px;
+  width: 14px;
+  height: 14px;
 }
 
 .action {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    margin-left: 8px;
-    margin-right: -4px;
-    border-radius: 2px;
-    cursor: pointer;
-    background-color: var(--accent-tertiary-2);
-    color:var(--text-for-accent-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  margin-right: -4px;
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: var(--accent-tertiary-2);
+  color: var(--accent-foreground);
 }
 
 .action:hover {
-    background-color: var(--accent-tertiary-3);
-    color:var(--text-for-accent-background);
+  background-color: var(--accent-tertiary-3);
+  color: var(--accent-foreground);
 }
 
 .action > svg {
-    width: 12px;
-    height: 12px;
+  width: 12px;
+  height: 12px;
 }
 
 .flexContainer > div {
-    flex: 1;
+  flex: 1;
 }
 
 @media screen and (max-width: 1120px) {
-    .flexContainer {
-        display: block;
-    }
+  .flexContainer {
+    display: block;
+  }
 }

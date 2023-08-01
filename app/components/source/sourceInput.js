@@ -1,11 +1,9 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
-import styles from "./sourceInput.module.css";
 import { Input, Label, ListItem } from "../form/Form";
-import { useState, useEffect } from "react";
 import makeUniqueId from "@/app/code/uniqueId";
+import styles from "./sourceInput.module.css";
+import { useState, useEffect } from "react";
 
 export default function SourceInput() {
   const [title, setTitle] = useState("");
@@ -204,7 +202,7 @@ export default function SourceInput() {
                   item={cont}
                   action={() => {
                     setContributors(
-                      contributors.filter((name) => cont !== name)
+                      contributors.filter((name) => cont !== name),
                     );
                   }}
                   actionType={"delete"}

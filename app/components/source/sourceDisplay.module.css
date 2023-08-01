@@ -1,47 +1,9 @@
-.source {
-    border-radius: 4px;
-    background-color: var(--background-secondary);
-    padding: 16px;
-    height: fit-content;
-    box-shadow: 0 0 4px 0 var(--boxshadow-dark);
-}
-
-.source h4 {
-    margin-bottom: 16px;
-}
-
-.source > p {
-    margin-bottom: 4px;
-}
-
 .contributors {
-    background-color: var(--background-primary);
-    padding: 10px;
-    border-radius: 4px;
+  background-color: var(--background-primary);
+  padding: 10px;
+  border-radius: 4px;
 }
 
 .contributors > h5 {
-    margin-bottom: 10px;
-}
-
-.source > a {
-    display: block;
-    padding: 6px 12px;
-    margin-top: 20px;
-    border-radius: 4px;
-    background-color: var(--accent-primary-1);
-    color:var(--text-for-accent-background);
-    width: fit-content;
-    transition: background-color 0.2s ease-in-out;
-    user-select: none;
-}
-
-.source > a:hover {
-    background-color: var(--accent-primary-2);
-    color:var(--text-for-accent-background);
-}
-
-.source > a:active {
-    background-color: var(--accent-primary-3);
-    color:var(--text-for-accent-background);
+  margin-bottom: 10px;
 }

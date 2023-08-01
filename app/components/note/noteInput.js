@@ -1,13 +1,12 @@
 "use client";
 
-import { faAdd, faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState, useRef } from "react";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { TextArea, Label, ListItem, Select } from "../form/Form";
+import { useEffect, useState, useRef } from "react";
 import SourceInput from "../source/sourceInput";
 import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./noteInput.module.css";
-import Link from "next/link";
 
 export default function NoteInput({ availableSources }) {
   const [text, setText] = useState("");
@@ -124,7 +123,11 @@ export default function NoteInput({ availableSources }) {
                 >
                   {availableSources.map((src) => (
                     <div
-                      className={sources.find((x) => x._id === src._id) ? styles.selected : ""}
+                      className={
+                        sources.find((x) => x._id === src._id)
+                          ? styles.selected
+                          : ""
+                      }
                       key={src._id}
                       onClick={() => {
                         if (!sources.find((x) => x._id === src._id)) {
@@ -141,9 +144,7 @@ export default function NoteInput({ availableSources }) {
 
                   {availableSources.length === 0 && (
                     <div className={styles.noSources}>
-                      <p>
-                        You have no sources
-                      </p>
+                      <p>You have no sources</p>
                     </div>
                   )}
                 </div>
