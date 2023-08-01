@@ -1,10 +1,11 @@
 import styles from "../page.module.css";
+import Link from "next/link";
 
 export default function About() {
   return (
     <main className={styles.main}>
+      <h2>About Mneme</h2>
       <div className="centeredContainer">
-        <h2>About Mneme</h2>
         <div className={styles.description}>
           <p>
             There are plenty of flashcard apps available, and plenty that make

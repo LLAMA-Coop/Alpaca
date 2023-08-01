@@ -2,9 +2,10 @@
   background-color: var(--background-primary);
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 80px 40px 64px 40px;
+  padding: 28px 24px;
   display: flex;
   justify-content: space-between;
+  border-top: 1px solid var(--background-tertiary);
 }
 
 .container > div:first-child > h2 {

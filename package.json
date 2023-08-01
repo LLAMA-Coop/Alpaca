@@ -22,6 +22,7 @@
         "react-dom": "18.2.0"
     },
     "devDependencies": {
+        "@types/react": "18.2.18",
         "prettier": "3.0.0"
     }
 }

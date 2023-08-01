@@ -1,13 +1,12 @@
 "use client";
 
-import { faAdd, faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState, useRef } from "react";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { TextArea, Label, ListItem } from "../form/Form";
+import { useEffect, useState, useRef } from "react";
+import makeUniqueId from "@/app/code/makeUniqueId";
 import SourceInput from "../source/sourceInput";
-import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./noteInput.module.css";
-import Link from "next/link";
 
 export default function NoteInput({ availableSources }) {
   const [text, setText] = useState("");
@@ -26,7 +25,7 @@ export default function NoteInput({ availableSources }) {
       if (isSelectOpen && !addSourceRef.current.contains(e.target)) {
         setIsSelectOpen(false);
       }
-    }
+    };
 
     document.addEventListener("click", handleOutsideClick);
 
@@ -35,7 +34,7 @@ export default function NoteInput({ availableSources }) {
 
   useEffect(() => {
     setUniqueId(makeUniqueId());
-  }, [])
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -61,8 +60,8 @@ export default function NoteInput({ availableSources }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(note)
-    })
+      body: JSON.stringify(note),
+    });
 
     setLoading(false);
 
@@ -75,7 +74,7 @@ export default function NoteInput({ availableSources }) {
   }
 
   return (
-    <div className='centeredContainer'>
+    <div className="centeredContainer">
       <h3>Add a note</h3>
       <div className={styles.form}>
         <TextArea
@@ -87,29 +86,26 @@ export default function NoteInput({ availableSources }) {
           }}
           value={text}
           error={textError}
-          label={'Text'}
+          label={"Text"}
         />
       </div>
 
-
-
       <div className={styles.addSources}>
         <div className={styles.inputContainer}>
-          <Label required={true} error={sourceError} label='Current Sources' />
+          <Label required={true} error={sourceError} label="Current Sources" />
 
           <ol className={styles.chipGrid}>
             <li
               ref={addSourceRef}
               className={styles.addChip}
               onClick={() => {
-                setIsSelectOpen(prev => !prev);
+                setIsSelectOpen((prev) => !prev);
               }}
             >
               Add a source
               <button className={styles.action} title="Toggle Source List">
                 <FontAwesomeIcon icon={faAdd} />
               </button>
-
               {isSelectOpen && (
                 <div
                   className={`${styles.sourcePicker} thinScroller`}
@@ -119,7 +115,11 @@ export default function NoteInput({ availableSources }) {
                 >
                   {availableSources.map((src) => (
                     <div
-                      className={sources.find((x) => x._id === src._id) ? styles.selected : ""}
+                      className={
+                        sources.find((x) => x._id === src._id)
+                          ? styles.selected
+                          : ""
+                      }
                       key={src._id}
                       onClick={() => {
                         if (!sources.find((x) => x._id === src._id)) {
@@ -136,24 +136,25 @@ export default function NoteInput({ availableSources }) {
 
                   {availableSources.length === 0 && (
                     <div className={styles.noSources}>
-                      <p>
-                        You have no sources
-                      </p>
+                      <p>You have no sources</p>
                     </div>
                   )}
                 </div>
               )}
             </li>
 
-            {sources.length > 0 && sources.map((src) => (
-              <ListItem
-                key={src._id}
-                link={src.url}
-                item={src.title}
-                action={() => setSources(sources.filter((x) => x._id !== src._id))}
-                actionType={'delete'}
-              />
-            ))}
+            {sources.length > 0 &&
+              sources.map((src) => (
+                <ListItem
+                  key={src._id}
+                  link={src.url}
+                  item={src.title}
+                  action={() =>
+                    setSources(sources.filter((x) => x._id !== src._id))
+                  }
+                  actionType={"delete"}
+                />
+              ))}
           </ol>
         </div>
 

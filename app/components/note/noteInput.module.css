@@ -1,129 +1,122 @@
 .addSources {
-    display: flex;
-    margin-bottom: 24px;
+  display: flex;
+  margin-bottom: 24px;
 }
 
 .addSources > div {
-    width: 50%;
+  width: 50%;
 }
 
 .chipGrid {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .chipGrid > .addChip {
-    font-size: 14px;
-    font-weight: 400;
-    border-radius: 4px;
-    height: 28px;
-    margin: 0 4px 4px 0;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    user-select: none;
-    position: relative;
-    cursor: pointer;
-    background-color: var(--accent-tertiary-3);
-    color:var(--text-for-accent-background);
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 4px;
+  height: 28px;
+  margin: 0 4px 4px 0;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  position: relative;
+  cursor: pointer;
+  background-color: var(--accent-tertiary-3);
+  color: var(--accent-foreground);
 }
 
 .chipGrid > .addChip > div:not(.sourcePicker) {
-    margin-left: 8px;
-    margin-right: -4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-radius: 4px;
-    width: 20px;
-    height: 20px;
+  margin-left: 8px;
+  margin-right: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
 }
 
 .chipGrid > .addChip > div:not(.sourcePicker):hover {
-    background-color: var(--accent-tertiary-2);
-    color:var(--text-for-accent-background);
+  background-color: var(--accent-tertiary-2);
+  color: var(--accent-foreground);
 }
 
 .chipGrid > li > div > svg {
-    width: 14px;
-    height: 14px;
+  width: 14px;
+  height: 14px;
 }
 
 .sourcePicker {
-    position: absolute;
-    bottom: calc(100% + 4px);
-    left: 0;
-    width: 220px;
-    background-color: var(--background-primary);
-    border-radius: 4px;
-    box-shadow: var(--boxshadow-dark);
-    z-index: 1;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    max-height: 200px;
-    overflow-y: auto;
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  width: 220px;
+  background-color: var(--background-tertiary);
+  border-radius: 4px;
+  box-shadow: var(--boxshadow-dark);
+  z-index: 1;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .sourcePicker > div {
-    padding: 8px;
-    margin-bottom: 2px;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
+  padding: 8px;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: var(--accent-foreground);
 }
 
 .sourcePicker > div:hover {
-    background-color: var(--background-secondary);
+  background-color: var(--background-secondary);
 }
 
 .sourcePicker > div:active {
-    background-color: var(--background-tertiary);
-}
-
-.sourcePicker > div:not(.selected) {
-    background-color: var(--background-primary);
-    color: var(--foreground-primary);
+  background-color: var(--background-primary);
 }
 
 .sourcePicker > div.selected {
-    background-color: var(--accent-primary-1);
-    color:var(--text-for-accent-background);
+  background-color: var(--accent-primary-1);
 }
 
 .sourcePicker > div.selected:hover {
-    background-color: var(--accent-primary-2);
-    color:var(--text-for-accent-background);
+  background-color: var(--accent-primary-2);
 }
 
 .sourcePicker > div.selected:active {
-    background-color: var(--accent-primary-3);
-    color:var(--text-for-accent-background);
+  background-color: var(--accent-primary-3);
 }
 
 .action {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    margin-left: 8px;
-    margin-right: -4px;
-    border-radius: 2px;
-    cursor: pointer;
-    background-color: var(--accent-tertiary-2);
-    color:var(--text-for-accent-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  margin-right: -4px;
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: var(--accent-tertiary-2);
+  color: var(--accent-foreground);
 }
 
 .action:hover {
-    background-color: var(--accent-tertiary-3);
-    color:var(--text-for-accent-background);
+  background-color: var(--accent-tertiary-3);
+  color: var(--accent-foreground);
 }
 
 .action > svg {
-    width: 12px;
-    height: 12px;
+  width: 12px;
+  height: 12px;
 }

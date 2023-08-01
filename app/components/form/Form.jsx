@@ -4,7 +4,7 @@ import {
   faSubtract,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import styles from "./Input.module.css";
+import styles from "./Form.module.css";
 import Link from "next/link";
 
 export const Label = ({ required, error, label, htmlFor }) => {
