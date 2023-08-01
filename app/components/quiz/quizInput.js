@@ -351,11 +351,11 @@ export default function QuizInput({
           </div>
         </div>
 
-          <InputPopup type="source" />
-          <InputPopup type="note" />
-        </div>
+        <InputPopup type="source" />
+        <InputPopup type="note" />
+      </div>
 
-        {/* {notes.length > 0 ? (
+      {/* {notes.length > 0 ? (
           <div>
             <p>Current Notes</p>
             <ul>
@@ -370,7 +370,7 @@ export default function QuizInput({
           </div>
         )} */}
 
-        {/* <details>
+      {/* <details>
           <summary>Add Another Note</summary>
           <Input
             id={"noteOptions_" + uniqueId}
@@ -396,51 +396,50 @@ export default function QuizInput({
           </div>
         </details> */}
 
-        <div className={styles.addSources}>
-          <div className={styles.inputContainer}>
-            <Label required={true} error={notesError} label="Current Notes" />
+      <div className={styles.addSources}>
+        <div className={styles.inputContainer}>
+          <Label required={true} error={notesError} label="Current Notes" />
 
-            <ol className={styles.chipGrid}>
-              <li
-                ref={addNoteRef}
-                className={styles.addChip}
-                onClick={() => {
-                  setIsNoteSelectOpen((prev) => !prev);
-                }}
-              >
-                Add a note
-                <button className={styles.action} title="Toggle Note List">
-                  <FontAwesomeIcon icon={faAdd} />
-                </button>
-                {isNoteSelectOpen && (
-                  <Select
-                    listChoices={availableNotes}
-                    listChosen={notes}
-                    listProperty={"text"}
-                    listSetter={setNotes}
-                  />
-                )}
-              </li>
+          <ol className={styles.chipGrid}>
+            <li
+              ref={addNoteRef}
+              className={styles.addChip}
+              onClick={() => {
+                setIsNoteSelectOpen((prev) => !prev);
+              }}
+            >
+              Add a note
+              <button className={styles.action} title="Toggle Note List">
+                <FontAwesomeIcon icon={faAdd} />
+              </button>
+              {isNoteSelectOpen && (
+                <Select
+                  listChoices={availableNotes}
+                  listChosen={notes}
+                  listProperty={"text"}
+                  listSetter={setNotes}
+                />
+              )}
+            </li>
 
-              {notes.length > 0 &&
-                notes.map((note) => (
-                  <ListItem
-                    key={note._id}
-                    item={note.text}
-                    action={() =>
-                      setNotes(notes.filter((x) => x._id !== note._id))
-                    }
-                    actionType={"delete"}
-                  />
-                ))}
-            </ol>
-          </div>
+            {notes.length > 0 &&
+              notes.map((note) => (
+                <ListItem
+                  key={note._id}
+                  item={note.text}
+                  action={() =>
+                    setNotes(notes.filter((x) => x._id !== note._id))
+                  }
+                  actionType={"delete"}
+                />
+              ))}
+          </ol>
         </div>
-
-        <button onClick={handleSubmit} className="submitButton">
-          {loading ? "Sending..." : "Submit Quiz"}
-        </button>
       </div>
+
+      <button onClick={handleSubmit} className="submitButton">
+        {loading ? "Sending..." : "Submit Quiz"}
+      </button>
     </div>
   );
 }

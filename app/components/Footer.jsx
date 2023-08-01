@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import styles from "./Footer.module.css";
 import { palettes } from "../data/theme";
 
+console.log(palettes);
+
 const paletteAttributes = [
   "--accent-primary-1",
   "--accent-primary-2",
@@ -88,6 +90,7 @@ const Footer = () => {
   };
 
   const setCssVariables = (palette) => {
+    if(!palette) return;
     paletteAttributes.forEach((attr, index) => {
       document.documentElement.style.setProperty(attr, palette.colors[index]);
     });
@@ -169,7 +172,7 @@ const Footer = () => {
                   : "",
               }}
             >
-              <div>
+              {palettes[activePalette] && <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -187,7 +190,7 @@ const Footer = () => {
                   <path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                 </svg>
                 <span>{palettes[activePalette].name}</span>
-              </div>
+              </div>}
             </button>
 
             {showPalettes && (
