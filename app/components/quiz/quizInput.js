@@ -1,12 +1,14 @@
 "use client";
 
-import { Input, Label, ListItem } from "../form/Form";
+import { Input, Label, ListItem, Details, Select } from "../form/Form";
 import SourceInput from "../source/sourceInput";
 import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./quizInput.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import NoteInput from "../note/noteInput";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
 
 export default function QuizInput({
   isEditing,
@@ -14,22 +16,26 @@ export default function QuizInput({
   availableNotes,
 }) {
   const [type, setType] = useState("prompt-response");
-  const [typeError, setTypeError] = useState('');
+  const [typeError, setTypeError] = useState("");
 
   const [prompt, setPrompt] = useState("");
-  const [promptError, setPromptError] = useState('');
+  const [promptError, setPromptError] = useState("");
 
   const [responses, setResponses] = useState([]);
   const [newResponse, setNewResponse] = useState("");
-  const [responsesError, setResponsesError] = useState('');
+  const [responsesError, setResponsesError] = useState("");
 
   const [choices, setChoices] = useState([]);
   const [newChoice, setNewChoice] = useState("");
-  const [choicesError, setChoicesError] = useState('');
+  const [choicesError, setChoicesError] = useState("");
 
   const [sources, setSources] = useState([]);
+  const [sourcesError, setSourcesError] = useState("");
   const [notes, setNotes] = useState([]);
-  const [sourcesError, setSourcesError] = useState('');
+  const [notesError, setNotesError] = useState("");
+
+  const [isSourceSelectOpen, setIsSourceSelectOpen] = useState(false);
+  const [isNoteSelectOpen, setIsNoteSelectOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +43,28 @@ export default function QuizInput({
   useEffect(() => {
     setUniqueId(makeUniqueId());
   }, []);
+
+  const addSourceRef = useRef(null);
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (isSourceSelectOpen && !addSourceRef.current.contains(e.target)) {
+        setIsSourceSelectOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+  }, [isSourceSelectOpen]);
+
+  const addNoteRef = useRef(null);
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (isNoteSelectOpen && !addNoteRef.current.contains(e.target)) {
+        setIsNoteSelectOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+  }, [isNoteSelectOpen]);
 
   const types = [
     { label: "Prompt/Response", value: "prompt-response" },
@@ -58,12 +86,13 @@ export default function QuizInput({
     }
 
     if (responses.length === 0) {
-      setResponsesError("Need at least one correct response")
+      setResponsesError("Need at least one correct response");
       cannotSend = true;
     }
 
     if (sources.length === 0 && notes.length === 0) {
       setSourcesError("Need at least one note or source");
+      setNotesError("Need at least one note or source");
       cannotSend = true;
     }
 
@@ -99,22 +128,23 @@ export default function QuizInput({
     console.log(response);
 
     setType("prompt-response");
-    setTypeError('');
+    setTypeError("");
 
     setPrompt("");
-    setPromptError('');
+    setPromptError("");
 
     setResponses([]);
     setNewResponse("");
-    setResponsesError('');
+    setResponsesError("");
 
     setChoices([]);
     setNewChoice("");
-    setChoicesError('');
+    setChoicesError("");
 
     setSources([]);
     setNotes([]);
-    setSourcesError('');
+    setSourcesError("");
+    setNotesError("");
 
     setLoading(false);
   }
@@ -154,7 +184,7 @@ export default function QuizInput({
         <div className={styles.flexContainer}>
           <div>
             <Input
-            id={"quizType_" + uniqueId}
+              id={"quizType_" + uniqueId}
               type={"select"}
               choices={types}
               required={true}
@@ -165,7 +195,7 @@ export default function QuizInput({
             />
 
             <Input
-            id={"prompt_" + uniqueId}
+              id={"prompt_" + uniqueId}
               required={true}
               label="Prompt"
               value={prompt}
@@ -179,7 +209,7 @@ export default function QuizInput({
             {type === "multiple-choice" && (
               <>
                 <Input
-                id={"addChoice_" + uniqueId}
+                  id={"addChoice_" + uniqueId}
                   label="Add a choice"
                   value={newChoice}
                   required={choices.length < 1}
@@ -200,14 +230,14 @@ export default function QuizInput({
                       key={res}
                       item={res}
                       actionType={"delete"}
-                      action={() => setChoices(prev => prev.filter(x => x !== res))}
+                      action={() =>
+                        setChoices((prev) => prev.filter((x) => x !== res))
+                      }
                     />
                   ))}
 
                   {choices.length === 0 && (
-                    <ListItem
-                      item={'No responses added yet'}
-                    />
+                    <ListItem item={"No responses added yet"} />
                   )}
                 </ul>
               </>
@@ -216,7 +246,7 @@ export default function QuizInput({
 
           <div>
             <Input
-            id={"addCorrect_" + uniqueId}
+              id={"addCorrect_" + uniqueId}
               label="Add a correct response"
               value={newResponse}
               required={responses.length === 0}
@@ -237,20 +267,20 @@ export default function QuizInput({
                   key={res}
                   item={res}
                   actionType={"delete"}
-                  action={() => setResponses(prev => prev.filter(x => x !== res))}
+                  action={() =>
+                    setResponses((prev) => prev.filter((x) => x !== res))
+                  }
                 />
               ))}
 
               {responses.length === 0 && (
-                <ListItem
-                  item={'No responses added yet'}
-                />
+                <ListItem item={"No responses added yet"} />
               )}
             </ul>
           </div>
         </div>
 
-        {sources.length > 0 ? (
+        {/* {sources.length > 0 ? (
           <div>
             <p>Current Sources</p>
             <ul>
@@ -269,55 +299,60 @@ export default function QuizInput({
           </div>
         ) : (
           <div>No Sources Added</div>
-        )}
+        )} */}
 
-        <details>
-          <summary>Add Another Source</summary>
-          {/* <label htmlFor={"sourceOptions_" + uniqueId}>
-            Select from a list of sources
-          </label> */}
-          <Input
-          label="Select from a list of sources"
-            id={"sourceOptions_" + uniqueId}
-            // list={"sourceList_" + uniqueId}
-            type="select"
-            choices={availableSources.map(src => {
-              return { value: src._id, label: src.title}
-            })}
-            onChange={(e) => {
-              let newSource = availableSources.find(
-                (x) => x._id === e.target.value
-              );
-              if (newSource) {
-                setSources((arr) => {
-                  return [...arr, newSource._id];
-                });
-              }
-              e.target.value = "";
-            }}
-          />
+        <div className={styles.addSources}>
+          <div className={styles.inputContainer}>
+            <Label
+              required={true}
+              error={sourcesError}
+              label="Current Sources"
+            />
 
-          {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
-          {/* <datalist id={"sourceList_" + uniqueId}>
-            {availableSources.map((src) => {
-              if (sources.indexOf(src._id) !== -1) return;
-              return (
-                <option
-                  key={src._id}
-                  value={src._id}
-                  label={src.title}
-                ></option>
-              );
-            })}
-          </datalist> */}
+            <ol className={styles.chipGrid}>
+              <li
+                ref={addSourceRef}
+                className={styles.addChip}
+                onClick={() => {
+                  setIsSourceSelectOpen((prev) => !prev);
+                }}
+              >
+                Add a source
+                <button className={styles.action} title="Toggle Source List">
+                  <FontAwesomeIcon icon={faAdd} />
+                </button>
+                {isSourceSelectOpen && (
+                  <Select
+                    listChoices={availableSources}
+                    listChosen={sources}
+                    listProperty={"title"}
+                    listSetter={setSources}
+                  />
+                )}
+              </li>
+
+              {sources.length > 0 &&
+                sources.map((src) => (
+                  <ListItem
+                    key={src._id}
+                    link={src.url}
+                    item={src.title}
+                    action={() =>
+                      setSources(sources.filter((x) => x._id !== src._id))
+                    }
+                    actionType={"delete"}
+                  />
+                ))}
+            </ol>
+          </div>
 
           <details>
-            <summary>Add New Source</summary>
-            <SourceInput></SourceInput>
+            <summary>Create a new source</summary>
+            <SourceInput />
           </details>
-        </details>
+        </div>
 
-        {notes.length > 0 ? (
+        {/* {notes.length > 0 ? (
           <div>
             <p>Current Notes</p>
             <ul>
@@ -330,20 +365,16 @@ export default function QuizInput({
           <div>
             <p>No Notes Added</p>
           </div>
-        )}
+        )} */}
 
-        <details>
+        {/* <details>
           <summary>Add Another Note</summary>
-          {/* <label htmlFor={"noteOptions_" + uniqueId}>
-            Select from a list of notes
-          </label> */}
           <Input
             id={"noteOptions_" + uniqueId}
-            // list={"noteList_" + uniqueId}
             type="select"
             label="Select from a list of notes"
-            choices={availableNotes.map(note => {
-              return {value: note._id, label: note.text}
+            choices={availableNotes.map((note) => {
+              return { value: note._id, label: note.text };
             })}
             onChange={(e) => {
               let newNote = availableNotes.find(
@@ -356,20 +387,56 @@ export default function QuizInput({
             }}
           />
 
-          {/* MDN raises accessibility concerns about <datalist>. May consider different option. */}
-          {/* <datalist id={"noteList_" + uniqueId}>
-            {availableNotes.map((note) => {
-              if (notes.indexOf(note) !== -1) return;
-              return (
-                <option key={note._id} value={note._id} label={note.text} />
-              );
-            })}
-          </datalist> */}
-
           <div>
             Add New Note
             <NoteInput availableSources={availableSources}></NoteInput>
           </div>
+        </details> */}
+
+        <div className={styles.addSources}>
+          <div className={styles.inputContainer}>
+            <Label required={true} error={notesError} label="Current Notes" />
+          </div>
+
+          <ol className={styles.chipGrid}>
+            <li
+              ref={addNoteRef}
+              className={styles.addChip}
+              onClick={() => {
+                setIsNoteSelectOpen((prev) => !prev);
+              }}
+            >
+              Add a note
+              <button className={styles.action} title="Toggle Note List">
+                <FontAwesomeIcon icon={faAdd} />
+              </button>
+              {isNoteSelectOpen && (
+                <Select
+                  listChoices={availableNotes}
+                  listChosen={notes}
+                  listProperty={"text"}
+                  listSetter={setNotes}
+                />
+              )}
+            </li>
+
+            {notes.length > 0 &&
+              notes.map((note) => (
+                <ListItem
+                  key={note._id}
+                  item={note.text}
+                  action={() =>
+                    setNotes(notes.filter((x) => x._id !== note._id))
+                  }
+                  actionType={"delete"}
+                />
+              ))}
+          </ol>
+        </div>
+
+        <details>
+          <summary>Create a new note</summary>
+          <NoteInput />
         </details>
 
         <button onClick={handleSubmit} className="submitButton">

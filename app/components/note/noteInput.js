@@ -2,7 +2,7 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
-import { TextArea, Label, ListItem } from "../form/Form";
+import { TextArea, Label, ListItem, Select } from "../form/Form";
 import { useEffect, useState, useRef } from "react";
 import makeUniqueId from "@/app/code/makeUniqueId";
 import SourceInput from "../source/sourceInput";
@@ -107,6 +107,14 @@ export default function NoteInput({ availableSources }) {
                 <FontAwesomeIcon icon={faAdd} />
               </button>
               {isSelectOpen && (
+                <Select
+                  listChoices={availableSources}
+                  listChosen={sources}
+                  listProperty={"title"}
+                  listSetter={setSources}
+                />
+              )}
+              {/* {isSelectOpen && (
                 <div
                   className={`${styles.sourcePicker} thinScroller`}
                   onClick={(e) => {
@@ -140,7 +148,7 @@ export default function NoteInput({ availableSources }) {
                     </div>
                   )}
                 </div>
-              )}
+              )} */}
             </li>
 
             {sources.length > 0 &&

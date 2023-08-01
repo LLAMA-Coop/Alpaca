@@ -1,3 +1,4 @@
+"use client";
 import {
   faAdd,
   faArrowRight,
@@ -6,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Form.module.css";
 import Link from "next/link";
+import { useState } from "react";
 
 export const Label = ({ required, error, label, htmlFor }) => {
   return (
@@ -197,4 +199,60 @@ export const ListItem = ({ item, action, actionType, link }) => {
     );
 
   return <li className={styles.listItem}>{content}</li>;
+};
+
+export const Details = ({ summary, children }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className={isOpen ? "open" : ""}>
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          setIsOpen(!isOpen);
+        }}
+      >
+        {summary}
+      </button>
+      <div>{isOpen && children}</div>
+    </div>
+  );
+};
+
+export const Select = ({
+  listChosen,
+  listChoices,
+  listProperty,
+  listSetter,
+}) => {
+  console.log("In Select");
+  return (
+    <div
+      className={`${styles.picker} thinScroller`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {console.log("It is returning", listChoices)}
+      {listChoices.map((choice) => (
+        <div
+          key={choice._id}
+          className={
+            listChosen.find((x) => x._id === choice._id) ? styles.selected : ""
+          }
+          onClick={() => {
+            if (!listChosen.find((x) => x._id === choice._id)) {
+              listSetter([...listChosen, choice]);
+            } else {
+              listSetter(listChosen.filter((x) => x._id !== choice._id));
+            }
+          }}
+        >
+          {choice[listProperty]}
+        </div>
+      ))}
+
+      {listChoices.length === 0 && (
+        <div className={styles.emptyList}>No choices available</div>
+      )}
+    </div>
+  );
 };

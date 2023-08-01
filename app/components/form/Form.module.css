@@ -147,3 +147,81 @@ a.listItem {
 .details .open {
   background-color: aqua;
 }
+
+.picker {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  width: 220px;
+  background-color: var(--background-primary);
+  border-radius: 4px;
+  box-shadow: var(--boxshadow-dark);
+  z-index: 1;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.picker > div {
+  padding: 8px;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.picker > div:hover {
+  background-color: var(--background-secondary);
+}
+
+.picker > div:active {
+  background-color: var(--background-tertiary);
+}
+
+.picker > div:not(.selected) {
+  background-color: var(--background-primary);
+  color: var(--foreground-primary);
+}
+
+.picker > div.selected {
+  background-color: var(--accent-primary-1);
+  color: var(--text-for-accent-background);
+}
+
+.picker > div.selected:hover {
+  background-color: var(--accent-primary-2);
+  color: var(--text-for-accent-background);
+}
+
+.picker > div.selected:active {
+  background-color: var(--accent-primary-3);
+  color: var(--text-for-accent-background);
+}
+
+.selected {
+  background-color: var(--accent-primary-1);
+  color: var(--text-for-accent-background);
+}
+
+.picker > div:not(.selected) {
+  background-color: var(--background-primary);
+  color: var(--foreground-primary);
+}
+
+.selected:hover {
+  background-color: var(--accent-primary-2);
+  color: var(--text-for-accent-background);
+}
+
+.selected:active {
+  background-color: var(--accent-primary-3);
+  color: var(--text-for-accent-background);
+}
+
+.emptyList {
+  background-color: var(--background-primary);
+  color: var(--foreground-primary);
+}
