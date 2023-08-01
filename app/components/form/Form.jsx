@@ -44,7 +44,7 @@ export const Input = ({
       }}
     >
       {label && (
-        <Label required={required} error={error} label={label} htmlFor={id} />
+        <Label required={required} error={error} label={label} htmlFor={id ?? label} />
       )}
 
       <div
@@ -75,7 +75,7 @@ export const Input = ({
           </select>
         ) : (
           <input
-            id={id}
+            id={id ?? label}
             type={type || "text"}
             required={required}
             onChange={onChange}
@@ -142,6 +142,9 @@ export const ListItem = ({ item, action, actionType, link }) => {
   }
   if (actionType === "delete") {
     label = "Delete item";
+  }
+  if(!action && link){
+    label = item;
   }
 
   const content = (

@@ -23,6 +23,7 @@
     border-radius: 12px;
     padding: 10px;
     background-color: var(--background-secondary);
+    color: var(--foreground-secondary);
 }
 
 .header li > a {
@@ -44,7 +45,7 @@
     padding: 6px 12px;
     border-radius: 4px;
     user-select: none;
-    color: white;
+    color: var(--foreground-secondary);
 }
 
 .header li > a:hover > span {
@@ -58,7 +59,7 @@
 }
 
 .header svg path {
-    fill: white;
+    fill: var(--foreground-secondary);
 }
 
 .header li > a:hover svg path {

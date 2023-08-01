@@ -5,6 +5,7 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 import styles from "./sourceInput.module.css";
 import { Input, Label, ListItem } from "../form/Form";
 import { useState, useEffect } from "react";
+import makeUniqueId from "@/app/code/uniqueId";
 
 export default function SourceInput() {
   const [title, setTitle] = useState("");
@@ -26,6 +27,7 @@ export default function SourceInput() {
   const [newContributor, setNewContributor] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [uniqueId, setUniqueId] = useState();
 
   const urlRegex = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i;
   const accessedRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -33,6 +35,7 @@ export default function SourceInput() {
 
   useEffect(() => {
     setLastAccessed(new Date().toISOString().split("T")[0]);
+    setUniqueId(makeUniqueId());
   }, []);
 
   function handleAddContributor(e) {
@@ -113,12 +116,13 @@ export default function SourceInput() {
   }
 
   return (
-    <div className='centeredContainer'>
+    <div className="centeredContainer">
       <h3>Add Source</h3>
       <form className={styles.form}>
         <div>
           <div>
             <Input
+              id={"title_" + uniqueId}
               required={true}
               label={"Title"}
               value={title}
@@ -130,6 +134,7 @@ export default function SourceInput() {
             />
 
             <Input
+              id={"medium_" + uniqueId}
               required={true}
               label={"Medium"}
               value={medium}
@@ -141,6 +146,7 @@ export default function SourceInput() {
             />
 
             <Input
+              id={"url_" + uniqueId}
               required={true}
               label={"URL of Source"}
               value={url}
@@ -152,6 +158,7 @@ export default function SourceInput() {
             />
 
             <Input
+              id={"lastAcc_" + uniqueId}
               type="date"
               label={"Last Accessed"}
               value={lastAccessed}
@@ -165,6 +172,7 @@ export default function SourceInput() {
 
           <div>
             <Input
+              id={"pubDate_" + uniqueId}
               type="date"
               label={"Published"}
               value={publishDate}
@@ -176,17 +184,18 @@ export default function SourceInput() {
             />
 
             <Input
+              id={"addCont_" + uniqueId}
               label={"Add Contributor"}
               value={newContributor}
               onChange={(e) => setNewContributor(e.target.value)}
               onSubmit={handleAddContributor}
             />
 
-            <Label label='Contributors' />
+            <Label label="Contributors" />
 
             <ul className={styles.chipGrid}>
               {contributors.length === 0 && (
-                <ListItem item='No Contributors Added' />
+                <ListItem item="No Contributors Added" />
               )}
 
               {contributors.map((cont) => (
