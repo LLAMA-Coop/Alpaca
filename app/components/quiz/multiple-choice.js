@@ -62,6 +62,8 @@ export default function PromptResponse({ canClientCheck, quiz }) {
 
   const answers = quiz.choices.map((x) => ({ label: x, value: x }));
 
+  console.log(quiz);
+
   return (
     <div
       className={styles.quizCard}
@@ -78,7 +80,7 @@ export default function PromptResponse({ canClientCheck, quiz }) {
         value={userResponse}
         onChange={handleInput}
         onEnter={handleCheckAnswer}
-        outlineColor={hasAnswered && (correctAnswer ? "var(--accent-tertiary-1)" : "var(--accent-secondary-1)")}
+        outlineColor={hasAnswered && (correctAnswer ? "var(--accent-tertiary-opacity-2)" : "var(--accent-secondary-opacity-2)")}
       />
 
       <div id="particles"></div>

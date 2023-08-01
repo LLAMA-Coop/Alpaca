@@ -14,7 +14,7 @@
     position: absolute;
     padding: 12px;
     border-radius: 4px;
-    background-color: var(--background-secondary);
+    background-color: var(--background-tertiary);
     left: 50%;
     top: calc(50% + 10px);
     transform: translateY(-50%);
@@ -29,7 +29,7 @@
     transform: translateY(-50%);
     border-top: 8px solid transparent;
     border-bottom: 8px solid transparent;
-    border-right: 8px solid var(--background-secondary);
+    border-right: 8px solid var(--background-tertiary);
 }
 
 .passwordTooltip > p {

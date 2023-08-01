@@ -1,4 +1,8 @@
-import { faAdd, faArrowRight, faSubtract } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAdd,
+  faArrowRight,
+  faSubtract,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Input.module.css";
 import Link from "next/link";
@@ -31,7 +35,8 @@ export const Input = ({
   outlineColor,
 }) => {
   return (
-    <div className={styles.inputContainer}
+    <div
+      className={styles.container}
       style={{
         opacity: disabled ? "0.3" : "",
         cursor: disabled ? "not-allowed" : "",
@@ -40,6 +45,7 @@ export const Input = ({
       {label && <Label required={required} error={error} label={label} />}
 
       <div
+        className={styles.inputContainer}
         style={{
           pointerEvents: disabled ? "none" : "",
         }}
@@ -105,17 +111,19 @@ export const TextArea = ({
   onBlur,
 }) => {
   return (
-    <div className={styles.inputContainer}>
+    <div className={styles.container}>
       {label && <Label required={required} error={error} label={label} />}
 
-      <textarea
-        className="thinScroller"
-        required={required}
-        onChange={onChange}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        value={value || ""}
-      />
+      <div className={styles.inputContainer}>
+        <textarea
+          className="thinScroller"
+          required={required}
+          onChange={onChange}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          value={value || ""}
+        />
+      </div>
     </div>
   );
 };
@@ -123,15 +131,16 @@ export const TextArea = ({
 export const ListItem = ({ item, action, actionType, link }) => {
   const content = (
     <div className={styles.itemContent}>
-      <span>
-        {item}
-      </span>
+      <span>{item}</span>
 
       {action && (
-        <button className={styles.action} onClick={(e) => {
-          e.preventDefault();
-          action();
-        }}>
+        <button
+          className={styles.action}
+          onClick={(e) => {
+            e.preventDefault();
+            action();
+          }}
+        >
           <FontAwesomeIcon icon={actionType === "add" ? faAdd : faSubtract} />
         </button>
       )}
@@ -144,17 +153,14 @@ export const ListItem = ({ item, action, actionType, link }) => {
     </div>
   );
 
-  if (link) return (
-    <li>
-      <Link href={link} target="_blank" className={styles.listItem}>
-        {content}
-      </Link>
-    </li>
-  );
+  if (link)
+    return (
+      <li>
+        <Link href={link} target="_blank" className={styles.listItem}>
+          {content}
+        </Link>
+      </li>
+    );
 
-  return (
-    <li className={styles.listItem}>
-      {content}
-    </li>
-  );
+  return <li className={styles.listItem}>{content}</li>;
 };

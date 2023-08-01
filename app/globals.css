@@ -1,146 +1,152 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
+
 :root {
-    --max-width: 1100px;
-    --padding: 120px 40px;
+  --max-width: 1100px;
+  --padding: 120px 40px;
 
-    --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono', 'Roboto Mono', 'Oxygen Mono',
-        'Ubuntu Monospace', 'Source Code Pro', 'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
-    --background-primary: hsl(0, 0%, 98%);
-    --background-secondary: hsl(0, 0%, 72%);
-    --background-tertiary: hsl(0, 1%, 60%);
+  --background-primary: hsl(0, 0%, 98%);
+  --background-secondary: hsl(0, 0%, 72%);
+  --background-tertiary: hsl(0, 1%, 60%);
 
-    --foreground-primary: hsl(240, 10%, 4%);
-    --foreground-secondary: hsl(240, 6%, 10%);
-    --foreground-tertiary: hsl(240, 4%, 16%);
+  --foreground-primary: hsl(240, 10%, 4%);
+  --foreground-secondary: hsl(240, 6%, 10%);
+  --foreground-tertiary: hsl(240, 4%, 16%);
 
-    --accent-primary-1: hsl(224, 76%, 48%);
-    --accent-primary-2: hsl(226, 71%, 40%);
-    --accent-primary-3: hsl(224, 64%, 33%);
-    --accent-primary-light: hsl(217, 91%, 60%);
+  --accent-primary-1: hsl(224, 76%, 48%);
+  --accent-primary-2: hsl(226, 71%, 40%);
+  --accent-primary-3: hsl(224, 64%, 33%);
+  --accent-primary-light: hsl(217, 91%, 60%);
+  --accent-primary-opacity-2: hsl(224, 76%, 48%, 0.2);
 
-    --accent-secondary-1: hsl(0, 74%, 42%);
-    --accent-secondary-2: hsl(0, 70%, 35%);
-    --accent-secondary-3: hsl(0, 63%, 31%);
-    --accent-secondary-light: hsl(0, 84%, 60%);
+  --accent-secondary-1: hsl(0, 74%, 42%);
+  --accent-secondary-2: hsl(0, 70%, 35%);
+  --accent-secondary-3: hsl(0, 63%, 31%);
+  --accent-secondary-light: hsl(0, 84%, 60%);
+  --accent-secondary-opacity-2: hsl(0, 74%, 42%, 0.2);
 
-    --accent-tertiary-1: hsl(163, 94%, 24%);
-    --accent-tertiary-2: hsl(163, 88%, 20%);
-    --accent-tertiary-3: hsl(164, 86%, 16%);
-    --accent-tertiary-light: hsl(160, 84%, 39%);
+  --accent-tertiary-1: hsl(163, 94%, 24%);
+  --accent-tertiary-2: hsl(163, 88%, 20%);
+  --accent-tertiary-3: hsl(164, 86%, 16%);
+  --accent-tertiary-light: hsl(160, 84%, 39%);
+  --accent-tertiary-opacity-2: hsl(163, 94%, 24%, 0.2);
 
-    --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
-    --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
-    --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
+  --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
+  --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
+  --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
 }
 
 @media (prefers-color-scheme: dark) {
-    :root {
-        --background-primary: hsl(240, 6%, 10%);
-        --background-secondary: hsl(240, 4%, 16%);
-        --background-tertiary: hsl(240, 5%, 26%);
+  :root {
+    --background-primary: hsl(240, 4%, 5%);
+    --background-secondary: hsl(240, 6%, 10%);
+    --background-tertiary: hsl(240, 4%, 16%);
 
-        --foreground-primary: hsl(0, 0%, 98%);
-        --foreground-secondary: hsl(240, 5%, 96%);
-        --foreground-tertiary: hsl(240, 6%, 90%);
-    }
+    --foreground-primary: hsl(0, 0%, 98%);
+    --foreground-secondary: hsl(240, 5%, 96%);
+    --foreground-tertiary: hsl(240, 6%, 90%);
+  }
 
-    html {
-        color-scheme: dark;
-    }
+  html {
+    color-scheme: dark;
+  }
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html,
 body {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    background-color: var(--background-primary);
-    color: var(--foreground-primary);
-    font-size: 16px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: var(--background-primary);
+  color: var(--foreground-primary);
+  font-size: 16px;
 }
 
 a {
-    color: inherit;
-    text-decoration: none;
+  color: inherit;
+  text-decoration: none;
 }
 
 button {
-    border: none;
+  border: none;
 }
 
 .submitButton {
-    padding: 2px 16px;
-    border-radius: 3px;
-    border: none;
-    font-size: 14px;
-    line-height: 16px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    height: 32px;
-    user-select: none;
-    background-color: var(--accent-primary-1);
-    transition: background-color 0.2s ease-in-out;
+  padding: 2px 16px;
+  border-radius: 3px;
+  border: none;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 32px;
+  user-select: none;
+  background-color: var(--accent-primary-1);
+  transition: background-color 0.2s ease-in-out;
 }
 
 .submitButton.icon {
-    gap: 8px;
+  gap: 8px;
 }
 
 .submitButton:hover {
-    background-color: var(--accent-primary-2);
+  background-color: var(--accent-primary-2);
 }
 
 .submitButton:active {
-    background-color: var(--accent-primary-3);
+  background-color: var(--accent-primary-3);
 }
 
 .submitButton.green {
-    background-color: var(--accent-tertiary-1);
+  background-color: var(--accent-tertiary-1);
 }
 
 .submitButton.green:hover {
-    background-color: var(--accent-tertiary-2);
+  background-color: var(--accent-tertiary-2);
 }
 
 .submitButton.green:active {
-    background-color: var(--accent-tertiary-3);
+  background-color: var(--accent-tertiary-3);
 }
 
 .submitButton.red {
-    background-color: var(--accent-secondary-1);
+  background-color: var(--accent-secondary-1);
 }
 
 .submitButton.red:hover {
-    background-color: var(--accent-secondary-2);
+  background-color: var(--accent-secondary-2);
 }
 
 .submitButton.red:active {
-    background-color: var(--accent-secondary-3);
+  background-color: var(--accent-secondary-3);
 }
 
 select {
-    border-radius: 4px;
-    background-color: var(--background-secondary);
-    max-width: 480px;
-    height: 40px;
-    padding: 10px;
-    border: none;
-    font-size: 16px;
+  border-radius: 4px;
+  background-color: var(--background-secondary);
+  max-width: 480px;
+  height: 40px;
+  padding: 10px;
+  border: none;
+  font-size: 16px;
 }
 
 ul,
 ol {
-    list-style: none;
+  list-style: none;
 }
 
 input:focus-visible,
@@ -148,98 +154,97 @@ textarea:focus-visible,
 select:focus-visible,
 button:focus-visible,
 a:focus-visible {
-    outline: 4px solid var(--accent-primary-1);
-    outline-offset: 1px;
+  outline: 4px solid var(--accent-primary-opacity-2);
 }
 
-input[type='date'] {
-    cursor: pointer;
+input[type="date"] {
+  cursor: pointer;
 }
 
 .centeredContainer {
-    max-width: var(--max-width);
-    padding: var(--padding);
-    margin: 0 auto;
+  max-width: var(--max-width);
+  padding: var(--padding);
+  margin: 0 auto;
 }
 
 .centeredContainer > h3 {
-    font-size: 24px;
-    margin-bottom: 24px;
+  font-size: 34px;
+  margin-bottom: 24px;
 }
 
 .chipGrid {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .thinScroller::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
 
 .thinScroller::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .thinScroller::-webkit-scrollbar-thumb {
-    background: var(--accent-primary-1);
-    border: 3px solid var(--background-primary);
-    border-radius: 100vw;
+  background: var(--accent-primary-1);
+  border: 3px solid var(--background-primary);
+  border-radius: 100vw;
 }
 
 #particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 1024px) {
+  :root {
+    --padding: 80px 40px;
+  }
 }
 
 @media screen and (max-width: 767px) {
-    :root {
-        --padding: 80px 40px;
-    }
-}
-
-@media screen and (max-width: 767px) {
-    :root {
-        --padding: 56px 24px;
-    }
+  :root {
+    --padding: 56px 24px;
+  }
 }
 
 @keyframes fallen_1 {
-    100% {
-        top: calc(100% + 20px);
-        transform: rotateX(1023deg) rotateY(372deg) rotateZ(663deg);
-    }
+  100% {
+    top: calc(100% + 20px);
+    transform: rotateX(1023deg) rotateY(372deg) rotateZ(663deg);
+  }
 }
 
 @keyframes fallen_2 {
-    100% {
-        top: calc(100% + 20px);
-        transform: rotateX(1023deg) rotateY(372deg) rotateZ(663deg);
-    }
+  100% {
+    top: calc(100% + 20px);
+    transform: rotateX(1023deg) rotateY(372deg) rotateZ(663deg);
+  }
 }
 
 @keyframes fallen_3 {
-    100% {
-        top: calc(100% + 20px);
-        transform: rotateX(731deg) rotateY(1000deg) rotateZ(911deg);
-    }
+  100% {
+    top: calc(100% + 20px);
+    transform: rotateX(731deg) rotateY(1000deg) rotateZ(911deg);
+  }
 }
 
 @keyframes fallen_4 {
-    100% {
-        top: calc(100% + 20px);
-        transform: rotateX(403deg) rotateY(707deg) rotateZ(537deg);
-    }
+  100% {
+    top: calc(100% + 20px);
+    transform: rotateX(403deg) rotateY(707deg) rotateZ(537deg);
+  }
 }
 
 @keyframes fallen_5 {
-    100% {
-        top: calc(100% + 20px);
-        transform: rotateX(399deg) rotateY(1200deg) rotateZ(839deg);
-    }
+  100% {
+    top: calc(100% + 20px);
+    transform: rotateX(399deg) rotateY(1200deg) rotateZ(839deg);
+  }
 }

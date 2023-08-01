@@ -1,6 +1,6 @@
-import Link from "next/link";
-import styles from "./header.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import styles from "./Header.module.css";
+import Link from "next/link";
 import {
   faBook,
   faClipboardQuestion,

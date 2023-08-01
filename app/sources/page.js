@@ -9,17 +9,18 @@ export default function SourcesPage() {
   console.log(sources);
   return (
     <main className={styles.main}>
-
       <h2>Sources</h2>
 
       {sources.length > 0 && (
         <section>
-          <div className='centeredContainer'>
+          <div className="centeredContainer">
             <h3>Sources</h3>
 
-            <div className={styles.sourceGrid}>
-              {sources.map((src) => <SourceDisplay key={src._id} source={src} />)}
-            </div>
+            <ul className={styles.sourceGrid}>
+              {sources.map((src) => (
+                <SourceDisplay key={src._id} source={src} />
+              ))}
+            </ul>
           </div>
         </section>
       )}
