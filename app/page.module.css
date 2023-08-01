@@ -1,63 +1,51 @@
-.main > h2 {
-    font-size: clamp(32px, 8vw, 42px);
-    text-align: center;
-    margin: 12px 0;
-    padding: 0 10px;
-}
-
-.main > section:nth-child(even) {
-    background-color: var(--background-primary);
+/* .main > section:nth-child(even) {
+  background-color: var(--background-primary);
 }
 
 .main > section:nth-child(odd) {
-    background-color: var(--background-secondary);
-}
+  background-color: var(--background-secondary);
+} */
 
-.main > section:nth-child(even) input,
+/* .main > section:nth-child(even) input,
 .main > section:nth-child(even) textarea,
 .main > section:nth-child(even) select {
-    background-color: var(--background-secondary);
+  background-color: var(--background-secondary);
 }
 
 .main > section:nth-child(odd) input,
 .main > section:nth-child(odd) textarea,
 .main > section:nth-child(odd) select {
-    background-color: var(--background-primary);
-}
+  background-color: var(--background-primary);
+} */
 
 .sourceGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    grid-gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  grid-gap: 16px;
 }
 
 .description {
-    margin-top: 24px;
+  margin-top: 24px;
 }
 
 .description > p {
-    margin-bottom: 16px;
-    font-size: clamp(16px, 2vw, 20px);
-    line-height: 1.625;
-    font-weight: 300;
+  margin-bottom: 16px;
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: 1.625;
+  font-weight: 300;
 }
 
 .description p > a {
-    color: var(--anchor);
-    text-decoration: none;
+  color: var(--anchor);
+  text-decoration: none;
 }
 
 .description p > a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-}
-
-@media (prefers-reduced-motion) {
-}
-
-/* Mobile */
-@media (max-width: 700px) {
+.quizGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  grid-gap: 16px;
 }

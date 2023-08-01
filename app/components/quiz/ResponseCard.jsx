@@ -1,17 +1,18 @@
 "use client";
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import styles from "./quizDisplay.module.css"
-import confetti from 'canvas-confetti';
+import confetti from "canvas-confetti";
 import { Input } from "../form/Form";
+import { Card } from "../card/Card";
 import { useState } from "react";
 
-export default function PromptResponse({ canClientCheck, quiz }) {
+const ResponseCard = ({ canClientCheck, quiz }) => {
   const [userResponse, setUserResponse] = useState("");
   const [hasAnswered, setHasAnswered] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState(false);
   const [failures, setFailures] = useState(0);
+
+  const type = quiz.type === "prompt-response" ? "input" : "select";
 
   function handleInput(e) {
     e.preventDefault();
@@ -23,7 +24,7 @@ export default function PromptResponse({ canClientCheck, quiz }) {
     if (hasAnswered) return;
 
     const isCorrect = quiz.correctResponses.find(
-      (x) => x.toLowerCase() === userResponse.toLowerCase()
+      (x) => x.toLowerCase() === userResponse.toLowerCase(),
     );
 
     if (isCorrect) {
@@ -46,8 +47,18 @@ export default function PromptResponse({ canClientCheck, quiz }) {
 
         const particleCount = 50 * (timeLeft / duration);
         // since particles fall down, start a bit higher than random
-        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+        confetti(
+          Object.assign({}, defaults, {
+            particleCount,
+            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+          }),
+        );
+        confetti(
+          Object.assign({}, defaults, {
+            particleCount,
+            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+          }),
+        );
       }, 250);
 
       const audio = new Audio("/assets/sounds/clap.wav");
@@ -61,42 +72,51 @@ export default function PromptResponse({ canClientCheck, quiz }) {
     setHasAnswered(true);
   }
 
-  return (
-    <div
-      className={styles.quizCard}
-      style={{
-        borderColor: hasAnswered ? correctAnswer ? "var(--accent-tertiary-1)" : "var(--accent-secondary-1)" : '',
-      }}
-    >
-      <h4>{quiz.prompt}</h4>
+  const colors = {
+    correct: "var(--accent-tertiary-1)",
+    incorrect: "var(--accent-secondary-1)",
+  };
 
+  const colorsLight = {
+    correct: "var(--accent-tertiary-outline)",
+    incorrect: "var(--accent-secondary-outline)",
+  };
+
+  let colorOverride;
+  if (hasAnswered) {
+    colorOverride = correctAnswer ? "correct" : "incorrect";
+  }
+
+  const answers = quiz.choices?.map((x) => ({ label: x, value: x }));
+
+  return (
+    <Card
+      title={quiz.prompt}
+      buttons={[
+        {
+          label: hasAnswered
+            ? correctAnswer
+              ? "Correct"
+              : "Incorrect"
+            : "Check Answer",
+          icon: hasAnswered ? (correctAnswer ? faCheck : faXmark) : undefined,
+          color: hasAnswered ? (correctAnswer ? "green" : "red") : undefined,
+          onClick: handleCheckAnswer,
+        },
+      ]}
+      border={hasAnswered && (correctAnswer ? "green" : "red")}
+    >
       <Input
-        label='Your Response'
+        type={type === "input" ? "text" : "select"}
+        choices={answers ?? null}
+        label="Your Response"
         value={userResponse}
         onChange={handleInput}
         onEnter={handleCheckAnswer}
-        outlineColor={hasAnswered && (correctAnswer ? "var(--accent-tertiary-1)" : "var(--accent-secondary-1)")}
+        outlineColor={colorOverride ? colorsLight[colorOverride] : undefined}
       />
 
       <div id="particles"></div>
-
-      <button
-        onClick={handleCheckAnswer}
-        className={`submitButton ${hasAnswered && (correctAnswer ? 'green icon' : 'red icon')}`}
-      >
-        {hasAnswered ? correctAnswer ? (
-          <>
-            {"Correct"}
-            <FontAwesomeIcon icon={faCheck} />
-          </>
-        ) : (
-          <>
-            {"Incorrect"}
-            <FontAwesomeIcon icon={faXmark} />
-          </>
-        ) : "Check Answer"}
-
-      </button>
 
       {!correctAnswer && failures > 2 && (
         <div>
@@ -108,6 +128,8 @@ export default function PromptResponse({ canClientCheck, quiz }) {
           </ul>
         </div>
       )}
-    </div>
+    </Card>
   );
-}
+};
+
+export default ResponseCard;

@@ -1,7 +1,7 @@
-import User from "@/app/api/models/User";
 import SourceDisplay from "../source/sourceDisplay";
-import Source from "@/app/api/models/Source";
 import styles from "./noteDisplay.module.css";
+import Source from "@/app/api/models/Source";
+import User from "@/app/api/models/User";
 
 export default async function NoteDisplay({ note }) {
   const user = await User.findById(note.addedBy);
@@ -9,7 +9,7 @@ export default async function NoteDisplay({ note }) {
   return (
     <div className={styles.note}>
       <h4>{note.text}</h4>
-      <p>Added By: {user?.username ?? 'Not provided'}</p>
+      <p>Added By: {user?.username ?? "Not provided"}</p>
 
       <ul>
         {note.sources.map(async (srcId) => {

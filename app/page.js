@@ -19,11 +19,11 @@ export default function Home() {
         <section className="centeredContainer">
           <h3>Sources</h3>
 
-          <div className={styles.sourceGrid}>
+          <ul className={styles.sourceGrid}>
             {sources.map((src) => (
               <SourceDisplay key={src._id} source={src} />
             ))}
-          </div>
+          </ul>
         </section>
       )}
 

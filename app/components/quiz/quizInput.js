@@ -46,6 +46,8 @@ export default function QuizInput({
 
   const addSourceRef = useRef(null);
   useEffect(() => {
+    if (!addSourceRef.current) return;
+
     const handleOutsideClick = (e) => {
       if (isSourceSelectOpen && !addSourceRef.current.contains(e.target)) {
         setIsSourceSelectOpen(false);
