@@ -3,7 +3,7 @@
 import { faAdd, faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState, useRef } from "react";
-import { TextArea, Label, ListItem } from "../form/Form";
+import { TextArea, Label, ListItem, Select } from "../form/Form";
 import SourceInput from "../source/sourceInput";
 import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./noteInput.module.css";
@@ -26,7 +26,7 @@ export default function NoteInput({ availableSources }) {
       if (isSelectOpen && !addSourceRef.current.contains(e.target)) {
         setIsSelectOpen(false);
       }
-    }
+    };
 
     document.addEventListener("click", handleOutsideClick);
 
@@ -35,7 +35,7 @@ export default function NoteInput({ availableSources }) {
 
   useEffect(() => {
     setUniqueId(makeUniqueId());
-  }, [])
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -61,8 +61,8 @@ export default function NoteInput({ availableSources }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(note)
-    })
+      body: JSON.stringify(note),
+    });
 
     setLoading(false);
 
@@ -75,7 +75,7 @@ export default function NoteInput({ availableSources }) {
   }
 
   return (
-    <div className='centeredContainer'>
+    <div className="centeredContainer">
       <h3>Add a note</h3>
       <div className={styles.form}>
         <TextArea
@@ -87,30 +87,35 @@ export default function NoteInput({ availableSources }) {
           }}
           value={text}
           error={textError}
-          label={'Text'}
+          label={"Text"}
         />
       </div>
 
-
-
       <div className={styles.addSources}>
         <div className={styles.inputContainer}>
-          <Label required={true} error={sourceError} label='Current Sources' />
+          <Label required={true} error={sourceError} label="Current Sources" />
 
           <ol className={styles.chipGrid}>
             <li
               ref={addSourceRef}
               className={styles.addChip}
               onClick={() => {
-                setIsSelectOpen(prev => !prev);
+                setIsSelectOpen((prev) => !prev);
               }}
             >
               Add a source
               <button className={styles.action} title="Toggle Source List">
                 <FontAwesomeIcon icon={faAdd} />
               </button>
-
               {isSelectOpen && (
+                <Select
+                  listChoices={availableSources}
+                  listChosen={sources}
+                  listProperty={"title"}
+                  listSetter={setSources}
+                />
+              )}
+              {/* {isSelectOpen && (
                 <div
                   className={`${styles.sourcePicker} thinScroller`}
                   onClick={(e) => {
@@ -142,18 +147,21 @@ export default function NoteInput({ availableSources }) {
                     </div>
                   )}
                 </div>
-              )}
+              )} */}
             </li>
 
-            {sources.length > 0 && sources.map((src) => (
-              <ListItem
-                key={src._id}
-                link={src.url}
-                item={src.title}
-                action={() => setSources(sources.filter((x) => x._id !== src._id))}
-                actionType={'delete'}
-              />
-            ))}
+            {sources.length > 0 &&
+              sources.map((src) => (
+                <ListItem
+                  key={src._id}
+                  link={src.url}
+                  item={src.title}
+                  action={() =>
+                    setSources(sources.filter((x) => x._id !== src._id))
+                  }
+                  actionType={"delete"}
+                />
+              ))}
           </ol>
         </div>
 

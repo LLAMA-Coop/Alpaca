@@ -29,7 +29,8 @@
     color:var(--text-for-accent-background);
 }
 
-.chipGrid > .addChip > div:not(.sourcePicker) {
+/* remember to change '.sourcePicker' and add to new components */
+/* .chipGrid > .addChip > div:not(.sourcePicker) {
     margin-left: 8px;
     margin-right: -4px;
     display: flex;
@@ -44,7 +45,7 @@
 .chipGrid > .addChip > div:not(.sourcePicker):hover {
     background-color: var(--accent-tertiary-2);
     color:var(--text-for-accent-background);
-}
+} */
 
 .chipGrid > li > div > svg {
     width: 14px;
