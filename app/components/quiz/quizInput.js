@@ -89,13 +89,13 @@ export default function QuizInput({
     }
 
     if (responses.length === 0) {
-      setResponsesError("Need at least one correct response");
+      setResponsesError("Need at least one answer");
       cannotSend = true;
     }
 
     if (sources.length === 0 && notes.length === 0) {
-      setSourcesError("Need at least one note or source");
-      setNotesError("Need at least one note or source");
+      setSourcesError("Need one note or source");
+      setNotesError("Need one note or source");
       cannotSend = true;
     }
 
@@ -183,256 +183,185 @@ export default function QuizInput({
   return (
     <div className="centeredContainer">
       <h3>Add new quiz card</h3>
-      <div className={styles.form}>
-        <div className={styles.flexContainer}>
+
+      <div className={styles.container}>
+        <Input
+          id={"quizType_" + uniqueId}
+          type={"select"}
+          choices={types}
+          required={true}
+          label="Type"
+          value={type}
+          error={typeError}
+          onChange={(e) => setType(e.target.value)}
+        />
+
+        <Input
+          id={"prompt_" + uniqueId}
+          required={true}
+          label="Prompt"
+          value={prompt}
+          error={promptError}
+          onChange={(e) => {
+            setPrompt(e.target.value);
+            setPromptError("");
+          }}
+        />
+
+        {type === "multiple-choice" && (
           <div>
             <Input
-              id={"quizType_" + uniqueId}
-              type={"select"}
-              choices={types}
-              required={true}
-              label="Type"
-              value={type}
-              error={typeError}
-              onChange={(e) => setType(e.target.value)}
-            />
-
-            <Input
-              id={"prompt_" + uniqueId}
-              required={true}
-              label="Prompt"
-              value={prompt}
-              error={promptError}
-              onChange={(e) => {
-                setPrompt(e.target.value);
-                setPromptError("");
-              }}
-            />
-
-            {type === "multiple-choice" && (
-              <>
-                <Input
-                  id={"addChoice_" + uniqueId}
-                  label="Add a choice"
-                  value={newChoice}
-                  required={choices.length < 1}
-                  onSubmit={handleAddChoice}
-                  error={choicesError}
-                  onChange={(e) => setNewChoice(e.target.value)}
-                  onKeyUp={(e) => {
-                    if (e.key === "Enter") {
-                      handleAddChoice(e);
-                    }
-                  }}
-                />
-
-                <Label label="Choices" />
-                <ul className="chipGrid">
-                  {choices.map((res) => (
-                    <ListItem
-                      key={res}
-                      item={res}
-                      actionType={"delete"}
-                      action={() =>
-                        setChoices((prev) => prev.filter((x) => x !== res))
-                      }
-                    />
-                  ))}
-
-                  {choices.length === 0 && (
-                    <ListItem item={"No responses added yet"} />
-                  )}
-                </ul>
-              </>
-            )}
-          </div>
-
-          <div>
-            <Input
-              id={"addCorrect_" + uniqueId}
-              label="Add a correct response"
-              value={newResponse}
-              required={responses.length === 0}
-              onSubmit={handleAddResponse}
-              error={responsesError}
-              onChange={(e) => setNewResponse(e.target.value)}
+              id={"addChoice_" + uniqueId}
+              label="Add new choice"
+              value={newChoice}
+              required={choices.length < 1}
+              onSubmit={handleAddChoice}
+              error={choicesError}
+              onChange={(e) => setNewChoice(e.target.value)}
               onKeyUp={(e) => {
                 if (e.key === "Enter") {
-                  handleAddResponse(e);
+                  handleAddChoice(e);
                 }
               }}
             />
 
-            <Label label="Correct Responses" />
+            <Label label="Choices" />
             <ul className="chipGrid">
-              {responses.map((res) => (
+              {choices.map((res) => (
                 <ListItem
                   key={res}
                   item={res}
                   actionType={"delete"}
                   action={() =>
-                    setResponses((prev) => prev.filter((x) => x !== res))
+                    setChoices((prev) => prev.filter((x) => x !== res))
                   }
                 />
               ))}
 
-              {responses.length === 0 && (
+              {choices.length === 0 && (
                 <ListItem item={"No responses added yet"} />
               )}
             </ul>
           </div>
-        </div>
+        )}
 
-        {/* {sources.length > 0 ? (
-          <div>
-            <p>Current Sources</p>
-            <ul>
-              {sources.map((srcId) => {
-                const source = availableSources.find((x) => x._id === srcId);
-
-                return (
-                  <li key={source._id}>
-                    <Link href={source.url} target="_blank">
-                      {source.title}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ) : (
-          <div>No Sources Added</div>
-        )} */}
-
-        <div className={styles.addSources}>
-          <div className={styles.inputContainer}>
-            <Label
-              required={true}
-              error={sourcesError}
-              label="Current Sources"
-            />
-
-            <ol className={styles.chipGrid}>
-              <li
-                ref={addSourceRef}
-                className={styles.addChip}
-                onClick={() => {
-                  setIsSourceSelectOpen((prev) => !prev);
-                }}
-              >
-                Add a source
-                <button className={styles.action} title="Toggle Source List">
-                  <FontAwesomeIcon icon={faAdd} />
-                </button>
-                {isSourceSelectOpen && (
-                  <Select
-                    listChoices={availableSources}
-                    listChosen={sources}
-                    listProperty={"title"}
-                    listSetter={setSources}
-                  />
-                )}
-              </li>
-
-              {sources.length > 0 &&
-                sources.map((src) => (
-                  <ListItem
-                    key={src._id}
-                    link={src.url}
-                    item={src.title}
-                    action={() =>
-                      setSources(sources.filter((x) => x._id !== src._id))
-                    }
-                    actionType={"delete"}
-                  />
-                ))}
-            </ol>
-          </div>
-
-          <InputPopup type="source" />
-          <InputPopup type="note" />
-        </div>
-
-        {/* {notes.length > 0 ? (
-          <div>
-            <p>Current Notes</p>
-            <ul>
-              {notes.map((note) => {
-                return <li key={note._id}>{note.text}</li>;
-              })}
-            </ul>
-          </div>
-        ) : (
-          <div>
-            <p>No Notes Added</p>
-          </div>
-        )} */}
-
-        {/* <details>
-          <summary>Add Another Note</summary>
+        <div>
           <Input
-            id={"noteOptions_" + uniqueId}
-            type="select"
-            label="Select from a list of notes"
-            choices={availableNotes.map((note) => {
-              return { value: note._id, label: note.text };
-            })}
-            onChange={(e) => {
-              let newNote = availableNotes.find(
-                (x) => x._id === e.target.value
-              );
-              if (newNote && notes.indexOf(newNote) === -1) {
-                setNotes([...notes, newNote]);
+            id={"addCorrect_" + uniqueId}
+            label="Add new answer"
+            value={newResponse}
+            required={responses.length === 0}
+            onSubmit={handleAddResponse}
+            error={responsesError}
+            onChange={(e) => setNewResponse(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                handleAddResponse(e);
               }
-              e.target.value = "";
             }}
           />
 
-          <div>
-            Add New Note
-            <NoteInput availableSources={availableSources}></NoteInput>
-          </div>
-        </details> */}
+          <Label label="Answers" />
+          <ul className="chipGrid">
+            {responses.map((res) => (
+              <ListItem
+                key={res}
+                item={res}
+                actionType={"delete"}
+                action={() =>
+                  setResponses((prev) => prev.filter((x) => x !== res))
+                }
+              />
+            ))}
 
-        <div className={styles.addSources}>
-          <div className={styles.inputContainer}>
-            <Label required={true} error={notesError} label="Current Notes" />
+            {responses.length === 0 && (
+              <ListItem item={"No responses added yet"} />
+            )}
+          </ul>
+        </div>
 
-            <ol className={styles.chipGrid}>
-              <li
-                ref={addNoteRef}
-                className={styles.addChip}
-                onClick={() => {
-                  setIsNoteSelectOpen((prev) => !prev);
-                }}
-              >
-                Add a note
-                <button className={styles.action} title="Toggle Note List">
-                  <FontAwesomeIcon icon={faAdd} />
-                </button>
-                {isNoteSelectOpen && (
-                  <Select
-                    listChoices={availableNotes}
-                    listChosen={notes}
-                    listProperty={"text"}
-                    listSetter={setNotes}
-                  />
-                )}
-              </li>
+        <div>
+          <Label required={true} error={sourcesError} label="Current Sources" />
 
-              {notes.length > 0 &&
-                notes.map((note) => (
-                  <ListItem
-                    key={note._id}
-                    item={note.text}
-                    action={() =>
-                      setNotes(notes.filter((x) => x._id !== note._id))
-                    }
-                    actionType={"delete"}
-                  />
-                ))}
-            </ol>
-          </div>
+          <ol className={styles.chipGrid}>
+            <li
+              ref={addSourceRef}
+              className={styles.addChip}
+              onClick={() => {
+                setIsSourceSelectOpen((prev) => !prev);
+              }}
+            >
+              Add a source
+              <button className={styles.action} title="Toggle Source List">
+                <FontAwesomeIcon icon={faAdd} />
+              </button>
+              {isSourceSelectOpen && (
+                <Select
+                  listChoices={availableSources}
+                  listChosen={sources}
+                  listProperty={"title"}
+                  listSetter={setSources}
+                />
+              )}
+            </li>
+
+            {sources.length > 0 &&
+              sources.map((src) => (
+                <ListItem
+                  key={src._id}
+                  link={src.url}
+                  item={src.title}
+                  action={() =>
+                    setSources(sources.filter((x) => x._id !== src._id))
+                  }
+                  actionType={"delete"}
+                />
+              ))}
+          </ol>
+        </div>
+
+        <div>
+          <Label required={true} error={notesError} label="Current Notes" />
+
+          <ol className={styles.chipGrid}>
+            <li
+              ref={addNoteRef}
+              className={styles.addChip}
+              onClick={() => {
+                setIsNoteSelectOpen((prev) => !prev);
+              }}
+            >
+              Add a note
+              <button className={styles.action} title="Toggle Note List">
+                <FontAwesomeIcon icon={faAdd} />
+              </button>
+              {isNoteSelectOpen && (
+                <Select
+                  listChoices={availableNotes}
+                  listChosen={notes}
+                  listProperty={"text"}
+                  listSetter={setNotes}
+                />
+              )}
+            </li>
+
+            {notes.length > 0 &&
+              notes.map((note) => (
+                <ListItem
+                  key={note._id}
+                  item={note.text}
+                  action={() =>
+                    setNotes(notes.filter((x) => x._id !== note._id))
+                  }
+                  actionType={"delete"}
+                />
+              ))}
+          </ol>
+        </div>
+
+        <div className={styles.buttonContainer}>
+          <InputPopup type="source" />
+          <InputPopup type="note" />
         </div>
 
         <button onClick={handleSubmit} className="submitButton">

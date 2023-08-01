@@ -1,12 +1,7 @@
-.inputContainer {
-  border-radius: 4px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.flexContainer {
-  display: flex;
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 24px;
 }
 
 .addSources {
@@ -77,8 +72,22 @@
   flex: 1;
 }
 
-@media screen and (max-width: 1120px) {
-  .flexContainer {
-    display: block;
+.buttonContainer {
+  display: flex;
+  gap: 16px;
+}
+
+.lists {
+  display: flex;
+}
+
+.lists > div {
+  flex: 1;
+}
+
+@media screen and (max-width: 1024px) {
+  .container {
+    max-width: 550px;
+    grid-template-columns: 1fr;
   }
 }
