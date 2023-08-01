@@ -30,6 +30,8 @@
 
     --text-for-accent-background: white;
 
+    --anchor: hsl(226, 71%, 40%);
+
     --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
     --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
     --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
@@ -44,6 +46,8 @@
         --foreground-primary: hsl(0, 0%, 98%);
         --foreground-secondary: hsl(240, 5%, 96%);
         --foreground-tertiary: hsl(240, 6%, 90%);
+
+        --anchor: hsl(217, 91%, 60%);
     }
 
     html {
@@ -69,7 +73,7 @@ body {
 }
 
 a {
-    color: inherit;
+    color: var(--anchor);
     text-decoration: none;
 }
 

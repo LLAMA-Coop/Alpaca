@@ -43,7 +43,7 @@
 }
 
 .description p > a {
-    color: var(--accent-primary);
+    color: var(--anchor);
     text-decoration: none;
 }
 
