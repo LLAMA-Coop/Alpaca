@@ -6,6 +6,23 @@ import { useEffect, useState } from "react";
 import styles from "./Footer.module.css";
 import { palettes } from "../data/theme";
 
+const paletteAttributes = [
+  "--accent-primary-1",
+  "--accent-primary-2",
+  "--accent-primary-3",
+  "--accent-primary-light",
+
+  "--accent-secondary-1",
+  "--accent-secondary-2",
+  "--accent-secondary-3",
+  "--accent-secondary-light",
+
+  "--accent-tertiary-1",
+  "--accent-tertiary-2",
+  "--accent-tertiary-3",
+  "--accent-tertiary-light",
+];
+
 const Footer = () => {
   const [showThemes, setShowThemes] = useState(false);
   const [showPalettes, setShowPalettes] = useState(false);
@@ -39,6 +56,17 @@ const Footer = () => {
     return () => system.removeEventListener("change", changeSystemTheme);
   }, [activeTheme]);
 
+  useEffect(() => {
+    const setPalette = () => {
+      const palette = localStorage.getItem("palette");
+
+      setActivePalette(parseInt(palette) ?? 0);
+      setCssVariables(palettes[parseInt(palette) ?? 0]);
+    };
+
+    setPalette();
+  }, []);
+
   const changeCssProperties = (theme) => {
     const darkTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -57,6 +85,18 @@ const Footer = () => {
     localStorage.setItem("theme", theme);
     setActiveTheme(theme);
     changeCssProperties(theme);
+  };
+
+  const setCssVariables = (palette) => {
+    paletteAttributes.forEach((attr, index) => {
+      document.documentElement.style.setProperty(attr, palette.colors[index]);
+    });
+  };
+
+  const setPalette = (index) => {
+    setActivePalette(index);
+    localStorage.setItem("palette", index);
+    setCssVariables(palettes[index]);
   };
 
   const lightModes = ["Light", "Dark", "System"];
@@ -157,7 +197,7 @@ const Footer = () => {
                     <li
                       key={index}
                       onClick={() => {
-                        setActivePalette(index);
+                        setPalette(index);
                         // setShowPalettes(false);
                       }}
                     >
