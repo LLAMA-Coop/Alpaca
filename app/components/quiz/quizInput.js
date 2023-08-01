@@ -72,6 +72,7 @@ export default function QuizInput({
   const types = [
     { label: "Prompt/Response", value: "prompt-response" },
     { label: "Multiple Choice", value: "multiple-choice" },
+    { label: "List Answer", value: "list-answer" },
   ];
 
   async function handleSubmit(e) {
@@ -344,6 +345,27 @@ export default function QuizInput({
                 />
               )}
             </li>
+          <ol className={styles.chipGrid}>
+            <li
+              ref={addNoteRef}
+              className={styles.addChip}
+              onClick={() => {
+                setIsNoteSelectOpen((prev) => !prev);
+              }}
+            >
+              Add a note
+              <button className={styles.action} title="Toggle Note List">
+                <FontAwesomeIcon icon={faAdd} />
+              </button>
+              {isNoteSelectOpen && (
+                <Select
+                  listChoices={availableNotes}
+                  listChosen={notes}
+                  listProperty={"text"}
+                  listSetter={setNotes}
+                />
+              )}
+            </li>
 
             {notes.length > 0 &&
               notes.map((note) => (
@@ -364,10 +386,9 @@ export default function QuizInput({
           <InputPopup type="note" />
         </div>
 
-        <button onClick={handleSubmit} className="submitButton">
-          {loading ? "Sending..." : "Submit Quiz"}
-        </button>
-      </div>
+      <button onClick={handleSubmit} className="submitButton">
+        {loading ? "Sending..." : "Submit Quiz"}
+      </button>
     </div>
   );
 }
