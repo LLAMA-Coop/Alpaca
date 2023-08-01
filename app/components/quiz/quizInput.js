@@ -396,42 +396,42 @@ export default function QuizInput({
         <div className={styles.addSources}>
           <div className={styles.inputContainer}>
             <Label required={true} error={notesError} label="Current Notes" />
+
+            <ol className={styles.chipGrid}>
+              <li
+                ref={addNoteRef}
+                className={styles.addChip}
+                onClick={() => {
+                  setIsNoteSelectOpen((prev) => !prev);
+                }}
+              >
+                Add a note
+                <button className={styles.action} title="Toggle Note List">
+                  <FontAwesomeIcon icon={faAdd} />
+                </button>
+                {isNoteSelectOpen && (
+                  <Select
+                    listChoices={availableNotes}
+                    listChosen={notes}
+                    listProperty={"text"}
+                    listSetter={setNotes}
+                  />
+                )}
+              </li>
+
+              {notes.length > 0 &&
+                notes.map((note) => (
+                  <ListItem
+                    key={note._id}
+                    item={note.text}
+                    action={() =>
+                      setNotes(notes.filter((x) => x._id !== note._id))
+                    }
+                    actionType={"delete"}
+                  />
+                ))}
+            </ol>
           </div>
-
-          <ol className={styles.chipGrid}>
-            <li
-              ref={addNoteRef}
-              className={styles.addChip}
-              onClick={() => {
-                setIsNoteSelectOpen((prev) => !prev);
-              }}
-            >
-              Add a note
-              <button className={styles.action} title="Toggle Note List">
-                <FontAwesomeIcon icon={faAdd} />
-              </button>
-              {isNoteSelectOpen && (
-                <Select
-                  listChoices={availableNotes}
-                  listChosen={notes}
-                  listProperty={"text"}
-                  listSetter={setNotes}
-                />
-              )}
-            </li>
-
-            {notes.length > 0 &&
-              notes.map((note) => (
-                <ListItem
-                  key={note._id}
-                  item={note.text}
-                  action={() =>
-                    setNotes(notes.filter((x) => x._id !== note._id))
-                  }
-                  actionType={"delete"}
-                />
-              ))}
-          </ol>
         </div>
 
         <details>
