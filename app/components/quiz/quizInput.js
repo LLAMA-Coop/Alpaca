@@ -9,6 +9,7 @@ import NoteInput from "../note/noteInput";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import InputPopup from "../inputPopup/InputPopup";
 
 export default function QuizInput({
   isEditing,
@@ -350,10 +351,9 @@ export default function QuizInput({
           </div>
         </div>
 
-        <details>
-          <summary>Create a new source</summary>
-          <SourceInput />
-        </details>
+          <InputPopup type="source" />
+          <InputPopup type="note" />
+        </div>
 
         {/* {notes.length > 0 ? (
           <div>
@@ -436,11 +436,6 @@ export default function QuizInput({
             </ol>
           </div>
         </div>
-
-        <details>
-          <summary>Create a new note</summary>
-          <NoteInput />
-        </details>
 
         <button onClick={handleSubmit} className="submitButton">
           {loading ? "Sending..." : "Submit Quiz"}

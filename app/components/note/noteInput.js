@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from "react";
 import SourceInput from "../source/sourceInput";
 import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./noteInput.module.css";
+import InputPopup from "../inputPopup/InputPopup";
 
 export default function NoteInput({ availableSources }) {
   const [text, setText] = useState("");
@@ -166,10 +167,7 @@ export default function NoteInput({ availableSources }) {
           </ol>
         </div>
 
-        <details>
-          <summary>Create a new source</summary>
-          <SourceInput />
-        </details>
+        <InputPopup type="source" />
       </div>
 
       <button onClick={handleSubmit} className="submitButton">
