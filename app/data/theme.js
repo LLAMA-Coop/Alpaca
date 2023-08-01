@@ -34,47 +34,26 @@ const defaultAccentColors = [
 
 export const palettes = [
   {
-    name: "Flowery",
-    colors: [defaultAccentColors],
+    name: "Default",
+    colors: defaultAccentColors,
   },
   {
-    name: "Moon",
-    colors: [defaultAccentColors],
-  },
-  {
-    name: "Sunset",
-    colors: [defaultAccentColors],
-  },
-  {
-    name: "Ocean",
-    colors: [defaultAccentColors],
-  },
-  {
-    name: "Forest",
-    colors: [defaultAccentColors],
-  },
-  {
-    name: "Desert",
-    colors: [defaultAccentColors],
-  },
-  {
-    name: "Candy",
-    colors: [defaultAccentColors],
-  },
-  {
-    name: "Circus",
-    colors: [defaultAccentColors],
-  },
-  {
-    name: "Pastel",
-    colors: [defaultAccentColors],
-  },
-  {
-    name: "Neon",
-    colors: [defaultAccentColors],
-  },
-  {
-    name: "Retro",
-    colors: [defaultAccentColors],
+    name: "Nord",
+    colors: [
+      "#5E81AC",
+      "#81A1C1",
+      "#88C0D0",
+      "#8FBCBB",
+
+      "#BF616A",
+      "#D08770",
+      "#EBCB8B",
+      "#f7daa2",
+
+      "#778b65",
+      "#A3BE8C",
+      "#a8c292",
+      "#cae7b1",
+    ],
   },
 ];

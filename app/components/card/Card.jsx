@@ -58,6 +58,7 @@ export const Card = ({
               if (button.link) {
                 return (
                   <a
+                    key={button.label}
                     href={button.link}
                     target="_blank"
                     rel="noreferrer"
@@ -70,7 +71,11 @@ export const Card = ({
                 );
               } else {
                 return (
-                  <button onClick={button.onClick} className={button.color}>
+                  <button
+                    onClick={button.onClick}
+                    className={button.color}
+                    key={button.label}
+                  >
                     {button.label}{" "}
                     {button.icon && <FontAwesomeIcon icon={button.icon} />}
                   </button>

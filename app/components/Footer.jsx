@@ -6,6 +6,23 @@ import { useEffect, useState } from "react";
 import styles from "./Footer.module.css";
 import { palettes } from "../data/theme";
 
+const paletteAttributes = [
+  "--accent-primary-1",
+  "--accent-primary-2",
+  "--accent-primary-3",
+  "--accent-primary-light",
+
+  "--accent-secondary-1",
+  "--accent-secondary-2",
+  "--accent-secondary-3",
+  "--accent-secondary-light",
+
+  "--accent-tertiary-1",
+  "--accent-tertiary-2",
+  "--accent-tertiary-3",
+  "--accent-tertiary-light",
+];
+
 const Footer = () => {
   const [showThemes, setShowThemes] = useState(false);
   const [showPalettes, setShowPalettes] = useState(false);
@@ -39,19 +56,24 @@ const Footer = () => {
     return () => system.removeEventListener("change", changeSystemTheme);
   }, [activeTheme]);
 
+  useEffect(() => {
+    const setPalette = () => {
+      const palette = localStorage.getItem("palette");
+
+      setActivePalette(parseInt(palette) ?? 0);
+      setCssVariables(palettes[parseInt(palette) ?? 0]);
+    };
+
+    setPalette();
+  }, []);
+
   const changeCssProperties = (theme) => {
     const darkTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
-    if (theme === 0) {
+    if (theme === 0 || (theme === 2 && !darkTheme.matches)) {
       document.documentElement.setAttribute("data-theme", "light");
-    } else if (theme === 1) {
+    } else if (theme === 1 || (theme === 2 && darkTheme.matches)) {
       document.documentElement.setAttribute("data-theme", "dark");
-    } else if (theme === 2) {
-      if (darkTheme.matches) {
-        document.documentElement.setAttribute("data-theme", "dark");
-      } else {
-        document.documentElement.setAttribute("data-theme", "light");
-      }
     }
   };
 
@@ -65,6 +87,18 @@ const Footer = () => {
     changeCssProperties(theme);
   };
 
+  const setCssVariables = (palette) => {
+    paletteAttributes.forEach((attr, index) => {
+      document.documentElement.style.setProperty(attr, palette.colors[index]);
+    });
+  };
+
+  const setPalette = (index) => {
+    setActivePalette(index);
+    localStorage.setItem("palette", index);
+    setCssVariables(palettes[index]);
+  };
+
   const lightModes = ["Light", "Dark", "System"];
 
   return (
@@ -73,7 +107,10 @@ const Footer = () => {
         <div className={styles.themeContainer}>
           <div>
             <button
-              onClick={() => setShowThemes((prev) => !prev)}
+              onClick={() => {
+                setShowPalettes(false);
+                setShowThemes((prev) => !prev);
+              }}
               style={{
                 backgroundColor: showThemes
                   ? "var(--background-secondary)"
@@ -122,7 +159,10 @@ const Footer = () => {
 
           <div>
             <button
-              onClick={() => setShowPalettes((prev) => !prev)}
+              onClick={() => {
+                setShowThemes(false);
+                setShowPalettes((prev) => !prev);
+              }}
               style={{
                 backgroundColor: showPalettes
                   ? "var(--background-secondary)"
@@ -131,21 +171,22 @@ const Footer = () => {
             >
               <div>
                 <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="var(--foreground-primary)"
                   fill="none"
-                  viewBox="2 2 20 20"
-                  width="12"
-                  height="12"
-                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    fill="currentColor"
-                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                  />
+                  <path d="M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25" />
+                  <path d="M8.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                  <path d="M12.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                  <path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                 </svg>
-                <span>Color Theme</span>
+                <span>{palettes[activePalette].name}</span>
               </div>
             </button>
 
@@ -156,7 +197,7 @@ const Footer = () => {
                     <li
                       key={index}
                       onClick={() => {
-                        setActivePalette(index);
+                        setPalette(index);
                         // setShowPalettes(false);
                       }}
                     >

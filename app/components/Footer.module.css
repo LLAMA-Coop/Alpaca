@@ -30,11 +30,14 @@
 }
 
 .themeContainer {
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   gap: 8px;
+}
+
+.themeContainer > div {
+  position: relative;
 }
 
 .themeContainer > div > button {
@@ -63,7 +66,7 @@
   padding: 4px 0;
   border-radius: 6px;
   position: absolute;
-  bottom: calc(100% + 2px);
+  bottom: calc(100% + 8px);
   border: 1px solid var(--background-tertiary);
   background-color: var(--background-secondary);
 }
@@ -77,7 +80,7 @@
   padding: 6px 12px;
   user-select: none;
   cursor: pointer;
-  transition: all 0.1s ease-in-out;
+  transition: all 0.01s ease-in-out;
 }
 
 .popup > ul > li:hover {
