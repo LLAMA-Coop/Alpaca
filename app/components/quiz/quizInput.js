@@ -69,6 +69,7 @@ export default function QuizInput({
   const types = [
     { label: "Prompt/Response", value: "prompt-response" },
     { label: "Multiple Choice", value: "multiple-choice" },
+    { label: "List Answer", value: "list-answer" },
   ];
 
   async function handleSubmit(e) {
@@ -345,12 +346,12 @@ export default function QuizInput({
                 ))}
             </ol>
           </div>
-
-          <details>
-            <summary>Create a new source</summary>
-            <SourceInput />
-          </details>
         </div>
+
+        <details>
+          <summary>Create a new source</summary>
+          <SourceInput />
+        </details>
 
         {/* {notes.length > 0 ? (
           <div>
