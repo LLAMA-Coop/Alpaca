@@ -63,7 +63,7 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    background-color: var(--text-for-accent-background);
+    background-color: var(--background-primary);
     color: var(--foreground-primary);
     font-size: 16px;
 }
