@@ -44,7 +44,7 @@
 
 .chipGrid > .addChip > div:not(.sourcePicker):hover {
     background-color: var(--accent-tertiary-2);
-    color:var(--text-for-accent-background);
+    color:var(--accent-foreground);
 } */
 
 .chipGrid > li > div > svg {

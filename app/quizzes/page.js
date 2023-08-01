@@ -36,10 +36,7 @@ export default async function QuizzesPage() {
                 let quizForClient = JSON.parse(JSON.stringify(quiz));
                 return (
                   <li key={quiz._id}>
-                    <QuizDisplay
-                      quiz={quizForClient}
-                      canClientCheck={true}
-                    ></QuizDisplay>
+                    <QuizDisplay quiz={quizForClient} canClientCheck={true} />
                   </li>
                 );
               })}

@@ -8,7 +8,7 @@
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
   --background-primary: hsl(0, 0%, 98%);
-  --background-secondary: hsl(0, 0%, 72%);
+  --background-secondary: hsl(0, 0%, 87%);
   --background-tertiary: hsl(0, 1%, 60%);
 
   --foreground-primary: hsl(240, 10%, 4%);
@@ -19,48 +19,66 @@
   --accent-primary-2: hsl(226, 71%, 40%);
   --accent-primary-3: hsl(224, 64%, 33%);
   --accent-primary-light: hsl(217, 91%, 60%);
-  --accent-primary-outline: var(--accent-primary-1);
 
   --accent-secondary-1: hsl(0, 74%, 42%);
   --accent-secondary-2: hsl(0, 70%, 35%);
   --accent-secondary-3: hsl(0, 63%, 31%);
   --accent-secondary-light: hsl(0, 84%, 60%);
-  --accent-secondary-outline: var(--accent-secondary-1);
 
   --accent-tertiary-1: hsl(163, 94%, 24%);
   --accent-tertiary-2: hsl(163, 88%, 20%);
   --accent-tertiary-3: hsl(164, 86%, 16%);
   --accent-tertiary-light: hsl(160, 84%, 39%);
-  --accent-tertiary-outline: var(--accent-tertiary-1);
 
   --accent-foreground: white;
-  --anchor: hsl(226, 71%, 40%);
 
   --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
   --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
   --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   :root {
     --background-primary: hsl(240, 4%, 5%);
     --background-secondary: hsl(240, 6%, 10%);
     --background-tertiary: hsl(240, 4%, 16%);
 
     --foreground-primary: hsl(0, 0%, 98%);
-    --foreground-secondary: hsl(240, 5%, 96%);
-    --foreground-tertiary: hsl(240, 6%, 90%);
-
-    --accent-primary-outline: hsl(224, 76%, 48%, 0.2);
-    --accent-secondary-outline: hsl(0, 74%, 42%, 0.2);
-    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.2);
-
-    --anchor: hsl(217, 91%, 60%);
+    --foreground-secondary: hsl(240, 2%, 80%);
+    --foreground-tertiary: hsl(0, 0%, 65%);
   }
+}
 
-  html {
-    color-scheme: dark;
-  }
+[data-theme="dark"] {
+  --background-primary: hsl(240, 4%, 5%);
+  --background-secondary: hsl(240, 6%, 10%);
+  --background-tertiary: hsl(240, 4%, 16%);
+
+  --foreground-primary: hsl(0, 0%, 98%);
+  --foreground-secondary: hsl(240, 2%, 80%);
+  --foreground-tertiary: hsl(0, 0%, 65%);
+
+  --accent-primary-outline: hsl(224, 76%, 48%, 0.2);
+  --accent-secondary-outline: hsl(0, 74%, 42%, 0.2);
+  --accent-tertiary-outline: hsl(163, 94%, 24%, 0.2);
+
+  --anchor: hsl(217, 91%, 60%);
+}
+
+[data-theme="light"] {
+  --background-primary: hsl(0, 0%, 98%);
+  --background-secondary: hsl(0, 0%, 87%);
+  --background-tertiary: hsl(0, 1%, 60%);
+
+  --foreground-primary: hsl(240, 10%, 4%);
+  --foreground-secondary: hsl(240, 6%, 10%);
+  --foreground-tertiary: hsl(240, 4%, 16%);
+
+  --accent-primary-outline: var(--accent-primary-1);
+  --accent-secondary-outline: var(--accent-secondary-1);
+  --accent-tertiary-outline: var(--accent-tertiary-1);
+
+  --anchor: hsl(226, 71%, 40%);
 }
 
 * {
@@ -122,31 +140,37 @@ button {
 button.green,
 a.green {
   background-color: var(--accent-tertiary-1);
+  color: var(--accent-foreground);
 }
 
 button.green:hover,
 a.green:hover {
   background-color: var(--accent-tertiary-2);
+  color: var(--accent-foreground);
 }
 
 button.green:active,
 a.green:active {
   background-color: var(--accent-tertiary-3);
+  color: var(--accent-foreground);
 }
 
 button.red,
 a.red {
   background-color: var(--accent-secondary-1);
+  color: var(--accent-foreground);
 }
 
 button.red:hover,
 a.red:hover {
   background-color: var(--accent-secondary-2);
+  color: var(--accent-foreground);
 }
 
 button.red:active,
 a.red:active {
   background-color: var(--accent-secondary-3);
+  color: var(--accent-foreground);
 }
 
 h2 {

@@ -1,30 +1,32 @@
 .container {
+  border-top: 1px solid var(--background-tertiary);
+}
+
+.container > div {
   background-color: var(--background-primary);
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 28px 24px;
   display: flex;
   justify-content: space-between;
-  border-top: 1px solid var(--background-tertiary);
 }
 
-.container > div:first-child > h2 {
-  font-size: 40px;
-}
-
-.container > div:first-child > div {
+.socials {
   display: flex;
-  gap: 20px;
-  margin-top: 20px;
 }
 
-.container > div:first-child > div > a {
+.socials > a {
   width: 40px;
   height: 40px;
   padding: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: var(--foreground-tertiary);
+}
+
+.socials > a:hover {
+  color: var(--foreground-primary);
 }
 
 .themeContainer {
@@ -32,15 +34,16 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  gap: 8px;
 }
 
 .themeContainer > div > button {
   width: 224px;
-  height: 28px;
+  height: 32px;
   padding: 0 8px;
-  border-radius: 8px;
-  margin-top: 12px;
+  border-radius: 6px;
   background-color: transparent;
+  color: var(--foreground-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -50,7 +53,37 @@
   background-color: var(--background-secondary);
 }
 
-.themeContainer > div > div {
+.themeContainer > div > button > div {
+  display: flex;
+  gap: 8px;
+}
+
+.popup {
+  width: 100%;
+  padding: 4px 0;
+  border-radius: 6px;
   position: absolute;
-  display: none;
+  bottom: calc(100% + 2px);
+  border: 1px solid var(--background-tertiary);
+  background-color: var(--background-secondary);
+}
+
+.popup > ul > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 6px 12px;
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+
+.popup > ul > li:hover {
+  background-color: var(--background-tertiary);
+}
+
+.popup > ul > li:active {
+  opacity: 0.8;
 }

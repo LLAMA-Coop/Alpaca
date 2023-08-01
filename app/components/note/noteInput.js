@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { TextArea, Label, ListItem, Select } from "../form/Form";
 import { useEffect, useState, useRef } from "react";
-import makeUniqueId from "@/app/code/makeUniqueId";
 import SourceInput from "../source/sourceInput";
+import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./noteInput.module.css";
 
 export default function NoteInput({ availableSources }) {

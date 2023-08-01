@@ -101,3 +101,11 @@
     height: 16px;
   }
 }
+
+[data-theme="light"] .header menu {
+  border: 1px solid var(--foreground-primary);
+}
+
+[data-theme="light"] .header li > a:hover {
+  outline: 1px solid var(--foreground-tertiary);
+}

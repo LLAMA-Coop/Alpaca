@@ -72,7 +72,7 @@
   padding: 8px 12px;
   border-radius: 3px;
   cursor: pointer;
-  color: var(--foreground-primary);
+  color: var(--accent-foreground);
   background-color: var(--accent-primary-1);
   transition: background-color 0.2s ease-in-out;
 }
@@ -89,12 +89,6 @@
   margin-top: 24px;
 }
 
-/* @property --gradient-angle {
-  syntax: "<number>";
-  initial-value: 360;
-  inherits: false;
-} */
-
 @property --gradient-angle {
   syntax: "<angle>";
   initial-value: 360deg;
@@ -108,4 +102,23 @@
   100% {
     --gradient-angle: 0deg;
   }
+}
+
+[data-theme="light"] .container > div:first-child {
+  background: linear-gradient(
+    var(--gradient-angle),
+    var(--accent-primary-outline),
+    hsla(0, 0%, 100%, 0.1),
+    var(--accent-primary-1),
+    hsla(0, 0%, 100%, 0.3)
+  );
+}
+
+[data-theme="light"] .content {
+  background-color: var(--background-primary);
+  border: 1px solid var(--background-tertiary);
+}
+
+[data-theme="light"] .container:hover > .content {
+  background-color: var(--background-primary);
 }
