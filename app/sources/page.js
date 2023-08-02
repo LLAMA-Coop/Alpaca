@@ -18,7 +18,9 @@ export default function SourcesPage() {
 
             <ul className={styles.sourceGrid}>
               {sources.map((src) => (
-                <SourceDisplay key={src._id} source={src} />
+                <li key={src._id}>
+                  <SourceDisplay source={src} />
+                </li>
               ))}
             </ul>
           </div>
