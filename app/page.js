@@ -2,12 +2,11 @@ import Source from "./api/models/Source";
 import styles from "./Page.module.css";
 import Note from "./api/models/Note";
 import {
-  SourceDisplay,
   SourceInput,
-  NoteDisplay,
   UserInput,
   NoteInput,
-} from "./components/";
+} from "@/app/components/client";
+import { NoteDisplay, SourceDisplay } from "@/app/components/server";
 
 const sources = await Source.find();
 const notes = await Note.find();

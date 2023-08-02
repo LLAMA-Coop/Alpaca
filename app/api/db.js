@@ -17,7 +17,7 @@ export async function disconnectDB() {
     console.log("Successfully disconnected from Database");
   } catch (e) {
     console.error(
-      `Error disconnecting from Database\n${e.name}:\n  ${e.message}`
+      `Error disconnecting from Database\n${e.name}:\n  ${e.message}`,
     );
   }
 }

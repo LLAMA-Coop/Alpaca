@@ -8,7 +8,7 @@ import {
   ListItem,
   Select,
   InputPopup,
-} from "@/app/components";
+} from "@/app/components/client";
 
 export function NoteInput({ availableSources }) {
   const [text, setText] = useState("");

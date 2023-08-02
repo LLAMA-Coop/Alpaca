@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import styles from "./quizDisplay.module.css";
 
 export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
   const [userResponse, setUserResponse] = useState(

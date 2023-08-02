@@ -1,7 +1,8 @@
 "use client";
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Input, Card } from "@/app/components";
+// import { Input, Card } from "@/app/components";
+import { Input, Card } from "@/app/components/client";
 import confetti from "canvas-confetti";
 import { useState } from "react";
 

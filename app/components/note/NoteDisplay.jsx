@@ -1,4 +1,4 @@
-import { SourceDisplay } from "@/app/components";
+import { SourceDisplay } from "@/app/components/server";
 import styles from "./NoteDisplay.module.css";
 import Source from "@/app/api/models/Source";
 import User from "@/app/api/models/User";

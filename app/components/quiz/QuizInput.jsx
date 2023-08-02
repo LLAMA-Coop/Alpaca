@@ -1,8 +1,6 @@
 "use client";
 
-import { Input, Label, ListItem, Select, InputPopup } from "@/app/components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { Input, Label, ListItem, Select, InputPopup } from "@/app/components/client";
 import { useEffect, useState, useRef } from "react";
 import makeUniqueId from "@/app/code/uniqueId";
 
