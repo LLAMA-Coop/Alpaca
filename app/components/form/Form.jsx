@@ -2,6 +2,7 @@
 import {
   faAdd,
   faArrowRight,
+  faCheck,
   faSubtract,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -232,23 +233,28 @@ export const Select = ({
       onClick={(e) => e.stopPropagation()}
     >
       {console.log("It is returning", listChoices)}
-      {listChoices.map((choice) => (
-        <div
-          key={choice._id}
-          className={
-            listChosen.find((x) => x._id === choice._id) ? styles.selected : ""
-          }
-          onClick={() => {
-            if (!listChosen.find((x) => x._id === choice._id)) {
-              listSetter([...listChosen, choice]);
-            } else {
-              listSetter(listChosen.filter((x) => x._id !== choice._id));
-            }
-          }}
-        >
-          {choice[listProperty]}
-        </div>
-      ))}
+      {listChoices.map((choice) => {
+        const isChosen = listChosen.find((x) => x._id === choice._id);
+        return (
+          <div
+            className={`${isChosen && styles.chosen}`}
+            key={choice._id}
+            onClick={() => {
+              if (!listChosen.find((x) => x._id === choice._id)) {
+                listSetter([...listChosen, choice]);
+              } else {
+                listSetter(listChosen.filter((x) => x._id !== choice._id));
+              }
+            }}
+          >
+            {choice[listProperty]}
+
+            <div className={styles.checkbox}>
+              {isChosen && <FontAwesomeIcon icon={faCheck} />}
+            </div>
+          </div>
+        );
+      })}
 
       {listChoices.length === 0 && (
         <div className={styles.emptyList}>No choices available</div>

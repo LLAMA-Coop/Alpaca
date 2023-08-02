@@ -24,10 +24,14 @@ export default function UserInput({ isRegistering }) {
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
-      if (passwordFocus && !passwordTooltip.current.contains(e.target) && !passwordInput.current.contains(e.target)) {
+      if (
+        passwordFocus &&
+        !passwordTooltip.current.contains(e.target) &&
+        !passwordInput.current.contains(e.target)
+      ) {
         setPasswordFocus(false);
       }
-    }
+    };
 
     document.addEventListener("click", handleOutsideClick);
 
@@ -74,7 +78,9 @@ export default function UserInput({ isRegistering }) {
       setPasswordError("Password cannot be empty");
     }
 
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:]).{8,}$/g.test(password)) {
+    if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:]).{8,}$/g.test(password)
+    ) {
       setPasswordError("Password is too weak");
       setPasswordFocus(true);
       return;
@@ -118,10 +124,10 @@ export default function UserInput({ isRegistering }) {
   }
 
   return (
-    <div className='centeredContainer'>
+    <div className="centeredContainer">
       <h3>Register new user</h3>
 
-      <form className={styles.form}>
+      <form className="formContainer">
         <Input
           required={true}
           onChange={(e) => {
@@ -133,7 +139,7 @@ export default function UserInput({ isRegistering }) {
           label={"Username"}
         />
 
-        <div style={{ position: 'relative' }} ref={passwordInput}>
+        <div style={{ position: "relative" }} ref={passwordInput}>
           <Input
             type={"password"}
             required={true}
@@ -150,16 +156,18 @@ export default function UserInput({ isRegistering }) {
 
           {passwordFocus && (
             <div className={styles.passwordTooltip} ref={passwordTooltip}>
-              <p>
-                Your password must contain:
-              </p>
+              <p>Your password must contain:</p>
 
               <ul>
                 {passwordWeaknesses.map((weakness, index) => {
                   return (
                     <li
                       key={index}
-                      className={!getWeaknesses().includes(weakness) ? styles.weakness : ''}
+                      className={
+                        !getWeaknesses().includes(weakness)
+                          ? styles.weakness
+                          : ""
+                      }
                     >
                       <div>
                         {!getWeaknesses().includes(weakness) && (
@@ -190,7 +198,7 @@ export default function UserInput({ isRegistering }) {
         )}
 
         <button onClick={handleSubmit} className="submitButton">
-          {loading ? 'Sending...' : isRegistering ? "Register" : "Login"}
+          {loading ? "Sending..." : isRegistering ? "Register" : "Login"}
         </button>
       </form>
     </div>

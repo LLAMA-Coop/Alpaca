@@ -13,12 +13,14 @@
 
 .socials {
   display: flex;
+  gap: 8px;
 }
 
 .socials > a {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   padding: 8px;
+  border-radius: 6px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -27,6 +29,7 @@
 
 .socials > a:hover {
   color: var(--foreground-primary);
+  background-color: var(--background-secondary);
 }
 
 .themeContainer {
