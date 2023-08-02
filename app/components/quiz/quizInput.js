@@ -228,23 +228,25 @@ export default function QuizInput({
               }}
             />
 
-            <Label label="Choices" />
-            <ul className="chipGrid">
-              {choices.map((res) => (
-                <ListItem
-                  key={res}
-                  item={res}
-                  actionType={"delete"}
-                  action={() =>
-                    setChoices((prev) => prev.filter((x) => x !== res))
-                  }
-                />
-              ))}
+            <div style={{ marginTop: "24px" }}>
+              <Label label="Choices" />
+              <ul className="chipGrid">
+                {choices.map((res) => (
+                  <ListItem
+                    key={res}
+                    item={res}
+                    actionType={"delete"}
+                    action={() =>
+                      setChoices((prev) => prev.filter((x) => x !== res))
+                    }
+                  />
+                ))}
 
-              {choices.length === 0 && (
-                <ListItem item={"No choices added yet"} />
-              )}
-            </ul>
+                {choices.length === 0 && (
+                  <ListItem item={"No choices added yet"} />
+                )}
+              </ul>
+            </div>
           </div>
         )}
 
@@ -264,23 +266,25 @@ export default function QuizInput({
             }}
           />
 
-          <Label label="Answers" />
-          <ul className="chipGrid">
-            {responses.map((res) => (
-              <ListItem
-                key={res}
-                item={res}
-                actionType={"delete"}
-                action={() =>
-                  setResponses((prev) => prev.filter((x) => x !== res))
-                }
-              />
-            ))}
+          <div style={{ marginTop: "24px" }}>
+            <Label label="Answers" />
+            <ul className="chipGrid">
+              {responses.map((res) => (
+                <ListItem
+                  key={res}
+                  item={res}
+                  actionType={"delete"}
+                  action={() =>
+                    setResponses((prev) => prev.filter((x) => x !== res))
+                  }
+                />
+              ))}
 
-            {responses.length === 0 && (
-              <ListItem item={"No answers added yet"} />
-            )}
-          </ul>
+              {responses.length === 0 && (
+                <ListItem item={"No answers added yet"} />
+              )}
+            </ul>
+          </div>
         </div>
 
         <div>

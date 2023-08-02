@@ -186,24 +186,28 @@ export default function SourceInput() {
             onSubmit={handleAddContributor}
           />
 
-          <Label label="Contributors" />
+          <div style={{ marginTop: "24px" }}>
+            <Label label="Contributors" />
 
-          <ul className={styles.chipGrid}>
-            {contributors.length === 0 && (
-              <ListItem item="No Contributors Added" />
-            )}
+            <ul className={styles.chipGrid}>
+              {contributors.length === 0 && (
+                <ListItem item="No Contributors Added" />
+              )}
 
-            {contributors.map((cont) => (
-              <ListItem
-                key={cont}
-                item={cont}
-                action={() => {
-                  setContributors(contributors.filter((name) => cont !== name));
-                }}
-                actionType={"delete"}
-              />
-            ))}
-          </ul>
+              {contributors.map((cont) => (
+                <ListItem
+                  key={cont}
+                  item={cont}
+                  action={() => {
+                    setContributors(
+                      contributors.filter((name) => cont !== name),
+                    );
+                  }}
+                  actionType={"delete"}
+                />
+              ))}
+            </ul>
+          </div>
         </div>
 
         <button onClick={handleSubmit} className="submitButton">

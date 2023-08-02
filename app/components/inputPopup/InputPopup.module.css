@@ -28,9 +28,8 @@
   padding: 0;
 }
 
-.popup > div > div > form > div {
-  display: flex;
-  flex-direction: column;
+.popup > div > div > form {
+  grid-template-columns: 1fr;
 }
 
 @keyframes popIn {
