@@ -52,10 +52,20 @@ const Footer = () => {
     };
 
     const system = window.matchMedia("(prefers-color-scheme: dark)");
-    system.addEventListener("change", changeSystemTheme);
+    if (system.addEventListener) {
+      system.addEventListener("change", changeSystemTheme);
+    } else {
+      system.addListener(changeSystemTheme);
+    }
 
     setTheme();
-    return () => system.removeEventListener("change", changeSystemTheme);
+    return () => {
+      if (system.removeEventListener) {
+        system.removeEventListener("change", changeSystemTheme);
+      } else {
+        system.removeListener(changeSystemTheme);
+      }
+    };
   }, [activeTheme]);
 
   useEffect(() => {
