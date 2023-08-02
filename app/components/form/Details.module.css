@@ -1,0 +1,7 @@
+.details {
+  background-color: lightpink;
+}
+
+.details .open {
+  background-color: aqua;
+}

@@ -6,7 +6,7 @@ connectDB();
 // and spaced repetition (Leitner method)
 const userQuiz = new Schema({});
 
-export default models.user ||
+export default models?.user ||
   model(
     "user",
     new Schema({
@@ -21,5 +21,5 @@ export default models.user ||
         default: ["user"],
       },
       quizzes: [userQuiz],
-    })
+    }),
   );

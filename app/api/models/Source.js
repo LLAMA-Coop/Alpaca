@@ -2,10 +2,10 @@ import { model, models, Schema } from "mongoose";
 import connectDB from "../db";
 connectDB();
 
-// validation:
+//  validation:
 //  need either lastAccessed or publishDate
 //  url to match http format
-export default models.source ||
+export default models?.source ||
   model(
     "source",
     new Schema({
@@ -22,7 +22,7 @@ export default models.source ||
       addedBy: {
         type: Schema.Types.ObjectId,
         ref: "user",
-        required: true
-      }
-    })
+        required: true,
+      },
+    }),
   );

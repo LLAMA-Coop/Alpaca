@@ -1,7 +1,9 @@
+"use client";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Card.module.css";
 
-export const Card = ({
+export function Card({
   title,
   description,
   image,
@@ -10,7 +12,7 @@ export const Card = ({
   buttons,
   children,
   border,
-}) => {
+}) {
   return (
     <div className={styles.container}>
       <div
@@ -87,4 +89,4 @@ export const Card = ({
       </div>
     </div>
   );
-};
+}

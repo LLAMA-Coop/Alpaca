@@ -2,9 +2,9 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { palettes } from "@/app/data/palettes";
 import styles from "./Footer.module.css";
-import { palettes } from "../data/theme";
 
 const paletteAttributes = [
   "--accent-primary-1",
@@ -23,7 +23,7 @@ const paletteAttributes = [
   "--accent-tertiary-light",
 ];
 
-const Footer = () => {
+export function Footer() {
   const [showThemes, setShowThemes] = useState(false);
   const [showPalettes, setShowPalettes] = useState(false);
 
@@ -31,13 +31,29 @@ const Footer = () => {
   const [activePalette, setActivePalette] = useState(0);
 
   const activeIcon = <FontAwesomeIcon icon={faCheck} />;
+  const themeRef = useRef(null);
+  const paletteRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (themeRef.current && !themeRef.current.contains(e.target)) {
+        setShowThemes(false);
+      }
+      if (paletteRef.current && !paletteRef.current.contains(e.target)) {
+        setShowPalettes(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [showThemes, showPalettes]);
 
   useEffect(() => {
     const setTheme = () => {
-      const theme = localStorage.getItem("theme");
+      const theme = parseInt(localStorage.getItem("theme") ?? 2);
 
-      setActiveTheme(parseInt(theme) ?? 2);
-      changeCssProperties(parseInt(theme) ?? 2);
+      setActiveTheme(theme);
+      changeCssProperties(theme);
     };
 
     const changeSystemTheme = (e) => {
@@ -115,8 +131,15 @@ const Footer = () => {
   return (
     <div className={styles.container}>
       <div>
-        <div className={styles.themeContainer}>
+        <div className={styles.icon}>
           <div>
+            <div />
+            <p>M</p>
+          </div>
+        </div>
+
+        <div className={styles.themeContainer}>
+          <div ref={themeRef}>
             <button
               onClick={() => {
                 setShowPalettes(false);
@@ -168,7 +191,7 @@ const Footer = () => {
             )}
           </div>
 
-          <div>
+          <div ref={paletteRef}>
             <button
               onClick={() => {
                 setShowThemes(false);
@@ -249,6 +272,4 @@ const Footer = () => {
       </div>
     </div>
   );
-};
-
-export default Footer;
+}
