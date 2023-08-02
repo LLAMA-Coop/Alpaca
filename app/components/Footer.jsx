@@ -62,7 +62,7 @@ const Footer = () => {
     const setPalette = () => {
       const palette = localStorage.getItem("palette");
 
-      setActivePalette(parseInt(palette) ?? 0);
+      setActivePalette(isNaN(parseInt(palette)) ? 0 : parseInt(palette));
       setCssVariables(palettes[parseInt(palette) ?? 0]);
     };
 
@@ -90,14 +90,14 @@ const Footer = () => {
   };
 
   const setCssVariables = (palette) => {
-    if(!palette) return;
+    if (!palette) return;
     paletteAttributes.forEach((attr, index) => {
       document.documentElement.style.setProperty(attr, palette.colors[index]);
     });
   };
 
   const setPalette = (index) => {
-    setActivePalette(index);
+    setActivePalette(parseInt(index));
     localStorage.setItem("palette", index);
     setCssVariables(palettes[index]);
   };
@@ -172,7 +172,7 @@ const Footer = () => {
                   : "",
               }}
             >
-              {palettes[activePalette] && <div>
+              <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -190,7 +190,7 @@ const Footer = () => {
                   <path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                 </svg>
                 <span>{palettes[activePalette].name}</span>
-              </div>}
+              </div>
             </button>
 
             {showPalettes && (
