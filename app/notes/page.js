@@ -1,8 +1,7 @@
-import Note from "../api/models/Note";
-import NoteDisplay from "../components/note/noteDisplay";
-import NoteInput from "../components/note/noteInput";
-import Source from "../api/models/Source";
-import styles from "../page.module.css";
+import { NoteDisplay, NoteInput } from "@/app/components/";
+import Source from "@/app/api/models/Source";
+import styles from "@/app/Page.module.css";
+import Note from "@/app/api/models/Note";
 
 const notes = await Note.find();
 const sources = await Source.find();
@@ -14,20 +13,20 @@ export default function NotePage() {
 
       {notes.length > 0 && (
         <section>
-          <div className="centeredContainer">
-            <h3>Notes</h3>
+          <h3>Your notes</h3>
 
-            <div className={styles.sourceGrid}>
-              {notes.map((note) => <NoteDisplay key={note._id} note={note} />)}
-            </div>
-          </div>
+          <ol className={styles.listGrid}>
+            {notes.map((note) => (
+              <NoteDisplay key={note._id} note={note} />
+            ))}
+          </ol>
         </section>
       )}
 
       <section>
-        <NoteInput
-          availableSources={JSON.parse(JSON.stringify(sources))}
-        />
+        <h3>Create new note</h3>
+
+        <NoteInput availableSources={JSON.parse(JSON.stringify(sources))} />
       </section>
     </main>
   );

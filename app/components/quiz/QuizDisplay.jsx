@@ -1,5 +1,4 @@
-import ResponseCard from "./ResponseCard";
-import ListAnswer from "./list-answer";
+import { ResponseCard, ListAnswer } from "@/app/components";
 
 // The quiz displays depends on whether it is a client-checked or server-checked quiz component
 // If client-checked, everything is rendered from the Quiz object
@@ -9,9 +8,7 @@ import ListAnswer from "./list-answer";
 
 // sent into component via canClientCheck boolean
 
-export default function Quiz({ canClientCheck, quiz }) {
-  console.log(quiz);
-
+export function QuizDisplay({ canClientCheck, quiz }) {
   if (quiz.type === "prompt-response" || quiz.type === "multiple-choice") {
     return <ResponseCard canClientCheck={canClientCheck} quiz={quiz} />;
   }

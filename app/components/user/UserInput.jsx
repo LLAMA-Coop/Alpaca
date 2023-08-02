@@ -3,10 +3,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef, useEffect } from "react";
-import styles from "./userInput.module.css";
-import { Input } from "../form/Form";
+import styles from "./UserInput.module.css";
+import { Input } from "../form/Input";
 
-export default function UserInput({ isRegistering }) {
+export function UserInput({ isRegistering }) {
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
 
@@ -34,7 +34,6 @@ export default function UserInput({ isRegistering }) {
     };
 
     document.addEventListener("click", handleOutsideClick);
-
     return () => document.removeEventListener("click", handleOutsideClick);
   }, [passwordFocus]);
 
@@ -102,7 +101,7 @@ export default function UserInput({ isRegistering }) {
 
     setLoading(true);
 
-    let response = await fetch("./api/user", {
+    const response = await fetch("/api/user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -124,83 +123,77 @@ export default function UserInput({ isRegistering }) {
   }
 
   return (
-    <div className="centeredContainer">
-      <h3>Register new user</h3>
+    <form className="formGrid">
+      <Input
+        required={true}
+        onChange={(e) => {
+          setUsername(e.target.value);
+          setUsernameError("");
+        }}
+        value={username}
+        error={usernameError}
+        label={"Username"}
+      />
 
-      <form className="formContainer">
+      <div style={{ position: "relative" }} ref={passwordInput}>
         <Input
+          type={"password"}
           required={true}
           onChange={(e) => {
-            setUsername(e.target.value);
-            setUsernameError("");
+            setPassword(e.target.value);
+            setPasswordError("");
           }}
-          value={username}
-          error={usernameError}
-          label={"Username"}
+          value={password}
+          error={passwordError}
+          label={"Password"}
+          onFocus={() => setPasswordFocus(true)}
+          onBlur={() => setPasswordFocus(false)}
         />
 
-        <div style={{ position: "relative" }} ref={passwordInput}>
-          <Input
-            type={"password"}
-            required={true}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setPasswordError("");
-            }}
-            value={password}
-            error={passwordError}
-            label={"Password"}
-            onFocus={() => setPasswordFocus(true)}
-            onBlur={() => setPasswordFocus(false)}
-          />
+        {passwordFocus && (
+          <div className={styles.passwordTooltip} ref={passwordTooltip}>
+            <p>Your password must contain:</p>
 
-          {passwordFocus && (
-            <div className={styles.passwordTooltip} ref={passwordTooltip}>
-              <p>Your password must contain:</p>
-
-              <ul>
-                {passwordWeaknesses.map((weakness, index) => {
-                  return (
-                    <li
-                      key={index}
-                      className={
-                        !getWeaknesses().includes(weakness)
-                          ? styles.weakness
-                          : ""
-                      }
-                    >
-                      <div>
-                        {!getWeaknesses().includes(weakness) && (
-                          <FontAwesomeIcon icon={faCheck} />
-                        )}
-                      </div>
-                      <span>{weakness}</span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-        </div>
-
-        {isRegistering && (
-          <Input
-            type={"password"}
-            required={true}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value);
-              setConfirmPasswordError("");
-            }}
-            value={confirmPassword}
-            error={confirmPasswordError}
-            label={"Password Match"}
-          />
+            <ul>
+              {passwordWeaknesses.map((weakness, index) => {
+                return (
+                  <li
+                    key={index}
+                    className={
+                      !getWeaknesses().includes(weakness) ? styles.weakness : ""
+                    }
+                  >
+                    <div>
+                      {!getWeaknesses().includes(weakness) && (
+                        <FontAwesomeIcon icon={faCheck} />
+                      )}
+                    </div>
+                    <span>{weakness}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         )}
+      </div>
 
-        <button onClick={handleSubmit} className="submitButton">
-          {loading ? "Sending..." : isRegistering ? "Register" : "Login"}
-        </button>
-      </form>
-    </div>
+      {isRegistering && (
+        <Input
+          type={"password"}
+          required={true}
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+            setConfirmPasswordError("");
+          }}
+          value={confirmPassword}
+          error={confirmPasswordError}
+          label={"Password Match"}
+        />
+      )}
+
+      <button onClick={handleSubmit} className="button submit">
+        {loading ? "Sending..." : isRegistering ? "Register" : "Login"}
+      </button>
+    </form>
   );
 }

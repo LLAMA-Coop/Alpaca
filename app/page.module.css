@@ -1,4 +1,22 @@
-.sourceGrid {
+.main > h2 {
+  font-size: clamp(32px, 8vw, 42px);
+  text-align: center;
+  margin: 12px 0;
+  padding: 0 10px;
+}
+
+.main > section {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--padding);
+}
+
+.main > section > h3 {
+  font-size: 34px;
+  margin-bottom: 24px;
+}
+
+.listGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 500px));
   grid-gap: 16px;
@@ -15,17 +33,6 @@
   font-weight: 300;
 }
 
-.description p > a {
-  color: var(--anchor);
-  text-decoration: none;
-}
-
 .description p > a:hover {
   text-decoration: underline;
-}
-
-.quizGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 500px));
-  grid-gap: 16px;
 }
