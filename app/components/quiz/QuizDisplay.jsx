@@ -1,4 +1,3 @@
-// import { ResponseCard, ListAnswer } from "@/app/components";
 import { ResponseCard, ListAnswer } from "@/app/components/client";
 
 // The quiz displays depends on whether it is a client-checked or server-checked quiz component

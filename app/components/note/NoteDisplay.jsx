@@ -1,4 +1,3 @@
-// import { SourceDisplay } from "@/app/components";
 import { SourceDisplay } from "@/app/components/server";
 import styles from "./NoteDisplay.module.css";
 import Source from "@/app/api/models/Source";
@@ -6,7 +5,6 @@ import User from "@/app/api/models/User";
 
 export async function NoteDisplay({ note }) {
   const user = await User.findById(note.addedBy);
-  // const user = {username: "Your Mom"}
 
   return (
     <div className={styles.note}>
@@ -16,7 +14,6 @@ export async function NoteDisplay({ note }) {
       <ul>
         {note.sources.map(async (srcId) => {
           const src = await Source.findOne({ _id: srcId });
-          {/* const src = {_id: "blah blah this will through an error in SourceDisplay"} */}
 
           return (
             <li key={srcId}>

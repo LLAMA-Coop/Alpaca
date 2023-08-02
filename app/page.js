@@ -1,13 +1,6 @@
 import Source from "./api/models/Source";
 import styles from "./Page.module.css";
 import Note from "./api/models/Note";
-// import {
-//   SourceDisplay,
-//   SourceInput,
-//   NoteDisplay,
-//   UserInput,
-//   NoteInput,
-// } from "./components/";
 import {
   SourceInput,
   UserInput,

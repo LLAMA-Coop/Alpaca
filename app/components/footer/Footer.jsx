@@ -179,7 +179,6 @@ export function Footer() {
                       key={index}
                       onClick={() => {
                         setTheme(index);
-                        // setShowThemes(false);
                       }}
                     >
                       {mode}
@@ -232,7 +231,6 @@ export function Footer() {
                       key={index}
                       onClick={() => {
                         setPalette(index);
-                        // setShowPalettes(false);
                       }}
                     >
                       {palette.name}

@@ -2,13 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import makeUniqueId from "@/app/code/uniqueId";
-// import {
-//   TextArea,
-//   Label,
-//   ListItem,
-//   Select,
-//   InputPopup,
-// } from "@/app/components";
 import {
   TextArea,
   Label,

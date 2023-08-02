@@ -1,6 +1,5 @@
 "use client";
 
-// import { SourceInput, NoteInput } from "@/app/components";
 import { SourceInput, NoteInput } from "@/app/components/client";
 import { useEffect, useRef, useState } from "react";
 import styles from "./InputPopup.module.css";

@@ -1,4 +1,3 @@
-// import { QuizDisplay, QuizInput } from "@/app/components";
 import { QuizDisplay } from "@/app/components/server";
 import { QuizInput } from "@/app/components/client";
 import Source from "@/app/api/models/Source";
