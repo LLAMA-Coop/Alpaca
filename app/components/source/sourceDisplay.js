@@ -45,36 +45,32 @@ export default function SourceDisplay({ source }) {
   // );
 
   return (
-    <li>
-      <Card
-        title={source.title}
-        description={source.medium}
-        buttons={[
-          {
-            label: "Visit the source page",
-            link: source.url,
-          },
-        ]}
-      >
-        <div className={styles.contributors}>
-          <h5>Contributors</h5>
-          {source.contributors.length > 0 ? (
-            <ol className="chipGrid">
-              {source.contributors.map((cont) => (
-                <ListItem
-                  key={cont}
-                  item={
-                    /^http/.test(cont) ? "See all of the contributors" : cont
-                  }
-                  link={/^http/.test(cont) ? cont : null}
-                />
-              ))}
-            </ol>
-          ) : (
-            <p>No contributors listed</p>
-          )}
-        </div>
-      </Card>
-    </li>
+    <Card
+      title={source.title}
+      description={source.medium}
+      buttons={[
+        {
+          label: "Visit the source page",
+          link: source.url,
+        },
+      ]}
+    >
+      <div className={styles.contributors}>
+        <h5>Contributors</h5>
+        {source.contributors.length > 0 ? (
+          <ol className="chipGrid">
+            {source.contributors.map((cont) => (
+              <ListItem
+                key={cont}
+                item={/^http/.test(cont) ? "See all of the contributors" : cont}
+                link={/^http/.test(cont) ? cont : null}
+              />
+            ))}
+          </ol>
+        ) : (
+          <p>No contributors listed</p>
+        )}
+      </div>
+    </Card>
   );
 }
