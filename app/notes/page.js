@@ -1,4 +1,6 @@
-import { NoteDisplay, NoteInput } from "@/app/components/";
+// import { NoteDisplay, NoteInput } from "@/app/components/";
+import { NoteDisplay } from "@/app/components/server";
+import { NoteInput } from "@/app/components/client";
 import Source from "@/app/api/models/Source";
 import styles from "@/app/Page.module.css";
 import Note from "@/app/api/models/Note";

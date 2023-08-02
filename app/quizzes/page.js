@@ -1,4 +1,6 @@
-import { QuizDisplay, QuizInput } from "@/app/components";
+// import { QuizDisplay, QuizInput } from "@/app/components";
+import { QuizDisplay } from "@/app/components/server";
+import { QuizInput } from "@/app/components/client";
 import Source from "@/app/api/models/Source";
 import styles from "@/app/Page.module.css";
 import Note from "@/app/api/models/Note";

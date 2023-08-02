@@ -1,4 +1,6 @@
-import { SourceDisplay, SourceInput } from "@/app/components/";
+// import { SourceDisplay, SourceInput } from "@/app/components/";
+import { SourceDisplay } from "@/app/components/server";
+import { SourceInput } from "@/app/components/client";
 import Source from "@/app/api/models/Source";
 import styles from "@/app/Page.module.css";
 
