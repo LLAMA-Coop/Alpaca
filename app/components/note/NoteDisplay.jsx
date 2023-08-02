@@ -17,7 +17,7 @@ export async function NoteDisplay({ note }) {
 
           return (
             <li key={srcId}>
-              <SourceDisplay source={src}></SourceDisplay>
+              <SourceDisplay source={src} />
             </li>
           );
         })}

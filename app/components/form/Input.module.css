@@ -86,3 +86,7 @@
   font-style: italic;
   user-select: none;
 }
+
+[data-theme="light"] .inputContainer {
+  border: 1px solid var(--foreground-tertiary);
+}

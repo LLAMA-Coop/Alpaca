@@ -49,10 +49,6 @@
     --foreground-secondary: hsl(240, 2%, 80%);
     --foreground-tertiary: hsl(0, 0%, 65%);
   }
-
-  html {
-    color-scheme: dark;
-  }
 }
 
 [data-theme="dark"] {

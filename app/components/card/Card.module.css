@@ -55,6 +55,11 @@
   font-size: 20px;
   line-height: 28px;
   font-weight: 600;
+  word-wrap: break-word;
+}
+
+.textContent > p {
+  word-wrap: break-word;
 }
 
 .buttonContainer {
@@ -72,6 +77,7 @@
   padding: 8px 12px;
   border-radius: 3px;
   cursor: pointer;
+  user-select: none;
   color: var(--accent-foreground);
   background-color: var(--accent-primary-1);
   transition: background-color 0.2s ease-in-out;
@@ -115,10 +121,9 @@
 }
 
 [data-theme="light"] .content {
-  background-color: var(--background-primary);
-  border: 1px solid var(--background-tertiary);
+  border: 1px solid var(--foreground-tertiary);
 }
 
 [data-theme="light"] .container:hover > .content {
-  background-color: var(--background-primary);
+  border: 1px solid transparent;
 }

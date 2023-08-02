@@ -24,13 +24,12 @@ export function NoteInput({ availableSources }) {
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
-      if (isSelectOpen && !addSourceRef.current.contains(e.target)) {
+      if (isSelectOpen && !addSourceRef.current?.contains(e.target)) {
         setIsSelectOpen(false);
       }
     };
 
     document.addEventListener("click", handleOutsideClick);
-
     return () => document.removeEventListener("click", handleOutsideClick);
   }, [isSelectOpen]);
 
