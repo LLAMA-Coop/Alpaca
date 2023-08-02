@@ -90,7 +90,7 @@ const Footer = () => {
   };
 
   const setCssVariables = (palette) => {
-    if(!palette) return;
+    if (!palette) return;
     paletteAttributes.forEach((attr, index) => {
       document.documentElement.style.setProperty(attr, palette.colors[index]);
     });
@@ -172,7 +172,7 @@ const Footer = () => {
                   : "",
               }}
             >
-              {palettes[activePalette] && <div>
+              <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -189,8 +189,8 @@ const Footer = () => {
                   <path d="M12.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                   <path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                 </svg>
-                <span>{palettes[activePalette].name}</span>
-              </div>}
+                <span>{palettes[activePalette]?.name}</span>
+              </div>
             </button>
 
             {showPalettes && (

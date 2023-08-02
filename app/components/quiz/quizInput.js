@@ -60,6 +60,8 @@ export default function QuizInput({
 
   const addNoteRef = useRef(null);
   useEffect(() => {
+    if (!addNoteRef.current) return;
+
     const handleOutsideClick = (e) => {
       if (isNoteSelectOpen && !addNoteRef.current.contains(e.target)) {
         setIsNoteSelectOpen(false);
@@ -345,27 +347,6 @@ export default function QuizInput({
                 />
               )}
             </li>
-          <ol className={styles.chipGrid}>
-            <li
-              ref={addNoteRef}
-              className={styles.addChip}
-              onClick={() => {
-                setIsNoteSelectOpen((prev) => !prev);
-              }}
-            >
-              Add a note
-              <button className={styles.action} title="Toggle Note List">
-                <FontAwesomeIcon icon={faAdd} />
-              </button>
-              {isNoteSelectOpen && (
-                <Select
-                  listChoices={availableNotes}
-                  listChosen={notes}
-                  listProperty={"text"}
-                  listSetter={setNotes}
-                />
-              )}
-            </li>
 
             {notes.length > 0 &&
               notes.map((note) => (
@@ -386,9 +367,10 @@ export default function QuizInput({
           <InputPopup type="note" />
         </div>
 
-      <button onClick={handleSubmit} className="submitButton">
-        {loading ? "Sending..." : "Submit Quiz"}
-      </button>
+        <button onClick={handleSubmit} className="submitButton">
+          {loading ? "Sending..." : "Submit Quiz"}
+        </button>
+      </div>
     </div>
   );
 }
