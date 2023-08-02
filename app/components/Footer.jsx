@@ -62,7 +62,7 @@ const Footer = () => {
     const setPalette = () => {
       const palette = localStorage.getItem("palette");
 
-      setActivePalette(parseInt(palette) ?? 0);
+      setActivePalette(isNaN(parseInt(palette)) ? 0 : parseInt(palette));
       setCssVariables(palettes[parseInt(palette) ?? 0]);
     };
 
@@ -97,7 +97,7 @@ const Footer = () => {
   };
 
   const setPalette = (index) => {
-    setActivePalette(index);
+    setActivePalette(parseInt(index));
     localStorage.setItem("palette", index);
     setCssVariables(palettes[index]);
   };
@@ -189,7 +189,7 @@ const Footer = () => {
                   <path d="M12.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                   <path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                 </svg>
-                <span>{palettes[activePalette]?.name}</span>
+                <span>{palettes[activePalette].name}</span>
               </div>
             </button>
 
