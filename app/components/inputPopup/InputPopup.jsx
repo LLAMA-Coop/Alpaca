@@ -14,6 +14,8 @@ const InputPopup = ({ type }) => {
       if (!showPopup) return;
       if (popup.current && !popup.current.contains(e.target)) {
         setShowPopup(false);
+        document.documentElement.style.overflow = "auto";
+        document.documentElement.style.paddingRight = "0px";
       }
     };
 
@@ -30,7 +32,11 @@ const InputPopup = ({ type }) => {
   return (
     <>
       <button
-        onClick={() => setShowPopup((prev) => !prev)}
+        onClick={() => {
+          setShowPopup(true);
+          document.documentElement.style.overflow = "hidden";
+          document.documentElement.style.paddingRight = "17px";
+        }}
         className="blue submitButton"
       >
         {typeContent[type]}

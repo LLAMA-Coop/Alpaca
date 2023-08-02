@@ -116,100 +116,94 @@ export default function SourceInput() {
   return (
     <div className="centeredContainer">
       <h3>Add Source</h3>
-      <form className={styles.form}>
+      <form className="formContainer">
+        <Input
+          id={"title_" + uniqueId}
+          required={true}
+          label={"Title"}
+          value={title}
+          error={titleError}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            setTitleError("");
+          }}
+        />
+
+        <Input
+          id={"medium_" + uniqueId}
+          required={true}
+          label={"Medium"}
+          value={medium}
+          error={mediumError}
+          onChange={(e) => {
+            setMedium(e.target.value);
+            setMediumError("");
+          }}
+        />
+
+        <Input
+          id={"url_" + uniqueId}
+          required={true}
+          label={"URL of Source"}
+          value={url}
+          error={urlError}
+          onChange={(e) => {
+            setUrl(e.target.value);
+            setUrlError("");
+          }}
+        />
+
+        <Input
+          id={"lastAcc_" + uniqueId}
+          type="date"
+          label={"Last Accessed"}
+          value={lastAccessed}
+          error={lastAccessedError}
+          onChange={(e) => {
+            setLastAccessed(e.target.value);
+            setLastAccessedError("");
+          }}
+        />
+
+        <Input
+          id={"pubDate_" + uniqueId}
+          type="date"
+          label={"Published"}
+          value={publishDate}
+          error={publishDateError}
+          onChange={(e) => {
+            setPublishDate(e.target.value);
+            setPublishDateError("");
+          }}
+        />
+
         <div>
-          <div>
-            <Input
-              id={"title_" + uniqueId}
-              required={true}
-              label={"Title"}
-              value={title}
-              error={titleError}
-              onChange={(e) => {
-                setTitle(e.target.value);
-                setTitleError("");
-              }}
-            />
+          <Input
+            id={"addCont_" + uniqueId}
+            label={"Add Contributor"}
+            value={newContributor}
+            onChange={(e) => setNewContributor(e.target.value)}
+            onSubmit={handleAddContributor}
+          />
 
-            <Input
-              id={"medium_" + uniqueId}
-              required={true}
-              label={"Medium"}
-              value={medium}
-              error={mediumError}
-              onChange={(e) => {
-                setMedium(e.target.value);
-                setMediumError("");
-              }}
-            />
+          <Label label="Contributors" />
 
-            <Input
-              id={"url_" + uniqueId}
-              required={true}
-              label={"URL of Source"}
-              value={url}
-              error={urlError}
-              onChange={(e) => {
-                setUrl(e.target.value);
-                setUrlError("");
-              }}
-            />
+          <ul className={styles.chipGrid}>
+            {contributors.length === 0 && (
+              <ListItem item="No Contributors Added" />
+            )}
 
-            <Input
-              id={"lastAcc_" + uniqueId}
-              type="date"
-              label={"Last Accessed"}
-              value={lastAccessed}
-              error={lastAccessedError}
-              onChange={(e) => {
-                setLastAccessed(e.target.value);
-                setLastAccessedError("");
-              }}
-            />
-          </div>
-
-          <div>
-            <Input
-              id={"pubDate_" + uniqueId}
-              type="date"
-              label={"Published"}
-              value={publishDate}
-              error={publishDateError}
-              onChange={(e) => {
-                setPublishDate(e.target.value);
-                setPublishDateError("");
-              }}
-            />
-
-            <Input
-              id={"addCont_" + uniqueId}
-              label={"Add Contributor"}
-              value={newContributor}
-              onChange={(e) => setNewContributor(e.target.value)}
-              onSubmit={handleAddContributor}
-            />
-
-            <Label label="Contributors" />
-
-            <ul className={styles.chipGrid}>
-              {contributors.length === 0 && (
-                <ListItem item="No Contributors Added" />
-              )}
-
-              {contributors.map((cont) => (
-                <ListItem
-                  key={cont}
-                  item={cont}
-                  action={() => {
-                    setContributors(
-                      contributors.filter((name) => cont !== name),
-                    );
-                  }}
-                  actionType={"delete"}
-                />
-              ))}
-            </ul>
-          </div>
+            {contributors.map((cont) => (
+              <ListItem
+                key={cont}
+                item={cont}
+                action={() => {
+                  setContributors(contributors.filter((name) => cont !== name));
+                }}
+                actionType={"delete"}
+              />
+            ))}
+          </ul>
         </div>
 
         <button onClick={handleSubmit} className="submitButton">

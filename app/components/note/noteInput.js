@@ -77,7 +77,7 @@ export default function NoteInput({ availableSources }) {
   return (
     <div className="centeredContainer">
       <h3>Add a note</h3>
-      <div className={styles.form}>
+      <form className="formContainer">
         <TextArea
           id={"text_" + uniqueId}
           required={true}
@@ -89,10 +89,8 @@ export default function NoteInput({ availableSources }) {
           error={textError}
           label={"Text"}
         />
-      </div>
 
-      <div className={styles.addSources}>
-        <div className={styles.inputContainer}>
+        <div>
           <Label required={true} error={sourceError} label="Current Sources" />
 
           <ol className={styles.chipGrid}>
@@ -115,41 +113,6 @@ export default function NoteInput({ availableSources }) {
                   listSetter={setSources}
                 />
               )}
-              {/* {isSelectOpen && (
-                <div
-                  className={`${styles.sourcePicker} thinScroller`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  {availableSources.map((src) => (
-                    <div
-                      className={
-                        sources.find((x) => x._id === src._id)
-                          ? styles.selected
-                          : ""
-                      }
-                      key={src._id}
-                      onClick={() => {
-                        if (!sources.find((x) => x._id === src._id)) {
-                          setSources([...sources, src]);
-                          setSourceError("");
-                        } else {
-                          setSources(sources.filter((x) => x._id !== src._id));
-                        }
-                      }}
-                    >
-                      {src.title}
-                    </div>
-                  ))}
-
-                  {availableSources.length === 0 && (
-                    <div className={styles.noSources}>
-                      <p>You have no sources</p>
-                    </div>
-                  )}
-                </div>
-              )} */}
             </li>
 
             {sources.length > 0 &&
@@ -168,11 +131,11 @@ export default function NoteInput({ availableSources }) {
         </div>
 
         <InputPopup type="source" />
-      </div>
 
-      <button onClick={handleSubmit} className="submitButton">
-        {loading ? "Sending..." : "Submit Note"}
-      </button>
+        <button onClick={handleSubmit} className="submitButton">
+          {loading ? "Sending..." : "Submit Note"}
+        </button>
+      </form>
     </div>
   );
 }

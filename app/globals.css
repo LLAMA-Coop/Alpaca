@@ -242,6 +242,16 @@ input[type="date"] {
   border-radius: 100vw;
 }
 
+.formContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 24px;
+}
+
+.formContainer > *:last-child {
+  align-self: flex-end;
+}
+
 @media screen and (max-width: 1024px) {
   :root {
     --padding: 80px 40px;
@@ -251,5 +261,10 @@ input[type="date"] {
 @media screen and (max-width: 767px) {
   :root {
     --padding: 56px 24px;
+  }
+
+  .formContainer {
+    max-width: 550px;
+    grid-template-columns: 1fr;
   }
 }

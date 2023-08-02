@@ -187,7 +187,7 @@ export default function QuizInput({
     <div className="centeredContainer">
       <h3>Add new quiz card</h3>
 
-      <div className={styles.container}>
+      <form className="formContainer">
         <Input
           id={"quizType_" + uniqueId}
           type={"select"}
@@ -242,7 +242,7 @@ export default function QuizInput({
               ))}
 
               {choices.length === 0 && (
-                <ListItem item={"No responses added yet"} />
+                <ListItem item={"No choices added yet"} />
               )}
             </ul>
           </div>
@@ -278,7 +278,7 @@ export default function QuizInput({
             ))}
 
             {responses.length === 0 && (
-              <ListItem item={"No responses added yet"} />
+              <ListItem item={"No answers added yet"} />
             )}
           </ul>
         </div>
@@ -370,7 +370,7 @@ export default function QuizInput({
         <button onClick={handleSubmit} className="submitButton">
           {loading ? "Sending..." : "Submit Quiz"}
         </button>
-      </div>
+      </form>
     </div>
   );
 }

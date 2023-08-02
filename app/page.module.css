@@ -1,26 +1,6 @@
-/* .main > section:nth-child(even) {
-  background-color: var(--background-primary);
-}
-
-.main > section:nth-child(odd) {
-  background-color: var(--background-secondary);
-} */
-
-/* .main > section:nth-child(even) input,
-.main > section:nth-child(even) textarea,
-.main > section:nth-child(even) select {
-  background-color: var(--background-secondary);
-}
-
-.main > section:nth-child(odd) input,
-.main > section:nth-child(odd) textarea,
-.main > section:nth-child(odd) select {
-  background-color: var(--background-primary);
-} */
-
 .sourceGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 500px));
   grid-gap: 16px;
 }
 

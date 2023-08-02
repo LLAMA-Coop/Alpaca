@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import styles from "./Footer.module.css";
 import { palettes } from "../data/theme";
 
-console.log(palettes);
-
 const paletteAttributes = [
   "--accent-primary-1",
   "--accent-primary-2",
@@ -97,7 +95,7 @@ const Footer = () => {
   };
 
   const setPalette = (index) => {
-    setActivePalette(parseInt(index));
+    setActivePalette(index);
     localStorage.setItem("palette", index);
     setCssVariables(palettes[index]);
   };
