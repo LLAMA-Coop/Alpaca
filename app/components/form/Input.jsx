@@ -1,16 +1,10 @@
 "use client";
-import {
-  faAdd,
-  faArrowRight,
-  faCheck,
-  faSubtract,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import styles from "./Form.module.css";
-import Link from "next/link";
-import { useState } from "react";
 
-export const Label = ({ required, error, label, htmlFor }) => {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import styles from "./Input.module.css";
+
+export function Label({ required, error, label, htmlFor }) {
   return (
     <div className={styles.labelContainer}>
       <label htmlFor={htmlFor}>
@@ -19,9 +13,9 @@ export const Label = ({ required, error, label, htmlFor }) => {
       {error && <span>{error}</span>}
     </div>
   );
-};
+}
 
-export const Input = ({
+export function Input({
   id,
   type,
   choices,
@@ -37,7 +31,7 @@ export const Input = ({
   onEnter,
   disabled,
   outlineColor,
-}) => {
+}) {
   return (
     <div
       className={styles.container}
@@ -105,7 +99,7 @@ export const Input = ({
 
         {onSubmit && (
           <button
-            className={styles.submitButton}
+            className={styles.actionButton}
             onClick={(e) => onSubmit(e)}
             title={label}
           >
@@ -115,9 +109,9 @@ export const Input = ({
       </div>
     </div>
   );
-};
+}
 
-export const TextArea = ({
+export function TextArea({
   id,
   required,
   onChange,
@@ -126,7 +120,7 @@ export const TextArea = ({
   label,
   onFocus,
   onBlur,
-}) => {
+}) {
   return (
     <div className={styles.container}>
       {label && (
@@ -151,114 +145,4 @@ export const TextArea = ({
       </div>
     </div>
   );
-};
-
-export const ListItem = ({ item, action, actionType, link }) => {
-  let label;
-  if (actionType === "add") {
-    label = "Add item";
-  }
-  if (actionType === "delete") {
-    label = "Delete item";
-  }
-  if (!action && link) {
-    label = item;
-  }
-
-  const content = (
-    <div className={styles.itemContent}>
-      <span>{item}</span>
-
-      {action && (
-        <button
-          className={styles.action}
-          title={label}
-          onClick={(e) => {
-            e.preventDefault();
-            action();
-          }}
-        >
-          <FontAwesomeIcon icon={actionType === "add" ? faAdd : faSubtract} />
-        </button>
-      )}
-
-      {link && !action && (
-        <button className={styles.action} title={label} onClick={action}>
-          <FontAwesomeIcon icon={faArrowRight} />
-        </button>
-      )}
-    </div>
-  );
-
-  if (link)
-    return (
-      <li>
-        <Link href={link} target="_blank" className={styles.listItem}>
-          {content}
-        </Link>
-      </li>
-    );
-
-  return <li className={styles.listItem}>{content}</li>;
-};
-
-export const Details = ({ summary, children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className={isOpen ? "open" : ""}>
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          setIsOpen(!isOpen);
-        }}
-      >
-        {summary}
-      </button>
-      <div>{isOpen && children}</div>
-    </div>
-  );
-};
-
-export const Select = ({
-  listChosen,
-  listChoices,
-  listProperty,
-  listSetter,
-}) => {
-  console.log("In Select");
-  return (
-    <div
-      className={`${styles.picker} thinScroller`}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {console.log("It is returning", listChoices)}
-      {listChoices.map((choice) => {
-        const isChosen = listChosen.find((x) => x._id === choice._id);
-        return (
-          <div
-            className={`${isChosen && styles.chosen}`}
-            key={choice._id}
-            onClick={() => {
-              if (!listChosen.find((x) => x._id === choice._id)) {
-                listSetter([...listChosen, choice]);
-              } else {
-                listSetter(listChosen.filter((x) => x._id !== choice._id));
-              }
-            }}
-          >
-            {choice[listProperty]}
-
-            <div className={styles.checkbox}>
-              {isChosen && <FontAwesomeIcon icon={faCheck} />}
-            </div>
-          </div>
-        );
-      })}
-
-      {listChoices.length === 0 && (
-        <div className={styles.emptyList}>No choices available</div>
-      )}
-    </div>
-  );
-};
+}

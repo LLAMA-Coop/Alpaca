@@ -1,15 +1,13 @@
 "use client";
+
 import { useState } from "react";
-import styles from "./quizDisplay.module.css";
 
-export default function ListAnswer({ canClientCheck, quiz, isOrdered }) {
-  let [userResponse, setUserResponse] = useState(
-    [...Array(quiz.correctResponses.length)].map(() => "")
+export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
+  const [userResponse, setUserResponse] = useState(
+    [...Array(quiz.correctResponses.length)].map(() => ""),
   );
-  let [responseStatus, setResponseStatus] = useState("empty");
-  let [responseCorrect, setResponseCorrect] = useState(false);
-
-  console.log("list answer", quiz, quiz.correctResponses);
+  const [responseStatus, setResponseStatus] = useState("empty");
+  const [responseCorrect, setResponseCorrect] = useState(false);
 
   function handleChange(index, value) {
     setResponseStatus("incomplete");
@@ -67,7 +65,9 @@ export default function ListAnswer({ canClientCheck, quiz, isOrdered }) {
         })}
       </ul>
 
-      <button onClick={handleCheckAnswer} className="submitButton">Check Answer</button>
+      <button onClick={handleCheckAnswer} className="submitButton">
+        Check Answer
+      </button>
 
       {responseCorrect && responseStatus === "complete" && <div>Correct!</div>}
       {!responseCorrect && responseStatus === "complete" && (

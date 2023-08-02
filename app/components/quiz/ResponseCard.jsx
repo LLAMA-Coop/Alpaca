@@ -1,12 +1,11 @@
 "use client";
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { Input, Card } from "@/app/components";
 import confetti from "canvas-confetti";
-import { Input } from "../form/Form";
-import { Card } from "../card/Card";
 import { useState } from "react";
 
-const ResponseCard = ({ canClientCheck, quiz }) => {
+export function ResponseCard({ canClientCheck, quiz }) {
   const [userResponse, setUserResponse] = useState("");
   const [hasAnswered, setHasAnswered] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState(false);
@@ -130,6 +129,4 @@ const ResponseCard = ({ canClientCheck, quiz }) => {
       )}
     </Card>
   );
-};
-
-export default ResponseCard;
+}

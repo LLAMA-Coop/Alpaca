@@ -7,7 +7,7 @@ connectDB();
 
 // Don't forget to validate at least one source ID
 
-export default models.note ||
+export default models?.note ||
   model(
     "note",
     new Schema({
@@ -35,5 +35,5 @@ export default models.note ||
         ref: "user",
         required: true,
       },
-    })
+    }),
   );

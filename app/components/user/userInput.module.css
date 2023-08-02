@@ -1,21 +1,10 @@
-.formContainer > h3 {
-  font-size: 24px;
-  margin-bottom: 24px;
-}
-
-.inputContainer {
-  border-radius: 4px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
 .passwordTooltip {
   position: absolute;
+  width: 250px;
   padding: 12px;
   border-radius: 4px;
   background-color: var(--background-tertiary);
-  left: 50%;
+  left: calc(100% + 16px);
   top: calc(50% + 10px);
   transform: translateY(-50%);
   animation: popIn 0.15s ease-in-out;

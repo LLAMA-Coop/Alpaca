@@ -1,9 +1,9 @@
-import SourceDisplay from "../source/sourceDisplay";
-import styles from "./noteDisplay.module.css";
+import { SourceDisplay } from "@/app/components";
+import styles from "./NoteDisplay.module.css";
 import Source from "@/app/api/models/Source";
 import User from "@/app/api/models/User";
 
-export default async function NoteDisplay({ note }) {
+export async function NoteDisplay({ note }) {
   const user = await User.findById(note.addedBy);
 
   return (

@@ -1,11 +1,13 @@
-import styles from "./page.module.css";
 import Source from "./api/models/Source";
-import SourceDisplay from "./components/source/sourceDisplay";
-import SourceInput from "./components/source/sourceInput";
-import UserInput from "./components/user/userInput";
-import NoteInput from "./components/note/noteInput";
+import styles from "./Page.module.css";
 import Note from "./api/models/Note";
-import NoteDisplay from "./components/note/noteDisplay";
+import {
+  SourceDisplay,
+  SourceInput,
+  NoteDisplay,
+  UserInput,
+  NoteInput,
+} from "./components/";
 
 const sources = await Source.find();
 const notes = await Note.find();
@@ -16,37 +18,43 @@ export default function Home() {
       <h2>Let's take it for a spin!</h2>
 
       {sources.length > 0 && (
-        <section className="centeredContainer">
-          <h3>Sources</h3>
+        <section>
+          <h3>Your sources</h3>
 
-          <ul className={styles.sourceGrid}>
+          <ol className={styles.listGrid}>
             {sources.map((src) => (
-              <SourceDisplay key={src._id} source={src} />
+              <li key={src._id}>
+                <SourceDisplay source={src} />
+              </li>
             ))}
-          </ul>
+          </ol>
         </section>
       )}
 
       <section>
+        <h3>Create new source</h3>
         <SourceInput />
       </section>
 
       {notes.length > 0 && (
-        <section className="centeredContainer">
-          <h3>Notes</h3>
-          <div className={styles.sourceGrid}>
+        <section>
+          <h3>Your notes</h3>
+
+          <ol className={styles.listGrid}>
             {notes.map((note) => (
               <NoteDisplay key={note._id} note={note}></NoteDisplay>
             ))}
-          </div>
+          </ol>
         </section>
       )}
 
       <section>
+        <h3>Create new note</h3>
         <NoteInput availableSources={JSON.parse(JSON.stringify(sources))} />
       </section>
 
       <section>
+        <h3>Register new user</h3>
         <UserInput isRegistering={true} />
       </section>
     </main>

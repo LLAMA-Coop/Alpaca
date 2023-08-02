@@ -1,11 +1,11 @@
-import styles from "../page.module.css";
-import Link from "next/link";
+import styles from "@/app/Page.module.css";
 
 export default function About() {
   return (
     <main className={styles.main}>
       <h2>About Mneme</h2>
-      <div className="centeredContainer">
+
+      <section>
         <div className={styles.description}>
           <p>
             There are plenty of flashcard apps available, and plenty that make
@@ -31,9 +31,9 @@ export default function About() {
 
           <p>
             Named for the{" "}
-            <Link href="https://en.wikipedia.org/wiki/Mneme" target="_blank">
+            <a href="https://en.wikipedia.org/wiki/Mneme" target="_blank">
               Greek Muse for memory
-            </Link>
+            </a>
             , Mneme will be a web application and API for submitting, storing,
             and retrieving learning materials in a database. These learning
             materials can be sources of information, such as articles, news
@@ -45,24 +45,27 @@ export default function About() {
 
           <p>
             This project is open source. Contributors are welcome to{" "}
-            <Link href="https://github.com/joewrotehaikus/mnemefeast">
+            <a
+              href="https://github.com/joewrotehaikus/mnemefeast"
+              target="_blank"
+            >
               view the source code on GitHub
-            </Link>
+            </a>
             , make their own GitHub fork, and submit pull requests for
             contribution to the project.
           </p>
 
           <p>
             For discussion about the application,{" "}
-            <Link href="https://discord.gg/PcsjqPFh">
+            <a href="https://discord.gg/PcsjqPFh" target="_blank">
               go to our Discord server
-            </Link>
+            </a>
             .
           </p>
 
           <p>This application is using NextJs 13 and Mongoose.</p>
         </div>
-      </div>
+      </section>
     </main>
   );
 }

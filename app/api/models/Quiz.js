@@ -2,13 +2,13 @@ import { model, models, Schema } from "mongoose";
 import connectDB from "../db";
 connectDB();
 
-export default models.quiz ||
+export default models?.quiz ||
   model(
     "quiz",
     new Schema({
       type: {
         type: String,
-        default: "prompt-response"
+        default: "prompt-response",
       },
       prompt: String,
       choices: [String],
@@ -28,7 +28,7 @@ export default models.quiz ||
       addedBy: {
         type: Schema.Types.ObjectId,
         ref: "user",
-        required: true
-      }
-    })
+        required: true,
+      },
+    }),
   );

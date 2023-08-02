@@ -1,14 +1,14 @@
-import QuizInput from "../components/quiz/quizInput";
-import QuizDisplay from "../components/quiz/quizDisplay";
-import Source from "../api/models/Source";
-import Note from "../api/models/Note";
-import Quiz from "../api/models/Quiz";
-import styles from "../page.module.css";
+import { QuizDisplay, QuizInput } from "@/app/components";
+import Source from "@/app/api/models/Source";
+import styles from "@/app/Page.module.css";
+import Note from "@/app/api/models/Note";
+import Quiz from "@/app/api/models/Quiz";
 
-export default async function QuizzesPage() {
-  const sources = await Source.find();
-  const notes = await Note.find();
-  const quizzes = await Quiz.find();
+const sources = await Source.find();
+const notes = await Note.find();
+const quizzes = await Quiz.find();
+
+export default function QuizzesPage() {
   const availableSources = sources.map((src) => {
     return {
       _id: src._id.toString(),
@@ -16,6 +16,7 @@ export default async function QuizzesPage() {
       url: src.url,
     };
   });
+
   const availableNotes = notes.map((note) => {
     return {
       _id: note._id.toString(),
@@ -29,23 +30,24 @@ export default async function QuizzesPage() {
 
       {quizzes.length > 0 && (
         <section>
-          <div className="centeredContainer">
-            <h3>Answer these questions</h3>
-            <ul className={styles.quizGrid}>
-              {quizzes.map((quiz) => {
-                let quizForClient = JSON.parse(JSON.stringify(quiz));
-                return (
-                  <li key={quiz._id}>
-                    <QuizDisplay quiz={quizForClient} canClientCheck={true} />
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          <h3>Your quiz cards</h3>
+
+          <ol className={styles.listGrid}>
+            {quizzes.map((quiz) => {
+              const quizForClient = JSON.parse(JSON.stringify(quiz));
+              return (
+                <li key={quiz._id}>
+                  <QuizDisplay quiz={quizForClient} canClientCheck={true} />
+                </li>
+              );
+            })}
+          </ol>
         </section>
       )}
 
       <section>
+        <h3>Create new card</h3>
+
         <QuizInput
           isEditing={false}
           availableSources={availableSources}

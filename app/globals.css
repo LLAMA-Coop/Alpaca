@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap");
+
 :root {
   --max-width: 1100px;
   --padding: 120px 40px;
@@ -7,9 +9,9 @@
     "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
-  --background-primary: hsl(0, 0%, 98%);
-  --background-secondary: hsl(0, 0%, 87%);
-  --background-tertiary: hsl(0, 1%, 60%);
+  --background-primary: hsl(0, 0%, 100%);
+  --background-secondary: hsl(0, 0%, 90%);
+  --background-tertiary: hsl(0, 0%, 85%);
 
   --foreground-primary: hsl(240, 10%, 4%);
   --foreground-secondary: hsl(240, 6%, 10%);
@@ -66,7 +68,7 @@
   --accent-secondary-outline: hsl(0, 74%, 42%, 0.2);
   --accent-tertiary-outline: hsl(163, 94%, 24%, 0.2);
 
-  --anchor: hsl(217, 91%, 60%);
+  --anchor-foreground: hsl(217, 91%, 60%);
 }
 
 [data-theme="dark"] html {
@@ -74,9 +76,9 @@
 }
 
 [data-theme="light"] {
-  --background-primary: hsl(0, 0%, 98%);
-  --background-secondary: hsl(0, 0%, 87%);
-  --background-tertiary: hsl(0, 1%, 60%);
+  --background-primary: hsl(0, 0%, 100%);
+  --background-secondary: hsl(0, 0%, 90%);
+  --background-tertiary: hsl(0, 0%, 85%);
 
   --foreground-primary: hsl(240, 10%, 4%);
   --foreground-secondary: hsl(240, 6%, 10%);
@@ -86,7 +88,7 @@
   --accent-secondary-outline: var(--accent-secondary-1);
   --accent-tertiary-outline: var(--accent-tertiary-1);
 
-  --anchor: hsl(226, 71%, 40%);
+  --anchor-foreground: hsl(226, 71%, 40%);
 }
 
 [data-theme="light"] html {
@@ -101,100 +103,86 @@
 
 html,
 body {
-  width: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  background-color: var(--background-primary);
-  color: var(--foreground-primary);
+  width: 100dvw;
   font-size: 16px;
+  overflow-x: hidden;
+  color: var(--foreground-primary);
+  background-color: var(--background-primary);
 }
 
 a {
-  color: var(--anchor);
+  color: var(--anchor-foreground);
   text-decoration: none;
+  font-weight: 500;
 }
 
-button {
-  border: none;
-}
-
-.submitButton {
+.button {
+  height: 32px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
   padding: 2px 16px;
-  border-radius: 3px;
   border: none;
+  border-radius: 3px;
   font-size: 14px;
   line-height: 16px;
   font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
-  height: 40px;
   user-select: none;
-  background-color: var(--accent-primary-1);
   color: var(--accent-foreground);
+  background-color: var(--accent-primary-1);
   transition: background-color 0.2s ease-in-out;
 }
 
-.submitButton.icon {
-  gap: 8px;
+.button:not(.submit) {
+  width: fit-content;
 }
 
-.submitButton:hover {
+.button:hover {
   background-color: var(--accent-primary-2);
 }
 
-.submitButton:active {
+.button:active {
   background-color: var(--accent-primary-3);
 }
 
-button.green,
-a.green {
+.button.submit {
+  height: 42px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.button.green {
   background-color: var(--accent-tertiary-1);
   color: var(--accent-foreground);
 }
 
-button.green:hover,
-a.green:hover {
+.button.green:hover {
   background-color: var(--accent-tertiary-2);
   color: var(--accent-foreground);
 }
 
-button.green:active,
-a.green:active {
+.button.green:active {
   background-color: var(--accent-tertiary-3);
   color: var(--accent-foreground);
 }
 
-button.red,
-a.red {
+.button.red {
   background-color: var(--accent-secondary-1);
   color: var(--accent-foreground);
 }
 
-button.red:hover,
-a.red:hover {
+.button.red:hover {
   background-color: var(--accent-secondary-2);
   color: var(--accent-foreground);
 }
 
-button.red:active,
-a.red:active {
+.button.red:active {
   background-color: var(--accent-secondary-3);
   color: var(--accent-foreground);
-}
-
-h2 {
-  font-size: clamp(32px, 8vw, 42px);
-  text-align: center;
-  margin: 12px 0;
-  padding: 0 10px;
-}
-
-h3 {
-  font-size: 34px;
-  margin-bottom: 24px;
 }
 
 ul,
@@ -208,24 +196,10 @@ select:focus-visible,
 button:focus-visible,
 a:focus-visible {
   outline: 4px solid var(--accent-primary-outline);
-  outline-offset: 1px;
 }
 
 input[type="date"] {
   cursor: pointer;
-}
-
-.centeredContainer {
-  max-width: var(--max-width);
-  padding: var(--padding);
-  margin: 0 auto;
-}
-
-.chipGrid {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
 }
 
 .thinScroller::-webkit-scrollbar {
@@ -242,14 +216,24 @@ input[type="date"] {
   border-radius: 100vw;
 }
 
-.formContainer {
+.formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 24px;
 }
 
-.formContainer > *:last-child {
+.formGrid > *:last-child {
   align-self: flex-end;
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 16px;
 }
 
 @media screen and (max-width: 1024px) {
@@ -263,7 +247,7 @@ input[type="date"] {
     --padding: 56px 24px;
   }
 
-  .formContainer {
+  .formGrid {
     max-width: 550px;
     grid-template-columns: 1fr;
   }
