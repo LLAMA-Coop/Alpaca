@@ -1,3 +1,6 @@
+// Credit: kirilloid
+// https://stackoverflow.com/questions/9733288/how-to-programmatically-calculate-the-contrast-ratio-between-two-colors
+
 const offset = {
   RED: 0.2126,
   GREEN: 0.7152,
@@ -17,46 +20,22 @@ function hexToRgb(hex) {
   return { r, g, b };
 }
 
-function rgbToLuminanceValue({ r, g, b }) {
-  const gammaThreshhold = 0.03928;
-  const denom = 12.92;
-  function calc(color) {
-    return ((color + 0.055) / 1.055) ** GAMMA;
+function luminance({ r, g, b }) {
+  function calc(num) {
+    num /= 255;
+    return num <= 0.03928 ? num / 12.92 : ((num + 0.055) / 1.055) ** GAMMA;
   }
 
-  return {
-    red: r <= gammaThreshhold ? r / denom : calc(r),
-    green: g < gammaThreshhold ? g / denom : calc(g),
-    blue: b < gammaThreshhold ? b / denom : calc(b),
-  };
+  return calc(r) * offset.RED + calc(g) * offset.GREEN + calc(b) * offset.BLUE;
 }
 
-function getContrastRatio(hexColor1, hexColor2) {
-  const rgbColor1 = hexToRgb(hexColor1);
-  const rgbColor2 = hexToRgb(hexColor2);
-  const relativeLum1 = rgbToLuminanceValue(rgbColor1);
-  const relativeLum2 = rgbToLuminanceValue(rgbColor2);
-
-  // Convert RGB values to relative luminance (as per WCAG 2.0 specifications)
-  const luminance1 =
-    (relativeLum1.r * offset.RED +
-      relativeLum1.g * offset.GREEN +
-      relativeLum1.b * offset.BLUE) /
-    255;
-  const luminance2 =
-    (relativeLum2.r * offset.RED +
-      relativeLum2.g * offset.GREEN +
-      relativeLum2.b * offset.BLUE) /
-    255;
-
-  // Calculate the contrast ratio
-  const contrastRatio =
-    luminance1 >= luminance2
-      ? (luminance1 + 0.05) / (luminance2 + 0.05)
-      : (luminance2 + 0.05) / (luminance1 + 0.05);
-
-  // Return the contrast ratio rounded to two decimal places
-  return Math.round(contrastRatio * 100) / 100;
+export default function contrast(hexColor1, hexColor2) {
+  const rgb1 = hexToRgb(hexColor1);
+  const rgb2 = hexToRgb(hexColor2);
+  const lum1 = luminance(rgb1);
+  const lum2 = luminance(rgb2);
+  const brightest = Math.max(lum1, lum2);
+  const darkest = Math.min(lum1, lum2);
+  const contrast = (brightest + 0.05) / (darkest + 0.05);
+  return Math.floor(contrast * 100) / 100;
 }
-
-module.exports = getContrastRatio;
