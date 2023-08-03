@@ -1,28 +1,33 @@
 {
-  "name": "mneme",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.4.0",
-    "@fortawesome/free-solid-svg-icons": "^6.4.0",
-    "@fortawesome/react-fontawesome": "^0.2.0",
-    "bcrypt": "^5.1.0",
-    "canvas-confetti": "^1.6.0",
-    "eslint": "8.43.0",
-    "eslint-config-next": "13.4.7",
-    "mongoose": "^7.3.1",
-    "next": "13.4.7",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
-  },
-  "devDependencies": {
-    "@types/react": "18.2.18",
-    "prettier": "3.0.0"
-  }
+    "name": "mneme",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "test": "jest"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.4.0",
+        "@fortawesome/free-solid-svg-icons": "^6.4.0",
+        "@fortawesome/react-fontawesome": "^0.2.0",
+        "bcrypt": "^5.1.0",
+        "canvas-confetti": "^1.6.0",
+        "eslint": "8.43.0",
+        "eslint-config-next": "13.4.7",
+        "mongoose": "^7.3.1",
+        "next": "13.4.7",
+        "react": "18.2.0",
+        "react-dom": "18.2.0"
+    },
+    "devDependencies": {
+        "@testing-library/jest-dom": "^5.17.0",
+        "@testing-library/react": "^14.0.0",
+        "@types/react": "18.2.18",
+        "jest": "^29.6.2",
+        "jest-environment-jsdom": "^29.6.2",
+        "prettier": "3.0.0"
+    }
 }
