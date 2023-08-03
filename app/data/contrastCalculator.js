@@ -31,11 +31,12 @@ function rgbToLuminanceValue({ r, g, b }) {
   };
 }
 
-function getContrastRatio(hexColor1, hexColor2) {
+export default function getContrastRatio(hexColor1, hexColor2) {
   const rgbColor1 = hexToRgb(hexColor1);
   const rgbColor2 = hexToRgb(hexColor2);
   const relativeLum1 = rgbToLuminanceValue(rgbColor1);
   const relativeLum2 = rgbToLuminanceValue(rgbColor2);
+  console.log(relativeLum1, relativeLum2);
 
   // Convert RGB values to relative luminance (as per WCAG 2.0 specifications)
   const luminance1 =
@@ -58,5 +59,3 @@ function getContrastRatio(hexColor1, hexColor2) {
   // Return the contrast ratio rounded to two decimal places
   return Math.round(contrastRatio * 100) / 100;
 }
-
-module.exports = getContrastRatio;
