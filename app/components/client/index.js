@@ -2,7 +2,7 @@ export { Card } from "../card/Card";
 export { Footer } from "../footer/Footer";
 
 export { Details } from "../form/Details";
-export { Input, Label, TextArea } from "../form/Input";
+export { Input, Label } from "../form/Input";
 export { ListItem } from "../form/ListItem";
 export { Select } from "../form/Select";
 

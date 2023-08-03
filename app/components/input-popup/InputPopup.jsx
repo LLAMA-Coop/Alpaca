@@ -12,6 +12,8 @@ export function InputPopup({ type }) {
     const handleOutsideClick = (e) => {
       if (!showPopup) return;
       if (popup.current && !popup.current.contains(e.target)) {
+        console.log("click outside");
+        console.log(e.target);
         setShowPopup(false);
         document.documentElement.style.overflowY = "auto";
         document.documentElement.style.paddingRight = "0px";

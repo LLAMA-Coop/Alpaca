@@ -2,147 +2,153 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./Input.module.css";
 
-export function Label({ required, error, label, htmlFor }) {
-  return (
-    <div className={styles.labelContainer}>
-      <label htmlFor={htmlFor}>
-        {label} {required && <span>*</span>}
-      </label>
-      {error && <span>{error}</span>}
-    </div>
-  );
+export function Label({ required, error, errorId, label, htmlFor }) {
+    return (
+        <div className={styles.labelContainer}>
+            <label htmlFor={htmlFor}>
+                {label} {required && <span>*</span>}
+            </label>
+
+            {error && (
+                <span id={errorId} aria-live="polite">
+                    {error}
+                </span>
+            )}
+        </div>
+    );
 }
 
 export function Input({
-  id,
-  type,
-  choices,
-  required,
-  onChange,
-  value,
-  error,
-  label,
-  onFocus,
-  onBlur,
-  onSubmit,
-  onKeyUp,
-  onEnter,
-  disabled,
-  outlineColor,
+    type,
+    description,
+    autoComplete,
+    choices,
+    required,
+    onChange,
+    value,
+    error,
+    label,
+    onFocus,
+    onBlur,
+    action,
+    onActionTrigger,
+    disabled,
+    outlineColor,
 }) {
-  return (
-    <div
-      className={styles.container}
-      style={{
-        opacity: disabled ? "0.3" : "",
-        cursor: disabled ? "not-allowed" : "",
-      }}
-    >
-      {label && (
-        <Label
-          required={required}
-          error={error}
-          label={label}
-          htmlFor={id ?? label}
-        />
-      )}
+    const inputId = `${label}-${makeUniqueId()}`;
+    const errorId = `${inputId}-error`;
 
-      <div
-        className={styles.inputContainer}
-        style={{
-          pointerEvents: disabled ? "none" : "",
-        }}
-      >
-        {type === "select" && choices ? (
-          <select
-            required={required}
-            onChange={onChange}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            value={value || ""}
+    return (
+        <div
+            className={styles.container}
             style={{
-              outlineColor: outlineColor || "",
+                opacity: disabled ? "0.3" : "",
+                cursor: disabled ? "not-allowed" : "",
             }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && onSubmit) onSubmit(e);
-              if (e.key === "Enter" && onEnter) onEnter(e);
-            }}
-          >
-            {choices.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <input
-            id={id ?? label}
-            type={type || "text"}
-            required={required}
-            onChange={onChange}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onKeyUp={onKeyUp}
-            value={value || ""}
-            style={{
-              paddingRight: onSubmit ? "44px" : "",
-              outlineColor: outlineColor || "",
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && onSubmit) onSubmit(e);
-              if (e.key === "Enter" && onEnter) onEnter(e);
-            }}
-          />
-        )}
+        >
+            {label && (
+                <Label
+                    label={label}
+                    error={error}
+                    errorId={errorId}
+                    htmlFor={inputId}
+                    required={required}
+                />
+            )}
 
-        {onSubmit && (
-          <button
-            className={styles.actionButton}
-            onClick={(e) => onSubmit(e)}
-            title={label}
-          >
-            <FontAwesomeIcon icon={faAdd} />
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
+            <div
+                className={styles.inputContainer}
+                style={{ pointerEvents: disabled ? "none" : "" }}
+            >
+                {type === "select" && choices ? (
+                    <select
+                        id={inputId}
+                        autoComplete={autoComplete || "off"}
+                        aria-describedby={description}
+                        aria-required={error ? error : ""}
+                        aria-disabled={disabled}
+                        aria-invalid={error ? "true" : "false"}
+                        aria-errormessage={error ? errorId : ""}
+                        required={required}
+                        onChange={onChange}
+                        onFocus={onFocus}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && action) onActionTrigger(e);
+                        }}
+                        style={{ outlineColor: outlineColor || "" }}
+                    >
+                        {choices.map((choice) => (
+                            <option key={choice.value} value={choice.value}>
+                                {choice.label}
+                            </option>
+                        ))}
+                    </select>
+                ) : type === "textarea" ? (
+                    <textarea
+                        id={inputId}
+                        autoComplete={autoComplete || "off"}
+                        aria-describedby={description}
+                        aria-required={error ? error : ""}
+                        aria-disabled={disabled}
+                        aria-invalid={error ? "true" : "false"}
+                        aria-errormessage={error ? errorId : ""}
+                        className="thinScroller"
+                        required={required}
+                        onChange={onChange}
+                        onFocus={onFocus}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && action) onActionTrigger(e);
+                        }}
+                    />
+                ) : (
+                    <input
+                        id={inputId}
+                        autoComplete={autoComplete || "off"}
+                        aria-describedby={description}
+                        aria-required={error ? error : ""}
+                        aria-disabled={disabled}
+                        aria-invalid={error ? "true" : "false"}
+                        aria-errormessage={error ? errorId : ""}
+                        type={type || "text"}
+                        required={required}
+                        onChange={onChange}
+                        onFocus={onFocus}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && action) onActionTrigger(e);
+                        }}
+                        style={{
+                            paddingRight: action ? "44px" : "",
+                            outlineColor: outlineColor || "",
+                        }}
+                    />
+                )}
 
-export function TextArea({
-  id,
-  required,
-  onChange,
-  value,
-  error,
-  label,
-  onFocus,
-  onBlur,
-}) {
-  return (
-    <div className={styles.container}>
-      {label && (
-        <Label
-          required={required}
-          error={error}
-          htmlFor={id ?? label}
-          label={label}
-        />
-      )}
-
-      <div className={styles.inputContainer}>
-        <textarea
-          id={id ?? label}
-          className="thinScroller"
-          required={required}
-          onChange={onChange}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          value={value || ""}
-        />
-      </div>
-    </div>
-  );
+                {action && (
+                    <button
+                        type="button"
+                        title={action}
+                        tabIndex={-1}
+                        className={styles.actionButton}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log("action");
+                            onActionTrigger(e);
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faAdd} />
+                    </button>
+                )}
+            </div>
+        </div>
+    );
 }

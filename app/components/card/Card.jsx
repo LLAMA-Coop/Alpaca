@@ -47,7 +47,7 @@ export function Card({
 
         {(title || description) && (
           <div className={styles.textContent}>
-            {title && <header>{title}</header>}
+            {title && <header title={title}>{title}</header>}
             {description && <p>{description}</p>}
           </div>
         )}
@@ -64,7 +64,7 @@ export function Card({
                     href={button.link}
                     target="_blank"
                     rel="noreferrer"
-                    className={button.color}
+                    className={`button ${button.color}`}
                   >
                     {button.label}
 
@@ -75,7 +75,7 @@ export function Card({
                 return (
                   <button
                     onClick={button.onClick}
-                    className={button.color}
+                    className={`button ${button.color}`}
                     key={button.label}
                   >
                     {button.label}{" "}

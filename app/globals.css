@@ -1,46 +1,61 @@
 @import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap");
 
 :root {
-  --max-width: 1100px;
-  --padding: 120px 40px;
-  --gradient-angle: 360deg;
+    --max-width: 1100px;
+    --padding: 120px 40px;
+    --gradient-angle: 360deg;
 
-  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
-    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+    --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+        "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+        "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
-  --background-primary: hsl(0, 0%, 100%);
-  --background-secondary: hsl(0, 0%, 90%);
-  --background-tertiary: hsl(0, 0%, 85%);
+    --background-primary: hsl(0, 0%, 100%);
+    --background-secondary: hsl(0, 0%, 90%);
+    --background-tertiary: hsl(0, 0%, 85%);
 
-  --foreground-primary: hsl(240, 10%, 4%);
-  --foreground-secondary: hsl(240, 6%, 10%);
-  --foreground-tertiary: hsl(240, 4%, 16%);
+    --foreground-primary: hsl(240, 10%, 4%);
+    --foreground-secondary: hsl(240, 6%, 10%);
+    --foreground-tertiary: hsl(240, 4%, 16%);
 
-  --accent-primary-1: hsl(224, 76%, 48%);
-  --accent-primary-2: hsl(226, 71%, 40%);
-  --accent-primary-3: hsl(224, 64%, 33%);
-  --accent-primary-light: hsl(217, 91%, 60%);
+    --accent-primary-1: hsl(224, 76%, 48%);
+    --accent-primary-2: hsl(226, 71%, 40%);
+    --accent-primary-3: hsl(224, 64%, 33%);
+    --accent-primary-light: hsl(217, 91%, 60%);
 
-  --accent-secondary-1: hsl(0, 74%, 42%);
-  --accent-secondary-2: hsl(0, 70%, 35%);
-  --accent-secondary-3: hsl(0, 63%, 31%);
-  --accent-secondary-light: hsl(0, 84%, 60%);
+    --accent-secondary-1: hsl(0, 74%, 42%);
+    --accent-secondary-2: hsl(0, 70%, 35%);
+    --accent-secondary-3: hsl(0, 63%, 31%);
+    --accent-secondary-light: hsl(0, 84%, 60%);
 
-  --accent-tertiary-1: hsl(163, 94%, 24%);
-  --accent-tertiary-2: hsl(163, 88%, 20%);
-  --accent-tertiary-3: hsl(164, 86%, 16%);
-  --accent-tertiary-light: hsl(160, 84%, 39%);
+    --accent-tertiary-1: hsl(163, 94%, 24%);
+    --accent-tertiary-2: hsl(163, 88%, 20%);
+    --accent-tertiary-3: hsl(164, 86%, 16%);
+    --accent-tertiary-light: hsl(160, 84%, 39%);
 
-  --accent-foreground: white;
+    --accent-foreground: white;
 
-  --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
-  --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
-  --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
+    --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
+    --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
+    --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
 }
 
 @media screen and (prefers-color-scheme: dark) {
-  :root {
+    :root {
+        --background-primary: hsl(240, 4%, 5%);
+        --background-secondary: hsl(240, 6%, 10%);
+        --background-tertiary: hsl(240, 4%, 16%);
+
+        --foreground-primary: hsl(0, 0%, 98%);
+        --foreground-secondary: hsl(240, 2%, 80%);
+        --foreground-tertiary: hsl(0, 0%, 65%);
+    }
+
+    html {
+        color-scheme: dark;
+    }
+}
+
+[data-theme="dark"] {
     --background-primary: hsl(240, 4%, 5%);
     --background-secondary: hsl(240, 6%, 10%);
     --background-tertiary: hsl(240, 4%, 16%);
@@ -48,203 +63,194 @@
     --foreground-primary: hsl(0, 0%, 98%);
     --foreground-secondary: hsl(240, 2%, 80%);
     --foreground-tertiary: hsl(0, 0%, 65%);
-  }
-}
 
-[data-theme="dark"] {
-  --background-primary: hsl(240, 4%, 5%);
-  --background-secondary: hsl(240, 6%, 10%);
-  --background-tertiary: hsl(240, 4%, 16%);
+    --accent-primary-outline: var(--accent-primary-1);
+    --accent-secondary-outline: var(--accent-secondary-1);
+    --accent-tertiary-outline: var(--accent-tertiary-1);
 
-  --foreground-primary: hsl(0, 0%, 98%);
-  --foreground-secondary: hsl(240, 2%, 80%);
-  --foreground-tertiary: hsl(0, 0%, 65%);
+    /* --accent-primary-outline: hsl(224, 76%, 48%, 0.2);
+    --accent-secondary-outline: hsl(0, 74%, 42%, 0.2);
+    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.2); */
 
-  --accent-primary-outline: hsl(224, 76%, 48%, 0.2);
-  --accent-secondary-outline: hsl(0, 74%, 42%, 0.2);
-  --accent-tertiary-outline: hsl(163, 94%, 24%, 0.2);
-
-  --anchor-foreground: hsl(217, 91%, 60%);
-}
-
-[data-theme="dark"] html {
-  color-scheme: dark;
+    --anchor-foreground: hsl(217, 91%, 60%);
 }
 
 [data-theme="light"] {
-  --background-primary: hsl(0, 0%, 100%);
-  --background-secondary: hsl(0, 0%, 90%);
-  --background-tertiary: hsl(0, 0%, 85%);
+    --background-primary: hsl(0, 0%, 100%);
+    --background-secondary: hsl(0, 0%, 90%);
+    --background-tertiary: hsl(0, 0%, 85%);
 
-  --foreground-primary: hsl(240, 10%, 4%);
-  --foreground-secondary: hsl(240, 6%, 10%);
-  --foreground-tertiary: hsl(240, 4%, 16%);
+    --foreground-primary: hsl(240, 10%, 4%);
+    --foreground-secondary: hsl(240, 6%, 10%);
+    --foreground-tertiary: hsl(240, 4%, 16%);
 
-  --accent-primary-outline: var(--accent-primary-1);
-  --accent-secondary-outline: var(--accent-secondary-1);
-  --accent-tertiary-outline: var(--accent-tertiary-1);
+    --accent-primary-outline: var(--accent-primary-1);
+    --accent-secondary-outline: var(--accent-secondary-1);
+    --accent-tertiary-outline: var(--accent-tertiary-1);
 
-  --anchor-foreground: hsl(226, 71%, 40%);
-}
-
-[data-theme="light"] html {
-  color-scheme: light;
+    --anchor-foreground: hsl(226, 71%, 40%);
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 html,
 body {
-  margin: 0;
-  padding: 0;
-  width: 100dvw;
-  font-size: 16px;
-  overflow-x: hidden;
-  color: var(--foreground-primary);
-  background-color: var(--background-primary);
+    margin: 0;
+    padding: 0;
+    width: 100dvw;
+    font-size: 16px;
+    overflow-x: hidden;
+    color: var(--foreground-primary);
+    background-color: var(--background-primary);
 }
 
 a {
-  color: var(--anchor-foreground);
-  text-decoration: none;
-  font-weight: 500;
+    color: var(--anchor-foreground);
+    text-decoration: none;
+    font-weight: 500;
 }
 
 .button {
-  height: 32px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  padding: 2px 16px;
-  border: none;
-  border-radius: 3px;
-  font-size: 14px;
-  line-height: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  user-select: none;
-  color: var(--accent-foreground);
-  background-color: var(--accent-primary-1);
-  transition: background-color 0.2s ease-in-out;
+    height: 32px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 16px;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    color: var(--accent-foreground);
+    background-color: var(--accent-primary-1);
+    transition: background-color 0.2s ease-in-out;
 }
 
 .button:not(.submit) {
-  width: fit-content;
+    width: fit-content;
 }
 
 .button:hover {
-  background-color: var(--accent-primary-2);
+    background-color: var(--accent-primary-2);
 }
 
 .button:active {
-  background-color: var(--accent-primary-3);
+    background-color: var(--accent-primary-3);
 }
 
 .button.submit {
-  height: 42px;
-  font-size: 16px;
-  line-height: 24px;
+    height: 42px;
+    font-size: 16px;
+    line-height: 24px;
 }
 
 .button.green {
-  background-color: var(--accent-tertiary-1);
-  color: var(--accent-foreground);
+    background-color: var(--accent-tertiary-1);
+    color: var(--accent-foreground);
 }
 
 .button.green:hover {
-  background-color: var(--accent-tertiary-2);
-  color: var(--accent-foreground);
+    background-color: var(--accent-tertiary-2);
+    color: var(--accent-foreground);
 }
 
 .button.green:active {
-  background-color: var(--accent-tertiary-3);
-  color: var(--accent-foreground);
+    background-color: var(--accent-tertiary-3);
+    color: var(--accent-foreground);
 }
 
 .button.red {
-  background-color: var(--accent-secondary-1);
-  color: var(--accent-foreground);
+    background-color: var(--accent-secondary-1);
+    color: var(--accent-foreground);
 }
 
 .button.red:hover {
-  background-color: var(--accent-secondary-2);
-  color: var(--accent-foreground);
+    background-color: var(--accent-secondary-2);
+    color: var(--accent-foreground);
 }
 
 .button.red:active {
-  background-color: var(--accent-secondary-3);
-  color: var(--accent-foreground);
+    background-color: var(--accent-secondary-3);
+    color: var(--accent-foreground);
 }
 
 ul,
 ol {
-  list-style: none;
+    list-style: none;
 }
 
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
-button:focus-visible,
-a:focus-visible {
-  outline: 4px solid var(--accent-primary-outline);
+*:focus-visible {
+    outline: 4px solid var(--accent-primary-outline);
+}
+
+*.offset:focus-visible {
+    outline-offset: 1px;
+}
+
+::-webkit-calendar-picker-indicator:focus-visible {
+    border-radius: 2px;
+    outline: 4px solid var(--accent-primary-outline);
+    outline-offset: 3px;
 }
 
 input[type="date"] {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .thinScroller::-webkit-scrollbar {
-  width: 10px;
+    width: 10px;
 }
 
 .thinScroller::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 .thinScroller::-webkit-scrollbar-thumb {
-  background: var(--accent-primary-1);
-  border: 3px solid var(--background-primary);
-  border-radius: 100vw;
+    background: var(--accent-primary-1);
+    border: 3px solid var(--background-primary);
+    border-radius: 100vw;
 }
 
 .formGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 24px;
 }
 
 .formGrid > *:last-child {
-  align-self: flex-end;
+    align-self: flex-end;
 }
 
 .chipList {
-  display: flex;
-  flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .buttonContainer {
-  display: flex;
-  gap: 16px;
+    display: flex;
+    gap: 16px;
 }
 
 @media screen and (max-width: 1024px) {
-  :root {
-    --padding: 80px 40px;
-  }
+    :root {
+        --padding: 80px 40px;
+    }
 }
 
 @media screen and (max-width: 767px) {
-  :root {
-    --padding: 56px 24px;
-  }
+    :root {
+        --padding: 56px 24px;
+    }
 
-  .formGrid {
-    max-width: 550px;
-    grid-template-columns: 1fr;
-  }
+    .formGrid {
+        max-width: 550px;
+        grid-template-columns: 1fr;
+    }
 }

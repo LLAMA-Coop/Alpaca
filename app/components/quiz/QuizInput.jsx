@@ -1,8 +1,13 @@
 "use client";
 
-import { Input, Label, ListItem, Select, InputPopup } from "@/app/components/client";
+import {
+  Input,
+  Label,
+  ListItem,
+  Select,
+  InputPopup,
+} from "@/app/components/client";
 import { useEffect, useState, useRef } from "react";
-import makeUniqueId from "@/app/code/uniqueId";
 
 export function QuizInput({ isEditing, availableSources, availableNotes }) {
   const [type, setType] = useState("prompt-response");
@@ -28,11 +33,6 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
   const [isNoteSelectOpen, setIsNoteSelectOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
-
-  const [uniqueId, setUniqueId] = useState("");
-  useEffect(() => {
-    setUniqueId(makeUniqueId());
-  }, []);
 
   const addSourceRef = useRef(null);
   useEffect(() => {
@@ -62,6 +62,7 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
     { label: "Prompt/Response", value: "prompt-response" },
     { label: "Multiple Choice", value: "multiple-choice" },
     { label: "List Answer", value: "list-answer" },
+    { label: "Fill in the Blank", value: "fill-in-the-blank" },
   ];
 
   async function handleSubmit(e) {
@@ -173,20 +174,20 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
   return (
     <form className="formGrid">
       <Input
-        id={"quizType_" + uniqueId}
         type={"select"}
-        choices={types}
-        required={true}
         label="Type"
+        choices={types}
+        description={"Type of quiz question"}
+        required={true}
         value={type}
         error={typeError}
         onChange={(e) => setType(e.target.value)}
       />
 
       <Input
-        id={"prompt_" + uniqueId}
-        required={true}
         label="Prompt"
+        description={"Question prompt. Can be a question or statement"}
+        required={true}
         value={prompt}
         error={promptError}
         onChange={(e) => {
@@ -198,17 +199,16 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
       {type === "multiple-choice" && (
         <div>
           <Input
-            id={"addChoice_" + uniqueId}
             label="Add new choice"
+            description={"Add a new choice. Press enter to add"}
             value={newChoice}
             required={choices.length < 1}
             onSubmit={handleAddChoice}
             error={choicesError}
             onChange={(e) => setNewChoice(e.target.value)}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                handleAddChoice(e);
-              }
+            action="Add new choice"
+            onActionTrigger={(e) => {
+              if (e.key === "Enter") handleAddChoice(e);
             }}
           />
 
@@ -236,17 +236,16 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
 
       <div>
         <Input
-          id={"addCorrect_" + uniqueId}
           label="Add new answer"
+          description={"Add a new answer. Press enter to add"}
           value={newResponse}
           required={responses.length === 0}
           onSubmit={handleAddResponse}
           error={responsesError}
           onChange={(e) => setNewResponse(e.target.value)}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              handleAddResponse(e);
-            }
+          action="Add new answer"
+          onActionTrigger={(e) => {
+            if (e.key === "Enter") handleAddResponse(e);
           }}
         />
 
@@ -277,9 +276,7 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
         <ol className="chipList">
           <ListItem
             item="Add a source"
-            action={() => {
-              setIsSourceSelectOpen((prev) => !prev);
-            }}
+            action={() => setIsSourceSelectOpen((prev) => !prev)}
             actionType={"add"}
             select={
               <Select
@@ -287,6 +284,7 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
                 listChosen={sources}
                 listProperty={"title"}
                 listSetter={setSources}
+                close={() => setIsSourceSelectOpen(false)}
               />
             }
           />
@@ -311,7 +309,7 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
 
         <ol className="chipList">
           <ListItem
-            item="Add a source"
+            item="Add a note"
             action={() => {
               setIsNoteSelectOpen((prev) => !prev);
             }}
@@ -322,6 +320,7 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
                 listChosen={notes}
                 listProperty={"text"}
                 listSetter={setNotes}
+                close={() => setIsNoteSelectOpen(false)}
               />
             }
           />

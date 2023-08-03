@@ -60,8 +60,10 @@ export function Footer() {
       if (!activeTheme === 2) return;
       if (e.matches) {
         document.documentElement.setAttribute("data-theme", "dark");
+        document.documentElement.style.colorScheme = "dark";
       } else {
         document.documentElement.setAttribute("data-theme", "light");
+        document.documentElement.style.colorScheme = "light";
       }
     };
 
@@ -98,8 +100,10 @@ export function Footer() {
 
     if (theme === 0 || (theme === 2 && !darkTheme.matches)) {
       document.documentElement.setAttribute("data-theme", "light");
+      document.documentElement.style.colorScheme = "light";
     } else if (theme === 1 || (theme === 2 && darkTheme.matches)) {
       document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.style.colorScheme = "dark";
     }
   };
 

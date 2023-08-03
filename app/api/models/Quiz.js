@@ -2,33 +2,76 @@ import { model, models, Schema } from "mongoose";
 import connectDB from "../db";
 connectDB();
 
-export default models?.quiz ||
-  model(
-    "quiz",
-    new Schema({
-      type: {
+const QuizSchema = new Schema(
+  {
+    type: {
+      type: String,
+      default: "prompt-response",
+      enum: {
+        values: [
+          "prompt-response",
+          "multiple-choice",
+          "fill-in-the-blank",
+          "ordered-list-answer",
+          "unordered-list-answer",
+          "verbatim",
+        ],
+        message: "Invalid quiz type",
+      },
+    },
+    prompt: {
+      type: String,
+      required: true,
+      minLength: 1,
+      maxLength: 100,
+    },
+    choices: [
+      {
         type: String,
-        default: "prompt-response",
+        required: true,
+        minLength: 1,
+        maxLength: 16,
       },
-      prompt: String,
-      choices: [String],
-      correctResponses: [String],
-      sources: [{ type: Schema.Types.ObjectId, ref: "source" }],
-      notes: [{ type: Schema.Types.ObjectId, ref: "note" }],
-      contributors: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "user",
-        },
-      ],
-      dateAdded: {
-        type: Date,
-        default: Date.now,
+    ],
+    correctResponses: [
+      {
+        type: String,
+        required: true,
+        minLength: 1,
+        maxLength: 16,
       },
-      addedBy: {
+    ],
+    sources: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "source",
+      },
+    ],
+    notes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "note",
+      },
+    ],
+    contributors: [
+      {
         type: Schema.Types.ObjectId,
         ref: "user",
-        required: true,
       },
-    }),
-  );
+    ],
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
+    updatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+export default models?.quiz || model("quiz", QuizSchema);
