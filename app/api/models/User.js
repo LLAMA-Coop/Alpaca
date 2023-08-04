@@ -48,6 +48,7 @@ const UserSchema = new Schema(
     roles: {
       type: [
         {
+          type: String,
           enum: ERole,
         },
       ],

@@ -14,7 +14,15 @@ const SourceSchema = new Schema(
       minLength: 1,
       maxLength: 100,
     },
-    authors: [
+    // authors: [
+    //   {
+    //     type: String,
+    //     required: true,
+    //     minLength: 1,
+    //     maxLength: 100,
+    //   },
+    // ],
+    contributors: [
       {
         type: String,
         required: true,
@@ -23,6 +31,7 @@ const SourceSchema = new Schema(
       },
     ],
     medium: {
+      type: String,
       enum: {
         values: ["book", "article", "video", "podcast", "website"],
         message: "Invalid medium",
