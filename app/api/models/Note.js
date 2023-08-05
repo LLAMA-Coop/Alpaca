@@ -7,33 +7,39 @@ connectDB();
 
 // Don't forget to validate at least one source ID
 
-export default models?.note ||
-  model(
-    "note",
-    new Schema({
-      addedBy: {
-        type: Schema.Types.ObjectId,
-        ref: "user",
-        required: true,
-      },
-      text: {
-        type: String,
-        required: true,
-      },
-      sources: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "source",
+const NoteSchema = new Schema(
+    {
+        text: {
+            type: String,
+            required: true,
+            minLength: 1,
+            maxLength: 256,
         },
-      ],
-      dateAdded: {
-        type: Date,
-        default: Date.now,
-      },
-      addedBy: {
-        type: Schema.Types.ObjectId,
-        ref: "user",
-        required: true,
-      },
-    }),
-  );
+        sources: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "source",
+            },
+        ],
+        contributors: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "user",
+            },
+        ],
+        createdBy: {
+            type: Schema.Types.ObjectId,
+            ref: "user",
+            required: true,
+        },
+    },
+    {
+        timestamps: true,
+    },
+);
+
+NoteSchema.set("toJSON", {
+    virtuals: true,
+});
+
+export default models?.note || model("note", NoteSchema);

@@ -2,198 +2,291 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { Input, Alert, Spinner } from "@components/client";
 import { useState, useRef, useEffect } from "react";
 import styles from "./UserInput.module.css";
-import { Input } from "../form/Input";
+import { useRouter } from "next/navigation";
 
 export function UserInput({ isRegistering }) {
-  const [username, setUsername] = useState("");
-  const [usernameError, setUsernameError] = useState("");
+    const [username, setUsername] = useState("");
+    const [usernameError, setUsernameError] = useState("");
 
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordError, setPasswordError] = useState("");
 
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
-  const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [requestStatus, setRequestStatus] = useState({});
 
-  const [passwordFocus, setPasswordFocus] = useState(false);
-  const passwordTooltip = useRef(null);
-  const passwordInput = useRef(null);
+    const [passwordFocus, setPasswordFocus] = useState(false);
 
-  useEffect(() => {
-    const handleOutsideClick = (e) => {
-      if (
-        passwordFocus &&
-        !passwordTooltip.current.contains(e.target) &&
-        !passwordInput.current.contains(e.target)
-      ) {
-        setPasswordFocus(false);
-      }
-    };
+    const passwordTooltip = useRef(null);
+    const passwordInput = useRef(null);
+    const router = useRouter();
 
-    document.addEventListener("click", handleOutsideClick);
-    return () => document.removeEventListener("click", handleOutsideClick);
-  }, [passwordFocus]);
+    useEffect(() => {
+        const handleOutsideClick = (e) => {
+            if (
+                passwordFocus &&
+                !passwordTooltip.current?.contains(e.target) &&
+                !passwordInput.current?.contains(e.target)
+            ) {
+                setPasswordFocus(false);
+            }
+        };
 
-  const passwordWeaknesses = [
-    "At least 8 characters",
-    "Upper & lowercase letters",
-    "A number",
-    "A special character (@$!%*?&:)",
-  ];
+        document.addEventListener("click", handleOutsideClick);
+        return () => document.removeEventListener("click", handleOutsideClick);
+    }, [passwordFocus]);
 
-  function getWeaknesses() {
-    let weaknesses = [];
+    const passwordWeaknesses = [
+        "At least 8 characters",
+        "Upper & lowercase letters",
+        "A number",
+        "A special character (@$!%*?&:)",
+    ];
 
-    if (password.length < 8) {
-      weaknesses.push("At least 8 characters");
+    function getWeaknesses() {
+        let weaknesses = [];
+
+        if (password.length < 8) {
+            weaknesses.push("At least 8 characters");
+        }
+
+        if (!/^(?=.*[a-z])(?=.*[A-Z]).+$/.test(password)) {
+            weaknesses.push("Upper & lowercase letters");
+        }
+
+        if (!/(?=.*\d)/.test(password)) {
+            weaknesses.push("A number");
+        }
+
+        if (!/(?=.*[@$!%*?&:])/.test(password)) {
+            weaknesses.push("A special character (@$!%*?&:)");
+        }
+
+        return weaknesses;
     }
 
-    if (!/^(?=.*[a-z])(?=.*[A-Z]).+$/.test(password)) {
-      weaknesses.push("Upper & lowercase letters");
-    }
+    async function handleRegister(e) {
+        e.preventDefault();
 
-    if (!/(?=.*\d)/.test(password)) {
-      weaknesses.push("A number");
-    }
+        if (username.length === 0) {
+            setUsernameError("Username cannot be empty");
+        }
 
-    if (!/(?=.*[@$!%*?&:])/.test(password)) {
-      weaknesses.push("A special character (@$!%*?&:)");
-    }
+        if (password.length === 0) {
+            setPasswordError("Password cannot be empty");
+        }
 
-    return weaknesses;
-  }
+        if (
+            !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:]).{8,}$/g.test(
+                password,
+            )
+        ) {
+            setPasswordError("Password is too weak");
+            setPasswordFocus(true);
+            return;
+        }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+        if (password !== confirmPassword) {
+            setConfirmPasswordError("Passwords do not match");
+            return;
+        }
 
-    if (username.length === 0) {
-      setUsernameError("Username cannot be empty");
-    }
+        if (username.length === 0 || password.length === 0) {
+            return;
+        }
 
-    if (password.length === 0) {
-      setPasswordError("Password cannot be empty");
-    }
+        const user = { username, password };
 
-    if (
-      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:]).{8,}$/g.test(password)
-    ) {
-      setPasswordError("Password is too weak");
-      setPasswordFocus(true);
-      return;
-    }
+        setLoading(true);
 
-    if (password.length > 0 && isRegistering && password !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match");
-    }
+        const response = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+        });
 
-    if (username.length === 0 || password.length === 0) {
-      return;
-    }
+        setLoading(false);
 
-    if (isRegistering && password !== confirmPassword) {
-      return;
-    }
+        if (response.status === 400) {
+            setUsernameError("Username already exists");
+            return;
+        }
 
-    const user = { username, password };
+        if (response.status === 201) {
+            router.push("/login");
 
-    setLoading(true);
-
-    const response = await fetch("/api/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-
-    setLoading(false);
-
-    setUsername("");
-    setPassword("");
-    setConfirmPassword("");
-    setUsernameError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
-    setPasswordFocus(false);
-
-    console.log(await response.json());
-  }
-
-  return (
-    <form className="formGrid">
-      <Input
-        required={true}
-        onChange={(e) => {
-          setUsername(e.target.value);
-          setUsernameError("");
-        }}
-        value={username}
-        error={usernameError}
-        label={"Username"}
-      />
-
-      <div style={{ position: "relative" }} ref={passwordInput}>
-        <Input
-          type={"password"}
-          required={true}
-          onChange={(e) => {
-            setPassword(e.target.value);
+            setUsername("");
+            setPassword("");
+            setConfirmPassword("");
+            setUsernameError("");
             setPasswordError("");
-          }}
-          value={password}
-          error={passwordError}
-          label={"Password"}
-          onFocus={() => setPasswordFocus(true)}
-          onBlur={() => setPasswordFocus(false)}
-        />
-
-        {passwordFocus && (
-          <div className={styles.passwordTooltip} ref={passwordTooltip}>
-            <p>Your password must contain:</p>
-
-            <ul>
-              {passwordWeaknesses.map((weakness, index) => {
-                return (
-                  <li
-                    key={index}
-                    className={
-                      !getWeaknesses().includes(weakness) ? styles.weakness : ""
-                    }
-                  >
-                    <div>
-                      {!getWeaknesses().includes(weakness) && (
-                        <FontAwesomeIcon icon={faCheck} />
-                      )}
-                    </div>
-                    <span>{weakness}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      {isRegistering && (
-        <Input
-          type={"password"}
-          required={true}
-          onChange={(e) => {
-            setConfirmPassword(e.target.value);
             setConfirmPasswordError("");
-          }}
-          value={confirmPassword}
-          error={confirmPasswordError}
-          label={"Password Match"}
-        />
-      )}
+            setPasswordFocus(false);
 
-      <button onClick={handleSubmit} className="button submit">
-        {loading ? "Sending..." : isRegistering ? "Register" : "Login"}
-      </button>
-    </form>
-  );
+            setRequestStatus({
+                success: true,
+                message: "Account created successfully",
+            });
+            setShowAlert(true);
+        } else {
+            setRequestStatus({
+                success: false,
+                message: "Something went wrong",
+            });
+            setShowAlert(true);
+        }
+    }
+
+    async function handleLogin(e) {
+        e.preventDefault();
+
+        if (username.length === 0) {
+            setUsernameError("Username cannot be empty");
+        }
+
+        if (password.length === 0) {
+            setPasswordError("Password cannot be empty");
+        }
+
+        if (username.length === 0 || password.length === 0) {
+            return;
+        }
+
+        const user = { username, password };
+
+        setLoading(true);
+
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+        });
+
+        setLoading(false);
+
+        if (response.status === 200) {
+            router.push(`/user/${username}`);
+
+            setUsername("");
+            setPassword("");
+            setConfirmPassword("");
+            setUsernameError("");
+            setPasswordError("");
+            setConfirmPasswordError("");
+            setPasswordFocus(false);
+
+            setRequestStatus({
+                success: true,
+                message: "Logged in successfully",
+            });
+            setShowAlert(true);
+        } else {
+            setUsernameError("Invalid username or password");
+        }
+    }
+
+    return (
+        <form className="formGrid">
+            <Alert
+                show={showAlert}
+                setShow={setShowAlert}
+                success={requestStatus.success}
+                message={requestStatus.message}
+            />
+
+            <Input
+                required={true}
+                onChange={(e) => {
+                    setUsername(e.target.value);
+                    setUsernameError("");
+                }}
+                value={username}
+                error={usernameError}
+                label={"Username"}
+            />
+
+            <div style={{ position: "relative" }} ref={passwordInput}>
+                <Input
+                    type={"password"}
+                    required={true}
+                    onChange={(e) => {
+                        setPassword(e.target.value);
+                        setPasswordError("");
+                    }}
+                    value={password}
+                    error={isRegistering && passwordError}
+                    label={"Password"}
+                    onFocus={() => setPasswordFocus(true)}
+                    onBlur={() => setPasswordFocus(false)}
+                />
+
+                {passwordFocus && isRegistering && (
+                    <div
+                        className={styles.passwordTooltip}
+                        ref={passwordTooltip}
+                        aria-live="polite"
+                    >
+                        <p>Your password must contain:</p>
+
+                        <ul>
+                            {passwordWeaknesses.map((weakness, index) => {
+                                return (
+                                    <li
+                                        key={index}
+                                        className={
+                                            !getWeaknesses().includes(weakness)
+                                                ? styles.weakness
+                                                : ""
+                                        }
+                                    >
+                                        <div>
+                                            {!getWeaknesses().includes(
+                                                weakness,
+                                            ) && (
+                                                <FontAwesomeIcon
+                                                    icon={faCheck}
+                                                />
+                                            )}
+                                        </div>
+                                        <span>{weakness}</span>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                )}
+            </div>
+
+            {isRegistering && (
+                <Input
+                    type={"password"}
+                    required={true}
+                    onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        setConfirmPasswordError("");
+                    }}
+                    value={confirmPassword}
+                    error={confirmPasswordError}
+                    label={"Password Match"}
+                />
+            )}
+
+            <button
+                onClick={isRegistering ? handleRegister : handleLogin}
+                className="button submit"
+            >
+                {loading ? <Spinner /> : isRegistering ? "Register" : "Login"}
+            </button>
+        </form>
+    );
 }

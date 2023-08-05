@@ -3,39 +3,89 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import styles from "./Select.module.css";
+import { useEffect } from "react";
 
-export function Select({ listChosen, listChoices, listProperty, listSetter }) {
-  return (
-    <div
-      className={`${styles.picker} thinScroller`}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {listChoices.map((choice) => {
-        const isChosen = listChosen.find((x) => x._id === choice._id);
-        return (
-          <div
-            className={`${isChosen && styles.chosen}`}
-            key={choice._id}
-            onClick={() => {
-              if (!listChosen.find((x) => x._id === choice._id)) {
-                listSetter([...listChosen, choice]);
-              } else {
-                listSetter(listChosen.filter((x) => x._id !== choice._id));
-              }
-            }}
-          >
-            <span title={choice[listProperty]}>{choice[listProperty]}</span>
+export function Select({
+    listChosen,
+    listChoices,
+    listProperty,
+    listSetter,
+    setSelectState,
+}) {
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+                setSelectState(false);
+            }
+        };
 
-            <div className={styles.checkbox}>
-              {isChosen && <FontAwesomeIcon icon={faCheck} />}
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, []);
+
+    const clickEvent = (choice) => {
+        if (!listChosen.find((x) => x.id === choice.id)) {
+            listSetter([...listChosen, choice]);
+        } else {
+            listSetter(listChosen.filter((x) => x.id !== choice.id));
+        }
+    };
+
+    return (
+        <div
+            aria-modal="true"
+            className={`${styles.picker} thinScroller`}
+            onClick={(e) => e.stopPropagation()}
+        >
+            <div
+                role="listbox"
+                aria-multiselectable="true"
+                aria-orientation="vertical"
+            >
+                {listChoices.map((choice, index) => {
+                    const isChosen = listChosen.find((x) => x.id === choice.id);
+                    return (
+                        <div
+                            tabIndex={0}
+                            role="option"
+                            aria-selected={isChosen}
+                            aria-setsize={listChoices.length}
+                            aria-posinset={index + 1}
+                            className={`${isChosen && styles.chosen} ${
+                                styles.item
+                            }`}
+                            key={choice.id}
+                            onClick={() => clickEvent(choice)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    clickEvent(choice);
+                                }
+                            }}
+                        >
+                            <span title={choice[listProperty]}>
+                                {choice[listProperty]}
+                            </span>
+
+                            <div
+                                role="checkbox"
+                                aria-checked={isChosen}
+                                className={styles.checkbox}
+                            >
+                                {isChosen && <FontAwesomeIcon icon={faCheck} />}
+                            </div>
+                        </div>
+                    );
+                })}
+
+                {listChoices.length === 0 && (
+                    <div
+                        aria-labelledby="emptyList"
+                        className={styles.emptyList}
+                    >
+                        No choices available
+                    </div>
+                )}
             </div>
-          </div>
-        );
-      })}
-
-      {listChoices.length === 0 && (
-        <div className={styles.emptyList}>No choices available</div>
-      )}
-    </div>
-  );
+        </div>
+    );
 }

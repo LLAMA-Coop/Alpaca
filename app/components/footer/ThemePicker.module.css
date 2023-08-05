@@ -1,0 +1,64 @@
+.themeContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.themeContainer > div {
+    position: relative;
+}
+
+.themeContainer > div > button {
+    width: 224px;
+    height: 32px;
+    padding: 0 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    border: 1px solid transparent;
+    background-color: transparent;
+    color: var(--foreground-primary);
+}
+
+.themeContainer > div > button:hover {
+    background-color: var(--background-secondary);
+}
+
+.themeContainer > div > button > div {
+    display: flex;
+    gap: 8px;
+}
+
+.popup {
+    width: 100%;
+    padding: 4px 0;
+    border-radius: 6px;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    border: 1px solid var(--background-tertiary);
+    background-color: var(--background-secondary);
+}
+
+.popup > ul > li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 6px 12px;
+    user-select: none;
+    cursor: pointer;
+    transition: all 0.01s ease-in-out;
+}
+
+.popup > ul > li:hover {
+    background-color: var(--background-tertiary);
+}
+
+.popup > ul > li:active {
+    opacity: 0.8;
+}

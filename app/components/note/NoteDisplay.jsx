@@ -1,29 +1,27 @@
-import { SourceDisplay } from "@/app/components/server";
-import styles from "./NoteDisplay.module.css";
-import Source from "@/app/api/models/Source";
-import User from "@/app/api/models/User";
+import { SourceDisplay } from "@components/server";
+import { Card } from "@components/client";
+import Source from "@models/Source";
+import User from "@models/User";
 
 export async function NoteDisplay({ note }) {
-  const user = await User.findById(note.addedBy);
+    const user = await User.findById(note.createdBy);
 
-  return (
-    <div className={styles.note}>
-      <h4>{note.text}</h4>
-      <p>Added By: {user?.username ?? "Not provided"}</p>
+    return (
+        <Card
+            title={`${user?.username ?? "Unknown"}'s Note`}
+            description={note.text}
+        >
+            <ul>
+                {note.sources.map(async (sourceId) => {
+                    const source = await Source.findOne({ _id: sourceId });
 
-      <ul>
-        {note.sources.map(async (srcId) => {
-          const src = await Source.findOne({ _id: srcId });
-
-          return (
-            <li key={srcId}>
-              <SourceDisplay source={src}></SourceDisplay>
-            </li>
-          );
-        })}
-      </ul>
-
-      <p>{note.dateAdded.toDateString()}</p>
-    </div>
-  );
+                    return (
+                        <li key={sourceId}>
+                            <SourceDisplay source={source} />
+                        </li>
+                    );
+                })}
+            </ul>
+        </Card>
+    );
 }

@@ -1,88 +1,96 @@
-<!-- 
+<!--
 This markdown can be viewed as a mindmap using the MarkMap VS Code extension.
 
 MarkMap can also export the mindmap into an HTML file that uses SVG to draw the mindmap
 -->
 
 # Enums
-- ERole
-    - user
-    - admin
-    - guest
-- EQuizType
-    - prompt-response
-    - multiple-choice
-    - fill-in-the-blank
-    - ordered-list-answer
-    - unordered-list-answer
-    - verbatim
-- EMediumType
-    - website
-    - book
-    - audio
-    - video
-    - periodical
+
+-   ERole
+    -   user
+    -   admin
+    -   guest
+-   EQuizType
+    -   prompt-response
+    -   multiple-choice
+    -   fill-in-the-blank
+    -   ordered-list-answer
+    -   unordered-list-answer
+    -   verbatim
+-   EMediumType
+    -   website
+    -   book
+    -   audio
+    -   video
+    -   periodical
 
 # Types
-- TQuiz
-    - quizId (ObjectId)
-    - lastCorrect (Date)
-    - level (integer)
-    - hiddenUntil (Date)
+
+-   TQuiz
+    -   quizId (ObjectId)
+    -   lastCorrect (Date)
+    -   level (integer)
+    -   hiddenUntil (Date)
 
 # Models
-- User
-    - id (ObjectId)
 
-    - username (string(32))
-    - displayName (string(32))
-    - passwordHash (string)
-    - roles (ERole[])
-    - quizzes (Quiz[])
+-   User
 
-    - createdAt (Date)
-    - updatedAt (Date)
-    - lastLogin (Date)
+    -   id (ObjectId)
 
-- Source
-    - id (ObjectId)
+    -   username (string(32))
+    -   displayName (string(32))
+    -   passwordHash (string)
+    -   roles (ERole[])
+    -   quizzes (Quiz[])
+    -   lastLogin (Date)
 
-    - title (string(100))
-    - authors (string(100)[])
-    - medium (EMediumType)
-    - url (validatedURI)
+    -   createdAt (Date)
+    -   updatedAt (Date)
 
-    - addedBy (ObjectId)
+-   Source
 
-    - publishedDate (Date)
-    - lastAccessed (Date)
+    -   id (ObjectId)
 
-    - createdAt (Date)
-    - updatedAt (Date)
+    -   title (string(100))
+    -   authors (string(100)[])
+    -   contributors (ObjectId[])
+    -   medium (EMediumType)
+    -   url (validatedURI)
 
-- Note
-    - id (ObjectId)
+    -   addedBy (ObjectId)
+    -   publishedAt (Date)
+    -   lastAccessed (Date)
 
-    - text (string(256))
-    - sources (ObjectId[])
-    - createdBy (ObjectId)
+    -   createdAt (Date)
+    -   updatedAt (Date)
 
-    - createdAt (Date)
-    - updatedAt (Date)
+-   Note
 
-- Quiz
-    - id (ObjectId)
+    -   id (ObjectId)
 
-    - type (EQuizType -> prompt-response)
-    - prompt (string(100))
-    - choices (string(16)[])
-    - correctResponses (string(16)[])
+    -   text (string(256))
+    -   sources (ObjectId[])
+    -   contributors (ObjectId[])
+    -   createdBy (ObjectId)
 
-    - sources (ObjectId[])
-    - notes (ObjectId[])
-    - createdBy (ObjectId)
-    - updatedBy (ObjectId)
-    - contributors (ObjectId[])
+    -   createdAt (Date)
+    -   updatedAt (Date)
 
-    - createdAt (Date)
-    - updatedAt (Date)
+-   Quiz
+
+    -   id (ObjectId)
+
+    -   type (EQuizType -> prompt-response)
+    -   prompt (string(100))
+    -   choices (string(16)[])
+    -   correctResponses (string(16)[])
+
+    -   sources (ObjectId[])
+    -   notes (ObjectId[])
+    -   createdBy (ObjectId)
+    -   updatedBy (ObjectId)
+    -   contributors (ObjectId[])
+
+    -   createdAt (Date)
+    -   updatedAt (Date)

@@ -4,22 +4,73 @@ connectDB();
 
 // This is for tracking progress on quiz questions
 // and spaced repetition (Leitner method)
-const userQuiz = new Schema({});
 
-export default models?.user ||
-  model(
-    "user",
-    new Schema({
-      username: { type: String, required: true },
-      passwordHash: { type: String, required: true },
-      dateAdded: {
+const TQuiz = new Schema({
+    quizId: {
+        type: Schema.Types.ObjectId,
+        ref: "quiz",
+        required: true,
+    },
+    lastCorrect: {
         type: Date,
-        default: Date.now,
-      },
-      roles: {
-        type: [String],
-        default: ["user"],
-      },
-      quizzes: [userQuiz],
-    }),
-  );
+    },
+    level: {
+        type: Number,
+        default: 0,
+    },
+    hiddenUntil: {
+        type: Date,
+    },
+});
+
+const ERole = {
+    values: ["user", "guest", "admin"],
+    message: "Invalid role",
+};
+
+const UserSchema = new Schema(
+    {
+        username: {
+            type: String,
+            required: true,
+            minLength: 2,
+            maxLength: 32,
+        },
+        displayName: {
+            type: String,
+            required: true,
+            minLength: 2,
+            maxLength: 32,
+        },
+        passwordHash: {
+            type: String,
+            required: true,
+        },
+        refreshTokens: {
+            type: [String],
+            default: [],
+        },
+        roles: {
+            type: [
+                {
+                    type: String,
+                    enum: ERole,
+                },
+            ],
+            default: ["user"],
+        },
+        quizzes: [TQuiz],
+        lastLogin: {
+            type: Date,
+        },
+    },
+    {
+        timestamps: true,
+    },
+);
+
+UserSchema.set("toJSON", {
+    virtuals: true,
+});
+
+export default models?.user || model("user", UserSchema);

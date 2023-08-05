@@ -1,88 +1,99 @@
 .container {
-  display: flex;
-  flex-direction: column;
-  border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
 }
 
 .inputContainer {
-  position: relative;
-  border-radius: 4px;
-  background-color: var(--background-secondary);
-  border: 1px solid var(--background-tertiary);
+    position: relative;
+    border-radius: 4px;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-tertiary);
 }
 
 .inputContainer > input,
 .inputContainer > select,
 .inputContainer > textarea {
-  width: 100%;
-  height: 40px;
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 16px;
-  line-height: 20px;
-  background-color: transparent;
-  color: var(--foreground-primary);
-  outline-color: var(--accent-primary-outline);
-  transition: outline 0.1s ease-in-out;
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 20px;
+    background-color: transparent;
+    color: var(--foreground-primary);
+    outline-color: var(--accent-primary-outline);
+    transition: outline 0.1s ease-in-out;
 }
 
 .inputContainer > textarea {
-  height: 80px;
-  min-height: 40px;
-  max-height: 550px;
-  resize: vertical;
+    height: 80px;
+    min-height: 40px;
+    max-height: 550px;
+    resize: vertical;
+    font-family: "Inter", sans-serif;
 }
 
 .inputContainer > select {
-  border-right: 10px solid transparent;
+    border-right: 10px solid transparent;
+}
+
+.inputContainer > select > option {
+    background-color: var(--background-secondary);
+    color: var(--foreground-primary);
+    font-size: 16px;
 }
 
 .container > div > .actionButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 4px;
-  margin: 5px 5px 0 0;
-  cursor: pointer;
-  color: var(--accent-foreground);
-  background-color: var(--accent-primary-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    margin: 5px 5px 0 0;
+    cursor: pointer;
+    color: var(--accent-foreground);
+    background-color: var(--accent-primary-1);
 }
 
 .container > div > .actionButton:hover {
-  background-color: var(--accent-primary-2);
+    background-color: var(--accent-primary-2);
 }
 
 .container > div > .actionButton:active {
-  background-color: var(--accent-primary-3);
+    background-color: var(--accent-primary-3);
 }
 
 .labelContainer {
-  margin-bottom: 8px;
+    margin-bottom: 8px;
 }
 
 .labelContainer > label {
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: 0.02rem;
-  text-transform: uppercase;
-  user-select: none;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.02rem;
+    text-transform: uppercase;
+    user-select: none;
 }
 
 .labelContainer > label > span {
-  color: var(--accent-secondary-1);
+    color: var(--accent-secondary-1);
 }
 
 .labelContainer > span {
-  color: var(--accent-secondary-1);
-  font-size: 14px;
-  margin-left: 4px;
-  font-style: italic;
-  user-select: none;
+    color: var(--accent-secondary-1);
+    font-size: 14px;
+    margin-left: 4px;
+    font-style: italic;
+    user-select: none;
+}
+
+[data-theme="light"] .inputContainer {
+    border: 1px solid var(--foreground-tertiary);
 }

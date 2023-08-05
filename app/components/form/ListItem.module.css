@@ -1,57 +1,62 @@
 .listItem {
-  position: relative;
-  font-size: 14px;
-  font-weight: 400;
-  border-radius: 4px;
-  height: 28px;
-  max-width: 350px;
-  margin: 0 4px 4px 0;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  user-select: none;
-  color: var(--accent-foreground);
-  background-color: var(--accent-tertiary-1);
+    position: relative;
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 4px;
+    height: 28px;
+    max-width: 350px;
+    margin: 0 4px 4px 0;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    color: var(--accent-foreground);
+    background-color: var(--accent-tertiary-1);
+}
+
+.listItem:focus-visible {
+    outline: 4px solid var(--accent-primary-outline);
+    outline-offset: 1px;
 }
 
 .listItem > .itemContent {
-  display: flex;
-  align-items: center;
-  max-width: 100%;
+    display: flex;
+    align-items: center;
+    max-width: 100%;
 }
 
 a.listItem,
 .listItem.select {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .listItem > .itemContent > span {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .listItem > .itemContent > .action {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  margin-left: 8px;
-  margin-right: -4px;
-  border: none;
-  border-radius: 2px;
-  cursor: pointer;
-  color: var(--accent-foreground);
-  background-color: var(--accent-tertiary-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    margin-right: -4px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    color: var(--accent-foreground);
+    background-color: var(--accent-tertiary-2);
 }
 
 .listItem > .itemContent > .action:hover {
-  background-color: var(--accent-tertiary-3);
-  color: var(--accent-foreground);
+    background-color: var(--accent-tertiary-3);
+    color: var(--accent-foreground);
 }
 
 .listItem > .itemContent > .action > svg {
-  width: 12px;
-  height: 12px;
+    width: 12px;
+    height: 12px;
 }
