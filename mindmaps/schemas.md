@@ -6,90 +6,91 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
 
 # Enums
 
-- ERole
-  - user
-  - admin
-  - guest
-- EQuizType
-  - prompt-response
-  - multiple-choice
-  - fill-in-the-blank
-  - ordered-list-answer
-  - unordered-list-answer
-  - verbatim
-- EMediumType
-  - website
-  - book
-  - audio
-  - video
-  - periodical
+-   ERole
+    -   user
+    -   admin
+    -   guest
+-   EQuizType
+    -   prompt-response
+    -   multiple-choice
+    -   fill-in-the-blank
+    -   ordered-list-answer
+    -   unordered-list-answer
+    -   verbatim
+-   EMediumType
+    -   website
+    -   book
+    -   audio
+    -   video
+    -   periodical
 
 # Types
 
-- TQuiz
-  - quizId (ObjectId)
-  - lastCorrect (Date)
-  - level (integer)
-  - hiddenUntil (Date)
+-   TQuiz
+    -   quizId (ObjectId)
+    -   lastCorrect (Date)
+    -   level (integer)
+    -   hiddenUntil (Date)
 
 # Models
 
-- User
+-   User
 
-  - id (ObjectId)
+    -   id (ObjectId)
 
-  - username (string(32))
-  - displayName (string(32))
-  - passwordHash (string)
-  - roles (ERole[])
-  - quizzes (Quiz[])
-  - lastLogin (Date)
+    -   username (string(32))
+    -   displayName (string(32))
+    -   passwordHash (string)
+    -   roles (ERole[])
+    -   quizzes (Quiz[])
+    -   lastLogin (Date)
 
-  - createdAt (Date)
-  - updatedAt (Date)
+    -   createdAt (Date)
+    -   updatedAt (Date)
 
-- Source
+-   Source
 
-  - id (ObjectId)
+    -   id (ObjectId)
 
-  - title (string(100))
-  - authors (string(100)[])
-  - medium (EMediumType)
-  - url (validatedURI)
+    -   title (string(100))
+    -   authors (string(100)[])
+    -   contributors (ObjectId[])
+    -   medium (EMediumType)
+    -   url (validatedURI)
 
-  - createdBy (ObjectId)
+    -   addedBy (ObjectId)
+    -   publishedAt (Date)
+    -   lastAccessed (Date)
 
-  - publishedAt (Date)
-  - lastAccessed (Date)
+    -   createdAt (Date)
+    -   updatedAt (Date)
 
-  - createdAt (Date)
-  - updatedAt (Date)
+-   Note
 
-- Note
+    -   id (ObjectId)
 
-  - id (ObjectId)
+    -   text (string(256))
+    -   sources (ObjectId[])
+    -   contributors (ObjectId[])
+    -   createdBy (ObjectId)
 
-  - text (string(256))
-  - sources (ObjectId[])
-  - createdBy (ObjectId)
+    -   createdAt (Date)
+    -   updatedAt (Date)
 
-  - createdAt (Date)
-  - updatedAt (Date)
+-   Quiz
 
-- Quiz
+    -   id (ObjectId)
 
-  - id (ObjectId)
+    -   type (EQuizType -> prompt-response)
+    -   prompt (string(100))
+    -   choices (string(16)[])
+    -   correctResponses (string(16)[])
 
-  - type (EQuizType -> prompt-response)
-  - prompt (string(100))
-  - choices (string(16)[])
-  - correctResponses (string(16)[])
+    -   sources (ObjectId[])
+    -   notes (ObjectId[])
+    -   createdBy (ObjectId)
+    -   updatedBy (ObjectId)
+    -   contributors (ObjectId[])
 
-  - sources (ObjectId[])
-  - notes (ObjectId[])
-  - createdBy (ObjectId)
-  - updatedBy (ObjectId)
-  - contributors (ObjectId[])
-
-  - createdAt (Date)
-  - updatedAt (Date)
+    -   createdAt (Date)
+    -   updatedAt (Date)

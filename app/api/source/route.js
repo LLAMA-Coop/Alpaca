@@ -1,56 +1,60 @@
-import Source from "../models/Source";
 import { NextResponse } from "next/server";
+import Source from "@models/Source";
 
 export async function GET(req) {
-  const content = await Source.find();
-  return NextResponse.json(
-    {
-      200: {
-        content,
-      },
-    }
-  );
+    const content = await Source.find();
+    return NextResponse.json({ content }, { status: 200 });
 }
 
 export async function POST(req) {
-  const body = await req.json();
-  if (!(body.title && body.medium && body.url)) {
-    return NextResponse.json(
-      {
-        400: {
-          message: "Missing required information",
-        },
-      },
-      {
-        status: 400,
-      }
-    );
-  }
+    const { title, medium, url, publishDate, lastAccessed, authors } =
+        await req.json();
 
-  let srcRcvd = {
-    title: body.title,
-    medium: body.medium,
-    url: body.url,
-    addedBy: "64b841f6f8bfa3dc4d7079e4" // This needs to be replaced
-  };
-
-  if (body.contributors && body.contributors.length > 0) {
-    srcRcvd.contributors = [...body.contributors];
-  }
-  if (body.lastAccessed) {
-    srcRcvd.lastAccessed = body.lastAccessed;
-  }
-  if (body.publishedDate) {
-    srcRcvd.publishedDate = body.publishedDate;
-  }
-
-  const source = new Source(srcRcvd);
-  let content = await source.save();
-  return NextResponse.json(
-    {
-      200: {
-        content,
-      },
+    if (!(title && medium && url)) {
+        return NextResponse.json(
+            { message: "Missing required information" },
+            { status: 400 },
+        );
     }
-  );
+
+    authors.forEach((author) => {
+        if (typeof author !== "string" || author.length > 100) {
+            return NextResponse.json(
+                {
+                    message: "Invalid author name",
+                },
+                { status: 400 },
+            );
+        }
+    });
+
+    try {
+        const source = new Source({
+            title: title,
+            medium: medium,
+            url: url,
+            publishedAt: publishDate,
+            lastAccessed: lastAccessed,
+            authors: authors,
+            addedBy: "64b841f6f8bfa3dc4d7079e4",
+        });
+
+        const content = await source.save();
+
+        return NextResponse.json(
+            {
+                message: "Source created successfully",
+                content: content,
+            },
+            { status: 201 },
+        );
+    } catch (error) {
+        console.error(`[Source] POST error: ${error}`);
+        return NextResponse.json(
+            {
+                message: "An error occurred while creating the source",
+            },
+            { status: 500 },
+        );
+    }
 }

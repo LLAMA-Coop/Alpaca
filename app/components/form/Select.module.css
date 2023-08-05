@@ -15,6 +15,10 @@
     box-shadow: var(--boxshadow-dark);
 }
 
+.picker::-webkit-scrollbar-thumb {
+    border-color: var(--background-secondary);
+}
+
 .picker .item {
     display: flex;
     align-items: center;

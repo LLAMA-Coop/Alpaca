@@ -123,7 +123,9 @@ export function Input({
                         onBlur={onBlur}
                         value={value || ""}
                         onKeyDown={(e) => {
-                            if (e.key === "Enter" && action) onActionTrigger(e);
+                            if (e.key === "Enter" && onActionTrigger) {
+                                onActionTrigger(e);
+                            }
                         }}
                         style={{
                             paddingRight: action ? "44px" : "",
@@ -141,7 +143,6 @@ export function Input({
                         onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            console.log("action");
                             onActionTrigger(e);
                         }}
                     >

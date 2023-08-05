@@ -1,13 +1,14 @@
-import Source from './api/models/Source';
-import styles from './Page.module.css';
-import Note from './api/models/Note';
-import { SourceInput, UserInput, NoteInput } from '@/app/components/client';
-import { NoteDisplay, SourceDisplay } from '@/app/components/server';
+import { SourceInput, UserInput, NoteInput } from "@components/client";
+import { NoteDisplay, SourceDisplay } from "@components/server";
+import styles from "./Page.module.css";
+import { serialize } from "@/lib/db";
+import Source from "@models/Source";
+import Note from "@models/Note";
 
-const sources = await Source.find();
-const notes = await Note.find();
+export default async function Home() {
+    const sources = serialize(await Source.find());
+    const notes = serialize(await Note.find());
 
-export default function Home() {
     return (
         <main className={styles.main}>
             <h2>Let's take it for a spin!</h2>
@@ -18,7 +19,7 @@ export default function Home() {
 
                     <ol className={styles.listGrid}>
                         {sources.map((src) => (
-                            <li key={src._id}>
+                            <li key={src.id}>
                                 <SourceDisplay source={src} />
                             </li>
                         ))}
@@ -37,10 +38,9 @@ export default function Home() {
 
                     <ol className={styles.listGrid}>
                         {notes.map((note) => (
-                            <NoteDisplay
-                                key={note._id}
-                                note={note}
-                            ></NoteDisplay>
+                            <li key={note.id}>
+                                <NoteDisplay note={note} />
+                            </li>
                         ))}
                     </ol>
                 </section>
@@ -48,12 +48,7 @@ export default function Home() {
 
             <section>
                 <h3>Create new note</h3>
-                <NoteInput availableSources={JSON.parse(JSON.stringify(sources))} />
-            </section>
-
-            <section>
-                <h3>Register new user</h3>
-                <UserInput isRegistering={true} />
+                <NoteInput availableSources={sources} />
             </section>
         </main>
     );

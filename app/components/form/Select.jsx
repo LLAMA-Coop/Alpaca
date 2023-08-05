@@ -10,11 +10,13 @@ export function Select({
     listChoices,
     listProperty,
     listSetter,
-    close,
+    setSelectState,
 }) {
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === "Escape") close();
+            if (e.key === "Escape") {
+                setSelectState(false);
+            }
         };
 
         document.addEventListener("keydown", handleKeyDown);
@@ -22,10 +24,10 @@ export function Select({
     }, []);
 
     const clickEvent = (choice) => {
-        if (!listChosen.find((x) => x._id === choice._id)) {
+        if (!listChosen.find((x) => x.id === choice.id)) {
             listSetter([...listChosen, choice]);
         } else {
-            listSetter(listChosen.filter((x) => x._id !== choice._id));
+            listSetter(listChosen.filter((x) => x.id !== choice.id));
         }
     };
 
@@ -41,9 +43,7 @@ export function Select({
                 aria-orientation="vertical"
             >
                 {listChoices.map((choice, index) => {
-                    const isChosen = listChosen.find(
-                        (x) => x._id === choice._id,
-                    );
+                    const isChosen = listChosen.find((x) => x.id === choice.id);
                     return (
                         <div
                             tabIndex={0}
@@ -54,7 +54,7 @@ export function Select({
                             className={`${isChosen && styles.chosen} ${
                                 styles.item
                             }`}
-                            key={choice._id}
+                            key={choice.id}
                             onClick={() => clickEvent(choice)}
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {

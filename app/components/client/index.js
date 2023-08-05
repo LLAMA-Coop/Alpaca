@@ -1,5 +1,4 @@
 export { Card } from "../card/Card";
-export { Footer } from "../footer/Footer";
 
 export { Details } from "../form/Details";
 export { Input, Label } from "../form/Input";
@@ -17,3 +16,7 @@ export { ResponseCard } from "../quiz/ResponseCard";
 export { SourceInput } from "../source/SourceInput";
 
 export { UserInput } from "../user/UserInput";
+
+export { Alert } from "../alert/Alert";
+
+export { Spinner } from "../spinner/Spinner";

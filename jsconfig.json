@@ -1,8 +1,28 @@
 {
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./*"]
-    }
-  },
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": false,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "incremental": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "paths": {
+            "@/*": ["./*"],
+            "@components/*": ["./app/components/*"],
+            "@models/*": ["./app/api/models/*"]
+        }
+    },
+    "exclude": ["node_modules"]
 }

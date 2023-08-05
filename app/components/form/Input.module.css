@@ -32,6 +32,7 @@
     min-height: 40px;
     max-height: 550px;
     resize: vertical;
+    font-family: "Inter", sans-serif;
 }
 
 .inputContainer > select {

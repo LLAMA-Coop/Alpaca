@@ -51,10 +51,18 @@
     gap: 16px;
 }
 
-.textContent > header {
+.textContent > div > header {
     font-size: 20px;
     line-height: 28px;
     font-weight: 600;
+    word-wrap: break-word;
+}
+
+.textContent > div > h5 {
+    font-size: 12px;
+    letter-spacing: 0.02rem;
+    line-height: 16px;
+    font-weight: 400;
     word-wrap: break-word;
 }
 
@@ -96,7 +104,7 @@
 }
 
 @property --gradient-angle {
-    syntax: '<angle>';
+    syntax: "<angle>";
     initial-value: 360deg;
     inherits: false;
 }
@@ -110,7 +118,7 @@
     }
 }
 
-[data-theme='light'] .container > div:first-child {
+[data-theme="light"] .container > div:first-child {
     background: linear-gradient(
         var(--gradient-angle),
         var(--accent-primary-outline),
@@ -120,10 +128,10 @@
     );
 }
 
-[data-theme='light'] .content {
+[data-theme="light"] .content {
     border: 1px solid var(--foreground-tertiary);
 }
 
-[data-theme='light'] .container:hover > .content {
+[data-theme="light"] .container:hover > .content {
     border: 1px solid transparent;
 }

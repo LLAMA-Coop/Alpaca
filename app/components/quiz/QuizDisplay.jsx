@@ -9,17 +9,17 @@ import { ResponseCard, ListAnswer } from "@/app/components/client";
 // sent into component via canClientCheck boolean
 
 export function QuizDisplay({ canClientCheck, quiz }) {
-  if (quiz.type === "prompt-response" || quiz.type === "multiple-choice") {
-    return <ResponseCard canClientCheck={canClientCheck} quiz={quiz} />;
-  }
+    if (quiz.type === "prompt-response" || quiz.type === "multiple-choice") {
+        return <ResponseCard canClientCheck={canClientCheck} quiz={quiz} />;
+    }
 
-  if (quiz.type === "unordered-list" || quiz.type === "ordered-list") {
-    return (
-      <ListAnswer
-        canClientCheck={canClientCheck}
-        quiz={quiz}
-        isOrdered={quiz.type === "ordered-list"}
-      />
-    );
-  }
+    if (quiz.type === "unordered-list" || quiz.type === "ordered-list") {
+        return (
+            <ListAnswer
+                canClientCheck={canClientCheck}
+                quiz={quiz}
+                isOrdered={quiz.type === "ordered-list"}
+            />
+        );
+    }
 }

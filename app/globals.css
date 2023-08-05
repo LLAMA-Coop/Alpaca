@@ -64,13 +64,9 @@
     --foreground-secondary: hsl(240, 2%, 80%);
     --foreground-tertiary: hsl(0, 0%, 65%);
 
-    --accent-primary-outline: var(--accent-primary-1);
-    --accent-secondary-outline: var(--accent-secondary-1);
-    --accent-tertiary-outline: var(--accent-tertiary-1);
-
-    /* --accent-primary-outline: hsl(224, 76%, 48%, 0.2);
+    --accent-primary-outline: hsl(224, 76%, 48%, 0.2);
     --accent-secondary-outline: hsl(0, 74%, 42%, 0.2);
-    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.2); */
+    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.2);
 
     --anchor-foreground: hsl(217, 91%, 60%);
 }
@@ -190,7 +186,8 @@ ol {
     outline: 4px solid var(--accent-primary-outline);
 }
 
-*.offset:focus-visible {
+*.offset:focus-visible,
+.button:focus-visible {
     outline-offset: 1px;
 }
 

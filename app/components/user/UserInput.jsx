@@ -2,9 +2,10 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { Input, Alert, Spinner } from "@components/client";
 import { useState, useRef, useEffect } from "react";
 import styles from "./UserInput.module.css";
-import { Input } from "../form/Input";
+import { useRouter } from "next/navigation";
 
 export function UserInput({ isRegistering }) {
     const [username, setUsername] = useState("");
@@ -17,17 +18,21 @@ export function UserInput({ isRegistering }) {
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
     const [loading, setLoading] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [requestStatus, setRequestStatus] = useState({});
 
     const [passwordFocus, setPasswordFocus] = useState(false);
+
     const passwordTooltip = useRef(null);
     const passwordInput = useRef(null);
+    const router = useRouter();
 
     useEffect(() => {
         const handleOutsideClick = (e) => {
             if (
                 passwordFocus &&
-                !passwordTooltip.current.contains(e.target) &&
-                !passwordInput.current.contains(e.target)
+                !passwordTooltip.current?.contains(e.target) &&
+                !passwordInput.current?.contains(e.target)
             ) {
                 setPasswordFocus(false);
             }
@@ -66,7 +71,7 @@ export function UserInput({ isRegistering }) {
         return weaknesses;
     }
 
-    async function handleSubmit(e) {
+    async function handleRegister(e) {
         e.preventDefault();
 
         if (username.length === 0) {
@@ -87,19 +92,12 @@ export function UserInput({ isRegistering }) {
             return;
         }
 
-        if (
-            password.length > 0 &&
-            isRegistering &&
-            password !== confirmPassword
-        ) {
+        if (password !== confirmPassword) {
             setConfirmPasswordError("Passwords do not match");
-        }
-
-        if (username.length === 0 || password.length === 0) {
             return;
         }
 
-        if (isRegistering && password !== confirmPassword) {
+        if (username.length === 0 || password.length === 0) {
             return;
         }
 
@@ -107,7 +105,7 @@ export function UserInput({ isRegistering }) {
 
         setLoading(true);
 
-        const response = await fetch("/api/user", {
+        const response = await fetch("/api/auth/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -117,19 +115,95 @@ export function UserInput({ isRegistering }) {
 
         setLoading(false);
 
-        setUsername("");
-        setPassword("");
-        setConfirmPassword("");
-        setUsernameError("");
-        setPasswordError("");
-        setConfirmPasswordError("");
-        setPasswordFocus(false);
+        if (response.status === 400) {
+            setUsernameError("Username already exists");
+            return;
+        }
 
-        console.log(await response.json());
+        if (response.status === 201) {
+            router.push("/login");
+
+            setUsername("");
+            setPassword("");
+            setConfirmPassword("");
+            setUsernameError("");
+            setPasswordError("");
+            setConfirmPasswordError("");
+            setPasswordFocus(false);
+
+            setRequestStatus({
+                success: true,
+                message: "Account created successfully",
+            });
+            setShowAlert(true);
+        } else {
+            setRequestStatus({
+                success: false,
+                message: "Something went wrong",
+            });
+            setShowAlert(true);
+        }
+    }
+
+    async function handleLogin(e) {
+        e.preventDefault();
+
+        if (username.length === 0) {
+            setUsernameError("Username cannot be empty");
+        }
+
+        if (password.length === 0) {
+            setPasswordError("Password cannot be empty");
+        }
+
+        if (username.length === 0 || password.length === 0) {
+            return;
+        }
+
+        const user = { username, password };
+
+        setLoading(true);
+
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+        });
+
+        setLoading(false);
+
+        if (response.status === 200) {
+            router.push(`/user/${username}`);
+
+            setUsername("");
+            setPassword("");
+            setConfirmPassword("");
+            setUsernameError("");
+            setPasswordError("");
+            setConfirmPasswordError("");
+            setPasswordFocus(false);
+
+            setRequestStatus({
+                success: true,
+                message: "Logged in successfully",
+            });
+            setShowAlert(true);
+        } else {
+            setUsernameError("Invalid username or password");
+        }
     }
 
     return (
         <form className="formGrid">
+            <Alert
+                show={showAlert}
+                setShow={setShowAlert}
+                success={requestStatus.success}
+                message={requestStatus.message}
+            />
+
             <Input
                 required={true}
                 onChange={(e) => {
@@ -150,13 +224,13 @@ export function UserInput({ isRegistering }) {
                         setPasswordError("");
                     }}
                     value={password}
-                    error={passwordError}
+                    error={isRegistering && passwordError}
                     label={"Password"}
                     onFocus={() => setPasswordFocus(true)}
                     onBlur={() => setPasswordFocus(false)}
                 />
 
-                {passwordFocus && (
+                {passwordFocus && isRegistering && (
                     <div
                         className={styles.passwordTooltip}
                         ref={passwordTooltip}
@@ -207,8 +281,11 @@ export function UserInput({ isRegistering }) {
                 />
             )}
 
-            <button onClick={handleSubmit} className="button submit">
-                {loading ? "Sending..." : isRegistering ? "Register" : "Login"}
+            <button
+                onClick={isRegistering ? handleRegister : handleLogin}
+                className="button submit"
+            >
+                {loading ? <Spinner /> : isRegistering ? "Register" : "Login"}
             </button>
         </form>
     );

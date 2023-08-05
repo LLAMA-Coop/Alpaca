@@ -1,14 +1,15 @@
 "use client";
 
+import { useEffect, useState, useRef } from "react";
 import {
     Label,
     Input,
     ListItem,
     Select,
     InputPopup,
+    Spinner,
+    Alert,
 } from "@/app/components/client";
-import { useEffect, useState, useRef } from "react";
-import makeUniqueId from "@/app/code/uniqueId";
 
 export function NoteInput({ availableSources }) {
     const [text, setText] = useState("");
@@ -18,7 +19,8 @@ export function NoteInput({ availableSources }) {
     const [sourceError, setSourceError] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [uniqueId, setUniqueId] = useState();
+    const [showAlert, setShowAlert] = useState(false);
+    const [requestStatus, setRequestStatus] = useState({});
 
     const addSourceRef = useRef(null);
 
@@ -32,10 +34,6 @@ export function NoteInput({ availableSources }) {
         document.addEventListener("click", handleOutsideClick);
         return () => document.removeEventListener("click", handleOutsideClick);
     }, [isSelectOpen]);
-
-    useEffect(() => {
-        setUniqueId(makeUniqueId());
-    }, []);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -56,7 +54,7 @@ export function NoteInput({ availableSources }) {
 
         setLoading(true);
 
-        let response = await fetch("./api/note", {
+        const response = await fetch("./api/note", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -66,16 +64,35 @@ export function NoteInput({ availableSources }) {
 
         setLoading(false);
 
-        setText("");
-        setSourceError("");
-        setSources([]);
-        setText("");
+        if (response.status === 201) {
+            setText("");
+            setSourceError("");
+            setSources([]);
+            setText("");
 
-        console.log(await response.json());
+            setRequestStatus({
+                succes: true,
+                message: "Note added succesfully.",
+            });
+            setShowAlert(true);
+        } else {
+            setRequestStatus({
+                succes: false,
+                message: "Something went wrong.",
+            });
+            setShowAlert(true);
+        }
     }
 
     return (
         <form className="formGrid">
+            <Alert
+                show={showAlert}
+                setShow={setShowAlert}
+                success={requestStatus.success}
+                message={requestStatus.message}
+            />
+
             <Input
                 type="textarea"
                 required={true}
@@ -108,7 +125,7 @@ export function NoteInput({ availableSources }) {
                                 listChosen={sources}
                                 listProperty={"title"}
                                 listSetter={setSources}
-                                close={() => setIsSelectOpen(false)}
+                                setSelectState={setIsSelectOpen}
                             />
                         }
                     />
@@ -116,16 +133,15 @@ export function NoteInput({ availableSources }) {
                     {sources.length > 0 &&
                         sources.map((src) => (
                             <ListItem
-                                key={src._id}
+                                key={src.id}
                                 link={src.url}
                                 item={src.title}
-                                action={() =>
+                                action={() => {
                                     setSources(
-                                        sources.filter(
-                                            (x) => x._id !== src._id,
-                                        ),
-                                    )
-                                }
+                                        sources.filter((x) => x.id !== src.id),
+                                    );
+                                    setSourceError("");
+                                }}
                                 actionType={"delete"}
                             />
                         ))}
@@ -135,7 +151,7 @@ export function NoteInput({ availableSources }) {
             <InputPopup type="source" />
 
             <button onClick={handleSubmit} className="button submit">
-                {loading ? "Sending..." : "Submit Note"}
+                {loading ? <Spinner /> : "Submit Note"}
             </button>
         </form>
     );

@@ -11,6 +11,19 @@
     padding: var(--padding);
 }
 
+.main > section.authContainer {
+    max-width: 550px;
+}
+
+.main > section.authContainer form {
+    padding-top: 24px;
+    grid-template-columns: 1fr;
+}
+
+.main > section.authContainer form > *:last-child {
+    margin-top: 24px;
+}
+
 .main > section > h3 {
     font-size: 34px;
     margin-bottom: 24px;
@@ -18,7 +31,7 @@
 
 .listGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 500px));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 500px));
     grid-gap: 16px;
 }
 

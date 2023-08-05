@@ -1,9 +1,9 @@
-.contributors {
+.authors {
   background-color: var(--background-primary);
   padding: 10px;
   border-radius: 4px;
 }
 
-.contributors > h5 {
+.authors > h5 {
   margin-bottom: 10px;
 }
