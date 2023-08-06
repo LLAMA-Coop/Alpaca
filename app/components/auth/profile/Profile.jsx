@@ -19,8 +19,19 @@ export function Profile({ user }) {
             }
         };
 
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+                setShowMenu(false);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("click", handleOutsideClick);
-        return () => window.removeEventListener("click", handleOutsideClick);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("click", handleOutsideClick);
+        };
     }, [showMenu]);
 
     return (
@@ -32,7 +43,11 @@ export function Profile({ user }) {
                     setShowMenu((prev) => !prev);
                 }}
             >
-                <Avatar src={user.avatar} username={user.username} />
+                <Avatar
+                    src={user.avatar}
+                    username={user.username}
+                    outline={showMenu}
+                />
             </div>
 
             {showMenu && (

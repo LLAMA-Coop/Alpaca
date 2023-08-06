@@ -24,6 +24,13 @@ export default async function SourcesPage({ searchParams }) {
             .skip((page - 1) * amount),
     );
 
+    const hasMore =
+        (
+            await Source.find()
+                .limit(1)
+                .skip((page - 1) * amount + amount)
+        )?.length > 0;
+
     if (page > 1 && sources.length === 0) {
         redirect("/sources?page=1&amount=" + amount);
     }
@@ -60,12 +67,20 @@ export default async function SourcesPage({ searchParams }) {
                             </button>
                         )}
 
-                        <Link
-                            className="button submit"
-                            href={`/sources?page=${page + 1}&amount=${amount}`}
-                        >
-                            Next page
-                        </Link>
+                        {hasMore ? (
+                            <Link
+                                className="button submit"
+                                href={`/sources?page=${
+                                    page + 1
+                                }&amount=${amount}`}
+                            >
+                                Next page
+                            </Link>
+                        ) : (
+                            <button disabled className="button submit">
+                                Next page
+                            </button>
+                        )}
                     </div>
                 </section>
             )}
