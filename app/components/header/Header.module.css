@@ -34,8 +34,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-radius: 3px;
-    padding: 7px 14px;
+    border-radius: 100vw;
+    padding: 10px 20px;
     z-index: 1;
     user-select: none;
     color: var(--foreground-secondary);
