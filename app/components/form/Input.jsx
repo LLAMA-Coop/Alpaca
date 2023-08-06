@@ -29,6 +29,8 @@ export function Input({
     required,
     onChange,
     value,
+    minLength,
+    maxLength,
     error,
     label,
     onFocus,
@@ -73,10 +75,13 @@ export function Input({
                         aria-invalid={error ? "true" : "false"}
                         aria-errormessage={error ? errorId : ""}
                         required={required}
+                        disabled={disabled}
                         onChange={onChange}
                         onFocus={onFocus}
                         onBlur={onBlur}
                         value={value || ""}
+                        minLength={minLength}
+                        maxLength={maxLength}
                         onKeyDown={(e) => {
                             if (e.key === "Enter" && action) onActionTrigger(e);
                         }}
@@ -103,6 +108,8 @@ export function Input({
                         onFocus={onFocus}
                         onBlur={onBlur}
                         value={value || ""}
+                        minLength={minLength}
+                        maxLength={maxLength}
                         onKeyDown={(e) => {
                             if (e.key === "Enter" && action) onActionTrigger(e);
                         }}
@@ -122,6 +129,8 @@ export function Input({
                         onFocus={onFocus}
                         onBlur={onBlur}
                         value={value || ""}
+                        minLength={minLength}
+                        maxLength={maxLength}
                         onKeyDown={(e) => {
                             if (e.key === "Enter" && onActionTrigger) {
                                 onActionTrigger(e);

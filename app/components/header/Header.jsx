@@ -1,15 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Profile } from "@components/client";
+import { DynamicNav } from "./DynamicNav";
 import styles from "./Header.module.css";
 import { cookies } from "next/headers";
 import User from "@models/User";
 import Link from "next/link";
-import {
-    faBook,
-    faClipboardQuestion,
-    faHome,
-    faInfoCircle,
-    faNoteSticky,
-} from "@fortawesome/free-solid-svg-icons";
 
 const getUser = async () => {
     const token = cookies().get("token")?.value;
@@ -19,6 +13,7 @@ const getUser = async () => {
         refreshTokens: token,
     });
 
+    if (!user) return null;
     return user;
 };
 
@@ -27,47 +22,23 @@ export async function Header() {
 
     return (
         <header className={styles.header}>
-            <h1>Mneme</h1>
-            {!!user && (
-                <p>
-                    Welcome, <span>{user.username}</span>
-                </p>
-            )}
+            <div>
+                <h1>
+                    <Link href="/">Mneme</Link>
+                </h1>
 
-            <nav>
-                <menu>
-                    <li>
-                        <Link href="/">
-                            <span>Home</span>
-                            <FontAwesomeIcon icon={faHome} />
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/about">
-                            <span>About</span>
-                            <FontAwesomeIcon icon={faInfoCircle} />
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/sources">
-                            <span>Sources</span>
-                            <FontAwesomeIcon icon={faBook} />
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/notes">
-                            <span>Notes</span>
-                            <FontAwesomeIcon icon={faNoteSticky} />
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/quizzes">
-                            <span>Quizzes</span>
-                            <FontAwesomeIcon icon={faClipboardQuestion} />
-                        </Link>
-                    </li>
-                </menu>
-            </nav>
+                <nav>
+                    <DynamicNav />
+                </nav>
+
+                {user ? (
+                    <Profile user={user} />
+                ) : (
+                    <div>
+                        <Link href="/login">Login</Link>
+                    </div>
+                )}
+            </div>
         </header>
     );
 }

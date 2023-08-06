@@ -1,0 +1,41 @@
+.navMenu {
+    list-style: none;
+}
+
+.navMenu > div {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.navMenu > div > li > a {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    padding: 7px 14px;
+    z-index: 1;
+    user-select: none;
+    color: var(--foreground-secondary);
+}
+
+.navMenu > div > li > a:hover {
+    color: var(--foreground-primary);
+}
+
+.followingDiv {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    border-radius: 3px;
+    height: 34px;
+    z-index: 0;
+    background-color: var(--background-secondary);
+    transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}

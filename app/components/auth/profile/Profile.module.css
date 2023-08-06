@@ -1,0 +1,8 @@
+.container {
+    position: relative;
+    width: fit-content;
+}
+
+.avatarContainer {
+    cursor: pointer;
+}

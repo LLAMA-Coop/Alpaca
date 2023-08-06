@@ -71,13 +71,13 @@ export function NoteInput({ availableSources }) {
             setText("");
 
             setRequestStatus({
-                succes: true,
+                success: true,
                 message: "Note added succesfully.",
             });
             setShowAlert(true);
         } else {
             setRequestStatus({
-                succes: false,
+                success: false,
                 message: "Something went wrong.",
             });
             setShowAlert(true);

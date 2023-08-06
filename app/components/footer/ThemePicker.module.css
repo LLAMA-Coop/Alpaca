@@ -32,33 +32,3 @@
     display: flex;
     gap: 8px;
 }
-
-.popup {
-    width: 100%;
-    padding: 4px 0;
-    border-radius: 6px;
-    position: absolute;
-    bottom: calc(100% + 8px);
-    border: 1px solid var(--background-tertiary);
-    background-color: var(--background-secondary);
-}
-
-.popup > ul > li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    line-height: 20px;
-    padding: 6px 12px;
-    user-select: none;
-    cursor: pointer;
-    transition: all 0.01s ease-in-out;
-}
-
-.popup > ul > li:hover {
-    background-color: var(--background-tertiary);
-}
-
-.popup > ul > li:active {
-    opacity: 0.8;
-}

@@ -57,6 +57,7 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
     -   contributors (ObjectId[])
     -   medium (EMediumType)
     -   url (validatedURI)
+    -   tags (string(16)[])
 
     -   addedBy (ObjectId)
     -   publishedAt (Date)
@@ -83,8 +84,8 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
 
     -   type (EQuizType -> prompt-response)
     -   prompt (string(100))
-    -   choices (string(16)[])
-    -   correctResponses (string(16)[])
+    -   choices (string(32)[])
+    -   correctResponses (string(32)[])
 
     -   sources (ObjectId[])
     -   notes (ObjectId[])

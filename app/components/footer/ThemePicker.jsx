@@ -139,6 +139,10 @@ export default function ThemePicker() {
         <div className={styles.themeContainer}>
             <div ref={themeRef}>
                 <button
+                    aria-label="Change theme"
+                    aria-haspopup="true"
+                    aria-expanded={showThemes}
+                    aria-controls="theme-popup"
                     onClick={() => {
                         setShowPalettes(false);
                         setShowThemes((prev) => !prev);
@@ -170,14 +174,22 @@ export default function ThemePicker() {
                 </button>
 
                 {showThemes && (
-                    <div className={styles.popup}>
+                    <div className="menuPopup">
                         <ul>
                             {lightModes.map((mode, index) => (
                                 <li
                                     key={index}
-                                    onClick={() => {
-                                        setTheme(index);
+                                    tabIndex={0}
+                                    role="radio"
+                                    aria-label={mode}
+                                    aria-selected={activeTheme === index}
+                                    aria-current={activeTheme === index}
+                                    aria-setsize={lightModes.length}
+                                    aria-posinset={index + 1}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") setTheme(index);
                                     }}
+                                    onClick={() => setTheme(index)}
                                 >
                                     {mode}
                                     {activeTheme === index ? activeIcon : null}
@@ -190,6 +202,10 @@ export default function ThemePicker() {
 
             <div ref={paletteRef}>
                 <button
+                    aria-label="Color palette"
+                    aria-haspopup="true"
+                    aria-expanded={showPalettes}
+                    aria-controls="palettes"
                     onClick={() => {
                         setShowThemes(false);
                         setShowPalettes((prev) => !prev);
@@ -222,14 +238,24 @@ export default function ThemePicker() {
                 </button>
 
                 {showPalettes && (
-                    <div className={styles.popup}>
+                    <div className="menuPopup">
                         <ul>
                             {palettes.map((palette, index) => (
                                 <li
                                     key={index}
-                                    onClick={() => {
-                                        setPalette(index);
+                                    tabIndex={0}
+                                    role="radio"
+                                    aria-label={palette.name}
+                                    aria-selected={activePalette === index}
+                                    aria-current={activePalette === index}
+                                    aria-setsize={palettes.length}
+                                    aria-posinset={index + 1}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            setPalette(index);
+                                        }
                                     }}
+                                    onClick={() => setPalette(index)}
                                 >
                                     {palette.name}
                                     {activePalette === index
