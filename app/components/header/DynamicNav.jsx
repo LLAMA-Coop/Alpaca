@@ -31,16 +31,15 @@ export function DynamicNav() {
     ];
 
     return (
-        <menu
-            onMouseLeave={() => {
-                setProps((prev) => ({
-                    ...prev,
-                    opacity: 0,
-                }));
-            }}
-            className={styles.navMenu}
-        >
-            <div>
+        <menu className={styles.navMenu}>
+            <div
+                onMouseLeave={() => {
+                    setProps((prev) => ({
+                        ...prev,
+                        opacity: 0,
+                    }));
+                }}
+            >
                 {links.map((link) => (
                     <li
                         key={link.name}
