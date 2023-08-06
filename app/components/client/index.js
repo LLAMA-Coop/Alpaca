@@ -20,3 +20,7 @@ export { UserInput } from "../user/UserInput";
 export { Alert } from "../alert/Alert";
 
 export { Spinner } from "../spinner/Spinner";
+
+export { Avatar } from "../avatar/Avatar";
+
+export { Profile } from "../auth/profile/Profile";

@@ -42,6 +42,9 @@ const UserSchema = new Schema(
             minLength: 2,
             maxLength: 32,
         },
+        avatar: {
+            type: String,
+        },
         passwordHash: {
             type: String,
             required: true,

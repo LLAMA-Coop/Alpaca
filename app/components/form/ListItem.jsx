@@ -15,10 +15,8 @@ export function ListItem({ item, action, actionType, link, select }) {
     const liRef = useRef(null);
 
     useEffect(() => {
-        if (!showSelect) return;
-
         const handleClickOutside = (e) => {
-            if (liRef.current && !liRef.current.contains(e.target)) {
+            if (!liRef.current?.contains(e.target)) {
                 setShowSelect(false);
             }
         };
@@ -45,6 +43,9 @@ export function ListItem({ item, action, actionType, link, select }) {
                 <button
                     title={`${label} ${item}`}
                     aria-label={`${label} ${item}`}
+                    aria-haspopup={select ? "true" : "false"}
+                    aria-expanded={showSelect ? "true" : "false"}
+                    aria-controls={showSelect ? `${item}-select` : null}
                     className={styles.action}
                     onClick={(e) => {
                         e.preventDefault();

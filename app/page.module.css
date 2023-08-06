@@ -1,7 +1,7 @@
 .main > h2 {
     font-size: clamp(32px, 8vw, 42px);
     text-align: center;
-    margin: 12px 0;
+    margin: 120px 0 24px 0;
     padding: 0 10px;
 }
 
@@ -11,16 +11,21 @@
     padding: var(--padding);
 }
 
-.main > section.authContainer {
+.main > .authContainer {
     max-width: 550px;
 }
 
-.main > section.authContainer form {
+.main > .authContainer form {
     padding-top: 24px;
     grid-template-columns: 1fr;
 }
 
-.main > section.authContainer form > *:last-child {
+.main > .authContainer form > *:last-child {
+    margin-top: 24px;
+}
+
+.main > .authContainer > a {
+    display: inline-flex;
     margin-top: 24px;
 }
 
@@ -48,4 +53,10 @@
 
 .description p > a:hover {
     text-decoration: underline;
+}
+
+.paginationButtons {
+    display: flex;
+    margin-top: 48px;
+    justify-content: space-between;
 }

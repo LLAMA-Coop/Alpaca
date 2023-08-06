@@ -30,7 +30,7 @@ const QuizSchema = new Schema(
                 type: String,
                 required: true,
                 minLength: 1,
-                maxLength: 16,
+                maxLength: 32,
             },
         ],
         correctResponses: [
@@ -38,7 +38,7 @@ const QuizSchema = new Schema(
                 type: String,
                 required: true,
                 minLength: 1,
-                maxLength: 16,
+                maxLength: 32,
             },
         ],
         sources: [

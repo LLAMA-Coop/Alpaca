@@ -72,11 +72,23 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
         }
     }, [sources, notes]);
 
+    useEffect(() => {
+        if (type !== "multiple-choice") return;
+
+        responses.forEach((response) => {
+            if (!choices.includes(response)) {
+                setChoices((prev) => [...prev, response]);
+            }
+        });
+    }, [type, choices, responses]);
+
     const types = [
         { label: "Prompt/Response", value: "prompt-response" },
         { label: "Multiple Choice", value: "multiple-choice" },
-        { label: "List Answer", value: "list-answer" },
         { label: "Fill in the Blank", value: "fill-in-the-blank" },
+        { label: "Ordered List Answer", value: "ordered-list-answer" },
+        { label: "Unordered List Answer", value: "unordered-list-answer" },
+        { label: "Verbatim", value: "verbatim" },
     ];
 
     async function handleSubmit(e) {
@@ -135,7 +147,6 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
         setLoading(false);
 
         if (response.status === 201) {
-            setType("prompt-response");
             setTypeError("");
 
             setPrompt("");
@@ -219,6 +230,7 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
                 description={"Question prompt. Can be a question or statement"}
                 required={true}
                 value={prompt}
+                maxLength={100}
                 error={promptError}
                 onChange={(e) => {
                     setPrompt(e.target.value);
@@ -232,6 +244,7 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
                         label="Add new choice"
                         description={"Add a new choice. Press enter to add"}
                         value={newChoice}
+                        maxLength={32}
                         required={choices.length < 1}
                         onSubmit={handleAddChoice}
                         error={choicesError}
@@ -248,11 +261,14 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
                                     key={res}
                                     item={res}
                                     actionType={"delete"}
-                                    action={() =>
+                                    action={() => {
+                                        setResponses((prev) =>
+                                            prev.filter((x) => x !== res),
+                                        );
                                         setChoices((prev) =>
                                             prev.filter((x) => x !== res),
-                                        )
-                                    }
+                                        );
+                                    }}
                                 />
                             ))}
 
@@ -266,15 +282,25 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
 
             <div>
                 <Input
+                    type={type === "multiple-choice" && "select"}
+                    choices={choices.map((x) => ({ label: x, value: x }))}
                     label="Add new answer"
                     description={"Add a new answer. Press enter to add"}
                     value={newResponse}
+                    maxLength={32}
                     required={responses.length === 0}
                     onSubmit={handleAddResponse}
                     error={responsesError}
-                    onChange={(e) => setNewResponse(e.target.value)}
-                    action="Add new answer"
-                    onActionTrigger={handleAddResponse}
+                    onChange={(e) => {
+                        setNewResponse(e.target.value);
+                        if (type === "multiple-choice") {
+                            handleAddResponse(e);
+                        }
+                    }}
+                    action={type !== "multiple-choice" && "Add new answer"}
+                    onActionTrigger={
+                        type !== "multiple-choice" && handleAddResponse
+                    }
                 />
 
                 <div style={{ marginTop: "24px" }}>
@@ -304,7 +330,7 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
                 <Label
                     required={true}
                     error={sourcesError}
-                    label="Current Sources"
+                    label="Related Sources"
                 />
 
                 <ol className="chipList">
@@ -344,7 +370,7 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
                 <Label
                     required={true}
                     error={notesError}
-                    label="Current Notes"
+                    label="Related Notes"
                 />
 
                 <ol className="chipList">

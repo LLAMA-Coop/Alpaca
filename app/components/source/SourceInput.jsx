@@ -107,7 +107,6 @@ export function SourceInput() {
             });
 
             setTitle("");
-            setMedium("article");
             setUrl("");
             setLastAccessed(new Date().toISOString().split("T")[0]);
             setPublishDate("");
@@ -148,12 +147,11 @@ export function SourceInput() {
             <Input
                 label={"Title"}
                 value={title}
+                maxLength={100}
                 description="The title of the source"
                 autoComplete="off"
                 required={true}
                 error={titleError}
-                minLength={1}
-                maxLength={100}
                 onChange={(e) => {
                     setTitle(e.target.value);
                     setTitleError("");
@@ -217,9 +215,9 @@ export function SourceInput() {
                 <Input
                     label={"Add Author"}
                     value={newAuthor}
+                    maxLength={100}
                     description="People who contributed to the source"
                     autoComplete="off"
-                    maxLength={100}
                     onChange={(e) => setNewAuthor(e.target.value)}
                     action="Add author"
                     onActionTrigger={handleAddAuthor}

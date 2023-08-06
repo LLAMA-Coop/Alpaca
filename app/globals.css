@@ -104,6 +104,16 @@ body {
     background-color: var(--background-primary);
 }
 
+body {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+body > main {
+    flex: 1;
+}
+
 a {
     color: var(--anchor-foreground);
     text-decoration: none;
@@ -201,6 +211,11 @@ input[type="date"] {
     cursor: pointer;
 }
 
+:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 .thinScroller::-webkit-scrollbar {
     width: 10px;
 }
@@ -233,6 +248,77 @@ input[type="date"] {
 .buttonContainer {
     display: flex;
     gap: 16px;
+}
+
+.menuPopup {
+    width: 100%;
+    padding: 4px 0;
+    border-radius: 6px;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    border: 1px solid var(--background-tertiary);
+    background-color: var(--background-secondary);
+}
+
+.menuPopup.fit {
+    width: fit-content;
+}
+
+.menuPopup.medium {
+    width: 125px;
+}
+
+.menuPopup.down {
+    top: calc(100% + 8px);
+    bottom: auto;
+}
+
+.menuPopup.left {
+    right: 0;
+}
+
+.menuPopup > ul > hr {
+    border: 0;
+    border-top: 1px solid var(--background-tertiary);
+    margin: 4px 0;
+}
+
+.menuPopup > ul > li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 6px 12px;
+    user-select: none;
+    cursor: pointer;
+    transition: all 0.01s ease-in-out;
+}
+
+.menuPopup > ul > li.icon {
+    padding-left: 36px;
+}
+
+.menuPopup > ul > li.danger {
+    color: var(--accent-secondary-1);
+}
+
+.menuPopup > ul > li:hover,
+.menuPopup > ul > li:focus-visible {
+    background-color: var(--background-tertiary);
+    outline: none;
+}
+
+.menuPopup > ul > li:active {
+    opacity: 0.8;
+}
+
+.menuPopup > ul > li > div {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
 }
 
 @media screen and (max-width: 1024px) {

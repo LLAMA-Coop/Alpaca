@@ -32,6 +32,13 @@ const SourceSchema = new Schema(
         url: {
             type: String,
         },
+        tags: [
+            {
+                type: String,
+                minLength: 1,
+                maxLength: 16,
+            },
+        ],
         addedBy: {
             type: Schema.Types.ObjectId,
             ref: "user",
