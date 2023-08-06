@@ -44,5 +44,5 @@
 
 .header > div > div > a:hover {
     background-color: var(--background-secondary);
-    color: var(--accent-foreground);
+    color: var(--foreground-primary);
 }
