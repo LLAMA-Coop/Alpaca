@@ -34,6 +34,16 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
     -   group (ObjectId)
     -   permissions (integer)
 
+-   TNotification
+    -   from ()
+    -   subject (String)
+    -   message (String)
+
+    -   createdAt (Date)
+    -   updatedAt (Date)
+    -   expiry (Date)
+
+
 # Models
 
 -   User
@@ -49,14 +59,19 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
 
     -   createdAt (Date)
     -   updatedAt (Date)
+    
+    -   notifications (TNotification[])
 
 -   Group
 
     -   id (ObjectId)
     -   name (string(100))
+    -   description(string)
     -   owner (ObjectId)
     -   users (ObjectId[])
     -   admins (ObjectId[])
+    -   isPublic (Boolean)
+    -   notifications (TNotification[])
 
 -   Source
 

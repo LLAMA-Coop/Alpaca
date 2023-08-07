@@ -11,6 +11,9 @@ const GroupSchema = new Schema(
             minLength: 2,
             maxLength: 100,
         },
+        description: {
+            type: String
+        },
         owner: {
             type: Schema.Types.ObjectId,
             ref: "user",
@@ -27,6 +30,10 @@ const GroupSchema = new Schema(
                 ref: "user",
             },
         ],
+        isPublic: {
+            type: Boolean,
+            default: false
+        }
     },
     {
         timestamps: true,
