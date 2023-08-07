@@ -1,24 +1,11 @@
 import { Profile } from "@components/client";
 import { DynamicNav } from "./DynamicNav";
 import styles from "./Header.module.css";
-import { cookies } from "next/headers";
-import User from "@models/User";
+import { useUser } from "@/lib/auth";
 import Link from "next/link";
 
-const getUser = async () => {
-    const token = cookies().get("token")?.value;
-    if (!token) return null;
-
-    const user = await User.findOne({
-        refreshTokens: token,
-    });
-
-    if (!user) return null;
-    return user;
-};
-
 export async function Header() {
-    const user = await getUser();
+    const user = await useUser();
 
     return (
         <header className={styles.header}>
