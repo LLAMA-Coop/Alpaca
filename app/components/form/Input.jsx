@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import makeUniqueId from "@/app/code/uniqueId";
 import styles from "./Input.module.css";
+import { useEffect, useState } from "react";
 
 export function Label({ required, error, errorId, label, htmlFor }) {
     return (
@@ -40,8 +41,13 @@ export function Input({
     disabled,
     outlineColor,
 }) {
-    const inputId = `${label}-${makeUniqueId()}`;
-    const errorId = `${inputId}-error`;
+    const [inputId, setInputId] = useState("");
+    const [errorId, setErrorId] = useState("");
+
+    useEffect(() => {
+        setInputId(`${label}-${makeUniqueId()}`);
+        setErrorId(`${inputId}-error`);
+    }, []);
 
     return (
         <div
