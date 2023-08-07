@@ -1,8 +1,13 @@
 import { UserInput } from "@components/client";
 import styles from "@/app/Page.module.css";
+import { redirect } from "next/navigation";
+import { useUser } from "@/lib/auth";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+    const user = await useUser();
+    if (user) return redirect(`/me/dashboard`);
+
     return (
         <main className={styles.main}>
             <section className={styles.authContainer}>

@@ -2,14 +2,16 @@
 
 import { faCog, faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { protectedPaths } from "@/app/data/paths";
 import { Avatar } from "@components/client";
-import { useRouter } from "next/navigation";
 import styles from "./Profile.module.css";
 
 export function Profile({ user }) {
     const [showMenu, setShowMenu] = useState(false);
     const router = useRouter();
+    const path = usePathname();
     const menu = useRef(null);
 
     useEffect(() => {
@@ -34,6 +36,16 @@ export function Profile({ user }) {
         };
     }, [showMenu]);
 
+    const logout = async () => {
+        await fetch("/api/auth/logout", {
+            method: "POST",
+        });
+
+        if (protectedPaths.includes(path)) {
+            router.push("/login");
+        }
+    };
+
     return (
         <div className={styles.container}>
             <div
@@ -56,7 +68,7 @@ export function Profile({ user }) {
                         <li
                             className="icon"
                             onClick={() => {
-                                router.push(`/user/${user.username}`);
+                                router.push("/me/dashboard");
                                 setShowMenu(false);
                             }}
                         >
@@ -69,7 +81,7 @@ export function Profile({ user }) {
                         <li
                             className="icon"
                             onClick={() => {
-                                router.push(`/user/${user.username}/settings`);
+                                router.push("/me/settings");
                                 setShowMenu(false);
                             }}
                         >
@@ -81,7 +93,13 @@ export function Profile({ user }) {
 
                         <hr />
 
-                        <li className="danger icon">
+                        <li
+                            className="danger icon"
+                            onClick={() => {
+                                logout();
+                                setShowMenu(false);
+                            }}
+                        >
                             <div>
                                 <FontAwesomeIcon icon={faSignOut} />
                             </div>

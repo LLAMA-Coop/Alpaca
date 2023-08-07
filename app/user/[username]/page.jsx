@@ -1,25 +1,12 @@
-import { Profile } from "@components/client";
 import styles from "@/app/Page.module.css";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-import User from "@models/User";
+import { useUser } from "@/lib/auth";
 
-const getUser = async () => {
-    const token = cookies().get("token")?.value;
-    console.log(token);
-    if (!token) return redirect("/login");
-
-    const user = await User.findOne({
-        refreshTokens: token,
-    });
+export default async function UserPage({ params: { username } }) {
+    const user = await useUser();
 
     if (!user) return redirect("/login");
-
-    return user;
-};
-
-export default async function page({ params: { username } }) {
-    const user = await getUser();
+    if (user.username === username) return redirect("/me/dashboard");
 
     return (
         <main className={styles.main}>
