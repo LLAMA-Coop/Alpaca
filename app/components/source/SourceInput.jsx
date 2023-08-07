@@ -2,6 +2,7 @@
 
 import { Alert, Input, Label, ListItem, Spinner } from "@components/client";
 import { useState, useEffect } from "react";
+import styles from "./SourceInput.module.css"
 
 export function SourceInput() {
     const [title, setTitle] = useState("");
@@ -136,7 +137,7 @@ export function SourceInput() {
     ];
 
     return (
-        <form className="formGrid">
+        <div className={styles.formGrid}>
             <Alert
                 show={showAlert}
                 setShow={setShowAlert}
@@ -250,6 +251,6 @@ export function SourceInput() {
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Source"}
             </button>
-        </form>
+        </div>
     );
 }

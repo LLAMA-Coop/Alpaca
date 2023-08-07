@@ -22,7 +22,7 @@
     animation: popIn 0.225s ease-in-out;
 }
 
-.popup > div > div {
+.popup > div > div:first-child {
     display: flex;
     justify-content: space-between;
 }
