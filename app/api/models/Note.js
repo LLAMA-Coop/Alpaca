@@ -1,5 +1,6 @@
 import { model, models, Schema } from "mongoose";
 import connectDB from "../db";
+import PermissionSchema from "./PermissionSchema";
 connectDB();
 
 // Should add option to link to videos/images instead of text
@@ -32,6 +33,7 @@ const NoteSchema = new Schema(
             ref: "user",
             required: true,
         },
+        permissions: [PermissionSchema],
     },
     {
         timestamps: true,

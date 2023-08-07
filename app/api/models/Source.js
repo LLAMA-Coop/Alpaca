@@ -1,5 +1,6 @@
 import { model, models, Schema } from "mongoose";
 import connectDB from "../db";
+import PermissionSchema from "./PermissionSchema";
 connectDB();
 
 //  validation:
@@ -50,6 +51,7 @@ const SourceSchema = new Schema(
         lastAccessed: {
             type: Date,
         },
+        permissions: [PermissionSchema],
     },
     {
         timestamps: true,

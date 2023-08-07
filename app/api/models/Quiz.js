@@ -1,5 +1,6 @@
 import { model, models, Schema } from "mongoose";
 import connectDB from "../db";
+import PermissionSchema from "./PermissionSchema";
 connectDB();
 
 const QuizSchema = new Schema(
@@ -68,6 +69,7 @@ const QuizSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "user",
         },
+        permissions: [PermissionSchema],
     },
     {
         timestamps: true,

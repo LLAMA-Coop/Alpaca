@@ -75,6 +75,7 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
 
     -   createdAt (Date)
     -   updatedAt (Date)
+    -   permissions (TPermission[])
 
 -   Note
 
@@ -87,6 +88,7 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
 
     -   createdAt (Date)
     -   updatedAt (Date)
+    -   permissions (TPermission[])
 
 -   Quiz
 
@@ -105,3 +107,4 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
 
     -   createdAt (Date)
     -   updatedAt (Date)
+    -   permissions (TPermission[])
