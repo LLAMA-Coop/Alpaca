@@ -2,7 +2,7 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
-import makeUniqueId from "@/app/code/uniqueId";
+import makeUniqueId from "@/lib/uniqueId";
 import styles from "./Input.module.css";
 import { useEffect, useState } from "react";
 
