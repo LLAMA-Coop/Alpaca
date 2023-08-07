@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-export default PermissionSchema = new Schema({
+const PermissionSchema = new Schema({
     group: {
         type: Schema.Types.ObjectId,
         ref: "group",
@@ -11,3 +11,5 @@ export default PermissionSchema = new Schema({
         max: 63,
     },
 });
+
+export default PermissionSchema;
