@@ -34,6 +34,13 @@ export function Profile({ user }) {
         };
     }, [showMenu]);
 
+    const logout = async () => {
+        await fetch("/api/auth/logout", {
+            method: "POST",
+        });
+        router.push("/login");
+    };
+
     return (
         <div className={styles.container}>
             <div
@@ -56,7 +63,7 @@ export function Profile({ user }) {
                         <li
                             className="icon"
                             onClick={() => {
-                                router.push(`/user/${user.username}`);
+                                router.push("/me/dashboard");
                                 setShowMenu(false);
                             }}
                         >
@@ -81,7 +88,13 @@ export function Profile({ user }) {
 
                         <hr />
 
-                        <li className="danger icon">
+                        <li
+                            className="danger icon"
+                            onClick={() => {
+                                logout();
+                                setShowMenu(false);
+                            }}
+                        >
                             <div>
                                 <FontAwesomeIcon icon={faSignOut} />
                             </div>
