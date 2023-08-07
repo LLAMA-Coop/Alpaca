@@ -85,7 +85,7 @@ export function NoteInput({ availableSources }) {
     }
 
     return (
-        <form className="formGrid">
+        <div className="formGrid">
             <Alert
                 show={showAlert}
                 setShow={setShowAlert}
@@ -153,6 +153,6 @@ export function NoteInput({ availableSources }) {
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Note"}
             </button>
-        </form>
+        </div>
     );
 }
