@@ -1,8 +1,6 @@
-<!--
-This markdown can be viewed as a mindmap using the MarkMap VS Code extension.
+<!-- This markdown can be viewed as a mindmap using the MarkMap VS Code extension.
 
-MarkMap can also export the mindmap into an HTML file that uses SVG to draw the mindmap
--->
+MarkMap can also export the mindmap into an HTML file that uses SVG to draw the mindmap -->
 
 # Enums
 
@@ -32,6 +30,10 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
     -   level (integer)
     -   hiddenUntil (Date)
 
+-   TPermission
+    -   group (ObjectId)
+    -   permissions (integer)
+
 # Models
 
 -   User
@@ -47,6 +49,14 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
 
     -   createdAt (Date)
     -   updatedAt (Date)
+
+-   Group
+
+    -   id (ObjectId)
+    -   name (string(100))
+    -   owner (ObjectId)
+    -   users (ObjectId[])
+    -   admins (ObjectId[])
 
 -   Source
 
