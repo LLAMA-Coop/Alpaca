@@ -2,14 +2,16 @@
 
 import { faCog, faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { protectedPaths } from "@/app/data/paths";
 import { Avatar } from "@components/client";
-import { useRouter } from "next/navigation";
 import styles from "./Profile.module.css";
 
 export function Profile({ user }) {
     const [showMenu, setShowMenu] = useState(false);
     const router = useRouter();
+    const path = usePathname();
     const menu = useRef(null);
 
     useEffect(() => {
@@ -38,7 +40,10 @@ export function Profile({ user }) {
         await fetch("/api/auth/logout", {
             method: "POST",
         });
-        router.push("/login");
+
+        if (protectedPaths.includes(path)) {
+            router.push("/login");
+        }
     };
 
     return (
