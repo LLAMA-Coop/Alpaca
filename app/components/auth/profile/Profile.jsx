@@ -76,7 +76,7 @@ export function Profile({ user }) {
                         <li
                             className="icon"
                             onClick={() => {
-                                router.push(`/user/${user.username}/settings`);
+                                router.push("/me/settings");
                                 setShowMenu(false);
                             }}
                         >
