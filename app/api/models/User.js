@@ -53,19 +53,26 @@ const UserSchema = new Schema(
             type: [String],
             default: [],
         },
-        roles: {
-            type: [
-                {
-                    type: String,
-                    enum: ERole,
-                },
-            ],
-            default: ["user"],
-        },
+        // roles: {
+        //     type: [
+        //         {
+        //             type: String,
+        //             enum: ERole,
+        //         },
+        //     ],
+        //     default: ["user"],
+        // },
+        groups: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "group",
+            },
+        ],
         quizzes: [TQuiz],
         lastLogin: {
             type: Date,
         },
+        isPublic: Boolean
     },
     {
         timestamps: true,

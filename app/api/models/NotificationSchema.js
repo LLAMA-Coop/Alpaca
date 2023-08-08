@@ -1,6 +1,7 @@
 import { Schema } from "mongoose";
 import User from "./User";
 
+// validator needs to use the group listed for that admin
 async function verifyAdmin(value) {
     const user = await User.findById(value);
     if (!user) return false;

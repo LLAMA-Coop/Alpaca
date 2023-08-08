@@ -32,12 +32,18 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
 
 -   TPermission
     -   group (ObjectId)
-    -   permissions (integer)
+    -   canRead (Boolean)
+    -   canWrite (Boolean)
+
+-   TFrom
+    -   group (ObjectId)
+    -   admin (ObjectId)
 
 -   TNotification
-    -   from ()
+    -   from (TFrom)
     -   subject (String)
     -   message (String)
+    -   didReply (Boolean)
 
     -   createdAt (Date)
     -   updatedAt (Date)

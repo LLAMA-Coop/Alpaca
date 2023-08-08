@@ -5,21 +5,8 @@ const PermissionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "group",
     },
-    permssions: [
-        {
-            type: String,
-            default: "owner read/write",
-            enum: {
-                values: [
-                    "owner read/write",
-                    "group read",
-                    "group read/write",
-                    "everyone read",
-                    "everyone read/write",
-                ],
-            },
-        },
-    ],
+    canRead: Boolean,
+    canWrite: Boolean,
 });
 
 export default PermissionSchema;
