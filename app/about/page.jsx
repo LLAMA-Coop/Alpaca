@@ -6,7 +6,7 @@ export default function About() {
             <h2>About Mneme</h2>
 
             <section>
-                <div className={styles.description}>
+                <div className="paragraph">
                     <p>
                         There are plenty of flashcard apps available, and plenty
                         that make adding flashcards easy. But wouldn't it be

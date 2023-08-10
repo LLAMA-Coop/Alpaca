@@ -32,7 +32,7 @@
     margin-bottom: 24px;
 }
 
-.popup > div > div > button {
+.closeButton {
     display: none;
     align-items: center;
     justify-content: center;
@@ -45,11 +45,11 @@
     background-color: transparent;
 }
 
-.popup > div > div > button:hover {
+.closeButton:hover {
     color: var(--foreground-primary);
 }
 
-.popup > div > form {
+.popup > div > div {
     grid-template-columns: 1fr;
 }
 
@@ -100,7 +100,7 @@
         border-radius: 0;
     }
 
-    .popup > div > div > button {
+    .closeButton {
         display: flex;
     }
 }

@@ -176,6 +176,7 @@ export function UserInput({ isRegistering }) {
 
         if (response.status === 200) {
             router.push(`/user/${username}`);
+            router.refresh();
 
             setUsername("");
             setPassword("");

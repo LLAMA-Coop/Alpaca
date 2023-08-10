@@ -44,6 +44,8 @@ export function Profile({ user }) {
         if (protectedPaths.includes(path)) {
             router.push("/login");
         }
+
+        router.refresh();
     };
 
     return (

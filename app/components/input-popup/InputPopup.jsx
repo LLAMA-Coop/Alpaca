@@ -10,22 +10,12 @@ export function InputPopup({ type }) {
     const popup = useRef(null);
 
     useEffect(() => {
-        const handleOutsideClick = (e) => {
-            if (!showPopup || !popup.current) return;
-            if (!popup.current.contains(e.target)) hidePopup();
-        };
-
         const handleKeyDown = (e) => {
             if (e.key === "Escape") hidePopup();
         };
 
-        document.addEventListener("click", handleOutsideClick);
         document.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            document.removeEventListener("click", handleOutsideClick);
-            document.removeEventListener("keydown", handleKeyDown);
-        };
+        return () => document.removeEventListener("keydown", handleKeyDown);
     }, [showPopup]);
 
     const hidePopup = () => {
@@ -60,6 +50,7 @@ export function InputPopup({ type }) {
             {showPopup && (
                 <div
                     className={styles.popup}
+                    onClick={() => hidePopup()}
                     style={{
                         animationName: animateOut ? styles.fadeOut : "",
                         backgroundColor: animateOut ? "hsl(0, 0%, 0%, 0)" : "",
@@ -67,6 +58,7 @@ export function InputPopup({ type }) {
                 >
                     <div
                         ref={popup}
+                        onClick={(e) => e.stopPropagation()}
                         style={{
                             animationName: animateOut ? styles.popOut : "",
                             transform: animateOut ? "scale(0.8)" : "",
@@ -78,7 +70,11 @@ export function InputPopup({ type }) {
                                 {type === "note" && "Create new note"}
                             </h4>
 
-                            <button type="button" onClick={() => hidePopup()}>
+                            <button
+                                type="button"
+                                className={styles.closeButton}
+                                onClick={() => hidePopup()}
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="28"
