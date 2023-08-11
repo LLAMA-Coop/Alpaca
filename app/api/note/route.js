@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Note from "@models/Note";
+import { useUser } from "@/lib/auth";
 
 export async function GET(req) {
     const content = await Note.find();
@@ -11,19 +12,20 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
-    const body = await req.json();
-    // Will need to get author from authentication
-    // addedBy refers to the user that made the note
-    // and that should be the person signed in
-    // Eventually, there will be guards checking authentication before the request even comes here
-    // As well as a check on authorization to make notes
+    const user = await useUser();
+    if (!user) {
+        return NextResponse.json({
+            403: {
+                message: "Login required",
+            },
+        });
+    }
+
+    const { text, sources } = await req.json();
 
     // Will need to redesign once images/videos are permitted in notes
 
-    // addedBy needs to come from cookie
-    // Should probably verify user real and active
-
-    if (!body.text) {
+    if (!text) {
         return NextResponse.json(
             {
                 message: "No text was added to this note",
@@ -32,7 +34,7 @@ export async function POST(req) {
         );
     }
 
-    if (body.sources.length < 1) {
+    if (sources.length < 1) {
         return NextResponse.json(
             {
                 message: "At least one source is required to create a note",
@@ -42,9 +44,10 @@ export async function POST(req) {
     }
 
     const noteRcvd = {
-        createdBy: "64b841f6f8bfa3dc4d7079e4",
-        text: body.text,
-        sources: [...body.sources],
+        createdBy: user._id,
+        text: text,
+        sources: [...sources],
+        contributors: [user._id]
     };
 
     const note = new Note(noteRcvd);

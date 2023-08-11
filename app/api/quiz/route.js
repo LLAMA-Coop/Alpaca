@@ -10,12 +10,12 @@ export async function GET(req) {
 
 export async function POST(req) {
     const user = await useUser();
-    if(!user){
+    if (!user) {
         return NextResponse.json({
             403: {
-                message: "Login required"
-            }
-        })
+                message: "Login required",
+            },
+        });
     }
 
     const { type, prompt, choices, correctResponses, sources, notes } =
@@ -62,8 +62,6 @@ export async function POST(req) {
             },
         });
     }
-
-    // probably to Quiz model itself
 
     const quizRcvd = {
         type: type,

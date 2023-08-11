@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Source from "@models/Source";
+import { useUser } from "@/lib/auth";
 
 export async function GET(req) {
     const content = await Source.find();
@@ -7,6 +8,15 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+    const user = await useUser();
+    if (!user) {
+        return NextResponse.json({
+            403: {
+                message: "Login required",
+            },
+        });
+    }
+
     const { title, medium, url, publishDate, lastAccessed, authors } =
         await req.json();
 
@@ -36,7 +46,8 @@ export async function POST(req) {
             publishedAt: publishDate,
             lastAccessed: lastAccessed,
             authors: authors,
-            addedBy: "64b841f6f8bfa3dc4d7079e4",
+            addedBy: user._id,
+            contributors: [user._id]
         });
 
         const content = await source.save();
