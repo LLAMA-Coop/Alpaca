@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Quiz from "@models/Quiz";
+import { useUser } from "@/lib/auth";
 
 export async function GET(req) {
     return NextResponse.json({
@@ -8,6 +9,15 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+    const user = await useUser();
+    if(!user){
+        return NextResponse.json({
+            403: {
+                message: "Login required"
+            }
+        })
+    }
+
     const { type, prompt, choices, correctResponses, sources, notes } =
         await req.json();
 
@@ -53,7 +63,6 @@ export async function POST(req) {
         });
     }
 
-    // Need to add validation
     // probably to Quiz model itself
 
     const quizRcvd = {
@@ -61,8 +70,8 @@ export async function POST(req) {
         prompt: prompt,
         choices: choices,
         correctResponses: correctResponses,
-        authors: ["64b841f6f8bfa3dc4d7079e4"],
-        createdBy: "64b841f6f8bfa3dc4d7079e4",
+        contributors: [user._id],
+        createdBy: user._id,
         notes: notes ?? [],
         sources: sources ?? [],
     };
