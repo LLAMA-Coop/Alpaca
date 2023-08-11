@@ -1,0 +1,21 @@
+digraph SetPermissions {
+    "user creates/edits Note" [shape=box];
+    "she selects a group" [shape=box];
+    "she does not select a group" [shape=box];
+    "she is a member" [shape=box];
+    "she is not a member" [shape=box];
+    "user creates/edits Note" ->
+        "does user select one or more group for Note?" ->
+            "she selects a group" ->
+                "is user a member of group?" ->
+                    "she is a member" ->
+                    "group permissions accepted as assigned by user";
+                "is user a member of group?" ->
+                    "she is not a member" ->
+                    "permissions assigned to `All` group";
+
+            
+        "does user select one or more group for Note?" ->
+            "she does not select a group" ->
+            "permissions assigned to the `All` group";
+}

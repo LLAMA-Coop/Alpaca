@@ -1,0 +1,5 @@
+digraph findAvailable {
+    "user log in";
+    "server authenticates user";
+    "";
+}
