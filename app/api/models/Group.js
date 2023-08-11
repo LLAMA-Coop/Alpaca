@@ -12,7 +12,7 @@ const GroupSchema = new Schema(
             maxLength: 100,
         },
         description: {
-            type: String
+            type: String,
         },
         owner: {
             type: Schema.Types.ObjectId,
@@ -30,10 +30,14 @@ const GroupSchema = new Schema(
                 ref: "user",
             },
         ],
+        defaultPermissions: {
+            canRead: Boolean,
+            canWrite: Boolean,
+        },
         isPublic: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     {
         timestamps: true,
