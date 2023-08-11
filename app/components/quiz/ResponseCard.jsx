@@ -21,7 +21,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
     }
 
     function handleCheckAnswer() {
-        if (hasAnswered) return;
+        if (hasAnswered || !userResponse) return;
 
         const isCorrect = quiz.correctResponses.find(
             (x) => x.toLowerCase() === userResponse.toLowerCase(),
@@ -82,11 +82,6 @@ export function ResponseCard({ canClientCheck, quiz }) {
         setCorrectAnswer(isCorrect != undefined);
         setHasAnswered(true);
     }
-
-    const colors = {
-        correct: "var(--accent-tertiary-1)",
-        incorrect: "var(--accent-secondary-1)",
-    };
 
     const colorsLight = {
         correct: "var(--accent-tertiary-outline)",

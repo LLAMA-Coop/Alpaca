@@ -11,7 +11,9 @@ export default async function DashboardPage() {
             <h2>Dashboard</h2>
 
             <section>
-                <div>Hello user, here's your account!</div>
+                <div className="paragraph">
+                    <p>Hello user, here's your account!</p>
+                </div>
             </section>
         </main>
     );

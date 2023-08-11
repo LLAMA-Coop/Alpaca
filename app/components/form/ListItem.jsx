@@ -41,6 +41,7 @@ export function ListItem({ item, action, actionType, link, select }) {
 
             {action && (
                 <button
+                    type="button"
                     title={`${label} ${item}`}
                     aria-label={`${label} ${item}`}
                     aria-haspopup={select ? "true" : "false"}

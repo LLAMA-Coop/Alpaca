@@ -11,7 +11,9 @@ export default async function SettingsPage() {
             <h2>Settings</h2>
 
             <section>
-                <div>Hello user, here are the settings.</div>
+                <div className="paragraph">
+                    <p>Hello user, here are the settings.</p>
+                </div>
             </section>
         </main>
     );
