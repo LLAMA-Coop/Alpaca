@@ -1,6 +1,7 @@
 import styles from "@/app/Page.module.css";
 import { redirect } from "next/navigation";
 import { useUser } from "@/lib/auth";
+import { serializeOne } from "@/lib/db";
 
 export default async function UserPage({ params: { username } }) {
     const user = await useUser();
@@ -8,19 +9,34 @@ export default async function UserPage({ params: { username } }) {
     if (!user) return redirect("/login");
     if (user.username === username) return redirect("/me/dashboard");
 
+    const profile = serializeOne(await useUser({ username }));
+
     return (
         <main className={styles.main}>
-            <section>
-                <h2>Hello, {user.username}</h2>
+            <h2>Profile</h2>
 
-                <div className={styles.description}>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Donec aliquam, velit vitae tincidunt ultricies, elit
-                        nisi ultrices urna, eget ultrices velit elit nec ipsum.
-                        Donec euismod tincidunt felis, sit amet aliquet nunc.
-                        Donec euismod sollicitudin nunc, sed aliquam nisl.
-                    </p>
+            <section>
+                <div className="paragraph">
+                    {profile ? (
+                        <>
+                            <h3>{profile.username}'s profile</h3>
+
+                            <p>
+                                Username: {profile.username}
+                                <br />
+                                Joined:{" "}
+                                {new Intl.DateTimeFormat("en-US", {
+                                    dateStyle: "long",
+                                    timeStyle: "short",
+                                }).format(new Date(profile.createdAt))}
+                            </p>
+                        </>
+                    ) : (
+                        <>
+                            <h3>404</h3>
+                            <p>Profile not found</p>
+                        </>
+                    )}
                 </div>
             </section>
         </main>

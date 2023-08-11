@@ -42,6 +42,13 @@ const QuizSchema = new Schema(
                 maxLength: 32,
             },
         ],
+        hints: [
+            {
+                type: String,
+                minLength: 1,
+                maxLength: 32,
+            },
+        ],
         sources: [
             {
                 type: Schema.Types.ObjectId,

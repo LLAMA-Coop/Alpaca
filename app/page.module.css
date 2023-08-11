@@ -40,21 +40,6 @@
     grid-gap: 16px;
 }
 
-.description {
-    margin-top: 24px;
-}
-
-.description > p {
-    margin-bottom: 16px;
-    font-size: clamp(16px, 2vw, 20px);
-    line-height: 1.625;
-    font-weight: 300;
-}
-
-.description p > a:hover {
-    text-decoration: underline;
-}
-
 .paginationButtons {
     display: flex;
     margin-top: 48px;

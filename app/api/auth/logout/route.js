@@ -11,12 +11,7 @@ export async function POST(req) {
                 success: false,
                 message: "No cookie found",
             },
-            {
-                status: 401,
-                headers: {
-                    "Set-Cookie": `token=; path=/; HttpOnly; SameSite=Strict; Max-Age=-1;`,
-                },
-            },
+            { status: 401 },
         );
     }
 

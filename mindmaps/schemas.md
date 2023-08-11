@@ -25,21 +25,25 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
 # Types
 
 -   TQuiz
+
     -   quizId (ObjectId)
     -   lastCorrect (Date)
     -   level (integer)
     -   hiddenUntil (Date)
 
 -   TPermission
+
     -   group (ObjectId)
     -   canRead (Boolean)
     -   canWrite (Boolean)
 
 -   TFrom
+
     -   group (ObjectId)
     -   admin (ObjectId)
 
 -   TNotification
+
     -   from (TFrom)
     -   subject (String)
     -   message (String)
@@ -48,7 +52,6 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
     -   createdAt (Date)
     -   updatedAt (Date)
     -   expiry (Date)
-
 
 # Models
 
@@ -65,7 +68,6 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
 
     -   createdAt (Date)
     -   updatedAt (Date)
-    
     -   notifications (TNotification[])
 
 -   Group
@@ -119,6 +121,7 @@ MarkMap can also export the mindmap into an HTML file that uses SVG to draw the 
     -   prompt (string(100))
     -   choices (string(32)[])
     -   correctResponses (string(32)[])
+    -   hints (string(32)[])
 
     -   sources (ObjectId[])
     -   notes (ObjectId[])
