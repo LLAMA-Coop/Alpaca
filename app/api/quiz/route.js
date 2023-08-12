@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import Quiz from "@models/Quiz";
 import { useUser } from "@/lib/auth";
 
+const allowedType = ["prompt-response", "multiple-choice"];
+
 export async function GET(req) {
     return NextResponse.json({
         message: "You have successfully received a response from /api/quiz",
@@ -20,8 +22,6 @@ export async function POST(req) {
 
     const { type, prompt, choices, correctResponses, sources, notes } =
         await req.json();
-
-    const allowedType = ["prompt-response", "multiple-choice"];
 
     if (!allowedType.includes(type)) {
         return NextResponse.json({
@@ -77,4 +77,102 @@ export async function POST(req) {
     const quiz = new Quiz(quizRcvd);
     const content = await quiz.save();
     return NextResponse.json({ content }, { status: 201 });
+}
+
+export async function PUT(req) {
+    const user = await useUser();
+    if (!user) {
+        return NextResponse.json({
+            403: {
+                message: "Login required",
+            },
+        });
+    }
+
+    const {
+        _id,
+        type,
+        prompt,
+        choices,
+        correctResponses,
+        hints,
+        sources,
+        notes,
+        permissions,
+    } = await req.json();
+
+    const quiz = await Quiz.findById(_id);
+    if (!quiz) {
+        return NextResponse.json({
+            404: {
+                message: `No quiz found with id ${_id}`,
+            },
+        });
+    }
+
+    // Need to add groups permissions to canEdit
+    const canEdit =
+        quiz.createdBy === _id ||
+        quiz.permissions == undefined ||
+        quiz.permissions.allWrite ||
+        quiz.permissions.usersWrite.includes(_id);
+    if (!canEdit) {
+        return NextResponse.json({
+            403: {
+                message: `You are not permitted to edit quiz ${_id}`,
+            },
+        });
+    }
+
+    if (type && !allowedType.includes(type)) {
+        return NextResponse.json({
+            400: {
+                message: "Invalid type submitted",
+            },
+        });
+    }
+
+    if (type) {
+        quiz.type = type;
+    }
+    if (prompt) {
+        quiz.prompt = prompt;
+    }
+    if (choices) {
+        quiz.choices = [...choices];
+    }
+    if (correctResponses) {
+        quiz.correctResponses = [...correctResponses];
+    }
+    if (hints) {
+        quiz.hints = [...hints];
+    }
+
+    if (sources) {
+        sources.forEach((source) => {
+            if (!quiz.sources.include(source)) {
+                quiz.sources.push(source);
+            }
+        });
+    }
+    if (notes) {
+        notes.forEach((note) => {
+            if (!quiz.notes.include(note)) {
+                quiz.notes.push(note);
+            }
+        });
+    }
+
+    if (permissions) {
+        // this might cause errors b/c doesn't use ObjectId
+        quiz.permissions = JSON.parse(JSON.stringify(permissions));
+    }
+
+    if (!quiz.contributors.include(user._id)) {
+        quiz.contributors.push(user._id);
+    }
+    quiz.updatedBy = user._id;
+
+    const content = await quiz.save();
+    return NextResponse.json({ 200: content });
 }
