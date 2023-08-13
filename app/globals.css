@@ -319,6 +319,11 @@ input[type="date"] {
     top: 50%;
     left: 12px;
     transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .paragraph > h3 {

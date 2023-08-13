@@ -24,3 +24,7 @@ export { Spinner } from "../spinner/Spinner";
 export { Avatar } from "../avatar/Avatar";
 
 export { Profile } from "../auth/profile/Profile";
+
+export { GroupInput } from "../group/GroupInput";
+
+export { UserCard } from "../user/UserCard";

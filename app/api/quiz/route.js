@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import Quiz from "@models/Quiz";
 import { useUser } from "@/lib/auth";
+import Quiz from "@models/Quiz";
 
 const allowedType = ["prompt-response", "multiple-choice"];
 
@@ -12,12 +12,14 @@ export async function GET(req) {
 
 export async function POST(req) {
     const user = await useUser();
+
     if (!user) {
-        return NextResponse.json({
-            403: {
-                message: "Login required",
+        return NextResponse.json(
+            {
+                message: "Unauthorized",
             },
-        });
+            { status: 401 },
+        );
     }
 
     const { type, prompt, choices, correctResponses, sources, notes } =

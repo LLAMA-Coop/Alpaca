@@ -23,7 +23,8 @@
     z-index: 0;
 }
 
-.container:hover > div:first-child {
+.container:hover > div:first-child,
+.container:focus-within > div:first-child {
     opacity: 1;
     animation: gradientRotate 5s linear 0s infinite reverse;
     transition: all 0.3s linear;
@@ -37,8 +38,28 @@
     border-radius: 12px;
     height: 100%;
     padding: 24px;
-    background-color: var(--background-secondary);
     border: 1px solid var(--background-tertiary);
+    background-color: var(--background-secondary);
+}
+
+.content:focus {
+    outline: none;
+}
+
+.content > .urlIcon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    fill: var(--accent-foreground);
+    transform: scale(0);
+    transition: transform 0.1s ease-in-out;
+}
+
+.container:hover > .content > .urlIcon,
+.content:focus > .urlIcon {
+    transform: scale(1);
 }
 
 .container:hover > .content {

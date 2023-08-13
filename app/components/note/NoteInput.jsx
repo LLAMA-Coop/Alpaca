@@ -54,7 +54,7 @@ export function NoteInput({ availableSources }) {
 
         setLoading(true);
 
-        const response = await fetch("./api/note", {
+        const response = await fetch("/api/note", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

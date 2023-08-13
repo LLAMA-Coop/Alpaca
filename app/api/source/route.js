@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import Source from "@models/Source";
 import { useUser } from "@/lib/auth";
+import Source from "@models/Source";
 
 export async function GET(req) {
     const content = await Source.find();
@@ -9,12 +9,14 @@ export async function GET(req) {
 
 export async function POST(req) {
     const user = await useUser();
+
     if (!user) {
-        return NextResponse.json({
-            403: {
-                message: "Login required",
+        return NextResponse.json(
+            {
+                message: "Unauthorized",
             },
-        });
+            { status: 401 },
+        );
     }
 
     const { title, medium, url, publishDate, lastAccessed, authors } =
@@ -47,7 +49,7 @@ export async function POST(req) {
             lastAccessed: lastAccessed,
             authors: authors,
             addedBy: user._id,
-            contributors: [user._id]
+            contributors: [user._id],
         });
 
         const content = await source.save();
@@ -63,7 +65,7 @@ export async function POST(req) {
         console.error(`[Source] POST error: ${error}`);
         return NextResponse.json(
             {
-                message: "An error occurred while creating the source",
+                message: "Something went wrong",
             },
             { status: 500 },
         );

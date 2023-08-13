@@ -28,6 +28,10 @@ export function DynamicNav() {
             name: "Quizzes",
             href: "/quizzes",
         },
+        {
+            name: "Groups",
+            href: "/groups",
+        },
     ];
 
     return (

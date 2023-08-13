@@ -7,15 +7,13 @@ export default function NotFound() {
             <h2>Page Not Found</h2>
 
             <section>
-                <div className={styles.description}>
+                <div className="paragraph">
                     <p>
                         I'm sorry, but the address you are seeking is not valid.
                     </p>
                     <p>
                         Check the above navigation to see if you can find what
-                        you are looking for.
-                    </p>
-                    <p>
+                        you are looking for. <br />
                         Or you can <Link href="/">go home</Link>
                     </p>
                 </div>

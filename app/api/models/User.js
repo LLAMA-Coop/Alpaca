@@ -23,11 +23,6 @@ const TQuiz = new Schema({
     },
 });
 
-const ERole = {
-    values: ["user", "guest", "admin"],
-    message: "Invalid role",
-};
-
 const UserSchema = new Schema(
     {
         username: {
@@ -53,15 +48,6 @@ const UserSchema = new Schema(
             type: [String],
             default: [],
         },
-        // roles: {
-        //     type: [
-        //         {
-        //             type: String,
-        //             enum: ERole,
-        //         },
-        //     ],
-        //     default: ["user"],
-        // },
         groups: [
             {
                 type: Schema.Types.ObjectId,
@@ -72,7 +58,7 @@ const UserSchema = new Schema(
         lastLogin: {
             type: Date,
         },
-        isPublic: Boolean
+        isPublic: Boolean,
     },
     {
         timestamps: true,
