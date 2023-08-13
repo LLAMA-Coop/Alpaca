@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import styles from "@/app/Page.module.css";
-import { useUser } from "@/lib/auth";
+import { useUser, canEdit } from "@/lib/auth";
 import Quiz from "@/app/api/models/Quiz";
 import Note from "@/app/api/models/Note";
 import Source from "@/app/api/models/Source";

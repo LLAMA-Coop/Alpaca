@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import Quiz from "@models/Quiz";
-import { useUser } from "@/lib/auth";
+import { useUser, canEdit } from "@/lib/auth";
+import { serializeOne } from "@/lib/db";
+import { Types } from "mongoose";
 
 const allowedType = ["prompt-response", "multiple-choice"];
 
@@ -110,13 +112,8 @@ export async function PUT(req) {
         });
     }
 
-    // Need to add groups permissions to canEdit
-    const canEdit =
-        quiz.createdBy === _id ||
-        quiz.permissions == undefined ||
-        quiz.permissions.allWrite ||
-        quiz.permissions.usersWrite.includes(_id);
-    if (!canEdit) {
+    if (!canEdit(quiz, _id)) {
+        console.log(serializeOne(quiz), _id);
         return NextResponse.json({
             403: {
                 message: `You are not permitted to edit quiz ${_id}`,
@@ -150,14 +147,14 @@ export async function PUT(req) {
 
     if (sources) {
         sources.forEach((source) => {
-            if (!quiz.sources.include(source)) {
-                quiz.sources.push(source);
+            if (!quiz.sources.includes(source)) {
+                quiz.sources.push(new Types.ObjectId(source));
             }
         });
     }
     if (notes) {
         notes.forEach((note) => {
-            if (!quiz.notes.include(note)) {
+            if (!quiz.notes.includes(note)) {
                 quiz.notes.push(note);
             }
         });
@@ -168,7 +165,7 @@ export async function PUT(req) {
         quiz.permissions = JSON.parse(JSON.stringify(permissions));
     }
 
-    if (!quiz.contributors.include(user._id)) {
+    if (!quiz.contributors.includes(user._id)) {
         quiz.contributors.push(user._id);
     }
     quiz.updatedBy = user._id;

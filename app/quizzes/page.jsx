@@ -1,15 +1,17 @@
 import { QuizDisplay } from "@components/server";
-import { QuizInput } from "@components/client";
+import { QuizInput, Card } from "@components/client";
 import styles from "@/app/Page.module.css";
-import { serialize } from "@/lib/db";
+import { serialize, serializeOne } from "@/lib/db";
 import Source from "@models/Source";
 import Quiz from "@models/Quiz";
 import Note from "@models/Note";
+import { useUser, canEdit } from "@/lib/auth";
 
 export default async function QuizzesPage() {
     const sources = serialize(await Source.find());
     const quizzes = serialize(await Quiz.find());
     const notes = serialize(await Note.find());
+    const user = serializeOne(await useUser());
 
     return (
         <main className={styles.main}>
@@ -26,6 +28,15 @@ export default async function QuizzesPage() {
                                     quiz={quiz}
                                     canClientCheck={true}
                                 />
+                                {user && canEdit(quiz, user._id) && (
+                                    <Card>
+                                        <QuizInput
+                                            availableNotes={notes}
+                                            availableSources={sources}
+                                            quiz={serializeOne(quiz)}
+                                        />
+                                    </Card>
+                                )}
                             </li>
                         ))}
                     </ol>
@@ -33,7 +44,7 @@ export default async function QuizzesPage() {
             )}
 
             <section>
-                <h3>Create new quizz</h3>
+                <h3>Create new quiz</h3>
 
                 <QuizInput
                     isEditing={false}
