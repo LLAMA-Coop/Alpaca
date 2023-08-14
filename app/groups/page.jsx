@@ -1,11 +1,23 @@
 import styles from "@/app/Page.module.css";
 import { Card, GroupInput } from "@components/client";
 import Group from "@models/Group";
+import { useUser } from "@/lib/auth";
 
 export default async function GroupPage() {
     const groups = await Group.find({
         isPublic: true,
     });
+
+    const user = await useUser();
+    const yourGroups = user
+        ? await Group.find({
+              $or: [
+                //   { owner: user._id },
+                  { users: { $in: [user._id] } },
+                  { admins: { $in: [user.id] } },
+              ],
+          })
+        : [];
 
     return (
         <main className={styles.main}>
@@ -34,7 +46,29 @@ export default async function GroupPage() {
             </section>
 
             <section>
-                <h2>Add Group</h2>
+                <h3>Your Groups</h3>
+
+                {yourGroups.length > 0 ? (
+                    <ol className={styles.listGrid}>
+                        {yourGroups.map((group) => (
+                            <li key={group.id}>
+                                <Card
+                                    title={group.name}
+                                    description={group.description}
+                                    url={`/groups/${group.id}`}
+                                />
+                            </li>
+                        ))}
+                    </ol>
+                ) : (
+                    <div className="paragraph">
+                        <p>You are not listed in any groups yet.</p>
+                    </div>
+                )}
+            </section>
+
+            <section>
+                <h3>Add Group</h3>
                 <GroupInput />
             </section>
         </main>
