@@ -1,7 +1,7 @@
 import { UserCard } from "@components/client";
 import styles from "@/app/Page.module.css";
 import { redirect } from "next/navigation";
-import { serializeOne } from "@/lib/db";
+import { serialize, serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
 import Group from "@models/Group";
 
@@ -16,6 +16,8 @@ export default async function GroupPage({ params }) {
         return redirect("/groups");
     }
 
+    const groupUsers = serialize(group.users);
+
     return (
         <main className={styles.main}>
             <h2>{group.name}</h2>
@@ -23,13 +25,15 @@ export default async function GroupPage({ params }) {
             <section>
                 <h3>Members</h3>
 
-                {group.users.length > 0 && (
+                {groupUsers.length > 0 && (
                     <ol className={styles.listGrid}>
-                        {group.users.map((user) => (
-                            <li key={user.id}>
-                                <UserCard user={user} />
-                            </li>
-                        ))}
+                        {groupUsers.map((user) => {
+                            return (
+                                <li key={user.id}>
+                                    <UserCard user={user} />
+                                </li>
+                            );
+                        })}
                     </ol>
                 )}
             </section>
