@@ -1,5 +1,5 @@
 import styles from "@/app/Page.module.css";
-import { Card } from "@components/client";
+import { Card, GroupInput } from "@components/client";
 import Group from "@models/Group";
 
 export default async function GroupPage() {
@@ -31,6 +31,11 @@ export default async function GroupPage() {
                         <p>There are no groups to discover yet.</p>
                     </div>
                 )}
+            </section>
+
+            <section>
+                <h2>Add Group</h2>
+                <GroupInput />
             </section>
         </main>
     );
