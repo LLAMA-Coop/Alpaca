@@ -40,7 +40,7 @@ const SourceSchema = new Schema(
                 maxLength: 16,
             },
         ],
-        addedBy: {
+        createdBy: {
             type: Schema.Types.ObjectId,
             ref: "user",
             required: true,

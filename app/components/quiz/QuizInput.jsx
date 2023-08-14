@@ -11,7 +11,7 @@ import {
     Alert,
 } from "@components/client";
 
-export function QuizInput({ isEditing, availableSources, availableNotes }) {
+export function QuizInput({ quiz, availableSources, availableNotes }) {
     const [type, setType] = useState("prompt-response");
     const [typeError, setTypeError] = useState("");
 
@@ -26,6 +26,8 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
     const [newChoice, setNewChoice] = useState("");
     const [choicesError, setChoicesError] = useState("");
 
+    const [hints, setHints] = useState([]);
+
     const [sources, setSources] = useState([]);
     const [sourcesError, setSourcesError] = useState("");
     const [notes, setNotes] = useState([]);
@@ -37,6 +39,35 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+
+    useEffect(() => {
+        if (!quiz) return;
+        setType(quiz.type);
+        setPrompt(quiz.prompt);
+        if (quiz.choices) {
+            setChoices([...quiz.choices]);
+        }
+        if (quiz.correctResponses) {
+            setResponses([...quiz.correctResponses]);
+        }
+        if (quiz.hints) {
+            setHints([...quiz.hints]);
+        }
+        if (quiz.sources) {
+            setSources(
+                quiz.sources.map((srcId) =>
+                    availableSources.find((x) => x._id === srcId),
+                ),
+            );
+        }
+        if (quiz.notes) {
+            setNotes(
+                quiz.notes.map((noteId) =>
+                    availableNotes.find((x) => x._id === noteId),
+                ),
+            );
+        }
+    }, []);
 
     const addSourceRef = useRef(null);
     useEffect(() => {
@@ -125,28 +156,32 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
             return;
         }
 
-        const quiz = {
+        const quizPayload = {
             type: type,
             prompt: prompt,
             choices: choices,
             correctResponses: responses,
+            hints: hints,
             sources: sources,
             notes: notes,
         };
+        if (quiz) {
+            quizPayload._id = quiz._id;
+        }
 
         setLoading(true);
 
         const response = await fetch("/api/quiz", {
-            method: "POST",
+            method: quiz ? "PUT" : "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(quiz),
+            body: JSON.stringify(quizPayload),
         });
 
         setLoading(false);
 
-        if (response.status === 201) {
+        if (response.status === 201 || response.status === 200) {
             setTypeError("");
 
             setPrompt("");
@@ -173,7 +208,7 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
         } else {
             setRequestStatus({
                 success: false,
-                message: "Failed to create quiz",
+                message: `Failed to create quiz`,
             });
             setShowAlert(true);
         }
@@ -350,19 +385,23 @@ export function QuizInput({ isEditing, availableSources, availableNotes }) {
                     />
 
                     {sources.length > 0 &&
-                        sources.map((src) => (
-                            <ListItem
-                                key={src.id}
-                                link={src.url}
-                                item={src.title}
-                                action={() => {
-                                    setSources(
-                                        sources.filter((x) => x.id !== src.id),
-                                    );
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
+                        sources.map((src) => {
+                            return (
+                                <ListItem
+                                    key={src.id}
+                                    link={src.url}
+                                    item={src.title}
+                                    action={() => {
+                                        setSources(
+                                            sources.filter(
+                                                (x) => x.id !== src.id,
+                                            ),
+                                        );
+                                    }}
+                                    actionType={"delete"}
+                                />
+                            );
+                        })}
                 </ol>
             </div>
 
