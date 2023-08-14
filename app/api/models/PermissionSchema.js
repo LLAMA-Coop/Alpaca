@@ -1,27 +1,27 @@
 import { Schema } from "mongoose";
 
 const PermissionSchema = new Schema({
-    allWrite: Boolean,
     allRead: Boolean,
-    usersWrite: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "user",
-        },
-    ],
+    allWrite: Boolean,
     usersRead: [
         {
             type: Schema.Types.ObjectId,
             ref: "user",
         },
     ],
-    groupsWrite: [
+    usersWrite: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "user",
+        },
+    ],
+    groupsRead: [
         {
             type: Schema.Types.ObjectId,
             ref: "group",
         },
     ],
-    groupsRead: [
+    groupsWrite: [
         {
             type: Schema.Types.ObjectId,
             ref: "group",

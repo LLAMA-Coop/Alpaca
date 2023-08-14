@@ -1,6 +1,11 @@
 "use client";
 
-import { faCog, faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+    faCog,
+    faSignOut,
+    faUser,
+    faUserGroup,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -51,10 +56,17 @@ export function Profile({ user }) {
     return (
         <div className={styles.container}>
             <div
+                tabIndex={0}
                 className={styles.avatarContainer}
                 onClick={(e) => {
                     e.stopPropagation();
                     setShowMenu((prev) => !prev);
+                }}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        e.stopPropagation();
+                        setShowMenu((prev) => !prev);
+                    }
                 }}
             >
                 <Avatar
@@ -68,23 +80,57 @@ export function Profile({ user }) {
                 <div ref={menu} className="menuPopup down left medium">
                     <ul>
                         <li
+                            tabIndex={0}
                             className="icon"
                             onClick={() => {
                                 router.push("/me/dashboard");
                                 setShowMenu(false);
                             }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    router.push("/me/dashboard");
+                                    setShowMenu(false);
+                                }
+                            }}
                         >
                             <div>
                                 <FontAwesomeIcon icon={faUser} />
                             </div>
-                            My Profile
+                            Profile
                         </li>
 
                         <li
+                            tabIndex={0}
+                            className="icon"
+                            onClick={() => {
+                                router.push("/me/groups");
+                                setShowMenu(false);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    router.push("/me/groups");
+                                    setShowMenu(false);
+                                }
+                            }}
+                        >
+                            <div>
+                                <FontAwesomeIcon icon={faUserGroup} />
+                            </div>
+                            Groups
+                        </li>
+
+                        <li
+                            tabIndex={0}
                             className="icon"
                             onClick={() => {
                                 router.push("/me/settings");
                                 setShowMenu(false);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    router.push("/me/settings");
+                                    setShowMenu(false);
+                                }
                             }}
                         >
                             <div>
@@ -96,10 +142,17 @@ export function Profile({ user }) {
                         <hr />
 
                         <li
+                            tabIndex={0}
                             className="danger icon"
                             onClick={() => {
                                 logout();
                                 setShowMenu(false);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    logout();
+                                    setShowMenu(false);
+                                }
                             }}
                         >
                             <div>

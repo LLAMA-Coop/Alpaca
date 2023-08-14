@@ -1,3 +1,4 @@
+import { NoteDisplay, QuizDisplay, SourceDisplay } from "@components/server";
 import { redirect } from "next/navigation";
 import styles from "@/app/Page.module.css";
 import { useUser, canEdit } from "@/lib/auth";
@@ -10,9 +11,9 @@ export default async function DashboardPage() {
     const user = await useUser();
     if (!user) return redirect("/login");
 
-    const quizzes = await Quiz.find({ contributors: user._id });
-    const notes = await Note.find({ contributors: user._id });
-    const sources = await Source.find({ contributors: user._id });
+    const sources = await Source.find({ contributors: user.id });
+    const quizzes = await Quiz.find({ contributors: user.id });
+    const notes = await Note.find({ contributors: user.id });
 
     return (
         <main className={styles.main}>

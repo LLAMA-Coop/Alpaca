@@ -12,6 +12,8 @@
     display: inline-flex;
     font-size: 32px;
     user-select: none;
+    border-radius: 5px;
+    outline-offset: 4px;
     color: var(--foreground-primary);
 }
 
@@ -39,7 +41,9 @@
     z-index: 1;
     user-select: none;
     color: var(--foreground-secondary);
-    transition: all 0.2s ease-in-out;
+    transition:
+        background-color 0.1s ease-in-out,
+        color 0.1s ease-in-out;
 }
 
 .header > div > div > a:hover {

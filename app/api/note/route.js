@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import Note from "@models/Note";
 import { useUser } from "@/lib/auth";
+import Note from "@models/Note";
 
 export async function GET(req) {
     const content = await Note.find();
@@ -13,12 +13,14 @@ export async function GET(req) {
 
 export async function POST(req) {
     const user = await useUser();
+
     if (!user) {
-        return NextResponse.json({
-            403: {
-                message: "Login required",
+        return NextResponse.json(
+            {
+                message: "Unauthorized",
             },
-        });
+            { status: 401 },
+        );
     }
 
     const { text, sources } = await req.json();
@@ -47,7 +49,7 @@ export async function POST(req) {
         createdBy: user._id,
         text: text,
         sources: [...sources],
-        contributors: [user._id]
+        contributors: [user._id],
     };
 
     const note = new Note(noteRcvd);

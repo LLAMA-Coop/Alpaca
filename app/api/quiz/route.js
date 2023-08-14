@@ -14,12 +14,14 @@ export async function GET(req) {
 
 export async function POST(req) {
     const user = await useUser();
+
     if (!user) {
-        return NextResponse.json({
-            403: {
-                message: "Login required",
+        return NextResponse.json(
+            {
+                message: "Unauthorized",
             },
-        });
+            { status: 401 },
+        );
     }
 
     const { type, prompt, choices, correctResponses, sources, notes } =
