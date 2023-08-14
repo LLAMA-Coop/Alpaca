@@ -33,17 +33,6 @@ const GroupSchema = new Schema(
                 ref: "user",
             },
         ],
-        permissions: {
-            type: PermissionSchema,
-            default: {
-                allRead: false,
-                allWrite: false,
-                usersRead: [],
-                usersWrite: [],
-                groupsRead: [],
-                groupsWrite: [],
-            },
-        },
         isPublic: {
             type: Boolean,
             default: false,
