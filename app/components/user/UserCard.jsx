@@ -2,13 +2,13 @@
 
 import styles from "./UserCard.module.css";
 
-export function UserCard() {
+export function UserCard({user}) {
     return (
         <div className={styles.container}>
             <div>
                 <img src="" alt="" />
             </div>
-            <p>{user.name}</p>
+            <p>{user.username}</p>
         </div>
     );
 }
