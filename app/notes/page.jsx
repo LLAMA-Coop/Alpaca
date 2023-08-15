@@ -1,11 +1,14 @@
 import { NoteDisplay } from "@components/server";
-import { NoteInput } from "@components/client";
+import { NoteInput, InputPopup } from "@components/client";
 import styles from "@/app/Page.module.css";
-import { serialize } from "@/lib/db";
+import { serialize, serializeOne } from "@/lib/db";
 import Source from "@models/Source";
 import Note from "@models/Note";
+import { useUser, canEdit } from "@/lib/auth";
 
 export default async function NotePage() {
+    const user = serializeOne(await useUser());
+    
     const sources = serialize(await Source.find());
     const notes = serialize(await Note.find());
 

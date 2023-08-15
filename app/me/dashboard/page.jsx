@@ -5,7 +5,7 @@ import { useUser } from "@/lib/auth";
 import Quiz from "@/app/api/models/Quiz";
 import Note from "@/app/api/models/Note";
 import Source from "@/app/api/models/Source";
-import { NoteDisplay, QuizDisplay, SourceDisplay } from "@/app/components/server";
+import { serializeOne } from "@/lib/db";
 
 export default async function DashboardPage() {
     const user = await useUser();
@@ -33,7 +33,7 @@ export default async function DashboardPage() {
                     <ol>
                         {quizzes.map((quiz) => (
                             <li key={quiz._id}>
-                                <QuizDisplay quiz={quiz} />
+                                <QuizDisplay quiz={serializeOne(quiz)} />
                             </li>
                         ))}
                     </ol>
@@ -48,7 +48,7 @@ export default async function DashboardPage() {
                     <ol>
                         {notes.map((note) => (
                             <li key={note._id}>
-                                <NoteDisplay note={note} />
+                                <NoteDisplay note={serializeOne(note)} />
                             </li>
                         ))}
                     </ol>
@@ -63,7 +63,7 @@ export default async function DashboardPage() {
                     <ol>
                         {sources.map((source) => (
                             <li key={source._id}>
-                                <SourceDisplay note={source} />
+                                <SourceDisplay source={serializeOne(source)} />
                             </li>
                         ))}
                     </ol>

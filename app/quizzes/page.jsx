@@ -1,19 +1,21 @@
 import { QuizDisplay } from "@components/server";
-import { QuizInput, Card, InputPopup } from "@components/client";
+import { QuizInput, InputPopup } from "@components/client";
 import styles from "@/app/Page.module.css";
 import { serialize, serializeOne } from "@/lib/db";
 import Source from "@models/Source";
 import Quiz from "@models/Quiz";
 import Note from "@models/Note";
-import { useUser, canEdit } from "@/lib/auth";
+import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
 
 export default async function QuizzesPage() {
-    const user = serializeOne(await useUser());
+    const user = await useUser();
+    const query = queryReadableResources(user);
 
-    // use query to only access read-authorized resources
-    const sources = serialize(await Source.find());
-    const quizzes = serialize(await Quiz.find());
-    const notes = serialize(await Note.find());
+    const sources = serialize(await Source.find(query));
+    const quizzes = serialize(await Quiz.find(query));
+    const notes = serialize(await Note.find(query));
+    console.log("sources", sources);
+    console.log("notes", notes);
 
     return (
         <main className={styles.main}>
@@ -30,7 +32,7 @@ export default async function QuizzesPage() {
                                     quiz={quiz}
                                     canClientCheck={true}
                                 />
-                                {user && canEdit(quiz, user) && (
+                                {user && canEdit(quiz, serializeOne(user)) && (
                                     <InputPopup
                                         type="quiz"
                                         availableNotes={notes}
