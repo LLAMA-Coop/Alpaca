@@ -1,6 +1,6 @@
 import { QuizDisplay } from "@components/server";
 import { QuizInput, InputPopup } from "@components/client";
-import styles from "@/app/Page.module.css";
+import styles from "@/app/page.module.css";
 import { serialize, serializeOne } from "@/lib/db";
 import Source from "@models/Source";
 import Quiz from "@models/Quiz";
@@ -14,8 +14,6 @@ export default async function QuizzesPage() {
     const sources = serialize(await Source.find(query));
     const quizzes = serialize(await Quiz.find(query));
     const notes = serialize(await Note.find(query));
-    console.log("sources", sources);
-    console.log("notes", notes);
 
     return (
         <main className={styles.main}>
