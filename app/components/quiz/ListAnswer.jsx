@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Card } from "../client";
 
 export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
     const [userResponse, setUserResponse] = useState(
@@ -52,7 +53,7 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
     }
 
     return (
-        <div className={styles.quizCard}>
+        <Card>
             <h4 id="prompt">{quiz.prompt}</h4>
             <ul>
                 {quiz.correctResponses.map((ans, index) => {
@@ -89,6 +90,6 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
                     </ul>
                 </div>
             )}
-        </div>
+        </Card>
     );
 }

@@ -1,4 +1,4 @@
-.main > h2 {
+.main h2 {
     font-size: clamp(32px, 8vw, 42px);
     text-align: center;
     margin: 120px 0 24px 0;
@@ -9,6 +9,15 @@
     max-width: var(--max-width);
     margin: 0 auto;
     padding: var(--padding);
+}
+
+.main > .paragraph {
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+.main > section > div {
+    margin: 1rem;
 }
 
 .main > .authContainer {

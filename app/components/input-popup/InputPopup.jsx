@@ -1,10 +1,15 @@
 "use client";
 
-import { SourceInput, NoteInput } from "@components/client";
+import { SourceInput, NoteInput, QuizInput } from "@components/client";
 import { useEffect, useRef, useState } from "react";
 import styles from "./InputPopup.module.css";
 
-export function InputPopup({ type }) {
+export function InputPopup({
+    type,
+    resource,
+    availableNotes,
+    availableSources,
+}) {
     const [showPopup, setShowPopup] = useState(false);
     const [animateOut, setAnimateOut] = useState(false);
     const popup = useRef(null);
@@ -29,8 +34,9 @@ export function InputPopup({ type }) {
     };
 
     const typeContent = {
-        source: "Create new source",
-        note: "Create new note",
+        quiz: resource ? "Edit quiz question" : "Create new quiz question",
+        source: resource ? "Edit source" : "Create new source",
+        note: resource ? "Edit note" : "Create new note",
     };
 
     return (
@@ -66,8 +72,7 @@ export function InputPopup({ type }) {
                     >
                         <div>
                             <h4>
-                                {type === "source" && "Create new source"}
-                                {type === "note" && "Create new note"}
+                                {typeContent[type]}
                             </h4>
 
                             <button
@@ -90,8 +95,37 @@ export function InputPopup({ type }) {
                             </button>
                         </div>
 
-                        {type === "source" && <SourceInput />}
-                        {type === "note" && <NoteInput />}
+                        {type === "quiz" &&
+                            (resource ? (
+                                <QuizInput
+                                    quiz={resource}
+                                    availableSources={availableSources}
+                                    availableNotes={availableNotes}
+                                />
+                            ) : (
+                                <QuizInput />
+                            ))}
+
+                        {type === "note" &&
+                            (resource ? (
+                                <NoteInput
+                                    note={resource}
+                                    availableSources={availableSources}
+                                />
+                            ) : (
+                                <NoteInput availableSources={availableSources}>
+                                    {console.log("show note")}
+                                </NoteInput>
+                            ))}
+
+                        {type === "source" &&
+                            (resource ? (
+                                <SourceInput source={resource} />
+                            ) : (
+                                <SourceInput>
+                                    {console.log("show source")}
+                                </SourceInput>
+                            ))}
                     </div>
                 </div>
             )}

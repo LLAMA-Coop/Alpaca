@@ -4,7 +4,7 @@ import { useUser, canEdit } from "@/lib/auth";
 import { serializeOne } from "@/lib/db";
 import { Types } from "mongoose";
 
-const allowedType = ["prompt-response", "multiple-choice"];
+const allowedType = ["prompt-response", "multiple-choice", "unordered-list-answer", "ordered-list-answer"];
 
 export async function GET(req) {
     return NextResponse.json({
@@ -14,14 +14,12 @@ export async function GET(req) {
 
 export async function POST(req) {
     const user = await useUser();
-
     if (!user) {
-        return NextResponse.json(
-            {
-                message: "Unauthorized",
+        return NextResponse.json({
+            403: {
+                message: "Login required",
             },
-            { status: 401 },
-        );
+        });
     }
 
     const { type, prompt, choices, correctResponses, sources, notes } =
@@ -114,8 +112,7 @@ export async function PUT(req) {
         });
     }
 
-    if (!canEdit(quiz, _id)) {
-        console.log(serializeOne(quiz), _id);
+    if (!canEdit(quiz, user)) {
         return NextResponse.json({
             403: {
                 message: `You are not permitted to edit quiz ${_id}`,
@@ -148,16 +145,16 @@ export async function PUT(req) {
     }
 
     if (sources) {
-        sources.forEach((source) => {
-            if (!quiz.sources.includes(source)) {
-                quiz.sources.push(new Types.ObjectId(source));
+        sources.forEach((sourceId_req) => {
+            if (!quiz.sources.find((srcId) => srcId.toString() == sourceId_req)) {
+                quiz.sources.push(new Types.ObjectId(sourceId_req));
             }
         });
     }
     if (notes) {
-        notes.forEach((note) => {
-            if (!quiz.notes.includes(note)) {
-                quiz.notes.push(note);
+        notes.forEach((noteId_req) => {
+            if (!quiz.notes.find(noteId => noteId._id.toString() == noteId_req)) {
+                quiz.notes.push(new Types.ObjectId(noteId_req));
             }
         });
     }

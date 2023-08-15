@@ -1,5 +1,5 @@
 import { NoteDisplay, QuizDisplay, SourceDisplay } from "@components/server";
-import { useUser, canEdit } from "@/lib/auth";
+import { useUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import styles from "@/app/page.module.css";
 import Source from "@models/Source";

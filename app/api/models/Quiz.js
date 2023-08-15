@@ -76,7 +76,7 @@ const QuizSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "user",
         },
-        permissions: [PermissionSchema],
+        permissions: PermissionSchema,
     },
     {
         timestamps: true,

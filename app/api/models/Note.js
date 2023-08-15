@@ -33,7 +33,7 @@ const NoteSchema = new Schema(
             ref: "user",
             required: true,
         },
-        permissions: [PermissionSchema],
+        permissions: PermissionSchema,
     },
     {
         timestamps: true,
