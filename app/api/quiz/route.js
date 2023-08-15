@@ -112,8 +112,7 @@ export async function PUT(req) {
         });
     }
 
-    if (!canEdit(quiz, _id)) {
-        console.log(serializeOne(quiz), _id);
+    if (!canEdit(quiz, user)) {
         return NextResponse.json({
             403: {
                 message: `You are not permitted to edit quiz ${_id}`,

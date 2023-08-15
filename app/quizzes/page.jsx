@@ -8,10 +8,12 @@ import Note from "@models/Note";
 import { useUser, canEdit } from "@/lib/auth";
 
 export default async function QuizzesPage() {
+    const user = serializeOne(await useUser());
+
+    // use query to only access read-authorized resources
     const sources = serialize(await Source.find());
     const quizzes = serialize(await Quiz.find());
     const notes = serialize(await Note.find());
-    const user = serializeOne(await useUser());
 
     return (
         <main className={styles.main}>
@@ -28,7 +30,7 @@ export default async function QuizzesPage() {
                                     quiz={quiz}
                                     canClientCheck={true}
                                 />
-                                {user && canEdit(quiz, user._id) && (
+                                {user && canEdit(quiz, user) && (
                                     <InputPopup
                                         type="quiz"
                                         availableNotes={notes}
