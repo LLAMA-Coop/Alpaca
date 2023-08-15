@@ -1,5 +1,5 @@
 import { QuizDisplay } from "@components/server";
-import { QuizInput, Card } from "@components/client";
+import { QuizInput, Card, InputPopup } from "@components/client";
 import styles from "@/app/Page.module.css";
 import { serialize, serializeOne } from "@/lib/db";
 import Source from "@models/Source";
@@ -29,13 +29,12 @@ export default async function QuizzesPage() {
                                     canClientCheck={true}
                                 />
                                 {user && canEdit(quiz, user._id) && (
-                                    <Card>
-                                        <QuizInput
-                                            availableNotes={notes}
-                                            availableSources={sources}
-                                            quiz={serializeOne(quiz)}
-                                        />
-                                    </Card>
+                                    <InputPopup
+                                        type="quiz"
+                                        availableNotes={notes}
+                                        availableSources={sources}
+                                        resource={serializeOne(quiz)}
+                                    />
                                 )}
                             </li>
                         ))}
@@ -46,11 +45,7 @@ export default async function QuizzesPage() {
             <section>
                 <h3>Create new quiz</h3>
 
-                <QuizInput
-                    isEditing={false}
-                    availableSources={sources}
-                    availableNotes={notes}
-                />
+                <QuizInput availableSources={sources} availableNotes={notes} />
             </section>
         </main>
     );
