@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import styles from "@/app/Page.module.css";
+import styles from "@/app/page.module.css";
 import { useUser } from "@/lib/auth";
 
 export default async function SettingsPage() {

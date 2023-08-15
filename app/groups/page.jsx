@@ -1,4 +1,4 @@
-import styles from "@/app/Page.module.css";
+import styles from "@/app/page.module.css";
 import { Card, GroupInput } from "@components/client";
 import Group from "@models/Group";
 import { useUser } from "@/lib/auth";

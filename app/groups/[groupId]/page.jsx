@@ -1,5 +1,5 @@
 import { UserCard } from "@components/client";
-import styles from "@/app/Page.module.css";
+import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";

@@ -1,6 +1,6 @@
 import { SourceDisplay } from "@components/server";
 import { SourceInput } from "@components/client";
-import styles from "@/app/Page.module.css";
+import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { serialize } from "@/lib/db";
 import Source from "@models/Source";

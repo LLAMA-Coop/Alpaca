@@ -1,6 +1,6 @@
 import { SourceInput, UserInput, NoteInput } from "@components/client";
 import { NoteDisplay, SourceDisplay } from "@components/server";
-import styles from "./Page.module.css";
+import styles from "./page.module.css";
 import { serialize } from "@/lib/db";
 import Source from "@models/Source";
 import Note from "@models/Note";
