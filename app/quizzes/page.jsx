@@ -1,6 +1,6 @@
 import { QuizDisplay } from "@components/server";
 import { QuizInput, Card } from "@components/client";
-import styles from "@/app/Page.module.css";
+import styles from "@/app/page.module.css";
 import { serialize, serializeOne } from "@/lib/db";
 import Source from "@models/Source";
 import Quiz from "@models/Quiz";

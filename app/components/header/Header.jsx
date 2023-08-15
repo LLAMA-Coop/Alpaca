@@ -1,9 +1,9 @@
 import { Profile } from "@components/client";
 import { DynamicNav } from "./DynamicNav";
 import styles from "./Header.module.css";
+import { serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
 import Link from "next/link";
-import { serializeOne } from "@/lib/db";
 
 export async function Header() {
     const user = serializeOne(await useUser());
@@ -19,13 +19,31 @@ export async function Header() {
                     <DynamicNav />
                 </nav>
 
-                {user ? (
-                    <Profile user={user} />
-                ) : (
-                    <div>
-                        <Link href="/login">Login</Link>
+                <div className={styles.rightContainer}>
+                    {user ? (
+                        <Profile user={user} />
+                    ) : (
+                        <div>
+                            <Link href="/login">Login</Link>
+                        </div>
+                    )}
+
+                    <div className={styles.burger}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M4 6l16 0" />
+                            <path d="M4 12l16 0" />
+                            <path d="M4 18l16 0" />
+                        </svg>
                     </div>
-                )}
+                </div>
             </div>
         </header>
     );

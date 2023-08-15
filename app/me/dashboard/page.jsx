@@ -1,11 +1,10 @@
 import { NoteDisplay, QuizDisplay, SourceDisplay } from "@components/server";
-import { redirect } from "next/navigation";
-import styles from "@/app/Page.module.css";
 import { useUser, canEdit } from "@/lib/auth";
-import Quiz from "@/app/api/models/Quiz";
-import Note from "@/app/api/models/Note";
-import Source from "@/app/api/models/Source";
-import { NoteDisplay, QuizDisplay, SourceDisplay } from "@/app/components/server";
+import { redirect } from "next/navigation";
+import styles from "@/app/page.module.css";
+import Source from "@models/Source";
+import Quiz from "@models/Quiz";
+import Note from "@models/Note";
 
 export default async function DashboardPage() {
     const user = await useUser();

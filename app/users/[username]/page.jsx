@@ -1,4 +1,4 @@
-import styles from "@/app/Page.module.css";
+import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { useUser } from "@/lib/auth";
 import { serializeOne } from "@/lib/db";
