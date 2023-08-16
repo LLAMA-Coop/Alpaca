@@ -71,7 +71,7 @@ export function Input({
                 className={styles.inputContainer}
                 style={{ pointerEvents: disabled ? "none" : "" }}
             >
-                {type === "select" && choices ? (
+                {type === "select" && choices && (
                     <select
                         id={inputId}
                         autoComplete={autoComplete || "off"}
@@ -99,7 +99,9 @@ export function Input({
                             </option>
                         ))}
                     </select>
-                ) : type === "textarea" ? (
+                )}
+
+                {type === "textarea" && (
                     <textarea
                         id={inputId}
                         autoComplete={autoComplete || "off"}
@@ -120,7 +122,33 @@ export function Input({
                             if (e.key === "Enter" && action) onActionTrigger(e);
                         }}
                     />
-                ) : (
+                )}
+
+                {type === "checkbox" && (
+                    <input
+                        type="checkbox"
+                        id={inputId}
+                        autoComplete={autoComplete || "off"}
+                        aria-describedby={description}
+                        aria-required={error ? error : ""}
+                        aria-disabled={disabled}
+                        aria-invalid={error ? "true" : "false"}
+                        aria-errormessage={error ? errorId : ""}
+                        required={required}
+                        disabled={disabled}
+                        onChange={onChange}
+                        onFocus={onFocus}
+                        onBlur={onBlur}
+                        defaultChecked={value ? value : false}
+                        minLength={minLength}
+                        maxLength={maxLength}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && action) onActionTrigger(e);
+                        }}
+                    />
+                )}
+
+                {!["select", "checkbox", "textarea"].includes(type) && (
                     <input
                         id={inputId}
                         autoComplete={autoComplete || "off"}

@@ -10,6 +10,8 @@ import {
     Spinner,
     Alert,
 } from "@components/client";
+import PermissionsInput from "../form/PermissionsInput";
+import { serializeOne } from "@/lib/db";
 
 export function QuizInput({ quiz, availableSources, availableNotes }) {
     const [type, setType] = useState("prompt-response");
@@ -27,6 +29,8 @@ export function QuizInput({ quiz, availableSources, availableNotes }) {
     const [choicesError, setChoicesError] = useState("");
 
     const [hints, setHints] = useState([]);
+
+    const [permissions, setPermissions] = useState({});
 
     const [sources, setSources] = useState([]);
     const [sourcesError, setSourcesError] = useState("");
@@ -66,6 +70,9 @@ export function QuizInput({ quiz, availableSources, availableNotes }) {
                     availableNotes.find((x) => x._id === noteId),
                 ),
             );
+        }
+        if (quiz.permissions) {
+            setPermissions(serializeOne(quiz.permissions));
         }
     }, []);
 
@@ -340,7 +347,7 @@ export function QuizInput({ quiz, availableSources, availableNotes }) {
 
                 <div style={{ marginTop: "24px" }}>
                     <Label label="Answers" />
-                    <ul className="chipList">
+                    <ol className="chipList">
                         {responses.map((res) => (
                             <ListItem
                                 key={res}
@@ -357,7 +364,7 @@ export function QuizInput({ quiz, availableSources, availableNotes }) {
                         {responses.length === 0 && (
                             <ListItem item={"No answers added yet"} />
                         )}
-                    </ul>
+                    </ol>
                 </div>
             </div>
 
@@ -445,6 +452,13 @@ export function QuizInput({ quiz, availableSources, availableNotes }) {
                         ))}
                 </ol>
             </div>
+
+            <PermissionsInput
+                permissions={permissions}
+                setter={setPermissions}
+                availableGroups={[{name: "group 1"}, {name:"group 2"}]}
+                availableUsers={[{username: "user 1"}, {username: "user 2"}]}
+            />
 
             <div className="buttonContainer">
                 <InputPopup type="source" />
