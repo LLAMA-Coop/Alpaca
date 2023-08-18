@@ -74,7 +74,8 @@ export default function PermissionsInput({
     }, [allWrite, allRead, usersWrite, usersRead, groupsWrite, groupsRead]);
 
     return (
-        <div className="formGrid">
+        <details className="formGrid">
+            <summary>Edit Permissions</summary>
             <Input
                 type="checkbox"
                 label="Allow All Users to Edit?"
@@ -136,6 +137,6 @@ export default function PermissionsInput({
                     listSetter={setGroupsRead}
                 />
             </div>
-        </div>
+        </details>
     );
 }
