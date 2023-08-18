@@ -48,6 +48,12 @@ const UserSchema = new Schema(
             type: [String],
             default: [],
         },
+        associates: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "user"
+            }
+        ],
         groups: [
             {
                 type: Schema.Types.ObjectId,
@@ -58,7 +64,10 @@ const UserSchema = new Schema(
         lastLogin: {
             type: Date,
         },
-        isPublic: Boolean,
+        isPublic: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         timestamps: true,
