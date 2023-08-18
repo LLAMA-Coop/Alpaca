@@ -6,14 +6,29 @@ import Source from "@models/Source";
 import Quiz from "@models/Quiz";
 import Note from "@models/Note";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
+import User from "../api/models/User";
+import Group from "../api/models/Group";
 
 export default async function QuizzesPage() {
     const user = await useUser();
+    User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 
     const sources = serialize(await Source.find(query));
     const quizzes = serialize(await Quiz.find(query));
     const notes = serialize(await Note.find(query));
+    const publicUsers = await User.find({ isPublic: true });
+    const availableUsers = serialize(
+        user?.hasOwnProperty("associates") && user?.associates.length > 0
+            ? [...user.associates, ...publicUsers]
+            : [...publicUsers],
+    );
+    const publicGroups = await Group.find({ isPublic: true });
+    const availableGroups = serialize(
+        user?.hasOwnProperty() && user?.groups.length > 0
+            ? [...user.groups, ...publicGroups]
+            : [...publicGroups],
+    );
 
     return (
         <main className={styles.main}>
@@ -35,6 +50,8 @@ export default async function QuizzesPage() {
                                         type="quiz"
                                         availableNotes={notes}
                                         availableSources={sources}
+                                        availableUsers={availableUsers}
+                                        availableGroups={availableGroups}
                                         resource={serializeOne(quiz)}
                                     />
                                 )}
@@ -44,11 +61,18 @@ export default async function QuizzesPage() {
                 </section>
             )}
 
-            {user && <section>
-                <h3>Create new quiz</h3>
+            {user && (
+                <section>
+                    <h3>Create new quiz</h3>
 
-                <QuizInput availableSources={sources} availableNotes={notes} />
-            </section>}
+                    <QuizInput
+                        availableSources={sources}
+                        availableNotes={notes}
+                        availableUsers={availableUsers}
+                        availableGroups={availableGroups}
+                    />
+                </section>
+            )}
         </main>
     );
 }

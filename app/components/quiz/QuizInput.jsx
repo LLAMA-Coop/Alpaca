@@ -13,7 +13,13 @@ import {
 import PermissionsInput from "../form/PermissionsInput";
 import { serializeOne } from "@/lib/db";
 
-export function QuizInput({ quiz, availableSources, availableNotes }) {
+export function QuizInput({
+    quiz,
+    availableSources,
+    availableNotes,
+    availableUsers,
+    availableGroups,
+}) {
     const [type, setType] = useState("prompt-response");
     const [typeError, setTypeError] = useState("");
 
@@ -456,8 +462,8 @@ export function QuizInput({ quiz, availableSources, availableNotes }) {
             <PermissionsInput
                 permissions={permissions}
                 setter={setPermissions}
-                availableGroups={[{name: "group 1"}, {name:"group 2"}]}
-                availableUsers={[{username: "user 1"}, {username: "user 2"}]}
+                availableGroups={availableGroups}
+                availableUsers={availableUsers}
             />
 
             <div className="buttonContainer">

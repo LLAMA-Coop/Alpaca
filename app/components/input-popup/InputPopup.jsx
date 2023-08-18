@@ -9,6 +9,8 @@ export function InputPopup({
     resource,
     availableNotes,
     availableSources,
+    availableUsers,
+    availableGroups
 }) {
     const [showPopup, setShowPopup] = useState(false);
     const [animateOut, setAnimateOut] = useState(false);
@@ -101,9 +103,15 @@ export function InputPopup({
                                     quiz={resource}
                                     availableSources={availableSources}
                                     availableNotes={availableNotes}
+                                    availableUsers={availableUsers}
+                                    availableGroups={availableGroups}
                                 />
                             ) : (
-                                <QuizInput />
+                                <QuizInput
+                                    availableSources={availableSources}
+                                    availableNotes={availableNotes}
+                                    availableUsers={availableUsers}
+                                    availableGroups={availableGroups} />
                             ))}
 
                         {type === "note" &&
