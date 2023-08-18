@@ -11,17 +11,6 @@ export default function ListAdd({
     listSetter,
 }) {
     const [isSelectOpen, setIsSelectOpen] = useState(false);
-    const listAddRef = useRef(null);
-
-    useEffect(() => {
-        const handleOutsideClick = (e) => {
-            if (isSelectOpen && !listAddRef.current?.contains(e.target)) {
-                setIsSelectOpen(false);
-            }
-        };
-
-        document.addEventListener("click", handleOutsideClick);
-    }, [isSelectOpen]);
 
     return (
         <ol className="chipList">
@@ -31,7 +20,6 @@ export default function ListAdd({
                 actionType={"add"}
                 select={
                     <Select
-                        ref={listAddRef}
                         listChoices={listChoices}
                         listChosen={listChosen}
                         listProperty={listProperty}

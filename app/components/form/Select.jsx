@@ -42,10 +42,11 @@ export function Select({
                 aria-multiselectable="true"
                 aria-orientation="vertical"
             >
-                {listChoices.map((choice, index) => {
+                {listChoices && listChoices.map((choice, index) => {
                     const isChosen = listChosen.find((x) => x.id === choice.id);
                     return (
                         <div
+                            key={choice._id}
                             tabIndex={0}
                             role="option"
                             aria-selected={isChosen}
@@ -54,7 +55,6 @@ export function Select({
                             className={`${isChosen && styles.chosen} ${
                                 styles.item
                             }`}
-                            key={choice.id}
                             onClick={() => clickEvent(choice)}
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {
@@ -77,7 +77,7 @@ export function Select({
                     );
                 })}
 
-                {listChoices.length === 0 && (
+                {(!listChoices || listChoices.length === 0) && (
                     <div
                         aria-labelledby="emptyList"
                         className={styles.emptyList}
