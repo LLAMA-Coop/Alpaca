@@ -73,9 +73,9 @@ export async function POST(req) {
         console.error(`[REGISTER] POST error: ${error}`);
         return NextResponse.json(
             {
-                message: "Username already exists.",
+                message: "Something went wrong.",
             },
-            { status: 400 },
+            { status: 500 },
         );
     }
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
+import { unauthorized } from "@/lib/apiErrorResponses";
 import Group from "@models/Group";
 import User from "@models/User";
 
@@ -7,12 +8,7 @@ export async function POST(req) {
     const user = await useUser();
 
     if (!user) {
-        return NextResponse.json(
-            {
-                message: "Unauthorized",
-            },
-            { status: 401 },
-        );
+        return unauthorized;
     }
 
     const { name, description, icon } = await req.json();

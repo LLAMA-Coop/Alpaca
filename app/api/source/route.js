@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
 import Source from "@models/Source";
+import { unauthorized } from "@/lib/apiErrorResponses";
 
 export async function GET(req) {
     const content = await Source.find();
@@ -11,12 +12,7 @@ export async function POST(req) {
     const user = await useUser();
 
     if (!user) {
-        return NextResponse.json(
-            {
-                message: "Unauthorized",
-            },
-            { status: 401 },
-        );
+        return unauthorized;
     }
 
     const { title, medium, url, publishDate, lastAccessed, authors } =

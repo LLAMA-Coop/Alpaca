@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
 import Note from "@models/Note";
+import { unauthorized } from "@/lib/apiErrorResponses";
 
 export async function GET(req) {
+    const user = await useUser();
+
+    if (!user) {
+        return unauthorized;
+    }
+
     const content = await Note.find();
     return NextResponse.json({
         200: {

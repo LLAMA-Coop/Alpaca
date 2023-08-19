@@ -2,11 +2,18 @@ import { NextResponse } from "next/server";
 import Quiz from "@models/Quiz";
 import { useUser, canEdit } from "@/lib/auth";
 import { serializeOne } from "@/lib/db";
+import { unauthorized } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
 
 const allowedType = ["prompt-response", "multiple-choice", "unordered-list-answer", "ordered-list-answer"];
 
 export async function GET(req) {
+    const user = await useUser();
+
+    if (!user) {
+        return unauthorized;
+    }
+
     return NextResponse.json({
         message: "You have successfully received a response from /api/quiz",
     });
@@ -14,12 +21,9 @@ export async function GET(req) {
 
 export async function POST(req) {
     const user = await useUser();
+
     if (!user) {
-        return NextResponse.json({
-            403: {
-                message: "Login required",
-            },
-        });
+        return unauthorized;
     }
 
     const { type, prompt, choices, correctResponses, sources, notes } =
@@ -83,12 +87,9 @@ export async function POST(req) {
 
 export async function PUT(req) {
     const user = await useUser();
+
     if (!user) {
-        return NextResponse.json({
-            403: {
-                message: "Login required",
-            },
-        });
+        return unauthorized;
     }
 
     const {
