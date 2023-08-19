@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { useUser } from "@/lib/auth";
+import { queryReadableResources, useUser } from "@/lib/auth";
 import Source from "@models/Source";
 import { unauthorized, server } from "@/lib/apiErrorResponses";
 
@@ -10,7 +10,7 @@ export async function GET(req) {
             return unauthorized;
         }
 
-        const content = await Source.find();
+        const content = await Source.find(queryReadableResources(user));
         return NextResponse.json({ content }, { status: 200 });
     } catch (error) {
         console.error(`[Source] GET error: ${error}`);

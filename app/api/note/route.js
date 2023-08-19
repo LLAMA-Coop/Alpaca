@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
-import { useUser } from "@/lib/auth";
+import { queryReadableResources, useUser } from "@/lib/auth";
 import Note from "@models/Note";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 
 export async function GET(req) {
     try {
-    const user = await useUser();
+        const user = await useUser();
 
-    if (!user) {
-        return unauthorized;
-    }
+        if (!user) {
+            return unauthorized;
+        }
 
-        const content = await Note.find();
+        const content = await Note.find(queryReadableResources(user));
         return NextResponse.json({
             200: {
                 content,

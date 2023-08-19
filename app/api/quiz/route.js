@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import Quiz from "@models/Quiz";
-import { useUser, canEdit } from "@/lib/auth";
+import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
 import { serializeOne } from "@/lib/db";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
@@ -20,8 +20,11 @@ export async function GET(req) {
             return unauthorized;
         }
 
+        const content = await Quiz.find(queryReadableResources(user));
         return NextResponse.json({
-            message: "You have successfully received a response from /api/quiz",
+            200: {
+                content,
+            },
         });
     } catch (error) {
         console.error(`[Quiz] GET error: ${error}`);
