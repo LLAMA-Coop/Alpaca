@@ -1,28 +1,27 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
-import { unauthorized } from "@/lib/apiErrorResponses";
+import { server, unauthorized } from "@/lib/apiErrorResponses";
 import Group from "@models/Group";
 import User from "@models/User";
 
 export async function POST(req) {
-    const user = await useUser();
-
-    if (!user) {
-        return unauthorized;
-    }
-
-    const { name, description, icon } = await req.json();
-
-    if (name?.length < 2 || name?.length > 100) {
-        return NextResponse.json(
-            {
-                message: "Name must be between 2 and 100 characters",
-            },
-            { status: 400 },
-        );
-    }
-
     try {
+        const user = await useUser();
+
+        if (!user) {
+            return unauthorized;
+        }
+
+        const { name, description, icon } = await req.json();
+
+        if (name?.length < 2 || name?.length > 100) {
+            return NextResponse.json(
+                {
+                    message: "Name must be between 2 and 100 characters",
+                },
+                { status: 400 },
+            );
+        }
         const sameGroup = await Group.findOne({ name: name });
 
         if (sameGroup) {
@@ -63,11 +62,6 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[Group] POST error: ${error}`);
-        return NextResponse.json(
-            {
-                message: "Something went wrong",
-            },
-            { status: 500 },
-        );
+        return server;
     }
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import User from "@models/User";
+import { server } from "@/lib/apiErrorResponses";
 
 export async function POST(req) {
     const token = cookies().get("token")?.value;
@@ -60,12 +61,6 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[LOGOUT] POST error: ${error}`);
-        return NextResponse.json(
-            {
-                success: false,
-                message: "Something went wrong.",
-            },
-            { status: 500 },
-        );
+        return server
     }
 }

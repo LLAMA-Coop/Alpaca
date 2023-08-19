@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import User from "@models/User";
 import bcrypt from "bcrypt";
+import { server } from "@/lib/apiErrorResponses";
 
 export async function POST(req) {
     // This may or may not require admin authorization
@@ -71,11 +72,6 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[REGISTER] POST error: ${error}`);
-        return NextResponse.json(
-            {
-                message: "Something went wrong.",
-            },
-            { status: 500 },
-        );
+        return server;
     }
 }

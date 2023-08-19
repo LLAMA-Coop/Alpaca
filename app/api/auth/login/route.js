@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import User from "@models/User";
 import { SignJWT } from "jose";
 import bcrypt from "bcrypt";
+import { server } from "@/lib/apiErrorResponses";
 
 export async function POST(req) {
     const { username, password } = await req.json();
@@ -89,11 +90,6 @@ export async function POST(req) {
         }
     } catch (error) {
         console.error(error);
-        return NextResponse.json(
-            {
-                message: "Internal server error",
-            },
-            { status: 500 },
-        );
+        return server;
     }
 }
