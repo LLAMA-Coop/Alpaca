@@ -54,7 +54,7 @@ export async function POST(req) {
             publishedAt: publishDate,
             lastAccessed: lastAccessed,
             authors: authors,
-            addedBy: user._id,
+            createdBy: user._id,
             contributors: [user._id],
         });
 
