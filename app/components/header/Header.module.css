@@ -51,8 +51,8 @@
     color: var(--foreground-primary);
 }
 
-@media screen and (max-width: 1024px) {
+/* @media screen and (max-width: 1024px) {
     .header > div > nav {
         display: none;
     }
-}
+} */
