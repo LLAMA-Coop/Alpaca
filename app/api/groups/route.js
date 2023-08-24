@@ -7,7 +7,6 @@ import User from "@models/User";
 export async function POST(req) {
     try {
         const user = await useUser();
-
         if (!user) {
             return unauthorized;
         }

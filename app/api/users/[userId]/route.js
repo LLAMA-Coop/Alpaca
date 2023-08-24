@@ -2,17 +2,18 @@ import { NextResponse } from "next/server";
 import User from "@models/User";
 import { useUser } from "@/lib/auth";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { useRouter } from "next/router";
+import { serializeOne } from "@/lib/db";
 
 export async function GET(req) {
-    const router = useRouter();
-    const userId = router.query.userId;
+    const userId = req.nextUrl.pathname.split(/\/|\?/)[3];
 
     try {
-        const user = await useUser();
-
-        // Oops! user is allowed to access own info
-        if (!user || !user.roles.contains("admin")) {
+        const user = serializeOne(await useUser());
+        console.log(user.id, user.roles);
+        if (
+            !user ||
+            (user.id !== userId && user.roles.indexOf("admin") === -1)
+        ) {
             return unauthorized;
         }
 

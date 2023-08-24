@@ -6,7 +6,6 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 export async function GET(req) {
     try {
         const user = await useUser();
-
         if (!user) {
             return unauthorized;
         }

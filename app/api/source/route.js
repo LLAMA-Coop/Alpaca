@@ -21,7 +21,6 @@ export async function GET(req) {
 export async function POST(req) {
     try {
         const user = await useUser();
-
         if (!user) {
             return unauthorized;
         }
