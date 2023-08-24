@@ -51,7 +51,7 @@
 } */
 
 .container:hover::before,
-.container.focused::before {
+.focused::before {
     content: "";
     position: absolute;
     width: 300%;
@@ -111,7 +111,10 @@
 
 .span {
     position: absolute;
-    inset: 5px;
+    top: 5px;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
     border-radius: 16px;
     background-color: var(--background-tertiary);
     z-index: 99;

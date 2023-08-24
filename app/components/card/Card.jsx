@@ -2,6 +2,7 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Card.module.css";
+import { useState } from "react";
 
 export const Card = ({
     title,
@@ -14,8 +15,20 @@ export const Card = ({
     children,
     border,
 }) => {
+    const [isFocused, setIsFocused] = useState(false);
+
     return (
-        <div className={styles.container}>
+        <div
+            className={`${styles.container} ${isFocused ? styles.focused : ""}`}
+            tabIndex={0}
+            onFocus={() => {
+                console.log("Card has focus");
+                setIsFocused(true);
+            }}
+            onBlur={() => {
+              setIsFocused(false);
+            }}
+        >
             <span className={styles.span}></span>
 
             {/* <div
