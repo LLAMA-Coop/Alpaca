@@ -5,7 +5,7 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { serializeOne } from "@/lib/db";
 
 export async function GET(req) {
-    const userId = req.nextUrl.pathname.split(/\/|\?/)[3];
+    const userId = req.nextUrl.pathname.split("/")[3];
 
     try {
         const user = serializeOne(await useUser());

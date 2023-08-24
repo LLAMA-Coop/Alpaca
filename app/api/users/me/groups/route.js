@@ -4,7 +4,7 @@ import User from "@models/User";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 
 export async function GET(req) {
-    const userId = req.nextUrl.pathname.split(/\/|\?/)[3];
+    const userId = req.nextUrl.pathname.split("/")[3];
 
     try {
         const user = await useUser();
