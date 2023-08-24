@@ -1,30 +1,3 @@
-/*.container
-{
-  position: relative;
-  border-radius: 20px;
-  max-width: 550px;
-  overflow: hidden;
-  z-index: 999;
-}
-
-
-
-
-
-
-
-.content {
-  position: relative;
-  z-index: 0;
-  overflow: hidden;
-  transition: all 0.2s;
-  border-radius: 12px;
-  height: 100%;
-  padding: 24px;
-  
-  background-color: var(--background-secondary);
-}*/
-
 .container {
     position: relative;
     border-radius: 20px;
@@ -36,19 +9,6 @@
     align-items: center;
     overflow: hidden;
 }
-
-/* .container:hover::after {
-    content: "";
-    position: absolute;
-    background-image: conic-gradient(
-        transparent,
-        transparent,
-        transparent,
-        rgb(152, 152, 204)
-    );
-    animation: animate 4s linear infinite;
-    animation-delay: -2s;
-} */
 
 .container:hover::before,
 .focused::before {
@@ -85,18 +45,6 @@
     display: flex;
     flex-direction: column;
     align-self: flex-start;
-
-    /*
-    position: relative;
-    z-index: 0;
-    overflow: hidden;
-    transition: all 0.2s;
-    border-radius: 12px;
-    height: 100%;
-    padding: 24px;
-    
-    background-color: var(--background-secondary);
-  */
 }
 
 @keyframes animate {
@@ -187,15 +135,6 @@
     initial-value: 360deg;
     inherits: false;
 }
-
-/* @keyframes gradientRotate {
-  0% {
-    --gradient-angle: 360deg;
-  }
-  100% {
-    --gradient-angle: 0deg;
-  }
-} */
 
 [data-theme="light"] .container > div:first-child {
     background: linear-gradient(

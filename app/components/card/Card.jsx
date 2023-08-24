@@ -31,29 +31,6 @@ export const Card = ({
         >
             <span className={styles.span}></span>
 
-            {/* <div
-        style={{
-          background:
-            border === "green"
-              ? `linear-gradient(
-        var(--gradient-angle),
-        var(--accent-tertiary-outline),
-        hsla(0, 0%, 100%, 0.1),
-        var(--accent-tertiary-1),
-        hsla(0, 0%, 100%, 0.3)
-      )`
-              : border === "red"
-              ? `linear-gradient(
-        var(--gradient-angle),
-        var(--accent-secondary-outline),
-        hsla(0, 0%, 100%, 0.1),
-        var(--accent-secondary-1),
-        hsla(0, 0%, 100%, 0.3)
-      )`
-              : "",
-        }}
-      /> */}
-
             <div className={styles.content_container}>
                 <div className={styles.content}>
                     {image && (

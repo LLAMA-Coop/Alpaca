@@ -16,21 +16,6 @@ export function Alert({
 }) {
     const [animateOut, setAnimateOut] = useState(false);
 
-    // let animationOut = "";
-    // if (placementX === "left" && placementY === "top") {
-    //     animationOut = styles.slideOutTopLeft;
-    // } else if (placementX === "left" && placementY === "bottom") {
-    //     animationOut = styles.slideOutBottomLeft;
-    // } else if (placementX === "right" && placementY === "top") {
-    //     animationOut = styles.slideOutTopRight;
-    // } else if (placementX === "right" && placementY === "bottom") {
-    //     animationOut = styles.slideOutBottomRight;
-    // } else if (placementX === "center" && placementY === "top") {
-    //     animationOut = styles.slideOutTopCenter;
-    // } else if (placementX === "center" && placementY === "bottom") {
-    //     animationOut = styles.slideOutBottomCenter;
-    // }
-
     useEffect(() => {
         if (!show) return;
 
