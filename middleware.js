@@ -51,17 +51,18 @@ export async function middleware(req) {
     const { pathname } = req.nextUrl;
 
     if (pathname.startsWith("/api")) {
+        // Will need to check for Authorization header
         return NextResponse.next();
     }
 
     restrictedRoutes.forEach(async (route) => {
         if (pathname.startsWith(route.start)) {
             if (!(await isAuthenticated(req))) {
-                return NextResponse.rewrite(new URL(route.redirect, req.url));
+                return NextResponse.redirect(new URL(route.redirect, req.url));
             } else {
                 if (route.include) {
                     if (!route.include.includes(pathname)) {
-                        return NextResponse.rewrite(
+                        return NextResponse.redirect(
                             new URL(route.rewrite, req.url),
                         );
                     }

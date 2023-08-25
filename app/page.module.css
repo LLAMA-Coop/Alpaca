@@ -16,9 +16,9 @@
     margin: 0 auto;
 }
 
-.main > section > div {
+/* .main > section > div {
     margin: 1rem;
-}
+} */
 
 .main > .authContainer {
     max-width: 550px;

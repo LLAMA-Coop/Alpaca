@@ -151,6 +151,7 @@ export function GroupInput() {
                     )}
 
                     <input
+                        tabIndex={-1}
                         type="file"
                         ref={inputRef}
                         accept="image/png, image/jpeg, image/gif, image/apng, image/webp"
