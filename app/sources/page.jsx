@@ -5,28 +5,32 @@ import { redirect } from "next/navigation";
 import { serialize } from "@/lib/db";
 import Source from "@models/Source";
 import Link from "next/link";
+import { queryReadableResources, useUser } from "@/lib/auth";
+import User from "../api/models/User";
 
 export default async function SourcesPage({ searchParams }) {
+    const user = await useUser();
+    User.populate(user, ["groups", "associates"]);
+    const query = queryReadableResources(user);
+
     const page = Number(searchParams["page"] ?? "1");
     const amount = Number(searchParams["amount"] ?? "10");
-
     if (page < 1) {
         return redirect("/sources?page=1&amount=" + amount);
     }
-
     if (amount < 1) {
         return redirect("/sources?page=" + page + "&amount=10");
     }
 
     const sources = serialize(
-        await Source.find()
+        await Source.find(query)
             .limit(amount)
             .skip((page - 1) * amount),
     );
 
     const hasMore =
         (
-            await Source.find()
+            await Source.find(query)
                 .limit(1)
                 .skip((page - 1) * amount + amount)
         )?.length > 0;
@@ -85,16 +89,18 @@ export default async function SourcesPage({ searchParams }) {
                 </section>
             )}
 
-            <section>
-                <h3>Create new source</h3>
+            {user && (
+                <section>
+                    <h3>Create new source</h3>
 
-                <SourceInput
-                    availableSources={sources.map((src) => {
-                        const { title, url, id } = src;
-                        return { title, url, id: id.toString() };
-                    })}
-                />
-            </section>
+                    <SourceInput
+                        availableSources={sources.map((src) => {
+                            const { title, url, id } = src;
+                            return { title, url, id: id.toString() };
+                        })}
+                    />
+                </section>
+            )}
         </main>
     );
 }
