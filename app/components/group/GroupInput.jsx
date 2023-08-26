@@ -2,11 +2,11 @@
 
 import { Label, Input, Spinner, Alert } from "@/app/components/client";
 import filetypeinfo from "magic-bytes.js";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "./Group.module.css";
 import Image from "next/image";
 
-export function GroupInput() {
+export function GroupInput({group}) {
     const [name, setName] = useState("");
     const [nameError, setNameError] = useState("");
 
@@ -19,6 +19,12 @@ export function GroupInput() {
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+
+    useEffect(() => {
+        if(!group) return;
+        setName(group.name);
+        setDescription(group.description);
+    }, [])
 
     const inputRef = useRef(null);
 

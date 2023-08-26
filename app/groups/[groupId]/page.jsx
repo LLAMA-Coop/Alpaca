@@ -53,6 +53,12 @@ export default async function GroupPage({ params }) {
 
                 <div>
                     <h4>Users</h4>
+                    <div className="description">
+                        <p>
+                            Users are able to associate resources (Quiz
+                            questions, Notes, and Sources) with the group
+                        </p>
+                    </div>
                     {group.users.length > 0 && (
                         <ol className={styles.listGrid}>
                             {group.users.map((user) => {
