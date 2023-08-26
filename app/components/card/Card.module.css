@@ -3,7 +3,7 @@
     border-radius: 20px;
     max-width: 550px;
     overflow: hidden;
-    z-index: 4;
+    z-index: 1;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,12 +57,16 @@
     }
 }
 
+/***
+ * Just change the top, right, bottom and left property
+ * to modify the effect's width
+ **/
 .span {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    bottom: 5px;
-    left: 5px;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    left: 2px;
     border-radius: 16px;
     background-color: var(--background-tertiary);
     z-index: 2;
@@ -144,14 +148,6 @@
         var(--accent-primary-1),
         hsla(0, 0%, 100%, 0.3)
     );
-}
-
-[data-theme="light"] .content {
-    border: 1px solid var(--foreground-tertiary);
-}
-
-[data-theme="light"] .container:hover > .content {
-    border: 1px solid transparent;
 }
 
 .container > div:first-child {

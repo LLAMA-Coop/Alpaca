@@ -10,8 +10,8 @@
         "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
     --background-primary: hsl(0, 0%, 100%);
-    --background-secondary: hsl(0, 0%, 90%);
-    --background-tertiary: hsl(0, 0%, 85%);
+    --background-secondary: hsl(0, 0%, 97%);
+    --background-tertiary: hsl(0, 0%, 94%);
 
     --foreground-primary: hsl(240, 10%, 4%);
     --foreground-secondary: hsl(240, 6%, 10%);
@@ -73,8 +73,8 @@
 
 [data-theme="light"] {
     --background-primary: hsl(0, 0%, 100%);
-    --background-secondary: hsl(0, 0%, 90%);
-    --background-tertiary: hsl(0, 0%, 85%);
+    --background-secondary: hsl(0, 0%, 97%);
+    --background-tertiary: hsl(0, 0%, 94%);
 
     --foreground-primary: hsl(240, 10%, 4%);
     --foreground-secondary: hsl(240, 6%, 10%);
@@ -205,6 +205,10 @@ ol {
     border-radius: 2px;
     outline: 4px solid var(--accent-primary-outline);
     outline-offset: 3px;
+}
+
+input {
+    font-family: sans-serif;
 }
 
 input[type="date"] {
