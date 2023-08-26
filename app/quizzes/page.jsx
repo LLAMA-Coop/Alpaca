@@ -8,14 +8,41 @@ import Note from "@models/Note";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
 import User from "../api/models/User";
 import Group from "../api/models/Group";
+import { redirect } from "next/navigation";
 
-export default async function QuizzesPage() {
+export default async function QuizzesPage({ searchParams }) {
     const user = await useUser();
     User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 
+    const page = Number(searchParams["page"] ?? 1);
+    const amount = Number(searchParams["amount"] ?? 10);
+    if (page < 1 || amount < 1) {
+        return redirect(
+            `/quizzes?page=${page < 1 ? 1 : page}&amount=${
+                amount < 1 ? 10 : amount
+            }`,
+        );
+    }
+
+    const quizzes = serialize(
+        await Quiz.find(query)
+            .limit(amount)
+            .skip((page - 1) * amount),
+    );
+
+    const hasMore =
+        (
+            await Quiz.find(query)
+                .limit(1)
+                .skip((page - 1) * amount + amount)
+        )?.length > 0;
+
+    if (page > 1 && quizzes.length === 0) {
+        return redirect("/quizzes?page=1&amount=" + amount);
+    }
+
     const sources = serialize(await Source.find(query));
-    const quizzes = serialize(await Quiz.find(query));
     const notes = serialize(await Note.find(query));
     const publicUsers = await User.find({ isPublic: true });
     const availableUsers = serialize(
@@ -58,6 +85,38 @@ export default async function QuizzesPage() {
                             </li>
                         ))}
                     </ol>
+
+                    <div className={styles.paginationButtons}>
+                        {page > 1 ? (
+                            <Link
+                                className="button submit"
+                                href={`/quizzes?page=${
+                                    page - 1
+                                }&amount=${amount}`}
+                            >
+                                Previous page
+                            </Link>
+                        ) : (
+                            <button disabled className="button submit">
+                                Previous page
+                            </button>
+                        )}
+
+                        {hasMore ? (
+                            <Link
+                                className="button submit"
+                                href={`/quizzes?page=${
+                                    page + 1
+                                }&amount=${amount}`}
+                            >
+                                Next page
+                            </Link>
+                        ) : (
+                            <button disabled className="button submit">
+                                Next page
+                            </button>
+                        )}
+                    </div>
                 </section>
             )}
 

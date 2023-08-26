@@ -13,13 +13,14 @@ export default async function SourcesPage({ searchParams }) {
     User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 
-    const page = Number(searchParams["page"] ?? "1");
-    const amount = Number(searchParams["amount"] ?? "10");
-    if (page < 1) {
-        return redirect("/sources?page=1&amount=" + amount);
-    }
-    if (amount < 1) {
-        return redirect("/sources?page=" + page + "&amount=10");
+    const page = Number(searchParams["page"] ?? 1);
+    const amount = Number(searchParams["amount"] ?? 10);
+    if (page < 1 || amount < 1) {
+        return redirect(
+            `/sources?page=${page < 1 ? 1 : page}&amount=${
+                amount < 1 ? 10 : amount
+            }`,
+        );
     }
 
     const sources = serialize(
@@ -50,6 +51,7 @@ export default async function SourcesPage({ searchParams }) {
                     <ol className={styles.listGrid}>
                         {sources.map((src) => (
                             <li key={src.id}>
+                            {/* // add option to edit */}
                                 <SourceDisplay source={src} />
                             </li>
                         ))}
@@ -93,12 +95,7 @@ export default async function SourcesPage({ searchParams }) {
                 <section>
                     <h3>Create new source</h3>
 
-                    <SourceInput
-                        availableSources={sources.map((src) => {
-                            const { title, url, id } = src;
-                            return { title, url, id: id.toString() };
-                        })}
-                    />
+                    <SourceInput />
                 </section>
             )}
         </main>
