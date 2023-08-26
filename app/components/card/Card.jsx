@@ -3,6 +3,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Card.module.css";
 import { useState } from "react";
+import Link from "next/link";
 
 export const Card = ({
     title,
@@ -26,7 +27,7 @@ export const Card = ({
                 setIsFocused(true);
             }}
             onBlur={() => {
-              setIsFocused(false);
+                setIsFocused(false);
             }}
         >
             <span className={styles.span}></span>
@@ -44,7 +45,13 @@ export const Card = ({
                             {(title || subtitle) && (
                                 <div>
                                     {title && (
-                                        <header title={title}>{title}</header>
+                                        <header title={title}>
+                                            {url ? (
+                                                <Link href={url}>{title}</Link>
+                                            ) : (
+                                                title
+                                            )}
+                                        </header>
                                     )}
                                     {subtitle && <h5>{subtitle}</h5>}
                                 </div>
