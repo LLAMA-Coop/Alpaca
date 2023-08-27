@@ -40,7 +40,7 @@ export default async function NotesPage({ searchParams }) {
         return redirect(`/notes?page=1&amount=${amount}`);
     }
 
-    const sources = serialize(await Source.find(query));
+    const sources = user ? serialize(await Source.find(query)) : [];
 
     return (
         <main className={styles.main}>

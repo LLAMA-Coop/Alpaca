@@ -12,12 +12,7 @@ import { QuizDisplay } from "@/app/components/server";
 export default async function GroupPage({ params }) {
     const groupId = params.groupId;
 
-    const group = serializeOne(
-        await Group.findById(groupId)
-            .populate("users")
-            .populate("admins")
-            .populate("owner"),
-    );
+    const group = serializeOne(await Group.findById(groupId).populate("users"));
     if (!group) return redirect("/groups");
 
     const user = serializeOne(await useUser());
@@ -40,46 +35,36 @@ export default async function GroupPage({ params }) {
         <main className={styles.main}>
             <section>
                 <h2>{group.name}</h2>
-                <p>{group.description}</p>
+                <div className="paragraph center">
+                    <p title="Group description">{group.description}</p>
+                </div>
             </section>
 
             <section>
                 <h3>Members</h3>
 
-                <div>
-                    <h4>Owner</h4>
-                    <UserCard user={group.owner} />
+                <div className="paragraph">
+                    <p>
+                        All members are able to associate resources (Quiz
+                        questions, Notes, and Sources) with the group.
+                        <br />
+                        Some resources will be restricted to admins.
+                    </p>
                 </div>
 
                 <div>
-                    <h4>Users</h4>
-                    <div className="description">
-                        <p>
-                            Users are able to associate resources (Quiz
-                            questions, Notes, and Sources) with the group
-                        </p>
-                    </div>
                     {group.users.length > 0 && (
                         <ol className={styles.listGrid}>
                             {group.users.map((user) => {
                                 return (
                                     <li key={user.id}>
-                                        <UserCard user={user} />
-                                    </li>
-                                );
-                            })}
-                        </ol>
-                    )}
-                </div>
-
-                <div>
-                    <h4>Administrators</h4>
-                    {group.admins.length > 0 && (
-                        <ol className={styles.listGrid}>
-                            {group.admins.map((admin) => {
-                                return (
-                                    <li key={admin.id}>
-                                        <UserCard user={admin} />
+                                        <UserCard
+                                            user={user}
+                                            isOwner={user.id === group.owner}
+                                            isAdmin={group.admins.includes(
+                                                user.id,
+                                            )}
+                                        />
                                     </li>
                                 );
                             })}
@@ -97,7 +82,9 @@ export default async function GroupPage({ params }) {
                         ))}
                     </ol>
                 ) : (
-                    <div>No quiz questions are associated with this group</div>
+                    <div className="paragraph">
+                        <p>No quiz questions are associated with this group</p>
+                    </div>
                 )}
             </section>
 
@@ -110,7 +97,9 @@ export default async function GroupPage({ params }) {
                         ))}
                     </ol>
                 ) : (
-                    <div>No notes are associated with this group</div>
+                    <div className="paragraph">
+                        <p>No notes are associated with this group</p>
+                    </div>
                 )}
             </section>
 
@@ -123,7 +112,9 @@ export default async function GroupPage({ params }) {
                         ))}
                     </ol>
                 ) : (
-                    <div>No sources are associated with this group</div>
+                    <div className="paragraph">
+                        <p>No sources are associated with this group</p>
+                    </div>
                 )}
             </section>
         </main>

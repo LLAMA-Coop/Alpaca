@@ -1,8 +1,8 @@
 import { NoteDisplay, QuizDisplay, SourceDisplay } from "@components/server";
-import { useUser } from "@/lib/auth";
-import { serializeOne } from "@/lib/db";
 import { redirect } from "next/navigation";
 import styles from "@/app/page.module.css";
+import { serializeOne } from "@/lib/db";
+import { useUser } from "@/lib/auth";
 import Source from "@models/Source";
 import Quiz from "@models/Quiz";
 import Note from "@models/Note";
@@ -20,8 +20,19 @@ export default async function DashboardPage() {
             <h2>Dashboard</h2>
 
             <section>
+                <h3>Your Profile</h3>
+
                 <div className="paragraph">
                     <p>Hello user, here's your account!</p>
+
+                    <p>
+                        Username: {user.username}
+                        <br />
+                        Created At:{" "}
+                        {new Intl.DateTimeFormat("en-Us", {}).format(
+                            new Date(user.createdAt),
+                        )}
+                    </p>
                 </div>
             </section>
 
@@ -30,7 +41,7 @@ export default async function DashboardPage() {
 
                 <h4>Quiz Questions</h4>
                 {quizzes.length > 0 ? (
-                    <ol>
+                    <ol className={styles.listGrid}>
                         {quizzes.map((quiz) => (
                             <li key={quiz._id}>
                                 <QuizDisplay quiz={serializeOne(quiz)} />
@@ -45,7 +56,7 @@ export default async function DashboardPage() {
 
                 <h4>Notes</h4>
                 {notes.length > 0 ? (
-                    <ol>
+                    <ol className={styles.listGrid}>
                         {notes.map((note) => (
                             <li key={note._id}>
                                 <NoteDisplay note={serializeOne(note)} />
@@ -60,7 +71,7 @@ export default async function DashboardPage() {
 
                 <h4>Sources</h4>
                 {sources.length > 0 ? (
-                    <ol>
+                    <ol className={styles.listGrid}>
                         {sources.map((source) => (
                             <li key={source._id}>
                                 <SourceDisplay source={serializeOne(source)} />

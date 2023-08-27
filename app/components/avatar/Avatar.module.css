@@ -10,5 +10,5 @@
 }
 
 .container:active {
-    outline: 2px solid var(--accent-primary-1) !important;
+    outline: 2px solid var(--accent-primary-1);
 }

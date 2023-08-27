@@ -1,12 +1,16 @@
 import { NoteDisplay, SourceDisplay } from "@components/server";
 import { SourceInput, NoteInput } from "@components/client";
+import { serializeOne } from "@/lib/db";
 import styles from "./page.module.css";
+import { useUser } from "@/lib/auth";
 import { serialize } from "@/lib/db";
 import Source from "@models/Source";
 import Note from "@models/Note";
 import Link from "next/link";
 
 export default async function Home({ searchParams }) {
+    const user = serializeOne(await useUser());
+
     const page = Number(searchParams["page"] ?? "1");
     const amount = Number(searchParams["amount"] ?? "10");
 
@@ -94,10 +98,12 @@ export default async function Home({ searchParams }) {
                 </section>
             )}
 
-            <section>
-                <h3>Create new source</h3>
-                <SourceInput />
-            </section>
+            {user && (
+                <section>
+                    <h3>Create new source</h3>
+                    <SourceInput />
+                </section>
+            )}
 
             {notes.length > 0 && (
                 <section>
@@ -141,10 +147,12 @@ export default async function Home({ searchParams }) {
                 </section>
             )}
 
-            <section>
-                <h3>Create new note</h3>
-                <NoteInput availableSources={sources} />
-            </section>
+            {user && (
+                <section>
+                    <h3>Create new note</h3>
+                    <NoteInput availableSources={sources} />
+                </section>
+            )}
         </main>
     );
 }

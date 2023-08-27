@@ -11,7 +11,7 @@ export function Avatar({ src, username, size = 40, outline }) {
                 width: size,
                 height: size,
                 fontSize: size / 2,
-                outlineWidth: outline ? "2px" : "0px",
+                outline: outline ? "" : "0px solid transparent",
             }}
         >
             {src ? (

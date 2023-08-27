@@ -330,6 +330,10 @@ input[type="date"] {
     justify-content: center;
 }
 
+.paragraph.center {
+    text-align: center;
+}
+
 .paragraph > h3 {
     font-size: 24px;
     line-height: 30px;
@@ -350,6 +354,10 @@ input[type="date"] {
 
 .paragraph a:hover {
     text-decoration: underline;
+}
+
+h4 {
+    margin-bottom: 12px;
 }
 
 @media screen and (max-width: 1024px) {

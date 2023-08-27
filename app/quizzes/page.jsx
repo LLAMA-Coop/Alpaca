@@ -1,17 +1,17 @@
-import { QuizDisplay } from "@components/server";
+import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
 import { QuizInput, InputPopup } from "@components/client";
-import styles from "@/app/page.module.css";
 import { serialize, serializeOne } from "@/lib/db";
+import { QuizDisplay } from "@components/server";
+import styles from "@/app/page.module.css";
+import { redirect } from "next/navigation";
+import Group from "../api/models/Group";
+import User from "../api/models/User";
 import Source from "@models/Source";
 import Quiz from "@models/Quiz";
 import Note from "@models/Note";
-import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
-import User from "../api/models/User";
-import Group from "../api/models/Group";
-import { redirect } from "next/navigation";
 
 export default async function QuizzesPage({ searchParams }) {
-    const user = await useUser();
+    const user = serializeOne(await useUser());
     User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 
