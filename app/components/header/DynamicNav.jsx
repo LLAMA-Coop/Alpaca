@@ -13,10 +13,6 @@ export function DynamicNav() {
             href: "/",
         },
         {
-            name: "About",
-            href: "/about",
-        },
-        {
             name: "Sources",
             href: "/sources",
         },
@@ -31,6 +27,10 @@ export function DynamicNav() {
         {
             name: "Groups",
             href: "/groups",
+        },
+        {
+            name: "About",
+            href: "/about",
         },
     ];
 
