@@ -48,7 +48,7 @@ export default async function NotesPage({ searchParams }) {
 
             {notes.length > 0 && (
                 <section>
-                    <h3>Your notes</h3>
+                    <h3>Available Notes</h3>
 
                     <ol className={styles.listGrid}>
                         {notes.map((note) => (
