@@ -1,7 +1,5 @@
 import { model, models, Schema } from "mongoose";
-import connectDB from "../db";
 import PermissionSchema from "./PermissionSchema";
-connectDB();
 
 // Should add option to link to videos/images instead of text
 // Captions will be required in those cases

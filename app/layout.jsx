@@ -1,6 +1,8 @@
 import { Header, Footer } from "@components/server";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import connectDB from "./api/db";
+connectDB();
 
 const inter = Inter({ subsets: ["latin"] });
 

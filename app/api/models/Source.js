@@ -1,7 +1,5 @@
 import PermissionSchema from "./PermissionSchema";
 import { model, models, Schema } from "mongoose";
-import connectDB from "../db";
-connectDB();
 
 //  validation:
 //  need either lastAccessed or publishDate

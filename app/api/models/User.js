@@ -1,6 +1,4 @@
 import { model, models, Schema } from "mongoose";
-import connectDB from "../db";
-connectDB();
 
 // This is for tracking progress on quiz questions
 // and spaced repetition (Leitner method)

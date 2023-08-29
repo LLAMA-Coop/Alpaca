@@ -1,6 +1,4 @@
 import { model, models, Schema } from "mongoose";
-import connectDB from "../db";
-connectDB();
 
 const GroupSchema = new Schema(
     {

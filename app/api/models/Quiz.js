@@ -1,7 +1,5 @@
 import { model, models, Schema } from "mongoose";
-import connectDB from "../db";
 import PermissionSchema from "./PermissionSchema";
-connectDB();
 
 const QuizSchema = new Schema(
     {
