@@ -63,7 +63,7 @@ export default async function QuizzesPage({ searchParams }) {
 
             {quizzes.length > 0 && (
                 <section>
-                    <h3>Your quiz cards</h3>
+                    <h3>Available Quiz Cards</h3>
 
                     <ol className={styles.listGrid}>
                         {quizzes.map((quiz) => (
