@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import User from "@models/User";
+// import User from "@models/User";
+import { User } from "@mneme_app/database-models";
 import { useUser } from "@/lib/auth";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { serializeOne } from "@/lib/db";

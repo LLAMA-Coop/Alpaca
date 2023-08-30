@@ -1,8 +1,8 @@
 import styles from "@/app/page.module.css";
 import { Card, GroupInput } from "@components/client";
-import Group from "@models/Group";
+// import Group from "@models/Group";
+import { Group } from "@mneme_app/database-models";
 import { useUser } from "@/lib/auth";
-import { serializeOne } from "@/lib/db";
 
 export default async function GroupPage() {
     const groups = await Group.find({

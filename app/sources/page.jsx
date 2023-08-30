@@ -3,10 +3,11 @@ import { SourceInput } from "@components/client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { serialize } from "@/lib/db";
-import Source from "@models/Source";
+// import Source from "@models/Source";
 import Link from "next/link";
 import { queryReadableResources, useUser } from "@/lib/auth";
-import User from "../api/models/User";
+// import User from "../api/models/User";
+import { Source, User } from "@mneme_app/database-models";
 
 export default async function SourcesPage({ searchParams }) {
     const user = await useUser();

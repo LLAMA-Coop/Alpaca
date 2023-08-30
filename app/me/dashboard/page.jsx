@@ -3,9 +3,10 @@ import { redirect } from "next/navigation";
 import styles from "@/app/page.module.css";
 import { serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
-import Source from "@models/Source";
-import Quiz from "@models/Quiz";
-import Note from "@models/Note";
+// import Source from "@models/Source";
+// import Quiz from "@models/Quiz";
+// import Note from "@models/Note";
+import { Source, Quiz, Note } from "@mneme_app/database-models";
 
 export default async function DashboardPage() {
     const user = await useUser();

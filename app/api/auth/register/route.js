@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import User from "@models/User";
+// import User from "@models/User";
+import { User } from "@mneme_app/database-models";
 import bcrypt from "bcrypt";
 import { server } from "@/lib/apiErrorResponses";
 

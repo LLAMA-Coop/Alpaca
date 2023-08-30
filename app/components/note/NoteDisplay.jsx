@@ -1,8 +1,9 @@
-import styles from './NoteDisplay.module.css';
+import styles from "./NoteDisplay.module.css";
 import { capitalize } from "@/lib/strings";
 import { Card } from "@components/client";
-import Source from "@models/Source";
-import User from "@models/User";
+// import Source from "@models/Source";
+// import User from "@models/User";
+import { Source, User } from "@mneme_app/database-models";
 import Link from "next/link";
 
 export async function NoteDisplay({ note }) {
@@ -24,13 +25,9 @@ export async function NoteDisplay({ note }) {
                                 className={styles.sourceLink}
                                 href={`/sources/${sourceId}`}
                             >
-                                <div>
-                                    {source.title}
-                                </div>
+                                <div>{source.title}</div>
 
-                                <div>
-                                    {capitalize(source.medium)}
-                                </div>
+                                <div>{capitalize(source.medium)}</div>
                             </Link>
                         </li>
                     );

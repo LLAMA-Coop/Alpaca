@@ -2,7 +2,8 @@ import { Card, GroupInput } from "@components/client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { useUser } from "@/lib/auth";
-import User from "@models/User";
+// import User from "@models/User";
+import { User } from "@mneme_app/database-models";
 
 export default async function GroupsPage() {
     const user = await useUser();

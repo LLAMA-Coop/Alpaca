@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import User from "@models/User";
+// import User from "@models/User";
+import { User } from "@mneme_app/database-models";
 import { server } from "@/lib/apiErrorResponses";
 
 export async function POST(req) {
@@ -61,6 +62,6 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[LOGOUT] POST error: ${error}`);
-        return server
+        return server;
     }
 }

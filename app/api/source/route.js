@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { queryReadableResources, useUser } from "@/lib/auth";
-import Source from "@models/Source";
+// import Source from "@models/Source";
+import { Source } from "@mneme_app/database-models";
 import { unauthorized, server } from "@/lib/apiErrorResponses";
 
 export async function GET(req) {

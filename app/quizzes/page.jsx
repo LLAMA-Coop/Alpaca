@@ -4,11 +4,12 @@ import { serialize, serializeOne } from "@/lib/db";
 import { QuizDisplay } from "@components/server";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
-import Group from "../api/models/Group";
-import User from "../api/models/User";
-import Source from "@models/Source";
-import Quiz from "@models/Quiz";
-import Note from "@models/Note";
+// import Group from "../api/models/Group";
+// import User from "../api/models/User";
+// import Source from "@models/Source";
+// import Quiz from "@models/Quiz";
+// import Note from "@models/Note";
+import { Group, User, Source, Quiz, Note } from "@mneme_app/database-models";
 
 export default async function QuizzesPage({ searchParams }) {
     const user = serializeOne(await useUser());

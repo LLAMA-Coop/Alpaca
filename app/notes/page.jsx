@@ -2,10 +2,11 @@ import { NoteDisplay } from "@components/server";
 import { NoteInput, InputPopup } from "@components/client";
 import styles from "@/app/page.module.css";
 import { serialize, serializeOne } from "@/lib/db";
-import Source from "@models/Source";
-import Note from "@models/Note";
+// import Source from "@models/Source";
+// import Note from "@models/Note";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
-import User from "../api/models/User";
+// import User from "../api/models/User";
+import { Source, Note, User } from "@mneme_app/database-models";
 import { redirect } from "next/navigation";
 
 export default async function NotesPage({ searchParams }) {
