@@ -10,8 +10,13 @@ import {
     Spinner,
     Alert,
 } from "@/app/components/client";
+import { useStore } from "@/store/store";
 
-export function NoteInput({ availableSources }) {
+export function NoteInput(
+    {
+        //  availableSources
+    },
+) {
     const [text, setText] = useState("");
     const [sources, setSources] = useState([]);
     const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -23,6 +28,8 @@ export function NoteInput({ availableSources }) {
     const [requestStatus, setRequestStatus] = useState({});
 
     const addSourceRef = useRef(null);
+
+    const availableSources = useStore((state) => state.sourceStore);
 
     useEffect(() => {
         const handleOutsideClick = (e) => {
