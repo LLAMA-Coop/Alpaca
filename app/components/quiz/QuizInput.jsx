@@ -12,11 +12,12 @@ import {
 } from "@components/client";
 import PermissionsInput from "../form/PermissionsInput";
 import { serializeOne } from "@/lib/db";
+import { useStore } from "@/store/store";
 
 export function QuizInput({
     quiz,
-    availableSources,
-    availableNotes,
+    // availableSources,
+    // availableNotes,
     availableUsers,
     availableGroups,
 }) {
@@ -50,7 +51,11 @@ export function QuizInput({
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 
+    const availableSources = useStore((state) => state.sourceStore);
+    const availableNotes = useStore((state) => state.noteStore);
+
     useEffect(() => {
+        console.log(availableSources);
         if (!quiz) return;
         setType(quiz.type);
         setPrompt(quiz.prompt);
