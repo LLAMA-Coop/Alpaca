@@ -71,10 +71,6 @@ export default async function QuizzesPage({ searchParams }) {
                                 {user && canEdit(quiz, serializeOne(user)) && (
                                     <InputPopup
                                         type="quiz"
-                                        availableNotes={notes}
-                                        availableSources={sources}
-                                        availableUsers={availableUsers}
-                                        availableGroups={availableGroups}
                                         resource={serializeOne(quiz)}
                                     />
                                 )}

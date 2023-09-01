@@ -99,7 +99,7 @@ export default async function NotesPage({ searchParams }) {
             {user && (
                 <section>
                     <h3>Create new note</h3>
-                    <NoteInput availableSources={sources} />
+                    <NoteInput />
                 </section>
             )}
         </main>

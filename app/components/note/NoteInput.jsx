@@ -14,7 +14,6 @@ import { useStore } from "@/store/store";
 
 export function NoteInput({
     note,
-    //  availableSources
 }) {
     const [text, setText] = useState("");
     const [sources, setSources] = useState([]);

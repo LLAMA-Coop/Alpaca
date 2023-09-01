@@ -151,7 +151,7 @@ export default async function Home({ searchParams }) {
             {user && (
                 <section>
                     <h3>Create new note</h3>
-                    <NoteInput availableSources={sources} />
+                    <NoteInput />
                 </section>
             )}
         </main>

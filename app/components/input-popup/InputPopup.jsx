@@ -7,10 +7,6 @@ import styles from "./InputPopup.module.css";
 export function InputPopup({
     type,
     resource,
-    availableNotes,
-    availableSources,
-    availableUsers,
-    availableGroups
 }) {
     const [showPopup, setShowPopup] = useState(false);
     const [animateOut, setAnimateOut] = useState(false);
@@ -73,9 +69,7 @@ export function InputPopup({
                         }}
                     >
                         <div>
-                            <h4>
-                                {typeContent[type]}
-                            </h4>
+                            <h4>{typeContent[type]}</h4>
 
                             <button
                                 type="button"
@@ -99,41 +93,23 @@ export function InputPopup({
 
                         {type === "quiz" &&
                             (resource ? (
-                                <QuizInput
-                                    quiz={resource}
-                                    // availableSources={availableSources}
-                                    // availableNotes={availableNotes}
-                                    // availableUsers={availableUsers}
-                                    // availableGroups={availableGroups}
-                                />
+                                <QuizInput quiz={resource} />
                             ) : (
-                                <QuizInput
-                                    // availableSources={availableSources}
-                                    // availableNotes={availableNotes}
-                                    // availableUsers={availableUsers}
-                                    // availableGroups={availableGroups}
-                                />
+                                <QuizInput />
                             ))}
 
                         {type === "note" &&
                             (resource ? (
-                                <NoteInput
-                                    note={resource}
-                                    availableSources={availableSources}
-                                />
+                                <NoteInput note={resource} />
                             ) : (
-                                <NoteInput availableSources={availableSources}>
-                                    {console.log("show note")}
-                                </NoteInput>
+                                <NoteInput />
                             ))}
 
                         {type === "source" &&
                             (resource ? (
                                 <SourceInput source={resource} />
                             ) : (
-                                <SourceInput>
-                                    {console.log("show source")}
-                                </SourceInput>
+                                <SourceInput />
                             ))}
                     </div>
                 </div>

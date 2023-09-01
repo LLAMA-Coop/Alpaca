@@ -15,11 +15,7 @@ import { serializeOne } from "@/lib/db";
 import { useStore } from "@/store/store";
 
 export function QuizInput({
-    quiz,
-    // availableSources,
-    // availableNotes,
-    // availableUsers,
-    // availableGroups,
+    quiz
 }) {
     const [type, setType] = useState("prompt-response");
     const [typeError, setTypeError] = useState("");
