@@ -120,12 +120,7 @@ export default async function QuizzesPage({ searchParams }) {
                 <section>
                     <h3>Create new quiz</h3>
 
-                    <QuizInput
-                        // availableSources={sources}
-                        // availableNotes={notes}
-                        // availableUsers={availableUsers}
-                        // availableGroups={availableGroups}
-                    />
+                    <QuizInput />
                 </section>
             )}
         </main>

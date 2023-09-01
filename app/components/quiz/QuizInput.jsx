@@ -55,7 +55,6 @@ export function QuizInput({
     const availableNotes = useStore((state) => state.noteStore);
 
     useEffect(() => {
-        console.log(availableSources);
         if (!quiz) return;
         setType(quiz.type);
         setPrompt(quiz.prompt);

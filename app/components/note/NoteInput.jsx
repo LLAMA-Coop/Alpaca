@@ -12,11 +12,10 @@ import {
 } from "@/app/components/client";
 import { useStore } from "@/store/store";
 
-export function NoteInput(
-    {
-        //  availableSources
-    },
-) {
+export function NoteInput({
+    note,
+    //  availableSources
+}) {
     const [text, setText] = useState("");
     const [sources, setSources] = useState([]);
     const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -30,6 +29,16 @@ export function NoteInput(
     const addSourceRef = useRef(null);
 
     const availableSources = useStore((state) => state.sourceStore);
+
+    useEffect(() => {
+        if (!note) return;
+        setText(note.text);
+        setSources(
+            note.sources.map((srcId) =>
+                availableSources.find((x) => x._id === srcId),
+            ),
+        );
+    }, []);
 
     useEffect(() => {
         const handleOutsideClick = (e) => {
