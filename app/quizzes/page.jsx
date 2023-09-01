@@ -4,11 +4,6 @@ import { serialize, serializeOne } from "@/lib/db";
 import { QuizDisplay } from "@components/server";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
-// import Group from "../api/models/Group";
-// import User from "../api/models/User";
-// import Source from "@models/Source";
-// import Quiz from "@models/Quiz";
-// import Note from "@models/Note";
 import { Group, User, Source, Quiz, Note } from "@mneme_app/database-models";
 
 export default async function QuizzesPage({ searchParams }) {
@@ -126,10 +121,10 @@ export default async function QuizzesPage({ searchParams }) {
                     <h3>Create new quiz</h3>
 
                     <QuizInput
-                        availableSources={sources}
-                        availableNotes={notes}
-                        availableUsers={availableUsers}
-                        availableGroups={availableGroups}
+                        // availableSources={sources}
+                        // availableNotes={notes}
+                        // availableUsers={availableUsers}
+                        // availableGroups={availableGroups}
                     />
                 </section>
             )}

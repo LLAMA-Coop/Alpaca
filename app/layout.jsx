@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import connectDB from "./api/db";
 connectDB();
-import { Source, Note, Quiz } from "@mneme_app/database-models";
+import { Source, Note, Quiz, Group, User } from "@mneme_app/database-models";
 import { FillStore } from "./components/fillStore";
 import { serialize } from "@/lib/db";
 import { useUser, queryReadableResources } from "@/lib/auth";
@@ -22,9 +22,28 @@ export default async function RootLayout({ children }) {
     const notes = serialize(await Note.find(query));
     const quizzes = serialize(await Quiz.find(query));
 
+    const publicUsers = await User.find({ isPublic: true });
+    const availableUsers = serialize(
+        user?.hasOwnProperty("associates") && user?.associates.length > 0
+            ? [...user.associates, ...publicUsers]
+            : [...publicUsers],
+    );
+    const publicGroups = await Group.find({ isPublic: true });
+    const availableGroups = serialize(
+        user?.hasOwnProperty() && user?.groups.length > 0
+            ? [...user.groups, ...publicGroups]
+            : [...publicGroups],
+    );
+
     return (
         <html lang="en">
-            <FillStore sourceStore={sources} noteStore={notes} quizStore={quizzes} />
+            <FillStore
+                sourceStore={sources}
+                noteStore={notes}
+                quizStore={quizzes}
+                groupStore={availableGroups}
+                userStore={availableUsers}
+            />
             <body className={inter.className}>
                 <Header />
                 {children}

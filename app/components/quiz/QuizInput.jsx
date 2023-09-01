@@ -18,8 +18,8 @@ export function QuizInput({
     quiz,
     // availableSources,
     // availableNotes,
-    availableUsers,
-    availableGroups,
+    // availableUsers,
+    // availableGroups,
 }) {
     const [type, setType] = useState("prompt-response");
     const [typeError, setTypeError] = useState("");
@@ -467,8 +467,6 @@ export function QuizInput({
             <PermissionsInput
                 permissions={permissions}
                 setter={setPermissions}
-                availableGroups={availableGroups}
-                availableUsers={availableUsers}
             />
 
             <div className="buttonContainer">

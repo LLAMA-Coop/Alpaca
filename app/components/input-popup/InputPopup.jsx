@@ -101,17 +101,18 @@ export function InputPopup({
                             (resource ? (
                                 <QuizInput
                                     quiz={resource}
-                                    availableSources={availableSources}
-                                    availableNotes={availableNotes}
-                                    availableUsers={availableUsers}
-                                    availableGroups={availableGroups}
+                                    // availableSources={availableSources}
+                                    // availableNotes={availableNotes}
+                                    // availableUsers={availableUsers}
+                                    // availableGroups={availableGroups}
                                 />
                             ) : (
                                 <QuizInput
-                                    availableSources={availableSources}
-                                    availableNotes={availableNotes}
-                                    availableUsers={availableUsers}
-                                    availableGroups={availableGroups} />
+                                    // availableSources={availableSources}
+                                    // availableNotes={availableNotes}
+                                    // availableUsers={availableUsers}
+                                    // availableGroups={availableGroups}
+                                />
                             ))}
 
                         {type === "note" &&

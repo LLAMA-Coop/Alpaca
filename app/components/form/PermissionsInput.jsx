@@ -4,12 +4,11 @@ import { useState, useEffect } from "react";
 import { Input, Label } from "@/app/components/client";
 // add this to client/index.js
 import ListAdd from "./ListAdd";
+import { useStore } from "@/store/store";
 
 export default function PermissionsInput({
     permissions,
     setter,
-    availableUsers,
-    availableGroups,
 }) {
     const [allWrite, setAllWrite] = useState(false);
     const [allRead, setAllRead] = useState(false);
@@ -17,6 +16,9 @@ export default function PermissionsInput({
     const [usersRead, setUsersRead] = useState([]);
     const [groupsWrite, setGroupsWrite] = useState([]);
     const [groupsRead, setGroupsRead] = useState([]);
+
+    const availableUsers = useStore((state) => state.userStore);
+    const availableGroups = useStore((state) => state.groupStore);
 
     useEffect(() => {
         if (!permissions) {
