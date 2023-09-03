@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { queryReadableResources, useUser } from "@/lib/auth";
-// import Note from "@models/Note";
 import { Note } from "@mneme_app/database-models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 
@@ -12,11 +11,12 @@ export async function GET(req) {
         }
 
         const content = await Note.find(queryReadableResources(user));
-        return NextResponse.json({
-            200: {
+        return NextResponse.json(
+            {
                 content,
             },
-        });
+            { status: 200 },
+        );
     } catch (error) {
         console.error(`[Note] GET error: ${error}`);
         return server;

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
-// import User from "@models/User";
 import { User } from "@mneme_app/database-models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 
@@ -16,11 +15,11 @@ export async function GET(req) {
 
         const content = await User.findOne({ _id: user._id }).populate("groups")
             .groups;
-        return NextResponse.json({
-            200: {
+        return NextResponse.json(
+            {
                 content,
             },
-        });
+        );
     } catch (error) {
         console.error(`[${userId}/me] GET error: ${error}`);
         return server;

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-// import User from "@models/User";
 import { User } from "@mneme_app/database-models";
 import { useUser } from "@/lib/auth";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
@@ -10,7 +9,6 @@ export async function GET(req) {
 
     try {
         const user = serializeOne(await useUser());
-        console.log(user.id, user.roles);
         if (
             !user ||
             (user.id !== userId && user.roles.indexOf("admin") === -1)
@@ -19,11 +17,11 @@ export async function GET(req) {
         }
 
         const content = await User.find();
-        return NextResponse.json({
-            200: {
+        return NextResponse.json(
+            {
                 content,
             },
-        });
+        );
     } catch (error) {
         console.error(`User [${userId}] GET error: ${error}`);
         return server;

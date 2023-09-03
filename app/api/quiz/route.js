@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-// import Quiz from "@models/Quiz";
 import { Quiz } from "@mneme_app/database-models";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
 import { serializeOne } from "@/lib/db";
@@ -22,9 +21,7 @@ export async function GET(req) {
 
         const content = await Quiz.find(queryReadableResources(user));
         return NextResponse.json({
-            200: {
-                content,
-            },
+            content,
         });
     } catch (error) {
         console.error(`[Quiz] GET error: ${error}`);
@@ -43,44 +40,49 @@ export async function POST(req) {
             await req.json();
 
         if (!allowedType.includes(type)) {
-            return NextResponse.json({
-                400: {
+            return NextResponse.json(
+                {
                     message: "Invalid type submitted",
                 },
-            });
+                { status: 400 },
+            );
         }
 
         if (!prompt) {
-            return NextResponse.json({
-                400: {
+            return NextResponse.json(
+                {
                     message: "Prompt is required",
                 },
-            });
+                { status: 400 },
+            );
         }
 
         if (!correctResponses) {
-            return NextResponse.json({
-                400: {
+            return NextResponse.json(
+                {
                     message: "Correct responses are required",
                 },
-            });
+                { status: 400 },
+            );
         }
 
         if (type === "multiple-choice" && !choices?.length) {
-            return NextResponse.json({
-                400: {
+            return NextResponse.json(
+                {
                     message:
                         "Choices are required for multiple choice questions",
                 },
-            });
+                { status: 400 },
+            );
         }
 
         if (notes?.length === 0 && sources?.length === 0) {
-            return NextResponse.json({
-                400: {
+            return NextResponse.json(
+                {
                     message: "Need at least one note or source",
                 },
-            });
+                { status: 400 },
+            );
         }
 
         const quizRcvd = {
@@ -125,27 +127,30 @@ export async function PUT(req) {
 
         const quiz = await Quiz.findById(_id);
         if (!quiz) {
-            return NextResponse.json({
-                404: {
+            return NextResponse.json(
+                {
                     message: `No quiz found with id ${_id}`,
                 },
-            });
+                { status: 404 },
+            );
         }
 
         if (!canEdit(quiz, user)) {
-            return NextResponse.json({
-                403: {
+            return NextResponse.json(
+                {
                     message: `You are not permitted to edit quiz ${_id}`,
                 },
-            });
+                { status: 403 },
+            );
         }
 
         if (type && !allowedType.includes(type)) {
-            return NextResponse.json({
-                400: {
+            return NextResponse.json(
+                {
                     message: "Invalid type submitted",
                 },
-            });
+                { status: 400 },
+            );
         }
 
         if (type) {
@@ -198,7 +203,7 @@ export async function PUT(req) {
         quiz.updatedBy = user._id;
 
         const content = await quiz.save();
-        return NextResponse.json({ 200: content });
+        return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Quiz] PUT error: ${error}`);
         return server;

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-// import User from "@models/User";
 import { User } from "@mneme_app/database-models";
 import bcrypt from "bcrypt";
 import { server } from "@/lib/apiErrorResponses";
@@ -41,9 +40,6 @@ export async function POST(req) {
 
     try {
         const sameUser = await User.findOne({ username });
-
-        console.log(username);
-        console.log(sameUser);
 
         if (sameUser) {
             return NextResponse.json(

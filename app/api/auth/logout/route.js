@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-// import User from "@models/User";
 import { User } from "@mneme_app/database-models";
 import { server } from "@/lib/apiErrorResponses";
 

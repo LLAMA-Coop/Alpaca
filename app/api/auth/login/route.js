@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-// import User from "@models/User";
 import { User } from "@mneme_app/database-models";
 import { SignJWT } from "jose";
 import bcrypt from "bcrypt";
@@ -19,8 +18,6 @@ export async function POST(req) {
 
     try {
         const user = await User.findOne({ username });
-
-        console.log(user);
 
         if (!user) {
             return NextResponse.json(
