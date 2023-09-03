@@ -23,7 +23,6 @@ export const Card = ({
             className={`${styles.container} ${isFocused ? styles.focused : ""}`}
             tabIndex={0}
             onFocus={() => {
-                console.log("Card has focus");
                 setIsFocused(true);
             }}
             onBlur={() => {

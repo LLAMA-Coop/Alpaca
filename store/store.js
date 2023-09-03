@@ -1,11 +1,16 @@
 import { create } from "zustand";
 
 const addResources = (state, storeName, ...resources) => {
+    if (!Object.values(stores).includes(storeName)) {
+        throw Error(`We do not have a list called ${storeName}`);
+    }
     const newStore = [...state[storeName]];
     resources.forEach((resource) => {
         const alreadyStored = newStore.find((x) => x._id === resource._id);
-        if (!alreadyStored) {
+        if (!alreadyStored && resource._id) {
             newStore.push(resource);
+        } else if(!resource._id){
+            console.error("Missing _id property", resource);
         }
     });
     const newState = {};
@@ -22,6 +27,12 @@ const addResources = (state, storeName, ...resources) => {
 
 //needs testing
 const updateResource = (state, storeName, newResource) => {
+    if (!Object.values(stores).includes(storeName)) {
+        throw Error(`We do not have a list called ${storeName}`);
+    }
+    if (!newResource || !newResource._id) {
+        throw Error(`This resource does not have an _id key`);
+    }
     const newStore = [...state[storeName]];
     const oldResource = newStore.find((x) => x._id === newResource._id);
     if (oldResource) {
@@ -50,11 +61,23 @@ export const useStore = create((set) => ({
     userStore: [],
 
     addResources: (storeName, ...resources) => {
-        return set((state) => addResources(state, storeName, ...resources));
+        try {
+            console.log("new resources", resources);
+            return set((state) => addResources(state, storeName, ...resources));
+        } catch (e) {
+            console.error(e);
+        }
     },
 
     updateResource: (storeName, newResource) => {
-        return set((state) => updateResource(state, storeName, newResource));
+        try {
+            console.log("resource to update", newResource);
+            return set((state) =>
+                updateResource(state, storeName, newResource),
+            );
+        } catch (e) {
+            console.error(e);
+        }
     },
 
     // addSources: (...sources) =>

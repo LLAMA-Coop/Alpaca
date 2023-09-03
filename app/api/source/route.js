@@ -63,7 +63,7 @@ export async function POST(req) {
         return NextResponse.json(
             {
                 message: "Source created successfully",
-                content: content,
+                content,
             },
             { status: 201 },
         );

@@ -12,11 +12,9 @@ import {
 } from "@components/client";
 import PermissionsInput from "../form/PermissionsInput";
 import { serializeOne } from "@/lib/db";
-import { useStore } from "@/store/store";
+import { useStore, stores } from "@/store/store";
 
-export function QuizInput({
-    quiz
-}) {
+export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
     const [typeError, setTypeError] = useState("");
 
@@ -49,6 +47,8 @@ export function QuizInput({
 
     const availableSources = useStore((state) => state.sourceStore);
     const availableNotes = useStore((state) => state.noteStore);
+    const addResources = useStore((state) => state.addResources);
+    const updateResource = useStore((state) => state.updateResource);
 
     useEffect(() => {
         if (!quiz) return;
@@ -218,6 +218,12 @@ export function QuizInput({
                 message: "Quiz created successfully",
             });
             setShowAlert(true);
+
+            if (quiz) {
+                updateResource(stores.quiz, quizPayload);
+            } else {
+                addResources(stores.quiz, response.content);
+            }
         } else {
             setRequestStatus({
                 success: false,

@@ -1,9 +1,10 @@
 "use client";
 
+import { stores, useStore } from "@/store/store";
 import { Alert, Input, Label, ListItem, Spinner } from "@components/client";
 import { useState, useEffect } from "react";
 
-export function SourceInput() {
+export function SourceInput(source) {
     const [title, setTitle] = useState("");
     const [titleError, setTitleError] = useState("");
 
@@ -29,6 +30,9 @@ export function SourceInput() {
     const urlRegex = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i;
     const accessedRegex = /^\d{4}-\d{2}-\d{2}$/;
     const publishRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+    const sourceStore = useStore((state) => state.sourceStore);
+    const addResources = useStore((state) => state.addResources);
 
     useEffect(() => {
         setLastAccessed(new Date().toISOString().split("T")[0]);
@@ -79,7 +83,7 @@ export function SourceInput() {
             return new Date(ymd[0], ymd[1] - 1, ymd[2]);
         }
 
-        const source = {
+        const sourcePayload = {
             title,
             medium,
             url,
@@ -95,8 +99,9 @@ export function SourceInput() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(source),
+            body: JSON.stringify(sourcePayload),
         });
+        const respBody = await response.json();
 
         setLoading(false);
 
@@ -117,6 +122,8 @@ export function SourceInput() {
             setUrlError("");
             setLastAccessedError("");
             setPublishDateError("");
+
+            addResources(stores.source, respBody.content);
         } else {
             setRequestStatus({
                 success: false,
