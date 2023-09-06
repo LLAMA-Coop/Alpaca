@@ -36,8 +36,17 @@ export async function POST(req) {
             return unauthorized;
         }
 
-        const { type, prompt, choices, correctResponses, sources, notes } =
-            await req.json();
+        const {
+            type,
+            prompt,
+            choices,
+            correctResponses,
+            sources,
+            notes,
+            permissions,
+        } = await req.json();
+
+        console.log("perms in quiz route", permissions)
 
         if (!allowedType.includes(type)) {
             return NextResponse.json(
@@ -94,6 +103,7 @@ export async function POST(req) {
             createdBy: user._id,
             notes: notes ?? [],
             sources: sources ?? [],
+            permissions: serializeOne(permissions) ?? {},
         };
 
         const quiz = new Quiz(quizRcvd);
@@ -170,7 +180,9 @@ export async function PUT(req) {
         }
 
         if (sources) {
-            sources.forEach((sourceId_req) => {
+            console.log("In quiz PUT route, adding sources", sources);
+            sources.forEach((sourceId_req, index) => {
+                console.log(index, sourceId_req);
                 if (
                     !quiz.sources.find(
                         (srcId) => srcId.toString() == sourceId_req,
@@ -192,9 +204,8 @@ export async function PUT(req) {
             });
         }
 
-        if (permissions) {
-            // this might cause errors b/c doesn't use ObjectId
-            quiz.permissions = JSON.parse(JSON.stringify(permissions));
+        if (permissions && quiz.createdBy.toString() === user._id.toString()) {
+            quiz.permissions = serializeOne(permissions);
         }
 
         if (!quiz.contributors.includes(user._id)) {

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { queryReadableResources, useUser } from "@/lib/auth";
 import { Source } from "@mneme_app/database-models";
 import { unauthorized, server } from "@/lib/apiErrorResponses";
+import { buildPermissions } from "@/lib/permissions";
 
 export async function GET(req) {
     try {
@@ -25,8 +26,15 @@ export async function POST(req) {
             return unauthorized;
         }
 
-        const { title, medium, url, publishDate, lastAccessed, authors } =
-            await req.json();
+        const {
+            title,
+            medium,
+            url,
+            publishDate,
+            lastAccessed,
+            authors,
+            permissions,
+        } = await req.json();
 
         if (!(title && medium && url)) {
             return NextResponse.json(
@@ -56,6 +64,8 @@ export async function POST(req) {
             createdBy: user._id,
             contributors: [user._id],
         });
+
+        source.permissions = buildPermissions(permissions);
 
         const content = await source.save();
 
