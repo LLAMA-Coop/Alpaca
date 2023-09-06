@@ -32,7 +32,7 @@ export default function ListAdd({
             {listChosen.length > 0 &&
                 listChosen.map((choice) => (
                     <ListItem
-                        key={choice.id}
+                        key={choice._id}
                         link={choice.url ? choice.url : undefined}
                         item={choice[listProperty]}
                         action={() => {

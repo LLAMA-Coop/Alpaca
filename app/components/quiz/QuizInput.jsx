@@ -13,6 +13,7 @@ import {
 import PermissionsInput from "../form/PermissionsInput";
 import { serializeOne } from "@/lib/db";
 import { useStore, stores } from "@/store/store";
+import { buildPermissions } from "@/lib/permissions";
 
 export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
@@ -181,6 +182,9 @@ export function QuizInput({ quiz }) {
         if (quiz) {
             quizPayload._id = quiz._id;
         }
+
+        quizPayload.permissions = buildPermissions(permissions);
+        console.log("payload perms", quizPayload.permissions);
 
         setLoading(true);
 
@@ -466,7 +470,7 @@ export function QuizInput({ quiz }) {
             </div>
 
             <PermissionsInput
-                permissions={permissions}
+                permissions={quiz ? quiz.permissions : {}}
                 setter={setPermissions}
             />
 

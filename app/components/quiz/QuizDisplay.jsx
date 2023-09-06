@@ -13,7 +13,7 @@ export function QuizDisplay({ canClientCheck, quiz }) {
         return <ResponseCard canClientCheck={canClientCheck} quiz={quiz} />;
     }
 
-    if (quiz.type === "unordered-list-answer" || quiz.type === "ordered-list-answer") {
+    if (quiz.type === "unordered-list-answer" || quiz.type === "ordered-list-answer" || quiz.type === "unordered-list") {
         return (
             <ListAnswer
                 canClientCheck={canClientCheck}

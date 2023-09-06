@@ -45,6 +45,7 @@ export function Input({
     const [errorId, setErrorId] = useState("");
 
     useEffect(() => {
+        // remove spaces from label or pick another id
         setInputId(`${label}-${makeUniqueId()}`);
         setErrorId(`${inputId}-error`);
     }, []);
@@ -139,7 +140,7 @@ export function Input({
                         onChange={onChange}
                         onFocus={onFocus}
                         onBlur={onBlur}
-                        defaultChecked={value ? value : false}
+                        checked={value === "on" || value === true ? true : false}
                         minLength={minLength}
                         maxLength={maxLength}
                         onKeyDown={(e) => {

@@ -3,6 +3,8 @@
 import { stores, useStore } from "@/store/store";
 import { Alert, Input, Label, ListItem, Spinner } from "@components/client";
 import { useState, useEffect } from "react";
+import PermissionsInput from "../form/PermissionsInput";
+import { buildPermissions } from "@/lib/permissions";
 
 export function SourceInput(source) {
     const [title, setTitle] = useState("");
@@ -26,6 +28,7 @@ export function SourceInput(source) {
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+    const [permissions, setPermissions] = useState({});
 
     const urlRegex = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i;
     const accessedRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -91,6 +94,8 @@ export function SourceInput(source) {
             lastAccessed: formatDate(lastAccessed),
             authors,
         };
+
+        sourcePayload.permissions = setPermissions(permissions);
 
         setLoading(true);
 
@@ -253,6 +258,11 @@ export function SourceInput(source) {
                     </ul>
                 </div>
             </div>
+
+            <PermissionsInput
+                permissions={permissions}
+                setter={setPermissions}
+            />
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Source"}

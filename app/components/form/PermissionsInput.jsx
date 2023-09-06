@@ -5,11 +5,9 @@ import { Input, Label } from "@/app/components/client";
 // add this to client/index.js
 import ListAdd from "./ListAdd";
 import { useStore } from "@/store/store";
+import { serializeOne } from "@/lib/db";
 
-export default function PermissionsInput({
-    permissions,
-    setter,
-}) {
+export default function PermissionsInput({ permissions, setter }) {
     const [allWrite, setAllWrite] = useState(false);
     const [allRead, setAllRead] = useState(false);
     const [usersWrite, setUsersWrite] = useState([]);
@@ -33,46 +31,62 @@ export default function PermissionsInput({
         }
 
         if (permissions.usersWrite) {
-            setUsersWrite([...permissions.usersWrite]);
+            setUsersWrite(
+                permissions.usersWrite.map((userId) =>
+                    availableUsers.find((x) => x._id === userId),
+                ),
+            );
         }
         if (permissions.usersRead) {
-            setUsersRead([...permissions.usersRead]);
+            setUsersRead(
+                permissions.usersRead.map((userId) =>
+                    availableUsers.find((x) => x._id === userId),
+                ),
+            );
         }
 
         if (permissions.groupsWrite) {
-            setGroupsWrite([...permissions.groupsWrite]);
+            setGroupsWrite(
+                permissions.groupsWrite.map((groupId) =>
+                    availableGroups.find((x) => x._id === groupId),
+                ),
+            );
         }
         if (permissions.groupsRead) {
-            setGroupsRead([...permissions.groupsRead]);
+            setGroupsRead(
+                permissions.groupsRead.map((groupId) =>
+                    availableGroups.find((x) => x._id === groupId),
+                ),
+            );
         }
     }, []);
 
     useEffect(() => {
-        let permissions = {};
+        let localPerm = {};
 
         if (allWrite) {
-            permissions.allWrite = true;
-            setter(permissions);
+            localPerm.allWrite = true;
+            setter(localPerm);
             return;
         }
 
         if (allRead) {
-            permissions.allRead = true;
+            localPerm.allRead = true;
         }
         if (usersWrite.length > 0) {
-            permissions.usersWrite = [...usersWrite];
+            localPerm.usersWrite = [...usersWrite];
         }
         if (usersRead.length > 0 && !allRead) {
-            permissions.usersRead = [...usersRead];
+            localPerm.usersRead = [...usersRead];
         }
         if (groupsWrite.length > 0) {
-            permissions.groupsWrite = [...groupsWrite];
+            localPerm.groupsWrite = [...groupsWrite];
         }
-        if (groupsRead && !allRead) {
-            permissions.groupsRead = [...groupsRead];
+        if (groupsRead.length > 0 && !allRead) {
+            localPerm.groupsRead = [...groupsRead];
         }
 
-        setter(permissions);
+        setter(localPerm);
     }, [allWrite, allRead, usersWrite, usersRead, groupsWrite, groupsRead]);
 
     return (
@@ -82,12 +96,14 @@ export default function PermissionsInput({
                 type="checkbox"
                 label="Allow All Users to Edit?"
                 value={allWrite}
+                onChange={() => setAllWrite(!allWrite)}
             />
             <Input
                 type="checkbox"
                 label="Allow All Users to Read?"
                 disabled={allWrite}
                 value={allRead}
+                onChange={() => setAllRead(!allRead)}
             />
 
             <div>
