@@ -7,7 +7,7 @@ import { Source, Note, User } from "@mneme_app/database-models";
 import { redirect } from "next/navigation";
 
 export default async function NotesPage({ searchParams }) {
-    const user = serializeOne(await useUser());
+    const user = await useUser();
     User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 
@@ -52,7 +52,7 @@ export default async function NotesPage({ searchParams }) {
                         {notes.map((note) => (
                             <li key={note.id}>
                                 <NoteDisplay note={note} />
-                                {user && canEdit(note, serializeOne(user)) && (
+                                {user && canEdit(note, user) && (
                                     <InputPopup
                                         type="note"
                                         resource={serializeOne(note)}

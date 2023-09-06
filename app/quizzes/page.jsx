@@ -4,10 +4,11 @@ import { serialize, serializeOne } from "@/lib/db";
 import { QuizDisplay } from "@components/server";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { Group, User, Source, Quiz, Note } from "@mneme_app/database-models";
 
 export default async function QuizzesPage({ searchParams }) {
-    const user = serializeOne(await useUser());
+    const user = await useUser();
     User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 
