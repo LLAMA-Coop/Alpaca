@@ -43,6 +43,7 @@ export default async function RootLayout({ children }) {
                 quizStore={quizzes}
                 groupStore={availableGroups}
                 userStore={availableUsers}
+                webSocketURL={process.env.WS_URL}
             />
             <body className={inter.className}>
                 <Header />

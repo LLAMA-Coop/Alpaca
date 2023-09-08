@@ -6,6 +6,7 @@ import { Input, Alert, Spinner } from "@components/client";
 import { useState, useRef, useEffect } from "react";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
+import { useStore } from "@/store/store";
 
 export function UserInput({ isRegistering }) {
     const [username, setUsername] = useState("");
@@ -22,6 +23,8 @@ export function UserInput({ isRegistering }) {
     const [requestStatus, setRequestStatus] = useState({});
 
     const [passwordFocus, setPasswordFocus] = useState(false);
+
+    const setIsAuthenticated = useStore((state) => state.setIsAuthenticated);
 
     const passwordTooltip = useRef(null);
     const passwordInput = useRef(null);
@@ -175,6 +178,7 @@ export function UserInput({ isRegistering }) {
         setLoading(false);
 
         if (response.status === 200) {
+            setIsAuthenticated(true);
             router.push(`/users/${username}`);
             router.refresh();
 

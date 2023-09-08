@@ -54,6 +54,14 @@ export const useStore = create((set) => ({
     groupStore: [],
     userStore: [],
 
+    isAuthenticated: false,
+    setIsAuthenticated: (isAuthenticated) => {
+        console.log("Authenticating in store");
+        return set(() => ({
+            isAuthenticated,
+        }));
+    },
+
     addResources: (storeName, ...resources) => {
         try {
             return set((state) => addResources(state, storeName, ...resources));

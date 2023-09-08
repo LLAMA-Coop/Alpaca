@@ -1,5 +1,6 @@
 "use client";
 import { useStore, stores } from "@/store/store";
+import { useEffect } from "react";
 
 export function FillStore({
     sourceStore,
@@ -7,17 +8,38 @@ export function FillStore({
     quizStore,
     groupStore,
     userStore,
+    webSocketURL
 }) {
-    // const addSources = useStore((state) => state.addSources);
-    // const addNotes = useStore((state) => state.addNotes);
-    // const addQuizzes = useStore((state) => state.addQuizzes);
-    // const addGroups = useStore((state) => state.addGroups);
-    // const addUsers = useStore((state) => state.addUsers);
     const addResources = useStore((state) => state.addResources);
+    const isAuthenticated = useStore((state) => state.isAuthenticated);
 
-    // if (sourceStore?.length > 0) addSources(...sourceStore);
+    useEffect(() => {
+        const ws = new WebSocket(webSocketURL);
+        if (!isAuthenticated) {
+            console.log(
+                "You are logged out, therefore web socket server is closing",
+            );
+            ws.close();
+            return;
+        }
+        ws.onopen = () => {
+            console.log("Connection open!");
+        };
+
+        ws.onmessage = (message) => {
+            const record = JSON.parse(message.data);
+            console.log(record);
+
+            if (!record.ns) return;
+        };
+
+        return () => {
+            ws.close();
+            console.log("Web socket connection closed");
+        };
+    }, [isAuthenticated]);
+
     if (sourceStore?.length > 0) addResources(stores.source, ...sourceStore);
-    // if (noteStore?.length > 0) addNotes(...noteStore);
     if (noteStore?.length > 0) addResources(stores.note, ...noteStore);
     if (quizStore?.length > 0) addResources(stores.quiz, ...quizStore);
     if (groupStore?.length > 0) addResources(stores.group, ...groupStore);
