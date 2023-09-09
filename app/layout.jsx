@@ -17,6 +17,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
     const user = await useUser();
+    
     const query = queryReadableResources(user);
     const sources = serialize(await Source.find(query));
     const notes = serialize(await Note.find(query));

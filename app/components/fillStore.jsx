@@ -15,13 +15,13 @@ export function FillStore({
 
     useEffect(() => {
         const ws = new WebSocket(webSocketURL);
-        if (!isAuthenticated) {
-            console.log(
-                "You are logged out, therefore web socket server is closing",
-            );
-            ws.close();
-            return;
-        }
+        // if (!isAuthenticated) {
+        //     console.log(
+        //         "You are logged out, therefore web socket server is closing",
+        //     );
+        //     ws.close();
+        //     return;
+        // }
         ws.onopen = () => {
             console.log("Connection open!");
         };
@@ -37,7 +37,7 @@ export function FillStore({
             ws.close();
             console.log("Web socket connection closed");
         };
-    }, [isAuthenticated]);
+    }, []);
 
     if (sourceStore?.length > 0) addResources(stores.source, ...sourceStore);
     if (noteStore?.length > 0) addResources(stores.note, ...noteStore);
