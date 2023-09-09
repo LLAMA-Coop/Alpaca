@@ -128,7 +128,7 @@ export function SourceInput(source) {
             setLastAccessedError("");
             setPublishDateError("");
 
-            addResources(stores.source, respBody.content);
+            // addResources(stores.source, respBody.content);
         } else {
             setRequestStatus({
                 success: false,

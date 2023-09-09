@@ -223,11 +223,11 @@ export function QuizInput({ quiz }) {
             });
             setShowAlert(true);
 
-            if (quiz) {
-                updateResource(stores.quiz, quizPayload);
-            } else {
-                addResources(stores.quiz, response.content);
-            }
+            // if (quiz) {
+            //     updateResource(stores.quiz, quizPayload);
+            // } else {
+            //     addResources(stores.quiz, response.content);
+            // }
         } else {
             setRequestStatus({
                 success: false,

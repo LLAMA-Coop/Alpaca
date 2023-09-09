@@ -8,20 +8,13 @@ export function FillStore({
     quizStore,
     groupStore,
     userStore,
-    webSocketURL
+    webSocketURL,
 }) {
     const addResources = useStore((state) => state.addResources);
-    const isAuthenticated = useStore((state) => state.isAuthenticated);
+    const updateResource = useStore((state) => state.updateResource);
 
     useEffect(() => {
         const ws = new WebSocket(webSocketURL);
-        // if (!isAuthenticated) {
-        //     console.log(
-        //         "You are logged out, therefore web socket server is closing",
-        //     );
-        //     ws.close();
-        //     return;
-        // }
         ws.onopen = () => {
             console.log("Connection open!");
         };
@@ -31,6 +24,28 @@ export function FillStore({
             console.log(record);
 
             if (!record.ns) return;
+            const operation = record.operationType;
+            const collection = record.ns.coll;
+            const resource = record.fullDocument;
+            let storeName;
+            if (collection === "sources") {
+                storeName = stores.source;
+            }
+            if (collection === "notes") {
+                storeName = stores.note;
+            }
+            if (collection === "quizzes") {
+                storeName = stores.quiz;
+            }
+
+            if (operation === "insert") {
+                addResources(storeName, resource);
+            }
+            if (operation === "update") {
+                updateResource(storeName, resource);
+            }
+
+            console.log("we are doing this:", operation, resource, storeName)
         };
 
         return () => {
