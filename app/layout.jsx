@@ -5,7 +5,7 @@ import connectDB from "./api/db";
 connectDB();
 import { Source, Note, Quiz, Group, User } from "@mneme_app/database-models";
 import { FillStore } from "./components/fillStore";
-import { serialize } from "@/lib/db";
+import { serialize, serializeOne } from "@/lib/db";
 import { useUser, queryReadableResources } from "@/lib/auth";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -17,7 +17,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
     const user = await useUser();
-    
+
     const query = queryReadableResources(user);
     const sources = serialize(await Source.find(query));
     const notes = serialize(await Note.find(query));
@@ -44,6 +44,7 @@ export default async function RootLayout({ children }) {
                 quizStore={quizzes}
                 groupStore={availableGroups}
                 userStore={availableUsers}
+                user={serializeOne(user)}
                 webSocketURL={process.env.WS_URL}
             />
             <body className={inter.className}>

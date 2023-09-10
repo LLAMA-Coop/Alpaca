@@ -53,10 +53,16 @@ export const useStore = create((set) => ({
     quizStore: [],
     groupStore: [],
     userStore: [],
+    user: undefined,
+
+    setUser: (user) => {
+        return set(() => ({
+            user,
+        }));
+    },
 
     isAuthenticated: false,
     setIsAuthenticated: (isAuthenticated) => {
-        console.log("Authenticating in store");
         return set(() => ({
             isAuthenticated,
         }));

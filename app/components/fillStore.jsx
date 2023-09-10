@@ -9,9 +9,11 @@ export function FillStore({
     groupStore,
     userStore,
     webSocketURL,
+    user,
 }) {
     const addResources = useStore((state) => state.addResources);
     const updateResource = useStore((state) => state.updateResource);
+    const setUser = useStore((state) => state.setUser);
 
     useEffect(() => {
         const ws = new WebSocket(webSocketURL);
@@ -45,7 +47,7 @@ export function FillStore({
                 updateResource(storeName, resource);
             }
 
-            console.log("we are doing this:", operation, resource, storeName)
+            console.log("we are doing this:", operation, resource, storeName);
         };
 
         return () => {
@@ -59,4 +61,5 @@ export function FillStore({
     if (quizStore?.length > 0) addResources(stores.quiz, ...quizStore);
     if (groupStore?.length > 0) addResources(stores.group, ...groupStore);
     if (userStore?.length > 0) addResources(stores.user, ...userStore);
+    if (user) setUser(user);
 }
