@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
-import { Note, Quiz } from "@mneme_app/database-models";
+import { Note } from "@mneme_app/database-models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
 import { serializeOne } from "@/lib/db";
