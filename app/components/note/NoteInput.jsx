@@ -11,6 +11,7 @@ import {
     Alert,
 } from "@/app/components/client";
 import { useStore } from "@/store/store";
+import { DeletePopup } from "../delete-popup/DeletePopup";
 
 export function NoteInput({ note }) {
     const [text, setText] = useState("");
@@ -169,6 +170,8 @@ export function NoteInput({ note }) {
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Note"}
             </button>
+
+            {note && <DeletePopup resourceType="note" resourceId={note._id} />}
         </div>
     );
 }
