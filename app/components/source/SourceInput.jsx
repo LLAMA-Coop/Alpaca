@@ -94,19 +94,20 @@ export function SourceInput(source) {
             lastAccessed: formatDate(lastAccessed),
             authors,
         };
-
         sourcePayload.permissions = setPermissions(permissions);
+        if (source) {
+            sourcePayload._id = source._id;
+        }
 
         setLoading(true);
 
         const response = await fetch("/api/source", {
-            method: "POST",
+            method: source ? "PUT" : "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(sourcePayload),
         });
-        const respBody = await response.json();
 
         setLoading(false);
 

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { queryReadableResources, useUser } from "@/lib/auth";
+import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
 import { Source } from "@mneme_app/database-models";
 import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { buildPermissions } from "@/lib/permissions";
+import { serializeOne } from "@/lib/db";
 
 export async function GET(req) {
     try {
@@ -78,6 +79,75 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[Source] POST error: ${error}`);
+        return server;
+    }
+}
+
+export async function PUT(req) {
+    try {
+        const user = await useUser();
+
+        if (!user) {
+            return unauthorized;
+        }
+
+        const {
+            _id,
+            title,
+            medium,
+            url,
+            publishDate,
+            lastAccessed,
+            authors,
+            permissions,
+        } = await req.json();
+
+        const source = await Source.findById(_id);
+        if (!source) {
+            return NextResponse.json(
+                {
+                    message: `No source found with id ${_id}`,
+                },
+                { status: 404 },
+            );
+        }
+
+        if (!canEdit(source, user)) {
+            return NextResponse.json(
+                {
+                    message: `You are not permitted to edit source ${_id}`,
+                },
+                { status: 403 },
+            );
+        }
+
+        if (title) {
+            source.title = title;
+        }
+        if (medium) {
+            source.medium = medium;
+        }
+        if (url) {
+            source.url = url;
+        }
+        if (publishDate) {
+            source.publishDate = publishDate;
+        }
+        if (lastAccessed) {
+            source.lastAccessed = lastAccessed;
+        }
+        if (authors) {
+            source.authors = [...authors];
+        }
+        if (permissions && source.createdBy.toString() === user._id) {
+            source.permissions = serializeOne(permissions);
+        }
+        source.updateBy = user._id;
+
+        const content = await source.save();
+        return NextResponse.json({ content });
+    } catch (error) {
+        console.error(`[Source] PUT error: ${error}`);
         return server;
     }
 }
