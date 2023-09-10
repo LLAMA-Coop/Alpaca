@@ -176,8 +176,8 @@ export function QuizInput({ quiz }) {
             choices: choices,
             correctResponses: responses,
             hints: hints,
-            sources: sources,
-            notes: notes,
+            sources: sources.map((src) => src._id),
+            notes: notes.map((nt) => nt._id),
         };
         if (quiz) {
             quizPayload._id = quiz._id;

@@ -12,9 +12,7 @@ import {
 } from "@/app/components/client";
 import { useStore } from "@/store/store";
 
-export function NoteInput({
-    note,
-}) {
+export function NoteInput({ note }) {
     const [text, setText] = useState("");
     const [sources, setSources] = useState([]);
     const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -65,16 +63,19 @@ export function NoteInput({
             return;
         }
 
-        const note = { text, sources };
+        const notePayload = { text, sources: sources.map((src) => src._id) };
+        if (note) {
+            notePayload._id = note._id;
+        }
 
         setLoading(true);
 
         const response = await fetch("/api/note", {
-            method: "POST",
+            method: note ? "PUT" : "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(note),
+            body: JSON.stringify(notePayload),
         });
 
         setLoading(false);
