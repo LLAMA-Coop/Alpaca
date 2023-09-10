@@ -27,6 +27,8 @@ export function NoteInput({ note }) {
     const addSourceRef = useRef(null);
 
     const availableSources = useStore((state) => state.sourceStore);
+    const user = useStore((state) => state.user);
+    const canDelete = note && note.createdBy === user._id;
 
     useEffect(() => {
         if (!note) return;
@@ -171,7 +173,9 @@ export function NoteInput({ note }) {
                 {loading ? <Spinner /> : "Submit Note"}
             </button>
 
-            {note && <DeletePopup resourceType="note" resourceId={note._id} />}
+            {canDelete && (
+                <DeletePopup resourceType="note" resourceId={note._id} />
+            )}
         </div>
     );
 }
