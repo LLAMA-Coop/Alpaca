@@ -10,6 +10,7 @@ export function Select({
     listChoices,
     listProperty,
     listSetter,
+    disabled,
     setSelectState,
 }) {
     useEffect(() => {
@@ -31,7 +32,7 @@ export function Select({
         }
     };
 
-    return (
+    if(!disabled) return (
         <div
             aria-modal="true"
             className={`${styles.picker} thinScroller`}

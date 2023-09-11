@@ -116,6 +116,7 @@ export default function PermissionsInput({ permissions, setter }) {
                     listChosen={usersWrite}
                     listProperty={"username"}
                     listSetter={setUsersWrite}
+                    disabled={allWrite}
                 />
             </div>
             <div>
@@ -128,6 +129,7 @@ export default function PermissionsInput({ permissions, setter }) {
                     listChosen={usersRead}
                     listProperty={"username"}
                     listSetter={setUsersRead}
+                    disabled={allRead || allWrite}
                 />
             </div>
 
@@ -141,6 +143,7 @@ export default function PermissionsInput({ permissions, setter }) {
                     listChosen={groupsWrite}
                     listProperty={"name"}
                     listSetter={setGroupsWrite}
+                    disabled={allWrite}
                 />
             </div>
             <div>
@@ -153,6 +156,7 @@ export default function PermissionsInput({ permissions, setter }) {
                     listChosen={groupsRead}
                     listProperty={"name"}
                     listSetter={setGroupsRead}
+                    disabled={allRead || allWrite}
                 />
             </div>
         </details>

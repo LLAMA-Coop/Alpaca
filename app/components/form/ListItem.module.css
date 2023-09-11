@@ -30,6 +30,11 @@ a.listItem,
     cursor: pointer;
 }
 
+a.listItem.disabled,
+.listItem.select.disabled {
+    cursor: not-allowed;
+}
+
 .listItem > .itemContent > span {
     white-space: nowrap;
     overflow: hidden;
@@ -49,6 +54,10 @@ a.listItem,
     cursor: pointer;
     color: var(--accent-foreground);
     background-color: var(--accent-tertiary-2);
+}
+
+.listItem > .itemContent > .action.disabled {
+    cursor: not-allowed;
 }
 
 .listItem > .itemContent > .action:hover {

@@ -9,11 +9,18 @@ export default function ListAdd({
     listChosen,
     listProperty,
     listSetter,
+    disabled,
 }) {
     // const [isSelectOpen, setIsSelectOpen] = useState(false);
 
     return (
-        <ol className="chipList">
+        <ol
+            className={`chipList ${disabled ? "disabled" : ""}`}
+            style={{
+                opacity: disabled ? "0.3" : "",
+                cursor: disabled ? "not-allowed" : "",
+            }}
+        >
             <ListItem
                 item={item}
                 // action={() => setIsSelectOpen((prev) => !prev)}
@@ -24,9 +31,11 @@ export default function ListAdd({
                         listChosen={listChosen}
                         listProperty={listProperty}
                         listSetter={listSetter}
+                        disabled={disabled}
                         // setSelectState={setIsSelectOpen}
                     />
                 }
+                disabled={disabled}
             />
 
             {listChosen.length > 0 &&

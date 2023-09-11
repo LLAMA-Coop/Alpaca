@@ -10,7 +10,7 @@ import {
     faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 
-export function ListItem({ item, action, actionType, link, select }) {
+export function ListItem({ item, action, actionType, link, select, disabled }) {
     const [showSelect, setShowSelect] = useState(false);
     const liRef = useRef(null);
 
@@ -47,7 +47,7 @@ export function ListItem({ item, action, actionType, link, select }) {
                     aria-haspopup={select ? "true" : "false"}
                     aria-expanded={showSelect ? "true" : "false"}
                     aria-controls={showSelect ? `${item}-select` : null}
-                    className={styles.action}
+                    className={`${styles.action} ${disabled ? styles.disabled : ""}`}
                     onClick={(e) => {
                         e.preventDefault();
                         action();
@@ -64,7 +64,7 @@ export function ListItem({ item, action, actionType, link, select }) {
             )}
 
             {link && !action && (
-                <button tabIndex={-1} className={styles.action} title={label}>
+                <button tabIndex={-1} className={`${styles.action} ${disabled ? styles.disabled : ""}`} title={label}>
                     <FontAwesomeIcon icon={faArrowRight} />
                 </button>
             )}
@@ -86,7 +86,7 @@ export function ListItem({ item, action, actionType, link, select }) {
         <li
             ref={liRef}
             onClick={() => select && setShowSelect((prev) => !prev)}
-            className={`${styles.listItem} ${select && styles.select}`}
+            className={`${styles.listItem} ${select && styles.select} ${disabled ? styles.disabled : ""}`}
         >
             {content}
         </li>
