@@ -12,8 +12,9 @@ import {
 } from "@components/client";
 import PermissionsInput from "../form/PermissionsInput";
 import { serializeOne } from "@/lib/db";
-import { useStore, stores } from "@/store/store";
+import { useStore } from "@/store/store";
 import { buildPermissions } from "@/lib/permissions";
+import { DeletePopup } from "../delete-popup/DeletePopup";
 
 export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
@@ -48,8 +49,9 @@ export function QuizInput({ quiz }) {
 
     const availableSources = useStore((state) => state.sourceStore);
     const availableNotes = useStore((state) => state.noteStore);
-    const addResources = useStore((state) => state.addResources);
-    const updateResource = useStore((state) => state.updateResource);
+
+    const user = useStore((state) => state.user);
+    const canDelete = quiz && quiz.createdBy === user._id;
 
     useEffect(() => {
         if (!quiz) return;
@@ -482,6 +484,10 @@ export function QuizInput({ quiz }) {
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Quiz"}
             </button>
+
+            {canDelete && (
+                <DeletePopup resourceType="quiz" resourceId={quiz._id} />
+            )}
         </form>
     );
 }
