@@ -1,12 +1,10 @@
 import { SourceDisplay } from "@components/server";
-import { SourceInput } from "@components/client";
+import { InputPopup, SourceInput } from "@components/client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
-import { serialize } from "@/lib/db";
-// import Source from "@models/Source";
+import { serialize, serializeOne } from "@/lib/db";
 import Link from "next/link";
-import { queryReadableResources, useUser } from "@/lib/auth";
-// import User from "../api/models/User";
+import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
 import { Source, User } from "@mneme_app/database-models";
 
 export default async function SourcesPage({ searchParams }) {
@@ -52,8 +50,13 @@ export default async function SourcesPage({ searchParams }) {
                     <ol className={styles.listGrid}>
                         {sources.map((src) => (
                             <li key={src.id}>
-                            {/* // add option to edit */}
                                 <SourceDisplay source={src} />
+                                {user && canEdit(src, user) && (
+                                    <InputPopup
+                                        type="source"
+                                        resource={serializeOne(src)}
+                                    />
+                                )}
                             </li>
                         ))}
                     </ol>

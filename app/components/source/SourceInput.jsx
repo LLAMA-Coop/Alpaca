@@ -1,12 +1,13 @@
 "use client";
 
-import { stores, useStore } from "@/store/store";
+import { useStore } from "@/store/store";
 import { Alert, Input, Label, ListItem, Spinner } from "@components/client";
 import { useState, useEffect } from "react";
 import PermissionsInput from "../form/PermissionsInput";
-import { buildPermissions } from "@/lib/permissions";
+import { DeletePopup } from "../delete-popup/DeletePopup";
+import { serializeOne } from "@/lib/db";
 
-export function SourceInput(source) {
+export function SourceInput({ source }) {
     const [title, setTitle] = useState("");
     const [titleError, setTitleError] = useState("");
 
@@ -22,7 +23,7 @@ export function SourceInput(source) {
     const [publishDate, setPublishDate] = useState();
     const [publishDateError, setPublishDateError] = useState("");
 
-    const [authors, setAuthor] = useState([]);
+    const [authors, setAuthors] = useState([]);
     const [newAuthor, setNewAuthor] = useState("");
 
     const [loading, setLoading] = useState(false);
@@ -34,17 +35,38 @@ export function SourceInput(source) {
     const accessedRegex = /^\d{4}-\d{2}-\d{2}$/;
     const publishRegex = /^\d{4}-\d{2}-\d{2}$/;
 
-    const sourceStore = useStore((state) => state.sourceStore);
-    const addResources = useStore((state) => state.addResources);
+    const user = useStore((state) => state.user);
+    const canDelete = source && source.createdBy === user._id;
 
     useEffect(() => {
-        setLastAccessed(new Date().toISOString().split("T")[0]);
+        if (!source) {
+            setLastAccessed(new Date().toISOString().split("T")[0]);
+            return;
+        }
+
+        setTitle(source.title);
+        if (source.authors.length > 0) setAuthors([...source.authors]);
+        if (source.medium) setMedium(source.medium);
+        if (source.url) setUrl(source.url);
+        if (source.publishedAt) setPublishDate(htmlDate(source.publishedAt));
+        if (source.lastAccessed) setLastAccessed(htmlDate(source.lastAccessed));
+        if (source.permissions)
+            setPermissions(serializeOne(source.permissions));
     }, []);
+
+    function htmlDate(dateString) {
+        const date = new Date(dateString);
+        return `${date.getFullYear().toString().padStart(4, "0")}-${(
+            date.getMonth() + 1
+        )
+            .toString()
+            .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+    }
 
     function handleAddAuthor(e) {
         e.preventDefault();
         if (!newAuthor || authors.includes(newAuthor)) return;
-        setAuthor([...authors, newAuthor]);
+        setAuthors([...authors, newAuthor]);
         setNewAuthor("");
     }
 
@@ -122,14 +144,12 @@ export function SourceInput(source) {
             setLastAccessed(new Date().toISOString().split("T")[0]);
             setPublishDate("");
             setNewAuthor("");
-            setAuthor([]);
+            setAuthors([]);
             setTitleError("");
             setMediumError("");
             setUrlError("");
             setLastAccessedError("");
             setPublishDateError("");
-
-            // addResources(stores.source, respBody.content);
         } else {
             setRequestStatus({
                 success: false,
@@ -249,7 +269,7 @@ export function SourceInput(source) {
                                 key={cont}
                                 item={cont}
                                 action={() => {
-                                    setAuthor(
+                                    setAuthors(
                                         authors.filter((name) => cont !== name),
                                     );
                                 }}
@@ -268,6 +288,10 @@ export function SourceInput(source) {
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Source"}
             </button>
+
+            {canDelete && (
+                <DeletePopup resourceType="source" resourceId={source._id} />
+            )}
         </div>
     );
 }
