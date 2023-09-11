@@ -12,11 +12,12 @@ import {
 } from "@/app/components/client";
 import { useStore } from "@/store/store";
 import { DeletePopup } from "../delete-popup/DeletePopup";
+import ListAdd from "../form/ListAdd";
 
 export function NoteInput({ note }) {
     const [text, setText] = useState("");
     const [sources, setSources] = useState([]);
-    const [isSelectOpen, setIsSelectOpen] = useState(false);
+    // const [isSelectOpen, setIsSelectOpen] = useState(false);
     const [textError, setTextError] = useState("");
     const [sourceError, setSourceError] = useState("");
 
@@ -24,7 +25,7 @@ export function NoteInput({ note }) {
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 
-    const addSourceRef = useRef(null);
+    // const addSourceRef = useRef(null);
 
     const availableSources = useStore((state) => state.sourceStore);
     const user = useStore((state) => state.user);
@@ -40,16 +41,16 @@ export function NoteInput({ note }) {
         );
     }, []);
 
-    useEffect(() => {
-        const handleOutsideClick = (e) => {
-            if (isSelectOpen && !addSourceRef.current?.contains(e.target)) {
-                setIsSelectOpen(false);
-            }
-        };
+    // useEffect(() => {
+    //     const handleOutsideClick = (e) => {
+    //         if (isSelectOpen && !addSourceRef.current?.contains(e.target)) {
+    //             setIsSelectOpen(false);
+    //         }
+    //     };
 
-        document.addEventListener("click", handleOutsideClick);
-        return () => document.removeEventListener("click", handleOutsideClick);
-    }, [isSelectOpen]);
+    //     document.addEventListener("click", handleOutsideClick);
+    //     return () => document.removeEventListener("click", handleOutsideClick);
+    // }, [isSelectOpen]);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -131,7 +132,15 @@ export function NoteInput({ note }) {
                     label="Current Sources"
                 />
 
-                <ol className="chipList">
+                <ListAdd
+                    item="Add a source"
+                    listChoices={availableSources}
+                    listChosen={sources}
+                    listProperty={"title"}
+                    listSetter={setSources}
+                />
+
+                {/* <ol className="chipList">
                     <ListItem
                         item="Add a source"
                         action={() => {
@@ -164,7 +173,7 @@ export function NoteInput({ note }) {
                                 actionType={"delete"}
                             />
                         ))}
-                </ol>
+                </ol> */}
             </div>
 
             <InputPopup type="source" />
