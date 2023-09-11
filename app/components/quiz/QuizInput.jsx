@@ -15,6 +15,7 @@ import { serializeOne } from "@/lib/db";
 import { useStore } from "@/store/store";
 import { buildPermissions } from "@/lib/permissions";
 import { DeletePopup } from "../delete-popup/DeletePopup";
+import ListAdd from "../form/ListAdd";
 
 export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
@@ -393,7 +394,15 @@ export function QuizInput({ quiz }) {
                     label="Related Sources"
                 />
 
-                <ol className="chipList">
+                <ListAdd
+                    item="Add a source"
+                    listChoices={availableSources}
+                    listChosen={sources}
+                    listProperty={"title"}
+                    listSetter={setSources}
+                />
+
+                {/* <ol className="chipList">
                     <ListItem
                         item="Add a source"
                         action={() => setIsSourceSelectOpen((prev) => !prev)}
@@ -427,7 +436,7 @@ export function QuizInput({ quiz }) {
                                 />
                             );
                         })}
-                </ol>
+                </ol> */}
             </div>
 
             <div>
@@ -437,7 +446,15 @@ export function QuizInput({ quiz }) {
                     label="Related Notes"
                 />
 
-                <ol className="chipList">
+                <ListAdd
+                    item="Add a note"
+                    listChoices={availableNotes}
+                    listChosen={notes}
+                    listProperty={"text"}
+                    listSetter={setNotes}
+                />
+
+                {/* <ol className="chipList">
                     <ListItem
                         item="Add a note"
                         action={() => {
@@ -468,7 +485,7 @@ export function QuizInput({ quiz }) {
                                 actionType={"delete"}
                             />
                         ))}
-                </ol>
+                </ol> */}
             </div>
 
             <PermissionsInput
