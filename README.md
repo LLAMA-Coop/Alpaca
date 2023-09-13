@@ -1,63 +1,57 @@
-Mneme
-===========
+# Mneme
 
-There are plenty of flashcard apps available, and they're easy to add flashcards to. But wouldn't it be great if you could do something more complex than flashcards? How about fill-in-the-blank? How about answering with a list that doesn't care about the order of the items, so long as all items are there? Maybe you want to memorize a line verbatim?
+Mneme is a powerful learning platform designed to take your study and knowledge retention to the next level. Unlike traditional flashcard apps, Mneme offers a wide range of quiz question types, including fill-in-the-blank, unordered list matching, and even verbatim text memorization. What sets Mneme apart is its commitment to linking every quiz question to reliable sources, ensuring accuracy and credibility in your learning process. Additionally, Mneme allows you to create, store, and retrieve learning materials, making it a versatile tool for students, educators, and knowledge seekers.
 
-But more importantly, all of these forms of quiz questions should each be linked to at least one reliable source, so if something in the question or answer doesn't seem right, you can check and correct it.
+Named after the [Greek Muse for memory](https://en.wikipedia.org/wiki/Mneme), Mneme is a web application and API that facilitates the submission, storage, and retrieval of learning materials in a comprehensive database. These learning materials encompass various categories, including articles, news reports, official documents, scientific papers, specifications, and more. Users can also create concise notes to distill and clarify information from these sources. Furthermore, Mneme empowers users to craft diverse quiz questions or prompts that challenge learners to recall and apply the information they've acquired.
 
-This, along with short notes to condense information from sources is the vision behind Mneme. It is not just for taking quizzes. It's for making them easily for yourself or anyone else.
+## Open Source Collaboration
 
-Named for the [Greek Muse for memory](https://en.wikipedia.org/wiki/Mneme) , Mneme will be a web application and API for submitting, storing, and retrieving learning materials in a database. These learning materials can be sources of information, such as articles, news reports, official documents, scientific papers, specifications, etc; notes to condense and clarify the information in those sources; and questions or prompts to challenge a student to recall and use the information.
+Mneme is an open-source project, inviting contributors to collaborate and enhance its capabilities. You can explore the project's source code on [GitHub](https://github.com/joewrotehaikus/mnemefeast), create your GitHub fork, and submit pull requests to contribute to its development. Join the community, share your ideas, and help shape the future of Mneme.
 
-This project is open source. Contributors are welcome to [view the source code on GitHub](https://github.com/joewrotehaikus/mnemefeast), make their own GitHub fork, and submit pull requests for contribution to the project.
-
-For discussion about the application, [go to our Discord server](https://discord.gg/PcsjqPFh).
-
-This application is using NextJS 13 and Mongoose, bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## To Set Up From Git Repository
-
-You are required to have git and npm installed. You will have to provide your own instance of MongoDB. [For instructions on getting your own MongoDB instance, click here](https://www.mongodb.com/docs/manual/administration/install-community/).
-
-In command terminal, type:
-```bash
-git clone https://github.com/joewrotehaikus/mnemefeast.git
-```
-Then
-```
-npm install
-```
-
-Once that installs, you will open mneme/sample.env and follow the instructions to create your own .env file, with the URL to your MongoDB database.
+For discussions and community engagement, visit our [Discord server](https://discord.gg/PcsjqPFh).
 
 ## Getting Started
 
-First, run the development server:
+To set up Mneme from the Git repository, ensure you have Git and npm installed on your system. You'll also need to have your own MongoDB instance. If you don't have one, follow the MongoDB installation instructions [here](https://www.mongodb.com/docs/manual/administration/install-community/).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/joewrotehaikus/mnemefeast.git
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. Configure your environment:
+   Open the `mneme/sample.env` file and follow the instructions to create your own `.env` file, including the URL to your MongoDB database.
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+   Visit [http://localhost:3000](http://localhost:3000) in your web browser to see Mneme in action.
+
+## Fonts and Optimization
+
+This project leverages [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) for automatic font optimization and loading of Inter, a custom Google Font.
 
 ## The API
 
-This application serves both the website and the API. There are currently three endpoints for the API. For your personal system, you will need the URI of a MongoDB database, possibly by running a local instance of MongoDB. The file "sample.env" has instructions for adding the URI that you are using.
+Mneme serves both its website and API through the same application. Currently, there are three API endpoints. To set up the API for your use, you'll need the URI of a MongoDB database, which you can obtain by running a local MongoDB instance. Detailed instructions for configuring the URI are provided in the "sample.env" file.
 
-## Where We Are Going
+## Roadmap
 
-The plan is to make three endpoints for the API, each corresponding to three Mongoose models. The models are there to assist in adding records to the database using a schema and validating the input before adding.
+Mneme's development roadmap includes creating three endpoints for the API, each corresponding to three distinct Mongoose models. These models are essential for adding records to the database while adhering to defined schemas and input validation.
 
-Here are the proposed models:
-1. Source
-    > Information and link to a reliable source of information pertinent to a subject one might one to study
-2. Note
-    > A brief summary or explanation of information one might wish to study and learn drawn from one or more sources (the more sources that support a note, the more reliable the note likely is)
-3. Quiz
-    > A single question or prompt that checks a student's command of information. This can come in many forms, such as prompt/response, fill-in-the-blank, ordered or unordered list to fill in, sandbox for coding, etc. The prompt may be multimedia, audio, video, still image, or text, so long as there are text alternatives compliant with WCAG.
+Proposed Models:
+1. **Source**
+   - Information and links to reliable sources of subject-related information for study.
+2. **Note**
+   - Concise summaries or explanations drawn from one or more sources, with notes supported by multiple sources considered more reliable.
+3. **Quiz**
+   - A versatile question or prompt that assesses a student's understanding of information. Various question formats are supported, such as prompt/response, fill-in-the-blank, ordered or unordered lists, coding exercises, and more. Prompts may include multimedia elements (audio, video, images) with text alternatives compliant with WCAG accessibility guidelines.
+
+Join us on this exciting journey to transform learning and knowledge sharing with Mneme!
