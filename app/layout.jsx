@@ -29,6 +29,7 @@ export default async function RootLayout({ children }) {
             ? [...user.associates, ...publicUsers]
             : [...publicUsers],
     ).map(x => ({
+        _id: x._id,
         username: x.username,
         displayName: x.displayName,
         avatar: x.avatar,
