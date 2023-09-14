@@ -28,7 +28,11 @@ export default async function RootLayout({ children }) {
         user?.hasOwnProperty("associates") && user?.associates.length > 0
             ? [...user.associates, ...publicUsers]
             : [...publicUsers],
-    );
+    ).map(x => ({
+        username: x.username,
+        displayName: x.displayName,
+        avatar: x.avatar,
+    }));
     const publicGroups = await Group.find({ isPublic: true });
     const availableGroups = serialize(
         user?.hasOwnProperty() && user?.groups.length > 0
