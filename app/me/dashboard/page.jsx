@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import styles from "@/app/page.module.css";
 import { serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
-import { Source, Quiz, Note } from "@mneme_app/database-models";
+// import { Source, Quiz, Note } from "@mneme_app/database-models";
+import { Source, Note, Quiz } from "@/app/api/models";
 import InviteAssociate from "@/app/components/inviteAssociate";
 
 export default async function DashboardPage() {

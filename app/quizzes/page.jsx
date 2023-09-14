@@ -5,7 +5,8 @@ import { QuizDisplay } from "@components/server";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Group, User, Source, Quiz, Note } from "@mneme_app/database-models";
+// import { Group, User, Source, Quiz, Note } from "@mneme_app/database-models";
+import { Source, Note, Quiz, User, Group } from "@/app/api/models";
 
 export default async function QuizzesPage({ searchParams }) {
     const user = await useUser();

@@ -3,7 +3,8 @@ import { capitalize } from "@/lib/strings";
 import { Card } from "@components/client";
 // import Source from "@models/Source";
 // import User from "@models/User";
-import { Source, User } from "@mneme_app/database-models";
+// import { Source, User } from "@mneme_app/database-models";
+import { Source, User } from "@/app/api/models";
 import Link from "next/link";
 
 export async function NoteDisplay({ note }) {

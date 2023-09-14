@@ -3,7 +3,8 @@ import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
-import { Group, Quiz, Note, Source } from "@mneme_app/database-models";
+// import { Group, Quiz, Note, Source } from "@mneme_app/database-models";
+import { Source, Note, Quiz, Group } from "@/app/api/models";
 import { QuizDisplay } from "@/app/components/server";
 
 export default async function GroupPage({ params }) {

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { Group } from "@mneme_app/database-models";
-import User from "@mneme_app/database-models";
+// import { Group } from "@mneme_app/database-models";
+// import User from "@mneme_app/database-models";
+import { User, Group } from "@/app/api/models";
 
 export async function POST(req) {
     try {

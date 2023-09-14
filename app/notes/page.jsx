@@ -3,7 +3,8 @@ import { NoteInput, InputPopup } from "@components/client";
 import styles from "@/app/page.module.css";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
-import { Source, Note, User } from "@mneme_app/database-models";
+// import { Source, Note, User } from "@mneme_app/database-models";
+import { Source, Note, User } from "@/app/api/models";
 import { redirect } from "next/navigation";
 
 export default async function NotesPage({ searchParams }) {

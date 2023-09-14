@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
-import { Note } from "@mneme_app/database-models";
+// import { Note } from "@mneme_app/database-models";
+import { Note } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 
 export async function DELETE(req) {

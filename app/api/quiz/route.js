@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { Quiz } from "@mneme_app/database-models";
+// import { Quiz } from "@mneme_app/database-models";
+import { Quiz } from "@/app/api/models";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
 import { serializeOne } from "@/lib/db";
 import { server, unauthorized } from "@/lib/apiErrorResponses";

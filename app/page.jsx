@@ -6,7 +6,8 @@ import { useUser } from "@/lib/auth";
 import { serialize } from "@/lib/db";
 // import Source from "@models/Source";
 // import Note from "@models/Note";
-import { Source, Note } from "@mneme_app/database-models";
+// import { Source, Note } from "@mneme_app/database-models";
+import { Source, Note } from "@/app/api/models";
 import Link from "next/link";
 
 export default async function Home({ searchParams }) {

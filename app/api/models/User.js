@@ -77,4 +77,4 @@ UserSchema.set("toJSON", {
     virtuals: true,
 });
 
-export default model("user", UserSchema);
+export default models?.user || model("user", UserSchema);
