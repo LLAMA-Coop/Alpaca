@@ -3,10 +3,6 @@ import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
-// import Group from "@models/Group";
-// import Quiz from "@models/Quiz";
-// import Note from "@models/Note";
-// import Source from "@models/Source";
 import { Group, Quiz, Note, Source } from "@mneme_app/database-models";
 import { QuizDisplay } from "@/app/components/server";
 

@@ -23,17 +23,22 @@ const NotificationSchema = new Schema({
                     "You must be an administrator to send a message to an individual user",
             },
         },
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: "user",
+        },
         required: true,
     },
     subject: {
         type: String,
-        required: true,
-        enum: {
-            values: [
-                "Response required: Notice of violation",
-                "A group has invited you to join them!"
-            ]
-        }
+        // required: true,
+        // enum: {
+        //     values: [
+        //         "Response required: Notice of violation",
+        //         "A group has invited you to join them!",
+        //         "A user wants to be your associate!"
+        //     ]
+        // }
     },
     message: {
         type: String,

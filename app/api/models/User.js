@@ -1,4 +1,5 @@
 import { model, models, Schema } from "mongoose";
+// import NotificationSchema from "./NotificationSchema";
 
 // This is for tracking progress on quiz questions
 // and spaced repetition (Leitner method)
@@ -31,7 +32,6 @@ const UserSchema = new Schema(
         },
         displayName: {
             type: String,
-            required: true,
             minLength: 2,
             maxLength: 32,
         },
@@ -49,8 +49,8 @@ const UserSchema = new Schema(
         associates: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "user"
-            }
+                ref: "user",
+            },
         ],
         groups: [
             {
@@ -59,6 +59,7 @@ const UserSchema = new Schema(
             },
         ],
         quizzes: [TQuiz],
+        notifications: [Object],
         lastLogin: {
             type: Date,
         },
@@ -76,4 +77,4 @@ UserSchema.set("toJSON", {
     virtuals: true,
 });
 
-export default models?.user || model("user", UserSchema);
+export default model("user", UserSchema);
