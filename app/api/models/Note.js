@@ -6,6 +6,8 @@ import PermissionSchema from "./PermissionSchema";
 
 // Don't forget to validate at least one source ID
 
+// Also should have searchable tags, like Source
+
 const NoteSchema = new Schema(
     {
         text: {
@@ -14,6 +16,13 @@ const NoteSchema = new Schema(
             minLength: 1,
             maxLength: 256,
         },
+        tags: [
+            {
+                type: String,
+                minLength: 1,
+                maxLength: 16,
+            },
+        ],
         sources: [
             {
                 type: Schema.Types.ObjectId,
