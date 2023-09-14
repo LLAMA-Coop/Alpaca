@@ -28,17 +28,39 @@ export default async function RootLayout({ children }) {
     }
 
     const notifications = user
-        ? user.notifications.map((x) => ({
-              from: {
-                  user: {
+        ? user.notifications.map((x) => {
+              const notification = {
+                  from: {},
+                  subject: x.subject,
+                  message: x.message,
+              };
+
+              if (x.from.user) {
+                  notification.from.user = {
                       _id: x.from.user._id,
                       username: x.from.user.username,
                       displayName: x.from.user.displayName,
-                  },
-              },
-              subject: x.subject,
-              message: x.message,
-          }))
+                  };
+              }
+
+              if (x.from.admin) {
+                  notification.from.admin = {
+                      _id: x.from.admin._id,
+                      username: x.from.admin.username,
+                      displayName: x.from.admin.displayName,
+                  };
+              }
+
+              if (x.from.group) {
+                  notification.from.group = {
+                      _id: x.from.group._id,
+                      name: x.from.group.name,
+                      description: x.from.group.description
+                  };
+              }
+
+              return notification;
+          })
         : [];
 
     console.log("notifications in layout", notifications[0]);
