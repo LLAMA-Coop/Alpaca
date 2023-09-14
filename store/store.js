@@ -18,6 +18,17 @@ const addResources = (state, storeName, ...resources) => {
     return newState;
 };
 
+const addNotifications = (state, ...notifications) => {
+    const newStore = [...state.notifications];
+    notifications.forEach((n) => {
+        const alreadyStored = newStore.find(x => x._id === n._id)
+        if(!alreadyStored) newStore.push(n);
+    });
+    const newState = {};
+    newState.notifications = newStore;
+    return newState;
+};
+
 //needs testing
 const updateResource = (state, storeName, newResource) => {
     if (!Object.values(stores).includes(storeName)) {
@@ -54,11 +65,20 @@ export const useStore = create((set) => ({
     groupStore: [],
     userStore: [],
     user: undefined,
+    notifications: [],
 
     setUser: (user) => {
         return set(() => ({
             user,
         }));
+    },
+
+    addNotifications: (...notifications) => {
+        try {
+            return set((state) => addNotifications(state, ...notifications));
+        } catch (error) {
+            console.error(error);
+        }
     },
 
     isAuthenticated: false,

@@ -10,10 +10,12 @@ export function FillStore({
     userStore,
     webSocketURL,
     user,
+    notifications,
 }) {
     const addResources = useStore((state) => state.addResources);
     const updateResource = useStore((state) => state.updateResource);
     const setUser = useStore((state) => state.setUser);
+    const addNotifications = useStore((state) => state.addNotifications);
 
     useEffect(() => {
         const ws = new WebSocket(webSocketURL);
@@ -62,4 +64,5 @@ export function FillStore({
     if (groupStore?.length > 0) addResources(stores.group, ...groupStore);
     if (userStore?.length > 0) addResources(stores.user, ...userStore);
     if (user) setUser(user);
+    if (notifications) addNotifications(...notifications);
 }

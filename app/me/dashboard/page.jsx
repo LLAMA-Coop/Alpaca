@@ -6,11 +6,12 @@ import { useUser } from "@/lib/auth";
 // import { Source, Quiz, Note } from "@mneme_app/database-models";
 import { Source, Note, Quiz } from "@/app/api/models";
 import InviteAssociate from "@/app/components/inviteAssociate";
+import { Notifications } from "@/app/components/notifications";
 
 export default async function DashboardPage() {
     const user = await useUser();
-    user.populate("associates");
     if (!user) return redirect("/login");
+    user.populate("associates");
 
     const sources = await Source.find({ contributors: user.id });
     const quizzes = await Quiz.find({ contributors: user.id });
@@ -35,6 +36,12 @@ export default async function DashboardPage() {
                         )}
                     </p>
                 </div>
+            </section>
+
+            <section>
+                <h3>Your Notifications</h3>
+
+                <Notifications />
             </section>
 
             <section>

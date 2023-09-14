@@ -9,6 +9,7 @@ async function verifyAdmin(value) {
 }
 
 const NotificationSchema = new Schema({
+    _id: Schema.Types.ObjectId,
     from: {
         group: {
             type: Schema.Types.ObjectId,

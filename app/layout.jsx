@@ -18,6 +18,30 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
     const user = await useUser();
+    if (user) {
+        await user.populate({
+            path: "notifications",
+            populate: { path: "from.user", model: "user" },
+        });
+        // await user.populate("notifications.from.group");
+        // await user.populate("notifications.from.admin");
+    }
+
+    const notifications = user
+        ? user.notifications.map((x) => ({
+              from: {
+                  user: {
+                      _id: x.from.user._id,
+                      username: x.from.user.username,
+                      displayName: x.from.user.displayName,
+                  },
+              },
+              subject: x.subject,
+              message: x.message,
+          }))
+        : [];
+
+    console.log("notifications in layout", notifications[0]);
 
     const query = queryReadableResources(user);
     const sources = serialize(await Source.find(query));
@@ -29,7 +53,7 @@ export default async function RootLayout({ children }) {
         user?.hasOwnProperty("associates") && user?.associates.length > 0
             ? [...user.associates, ...publicUsers]
             : [...publicUsers],
-    ).map(x => ({
+    ).map((x) => ({
         _id: x._id,
         username: x.username,
         displayName: x.displayName,
@@ -51,6 +75,7 @@ export default async function RootLayout({ children }) {
                 groupStore={availableGroups}
                 userStore={availableUsers}
                 user={serializeOne(user)}
+                notifications={serialize(notifications)}
                 webSocketURL={process.env.WS_URL}
             />
             <body className={inter.className}>
