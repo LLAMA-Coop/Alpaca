@@ -26,6 +26,9 @@ export function SourceInput({ source }) {
     const [authors, setAuthors] = useState([]);
     const [newAuthor, setNewAuthor] = useState("");
 
+    const [tags, setTags] = useState([]);
+    const [newTag, setNewTag] = useState("");
+
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
@@ -46,6 +49,7 @@ export function SourceInput({ source }) {
 
         setTitle(source.title);
         if (source.authors.length > 0) setAuthors([...source.authors]);
+        if (source.tags?.length > 0) setTags([...source.tags]);
         if (source.medium) setMedium(source.medium);
         if (source.url) setUrl(source.url);
         if (source.publishedAt) setPublishDate(htmlDate(source.publishedAt));
@@ -68,6 +72,13 @@ export function SourceInput({ source }) {
         if (!newAuthor || authors.includes(newAuthor)) return;
         setAuthors([...authors, newAuthor]);
         setNewAuthor("");
+    }
+
+    function handleAddTag(e) {
+        e.preventDefault();
+        if (!newTag || tags.includes(newTag)) return;
+        setTags([...tags, newTag]);
+        setNewTag("");
     }
 
     async function handleSubmit(e) {
@@ -115,6 +126,7 @@ export function SourceInput({ source }) {
             publishDate: formatDate(publishDate),
             lastAccessed: formatDate(lastAccessed),
             authors,
+            tags,
         };
         sourcePayload.permissions = setPermissions(permissions);
         if (source) {
@@ -133,7 +145,12 @@ export function SourceInput({ source }) {
 
         setLoading(false);
 
-        if (response.status === 201) {
+        if (response.status === 200) {
+            setRequestStatus({
+                success: true,
+                message: "Source updated successfully",
+            });
+        } else if (response.status === 201) {
             setRequestStatus({
                 success: true,
                 message: "Source added successfully",
@@ -272,6 +289,38 @@ export function SourceInput({ source }) {
                                     setAuthors(
                                         authors.filter((name) => cont !== name),
                                     );
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <Input
+                    label={"Add Tag"}
+                    value={newTag}
+                    maxLength={16}
+                    description="A word or phrase that could be used to search for this source"
+                    autoComplete="off"
+                    onChange={(e) => setNewTag(e.target.value)}
+                    action="Add tag"
+                    onActionTrigger={handleAddTag}
+                />
+
+                <div style={{ marginTop: "24px" }}>
+                    <Label label="Tags" />
+
+                    <ul className="chipList">
+                        {tags.length === 0 && <ListItem item="No tags added" />}
+
+                        {tags.map((tag) => (
+                            <ListItem
+                                key={tag}
+                                item={tag}
+                                action={() => {
+                                    setTags(tags.filter((t) => t !== tag));
                                 }}
                                 actionType={"delete"}
                             />

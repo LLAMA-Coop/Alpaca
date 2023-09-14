@@ -34,6 +34,7 @@ export async function POST(req) {
             publishDate,
             lastAccessed,
             authors,
+            tags,
             permissions,
         } = await req.json();
 
@@ -62,6 +63,7 @@ export async function POST(req) {
             publishedAt: publishDate,
             lastAccessed: lastAccessed,
             authors: authors,
+            tags: tags,
             createdBy: user._id,
             contributors: [user._id],
         });
@@ -99,6 +101,7 @@ export async function PUT(req) {
             publishDate,
             lastAccessed,
             authors,
+            tags,
             permissions,
         } = await req.json();
 
@@ -138,6 +141,9 @@ export async function PUT(req) {
         }
         if (authors) {
             source.authors = [...authors];
+        }
+        if (tags) {
+            source.tags = [...tags];
         }
         if (permissions && source.createdBy.toString() === user._id) {
             source.permissions = serializeOne(permissions);
