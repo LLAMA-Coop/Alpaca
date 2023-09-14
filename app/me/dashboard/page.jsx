@@ -3,13 +3,12 @@ import { redirect } from "next/navigation";
 import styles from "@/app/page.module.css";
 import { serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
-// import Source from "@models/Source";
-// import Quiz from "@models/Quiz";
-// import Note from "@models/Note";
 import { Source, Quiz, Note } from "@mneme_app/database-models";
+import InviteAssociate from "@/app/components/inviteAssociate";
 
 export default async function DashboardPage() {
     const user = await useUser();
+    user.populate("associates");
     if (!user) return redirect("/login");
 
     const sources = await Source.find({ contributors: user.id });
@@ -84,6 +83,19 @@ export default async function DashboardPage() {
                         <p>No sources</p>
                     </div>
                 )}
+            </section>
+
+            <section>
+                <h3>Your Associates</h3>
+                {user.associates.length > 0 && user.associates.map(associate => {
+                    console.log(associate)
+                })}
+
+                {user.associates.length === 0 && (
+                    <p>You have no associates</p>
+                )}
+
+                <InviteAssociate />
             </section>
         </main>
     );
