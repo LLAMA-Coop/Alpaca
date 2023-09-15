@@ -48,17 +48,14 @@ Mneme takes care of both aesthetics and performance. We use [`next/font`](https:
 
 Mneme is a unified platform that serves both the website and the API. Currently, we offer three API endpoints. To set up your personal system, you'll need the URI of a MongoDB database. You can either run a local instance or follow our instructions in the "sample.env" file to configure the URI.
 
+
 ## Our Roadmap 🗺️
 
-Our journey ahead involves creating three essential API endpoints, each corresponding to distinct Mongoose models. These models are the backbone, ensuring data integrity and validation.
+Our journey ahead involves creating three essential API endpoints, each corresponding to distinct Mongoose models. Here's a glimpse of where Mneme is headed:
 
-Proposed Models:
-1. **Source**
-   - A reliable source of information linked to a subject for study.
-2. **Note**
-   - Precise summaries or explanations extracted from one or more sources, with notes backed by multiple sources considered more reliable.
-3. **Quiz**
-   - A versatile question or prompt to assess your grasp of information. From prompt/response to fill-in-the-blank, ordered or unordered lists, coding exercises, and more – we've got it all. Prompts may even include multimedia elements like audio, video, images, with text alternatives meeting WCAG accessibility guidelines.
+- **Source Model**: We're introducing a dedicated model for linking reliable sources of subject-related information for study.
+- **Note Model**: Expect a model that supports concise summaries or explanations drawn from multiple sources, enhancing note reliability.
+- **Quiz Model**: Dive into versatile question formats, including prompt/response, fill-in-the-blank, ordered or unordered lists, and more. We're even exploring multimedia prompts with WCAG-compliant text alternatives.
 
 Join us on this thrilling journey to reshape learning and knowledge sharing with Mneme!
 
@@ -105,4 +102,6 @@ Are you ready to be part of something big? We're thrilled to have developers lik
 8. **Review and Merge**:
    After your pull request is reviewed and approved, it will be merged into the main Mneme repository.
 
+
+<br>
 Thank you for contributing to Mneme! Together, we're creating a brighter future for learning and knowledge sharing. 🌟
