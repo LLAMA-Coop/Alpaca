@@ -5,6 +5,7 @@ import { User } from "@/app/api/models";
 import { useUser } from "@/lib/auth";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { serializeOne } from "@/lib/db";
+import { Types } from "mongoose";
 
 export async function GET(req) {
     const userId = req.nextUrl.pathname.split("/")[3];
@@ -42,46 +43,64 @@ export async function POST(req) {
             console.error(
                 `${sender.username} sent a message to user id ${recipientId}, which does not exist`,
             );
-        } else {
-            // console.log("recipient", recipient);
         }
 
-        const { action } = await req.json();
+        const { action, notificationId } = await req.json();
         const notification = {
             from: {
                 user: sender._id,
             },
         };
 
+        let update;
+
         if (action === "associate") {
+            // may want to add a sent array to users for the sender to add the notification id
+            notification._id = new Types.ObjectId();
             notification.subject = "A user wants to be your associate!";
             notification.message = `${sender.username} is asking to be your associate. This will allow you two to share resources, either to read or to edit. If you accept, they will see your username and display name.`;
-        }
+            notification.responseActions = [
+                "acceptAssociation",
+                "ignore",
+                "delete",
+            ];
 
-        let update;
-        if (recipient) {
-            if (recipient.notifications) {
-                recipient.notifications.push(notification);
-            } else {
-                recipient.notifications = [];
-                recipient.notifications.push(notification);
+            if (recipient) {
+                if (!recipient.notifications) {
+                    recipient.notifications = [];
+                }
+                const alreadyNotified = recipient.notifications.find(
+                    (x) => x._id === notification._id,
+                );
+                if (!alreadyNotified) {
+                    recipient.notifications.push(notification);
+                }
+                // not sure if we need this
+                // recipient.markModified("notifications");
+                update = await recipient.save();
             }
-            recipient.markModified("notifications");
-            update = await recipient.save();
-            // console.log("Update", update);
+            if (update.notifications.length === 0) {
+                return NextResponse.json(
+                    {
+                        message: "Did not update",
+                    },
+                    {
+                        status: 500,
+                    },
+                );
+            }
         }
 
-        if (update.notifications.length === 0) {
-            return NextResponse.json(
-                {
-                    message: "Did not update",
-                },
-                {
-                    status: 500,
-                },
-            );
-        } else {
-            console.log("updated", update.notifications);
+        if (action === "acceptAssociation") {
+            // need to also delete notification or replace with confirmation
+            if (sender.associates.indexOf(recipient._id) === -1)
+                sender.associates.push(recipient._id);
+            if (recipient.associates.indexOf(sender._id) === -1)
+                recipient.associates.push(sender._id);
+            update = {
+                sender: await sender.save(),
+                recipient: await recipient.save(),
+            };
         }
 
         return NextResponse.json(
