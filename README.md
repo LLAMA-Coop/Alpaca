@@ -75,6 +75,7 @@ Are you ready to be part of something big? We're thrilled to have developers lik
    Clone your forked repository to your local machine using:
    ```bash
    git clone https://github.com/YourUsername/mnemefeast.git
+   # Add the link to your forked repository
    ```
 
 3. **Create a New Branch**:
