@@ -30,9 +30,11 @@ export default async function RootLayout({ children }) {
     const notifications = user
         ? user.notifications.map((x) => {
               const notification = {
+                  _id: x._id,
                   from: {},
                   subject: x.subject,
                   message: x.message,
+                  responseActions: x.responseActions
               };
 
               if (x.from.user) {

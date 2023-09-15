@@ -1,15 +1,18 @@
-import { Schema } from "mongoose";
+import { Schema, Types } from "mongoose";
 import User from "./User";
 
 // validator needs to use the group listed for that admin
 async function verifyAdmin(value) {
     const user = await User.findById(value);
     if (!user) return false;
-    return user.roles.includes("admin")
+    return user.roles.includes("admin");
 }
 
 const NotificationSchema = new Schema({
-    _id: Schema.Types.ObjectId,
+    _id: {
+        type: Schema.Types.ObjectId,
+        default: Types.ObjectId,
+    },
     from: {
         group: {
             type: Schema.Types.ObjectId,
@@ -32,18 +35,16 @@ const NotificationSchema = new Schema({
     },
     subject: {
         type: String,
-        // required: true,
-        // enum: {
-        //     values: [
-        //         "Response required: Notice of violation",
-        //         "A group has invited you to join them!",
-        //         "A user wants to be your associate!"
-        //     ]
-        // }
     },
     message: {
         type: String,
-    }
+    },
+    responseActions: [
+        {
+            type: String,
+            enum: ["acceptAssociation", "join", "ignore", "delete", "reply"],
+        },
+    ],
 });
 
 export default NotificationSchema;
