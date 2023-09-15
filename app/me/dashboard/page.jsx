@@ -7,6 +7,7 @@ import { useUser } from "@/lib/auth";
 import { Source, Note, Quiz } from "@/app/api/models";
 import InviteAssociate from "@/app/components/inviteAssociate";
 import { Notifications } from "@/app/components/notifications";
+import Image from "next/image";
 
 export default async function DashboardPage() {
     const user = await useUser();
@@ -28,6 +29,8 @@ export default async function DashboardPage() {
                     <p>Hello user, here's your account!</p>
 
                     <p>
+                        Display Name: {user.displayName}
+                        <br />
                         Username: {user.username}
                         <br />
                         Created At:{" "}
@@ -95,13 +98,25 @@ export default async function DashboardPage() {
 
             <section>
                 <h3>Your Associates</h3>
-                {user.associates.length > 0 && user.associates.map(associate => {
-                    console.log(associate)
-                })}
-
-                {user.associates.length === 0 && (
-                    <p>You have no associates</p>
+                {user.associates.length > 0 && (
+                    <ol>
+                        {user.associates.map((associate) => {
+                            return (
+                                <li key={associate._id}>
+                                    {associate.displayName ===
+                                    associate.username
+                                        ? associate.username
+                                        : `${associate.displayName} (${associate.username})`}
+                                    {associate.avatar && (
+                                        <Image src={associate.avatar} />
+                                    )}
+                                </li>
+                            );
+                        })}
+                    </ol>
                 )}
+
+                {user.associates.length === 0 && <p>You have no associates</p>}
 
                 <InviteAssociate />
             </section>
