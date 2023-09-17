@@ -25,6 +25,7 @@ export default async function RootLayout({ children }) {
         });
         // await user.populate("notifications.from.group");
         // await user.populate("notifications.from.admin");
+        await user.populate("associates");
     }
 
     const notifications = user
@@ -73,11 +74,8 @@ export default async function RootLayout({ children }) {
     const quizzes = serialize(await Quiz.find(query));
 
     const publicUsers = await User.find({ isPublic: true });
-    const availableUsers = serialize(
-        user?.hasOwnProperty("associates") && user?.associates.length > 0
-            ? [...user.associates, ...publicUsers]
-            : [...publicUsers],
-    ).map((x) => ({
+    const associates = user.associates.filter(a => !publicUsers.includes(a))
+    const availableUsers = serialize([...associates, ...publicUsers]).map((x) => ({
         _id: x._id,
         username: x.username,
         displayName: x.displayName,
