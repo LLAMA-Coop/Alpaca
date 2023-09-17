@@ -12,7 +12,7 @@ Traditional flashcards are so last season! Mneme brings a breath of fresh air to
 
 ## Join the Revolution 🚀
 
-Mneme is an open-source project, and we're calling all passionate learners and developers to join us on this journey. [Explore the source code on GitHub](https://github.com/joewrotehaikus/mnemefeast), create your own fork, and send pull requests to shape the future of Mneme. Together, we can make learning an exciting adventure!
+Mneme is an open-source project, and we're calling all passionate learners and developers to join us on this journey. [Explore the source code on GitHub](https://github.com/mneme-app/app.git), create your own fork, and send pull requests to shape the future of Mneme. Together, we can make learning an exciting adventure!
 
 Need a place to discuss ideas and get involved? Visit our vibrant [Discord server](https://discord.gg/PcsjqPFh).
 
@@ -22,7 +22,7 @@ Ready to dive in? Setting up Mneme from the Git repository is a breeze:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/joewrotehaikus/mnemefeast.git
+   git clone https://github.com/mneme-app/app.git
    ```
 
 2. **Install Dependencies**:
@@ -46,7 +46,7 @@ Mneme takes care of both aesthetics and performance. We use [`next/font`](https:
 
 ## The API World 🌐
 
-Mneme is a unified platform that serves both the website and the API. Currently, we offer three API endpoints. To set up your personal system, you'll need the URI of a MongoDB database. You can either run a local instance or follow our instructions in the "sample.env" file to configure the URI.
+Mneme is a unified platform that serves both the website and the API. Currently, we offer multiple API endpoints and HTTP verbs for updating the database through the API. To set up your personal system, you'll need the URI of a MongoDB database. You can either run a local instance or follow our instructions in the "sample.env" file to configure the URI.
 
 
 ## Our Roadmap 🗺️
@@ -97,7 +97,7 @@ Are you ready to be part of something big? We're thrilled to have developers lik
    ```
 
 7. **Create a Pull Request**:
-   Visit the Mneme repository on GitHub and click the "New Pull Request" button. Compare your branch with the main branch of the Mneme repository and provide a detailed description of your changes.
+   Visit the original Mneme repository on GitHub and click the "New Pull Request" button. Compare your branch with the main branch of the Mneme repository and provide a detailed description of your changes.
 
 8. **Review and Merge**:
    After your pull request is reviewed and approved, it will be merged into the main Mneme repository.
