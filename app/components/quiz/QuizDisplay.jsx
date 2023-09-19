@@ -18,7 +18,7 @@ export function QuizDisplay({ canClientCheck, quiz }) {
             <ListAnswer
                 canClientCheck={canClientCheck}
                 quiz={quiz}
-                isOrdered={quiz.type === "ordered-list"}
+                isOrdered={quiz.type === "ordered-list" || quiz.type === "ordered-list-answer"}
             />
         );
     }

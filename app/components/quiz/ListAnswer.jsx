@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Card } from "../client";
+import correctConfetti from "@/lib/correctConfetti";
 
 export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
     const [userResponse, setUserResponse] = useState(
@@ -20,6 +21,8 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
     function handleCheckAnswer() {
         setResponseStatus("complete");
         if (isOrdered) {
+            // Easier to find right/wrong if only looking for one wrong
+            // But ux better if can clarify which ones wrong
             let isIncorrect = userResponse.find((res, index) => {
                 return (
                     res.toLowerCase() !==
@@ -28,10 +31,12 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
             });
             if (isIncorrect == undefined) {
                 setResponseCorrect(true);
+                correctConfetti();
             }
         }
 
         if (!isOrdered) {
+            // we could just sort first if unordered, then use same logic for both
             const sortLowerCase = (a, b) => {
                 let al = a.toLowerCase();
                 let bl = b.toLowerCase();
@@ -48,6 +53,7 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
             });
             if (isIncorrect == undefined) {
                 setResponseCorrect(true);
+                correctConfetti();
             }
         }
     }
