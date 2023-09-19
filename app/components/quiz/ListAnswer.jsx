@@ -10,6 +10,7 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
     );
     const [responseStatus, setResponseStatus] = useState("empty");
     const [responseCorrect, setResponseCorrect] = useState(false);
+    const [failures, setFailures] = useState(0);
 
     function handleChange(index, value) {
         setResponseStatus("incomplete");
@@ -31,7 +32,10 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
             });
             if (isIncorrect == undefined) {
                 setResponseCorrect(true);
+                setFailures(0);
                 correctConfetti();
+            } else {
+                setFailures(failures + 1);
             }
         }
 
@@ -53,7 +57,10 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
             });
             if (isIncorrect == undefined) {
                 setResponseCorrect(true);
+                setFailures(0);
                 correctConfetti();
+            } else {
+                setFailures(failures + 1);
             }
         }
     }
@@ -86,16 +93,18 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
             {responseCorrect && responseStatus === "complete" && (
                 <div>Correct!</div>
             )}
-            {!responseCorrect && responseStatus === "complete" && (
-                <div>
-                    Incorrect. Acceptable answers are
-                    <ul>
-                        {quiz.correctResponses.map((ans) => {
-                            return <li key={ans}>{ans}</li>;
-                        })}
-                    </ul>
-                </div>
-            )}
+            {!responseCorrect &&
+                responseStatus === "complete" &&
+                failures > 2 && (
+                    <div>
+                        Incorrect. Acceptable answers are
+                        <ul>
+                            {quiz.correctResponses.map((ans) => {
+                                return <li key={ans}>{ans}</li>;
+                            })}
+                        </ul>
+                    </div>
+                )}
         </Card>
     );
 }
