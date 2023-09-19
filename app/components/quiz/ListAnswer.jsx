@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "../client";
+import { Card, Input } from "../client";
 import correctConfetti from "@/lib/correctConfetti";
 
 export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
@@ -65,6 +65,16 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
         }
     }
 
+    const colorsLight = {
+        correct: "var(--accent-tertiary-outline)",
+        incorrect: "var(--accent-secondary-outline)",
+    };
+
+    let colorOverride;
+    if (responseStatus === "complete") {
+        colorOverride = responseCorrect ? "correct" : "incorrect";
+    }
+
     return (
         <Card>
             <h4 id="prompt">{quiz.prompt}</h4>
@@ -72,15 +82,20 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
                 {quiz.correctResponses.map((ans, index) => {
                     return (
                         <li key={index}>
-                            <input
+                            <Input
                                 type="text"
                                 aria-labelledby="prompt"
                                 id={"ans_" + index}
-                                defaultValue={userResponse[index]}
+                                value={userResponse[index]}
                                 onChange={(e) =>
                                     handleChange(index, e.target.value)
                                 }
-                            ></input>
+                                outlineColor={
+                                    colorOverride
+                                        ? colorsLight[colorOverride]
+                                        : undefined
+                                }
+                            ></Input>
                         </li>
                     );
                 })}
