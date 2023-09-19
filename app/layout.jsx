@@ -74,7 +74,7 @@ export default async function RootLayout({ children }) {
     const quizzes = serialize(await Quiz.find(query));
 
     const publicUsers = await User.find({ isPublic: true });
-    const associates = user.associates.filter(a => !publicUsers.includes(a))
+    const associates = user ? user.associates.filter(a => !publicUsers.includes(a)) : [];
     const availableUsers = serialize([...associates, ...publicUsers]).map((x) => ({
         _id: x._id,
         username: x.username,
