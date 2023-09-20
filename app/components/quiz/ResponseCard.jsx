@@ -20,22 +20,47 @@ export function ResponseCard({ canClientCheck, quiz }) {
         setUserResponse(e.target.value);
     }
 
-    function handleCheckAnswer() {
+    async function handleCheckAnswer() {
         if (hasAnswered || !userResponse) return;
 
-        const isCorrect = quiz.correctResponses.find(
-            (x) => x.toLowerCase() === userResponse.toLowerCase(),
-        );
+        if (canClientCheck) {
+            const isCorrect = quiz.correctResponses.find(
+                (x) => x.toLowerCase() === userResponse.toLowerCase(),
+            );
 
-        if (isCorrect) {
-            setFailures(0);
-            correctConfetti();
+            if (isCorrect) {
+                setFailures(0);
+                correctConfetti();
+            } else {
+                setFailures(failures + 1);
+            }
+
+            setCorrectAnswer(isCorrect != undefined);
+            setHasAnswered(true);
         } else {
-            setFailures(failures + 1);
-        }
+            const response = await fetch(`/api/quiz/${quiz._id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userResponse }),
+            });
 
-        setCorrectAnswer(isCorrect != undefined);
-        setHasAnswered(true);
+            const resJson = await response.json();
+            const message = resJson.message;
+            const isCorrect = message.isCorrect;
+            console.log("Is it correct?", isCorrect);
+
+            if (isCorrect) {
+                setFailures(0);
+                correctConfetti();
+            } else {
+                setFailures(failures + 1);
+            }
+
+            setCorrectAnswer(isCorrect != undefined);
+            setHasAnswered(true);
+        }
     }
 
     const colorsLight = {

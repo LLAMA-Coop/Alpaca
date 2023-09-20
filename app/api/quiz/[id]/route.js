@@ -4,6 +4,45 @@ import { useUser } from "@/lib/auth";
 import { Quiz } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 
+// this will be used to check answers on server
+// THEN put result in User's quizzes list
+export async function POST(req) {
+    try {
+        const user = await useUser();
+
+        if (!user) {
+            return unauthorized;
+        }
+
+        const _id = req.nextUrl.pathname.split("/")[3];
+
+        const quiz = await Quiz.findById(_id);
+        if (!quiz) {
+            return NextResponse.json(
+                {
+                    message: `The quiz ${_id} could not be found to delete`,
+                },
+                { status: 404 },
+            );
+        }
+
+        const { userResponse } = await req.json();
+        console.log(userResponse);
+
+        const isCorrect = quiz.correctResponses.find(
+            (x) => x.toLowerCase() === userResponse.toLowerCase(),
+        );
+        console.log("Route, is correct?", isCorrect)
+
+        return NextResponse.json({
+            message: { isCorrect: isCorrect != undefined },
+        });
+    } catch (error) {
+        console.error(`[Quiz] POST error:\n ${error}`);
+        return server;
+    }
+}
+
 export async function DELETE(req) {
     try {
         const user = await useUser();
