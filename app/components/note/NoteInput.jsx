@@ -95,6 +95,12 @@ export function NoteInput({ note }) {
                 message: "Note added succesfully.",
             });
             setShowAlert(true);
+        } else if (response.status === 200) {
+            setRequestStatus({
+                success: true,
+                message: "Note edited succesfully.",
+            });
+            setShowAlert(true);
         } else {
             setRequestStatus({
                 success: false,
