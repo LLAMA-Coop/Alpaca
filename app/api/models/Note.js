@@ -14,7 +14,7 @@ const NoteSchema = new Schema(
             type: String,
             required: true,
             minLength: 1,
-            maxLength: 256,
+            maxLength: 512,
         },
         tags: [
             {
