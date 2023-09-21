@@ -6,6 +6,7 @@ import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
 // import { Source, Note, User } from "@mneme_app/database-models";
 import { Source, Note, User } from "@/app/api/models";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function NotesPage({ searchParams }) {
     const user = await useUser();
