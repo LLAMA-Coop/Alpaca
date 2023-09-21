@@ -343,7 +343,7 @@ export function QuizInput({ quiz }) {
 
             <div>
                 <Input
-                    type={type === "multiple-choice" && "select"}
+                    type="text"
                     choices={choices.map((x) => ({ label: x, value: x }))}
                     label="Add new answer"
                     description={"Add a new answer. Press enter to add"}
@@ -355,13 +355,16 @@ export function QuizInput({ quiz }) {
                     onChange={(e) => {
                         setNewResponse(e.target.value);
                         if (type === "multiple-choice") {
-                            handleAddResponse(e);
+                            setNewChoice(e.target.value);
                         }
                     }}
                     action={type !== "multiple-choice" && "Add new answer"}
-                    onActionTrigger={
-                        type !== "multiple-choice" && handleAddResponse
-                    }
+                    onActionTrigger={(e) => {
+                        handleAddResponse(e);
+                        if (type === "multiple-choice") {
+                            handleAddChoice(e);
+                        }
+                    }}
                 />
 
                 <div style={{ marginTop: "24px" }}>
