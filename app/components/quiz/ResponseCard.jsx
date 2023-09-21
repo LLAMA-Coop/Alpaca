@@ -5,6 +5,7 @@ import { Input, Card } from "@components/client";
 import styles from "./ResponseCard.module.css";
 import { useState } from "react";
 import correctConfetti from "@/lib/correctConfetti";
+import shuffleArray from "@/lib/shuffleArray";
 
 export function ResponseCard({ canClientCheck, quiz }) {
     const [userResponse, setUserResponse] = useState("");
@@ -74,7 +75,9 @@ export function ResponseCard({ canClientCheck, quiz }) {
         colorOverride = correctAnswer ? "correct" : "incorrect";
     }
 
-    const answers = quiz.choices?.map((x) => ({ label: x, value: x }));
+    const choices = quiz.choices
+        ? shuffleArray(quiz.choices.map((x) => ({ label: x, value: x })))
+        : [];
 
     return (
         <Card
@@ -104,7 +107,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
             <Input
                 type={type === "input" ? "text" : "select"}
                 description="Your response to the prompt"
-                choices={answers ?? null}
+                choices={choices ?? null}
                 label="Your Response"
                 value={userResponse}
                 onChange={handleInput}
