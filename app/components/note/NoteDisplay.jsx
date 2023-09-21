@@ -1,8 +1,6 @@
 import styles from "./NoteDisplay.module.css";
 import { capitalize } from "@/lib/strings";
 import { Card } from "@components/client";
-// import Source from "@models/Source";
-// import User from "@models/User";
 // import { Source, User } from "@mneme_app/database-models";
 import { Source, User } from "@/app/api/models";
 import Link from "next/link";
@@ -12,8 +10,7 @@ export async function NoteDisplay({ note }) {
 
     return (
         <Card
-            title={`${user?.username ?? "Unknown"}'s Note`}
-            description={`Content: ${note.text}`}
+            description={`${note.text}`}
         >
             <div>Sources linked:</div>
             <ul>
@@ -24,7 +21,7 @@ export async function NoteDisplay({ note }) {
                         <li key={sourceId}>
                             <Link
                                 className={styles.sourceLink}
-                                href={`/sources/${sourceId}`}
+                                href={source.url}
                             >
                                 <div>{source.title}</div>
 
@@ -34,6 +31,7 @@ export async function NoteDisplay({ note }) {
                     );
                 })}
             </ul>
+            <p>Created by: {user?.username ?? "Unknown"}</p>
         </Card>
     );
 }
