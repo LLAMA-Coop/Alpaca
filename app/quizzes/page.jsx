@@ -40,21 +40,6 @@ export default async function QuizzesPage({ searchParams }) {
         return redirect("/quizzes?page=1&amount=" + amount);
     }
 
-    // const sources = serialize(await Source.find(query));
-    // const notes = serialize(await Note.find(query));
-    // const publicUsers = await User.find({ isPublic: true });
-    // const availableUsers = serialize(
-    //     user?.hasOwnProperty("associates") && user?.associates.length > 0
-    //         ? [...user.associates, ...publicUsers]
-    //         : [...publicUsers],
-    // );
-    // const publicGroups = await Group.find({ isPublic: true });
-    // const availableGroups = serialize(
-    //     user?.hasOwnProperty() && user?.groups.length > 0
-    //         ? [...user.groups, ...publicGroups]
-    //         : [...publicGroups],
-    // );
-
     return (
         <main className={styles.main}>
             <h2>Quiz Cards</h2>

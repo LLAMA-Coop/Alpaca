@@ -50,6 +50,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
             const message = resJson.message;
             const isCorrect = message.isCorrect;
             console.log("Is it correct?", isCorrect);
+            console.log(resJson);
 
             if (isCorrect) {
                 setFailures(0);
@@ -58,7 +59,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
                 setFailures(failures + 1);
             }
 
-            setCorrectAnswer(isCorrect != undefined);
+            setCorrectAnswer(isCorrect);
             setHasAnswered(true);
         }
     }

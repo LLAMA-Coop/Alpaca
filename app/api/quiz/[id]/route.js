@@ -32,10 +32,34 @@ export async function POST(req) {
         const isCorrect = quiz.correctResponses.find(
             (x) => x.toLowerCase() === userResponse.toLowerCase(),
         );
-        console.log("Route, is correct?", isCorrect)
+        console.log("Route, is correct?", isCorrect);
+
+        let quizInUser = user.quizzes.find(
+            (q) => q.quizId.toString() === quiz._id.toString(),
+        );
+        if (!quizInUser) {
+            quizInUser = {
+                quizId: quiz._id,
+                level: 0,
+                hiddenUntil: new Date(),
+            };
+            user.quizzes.push(quizInUser);
+        }
+        if (isCorrect != undefined) {
+            quizInUser.lastCorrect = new Date();
+            quizInUser.level += 1;
+            quizInUser.hiddenUntil.setDate(
+                quizInUser.hiddenUntil.getDate() + 7 * quizInUser.level,
+            );
+        } else {
+            quizInUser.lastCorrect = 0;
+            quizInUser.level = quizInUser.level > 0 ? quizInUser.level - 1 : 0;
+        }
+
+        await user.save();
 
         return NextResponse.json({
-            message: { isCorrect: isCorrect != undefined },
+            message: { isCorrect: isCorrect != undefined, user, quiz: quizInUser },
         });
     } catch (error) {
         console.error(`[Quiz] POST error:\n ${error}`);
