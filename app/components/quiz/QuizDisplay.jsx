@@ -1,4 +1,5 @@
 import { ResponseCard, ListAnswer } from "@/app/components/client";
+import { Blankable } from "./Blankable";
 
 // The quiz displays depends on whether it is a client-checked or server-checked quiz component
 // If client-checked, everything is rendered from the Quiz object
@@ -21,5 +22,14 @@ export function QuizDisplay({ canClientCheck, quiz }) {
                 isOrdered={quiz.type === "ordered-list" || quiz.type === "ordered-list-answer"}
             />
         );
+    }
+
+    if(quiz.type === "fill-in-the-blank"){
+        return (
+            <Blankable
+                canClientCheck={canClientCheck}
+                quiz={quiz}
+            />
+        )
     }
 }

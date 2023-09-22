@@ -11,6 +11,7 @@ const allowedType = [
     "multiple-choice",
     "unordered-list-answer",
     "ordered-list-answer",
+    "fill-in-the-blank"
 ];
 
 export async function GET(req) {

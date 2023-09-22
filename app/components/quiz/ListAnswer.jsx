@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Card, Input } from "../client";
 import correctConfetti from "@/lib/correctConfetti";
 
+// need to add server-side check
+
 export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
