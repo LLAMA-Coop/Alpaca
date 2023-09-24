@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Input, Card } from "../client";
 import correctConfetti from "@/lib/correctConfetti";
+import styles from "./Blankable.module.css"
 
 // need to add server-side check
 
@@ -49,6 +50,7 @@ export function Blankable({ canClientCheck, quiz }) {
                         {text}
                         {index < texts.length - 1 && (
                             <input
+                                className={styles.input}
                                 type="text"
                                 aria-label="blank"
                                 id={"ans_" + index}
