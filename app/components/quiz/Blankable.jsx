@@ -55,6 +55,7 @@ export function Blankable({ canClientCheck, quiz }) {
                                 aria-label="blank"
                                 id={"ans_" + index}
                                 value={userResponse[index]}
+                                size={userResponse[index] ? String(userResponse[index]).length : 1}
                                 onChange={(e) => {
                                     handleChange(index, e.target.value);
                                 }}
