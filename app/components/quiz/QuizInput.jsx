@@ -201,7 +201,7 @@ export function QuizInput({ quiz }) {
 
         setLoading(false);
 
-        if (response.status === 201 || response.status === 200) {
+        if (response.status === 201) {
             setTypeError("");
 
             setPrompt("");
@@ -225,12 +225,12 @@ export function QuizInput({ quiz }) {
                 message: "Quiz created successfully",
             });
             setShowAlert(true);
-
-            // if (quiz) {
-            //     updateResource(stores.quiz, quizPayload);
-            // } else {
-            //     addResources(stores.quiz, response.content);
-            // }
+        } else if (response.status === 200) {
+            setRequestStatus({
+                success: true,
+                message: "Quiz updated successfully",
+            });
+            setShowAlert(true);
         } else {
             setRequestStatus({
                 success: false,
@@ -291,7 +291,7 @@ export function QuizInput({ quiz }) {
                 description={"Question prompt. Can be a question or statement"}
                 required={true}
                 value={prompt}
-                maxLength={100}
+                maxLength={200}
                 error={promptError}
                 onChange={(e) => {
                     setPrompt(e.target.value);
