@@ -52,17 +52,17 @@ export function FillStore({
             console.log("we are doing this:", operation, resource, storeName);
         };
 
+        if (sourceStore?.length > 0) addResources(stores.source, ...sourceStore);
+        if (noteStore?.length > 0) addResources(stores.note, ...noteStore);
+        if (quizStore?.length > 0) addResources(stores.quiz, ...quizStore);
+        if (groupStore?.length > 0) addResources(stores.group, ...groupStore);
+        if (userStore?.length > 0) addResources(stores.user, ...userStore);
+        if (user) setUser(user);
+        if (notifications) addNotifications(...notifications);
+
         return () => {
             ws.close();
             console.log("Web socket connection closed");
         };
     }, []);
-
-    if (sourceStore?.length > 0) addResources(stores.source, ...sourceStore);
-    if (noteStore?.length > 0) addResources(stores.note, ...noteStore);
-    if (quizStore?.length > 0) addResources(stores.quiz, ...quizStore);
-    if (groupStore?.length > 0) addResources(stores.group, ...groupStore);
-    if (userStore?.length > 0) addResources(stores.user, ...userStore);
-    if (user) setUser(user);
-    if (notifications) addNotifications(...notifications);
 }
