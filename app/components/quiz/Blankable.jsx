@@ -41,6 +41,12 @@ export function Blankable({ canClientCheck, quiz }) {
         }
     }
 
+    function inputSize(string){
+        if(!string) return 1;
+        if(string.length < 4) return 1;
+        return string.length - 3;
+    }
+
     return (
         <Card>
             <h4 id="prompt">Fill in the blanks</h4>
@@ -55,7 +61,7 @@ export function Blankable({ canClientCheck, quiz }) {
                                 aria-label="blank"
                                 id={"ans_" + index}
                                 value={userResponse[index]}
-                                size={userResponse[index] ? String(userResponse[index]).length : 1}
+                                size={inputSize(String(userResponse[index]))}
                                 onChange={(e) => {
                                     handleChange(index, e.target.value);
                                 }}
