@@ -32,6 +32,10 @@ export function DynamicNav() {
             name: "About",
             href: "/about",
         },
+        {
+            name: "Daily Train",
+            href: "/daily"
+        }
     ];
 
     return (
