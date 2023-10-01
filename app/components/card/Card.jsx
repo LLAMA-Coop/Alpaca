@@ -55,7 +55,11 @@ export const Card = ({
                                     {subtitle && <h5>{subtitle}</h5>}
                                 </div>
                             )}
-                            {description && <p>{description}</p>}
+                            {description && (
+                                <p className={styles.description}>
+                                    {description}
+                                </p>
+                            )}
                         </div>
                     )}
 

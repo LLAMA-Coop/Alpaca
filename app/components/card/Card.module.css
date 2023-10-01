@@ -47,6 +47,11 @@
     align-self: flex-start;
 }
 
+.description {
+    white-space: pre-wrap;
+    max-width: 100%;
+}
+
 @keyframes animate {
     0% {
         transform: rotate(0deg);
