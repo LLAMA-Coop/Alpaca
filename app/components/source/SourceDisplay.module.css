@@ -1,9 +1,16 @@
 .authors {
-  background-color: var(--background-primary);
-  padding: 10px;
-  border-radius: 4px;
+    background-color: var(--background-primary);
+    padding: 10px;
+    border-radius: 4px;
 }
 
-.authors > h5 {
-  margin-bottom: 10px;
+.tags {
+    background-color: var(--background-secondary);
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.authors > h5,
+.tags > h5 {
+    margin-bottom: 10px;
 }

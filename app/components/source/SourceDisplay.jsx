@@ -34,6 +34,19 @@ export function SourceDisplay({ source }) {
                     <p>No authors listed</p>
                 )}
             </div>
+
+            <div className={styles.tags}>
+                <h5>Tags</h5>
+                {source.tags?.length > 0 ? (
+                    <ol className="chipList">
+                        {source.tags?.map((cont) => (
+                            <ListItem key={cont} item={cont} />
+                        ))}
+                    </ol>
+                ) : (
+                    <p>No tags for source</p>
+                )}
+            </div>
         </Card>
     );
 }
