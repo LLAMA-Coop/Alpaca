@@ -118,7 +118,7 @@ export function Input({
                         onBlur={onBlur}
                         value={value || ""}
                         minLength={minLength}
-                        maxLength={maxLength}
+                        maxlength={maxLength}
                         onKeyDown={(e) => {
                             if (e.key === "Enter" && action) onActionTrigger(e);
                         }}
@@ -176,6 +176,12 @@ export function Input({
                             outlineColor: outlineColor || "",
                         }}
                     />
+                )}
+
+                {maxLength > 0 && value.length > 0 && (
+                    <div>
+                        {value.length}/{maxLength}
+                    </div>
                 )}
 
                 {action && (

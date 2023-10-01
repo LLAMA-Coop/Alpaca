@@ -18,7 +18,6 @@ import { serializeOne } from "@/lib/db";
 export function NoteInput({ note }) {
     const [text, setText] = useState("");
     const [sources, setSources] = useState([]);
-    // const [isSelectOpen, setIsSelectOpen] = useState(false);
     const [textError, setTextError] = useState("");
     const [sourceError, setSourceError] = useState("");
 
@@ -29,8 +28,6 @@ export function NoteInput({ note }) {
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
-
-    // const addSourceRef = useRef(null);
 
     const availableSources = useStore((state) => state.sourceStore);
     const user = useStore((state) => state.user);
@@ -137,6 +134,7 @@ export function NoteInput({ note }) {
                 value={text}
                 error={textError}
                 label={"Text"}
+                maxLength={512}
             />
 
             <div>
