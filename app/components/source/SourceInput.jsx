@@ -128,7 +128,7 @@ export function SourceInput({ source }) {
             authors,
             tags,
         };
-        sourcePayload.permissions = setPermissions(permissions);
+        sourcePayload.permissions = permissions;
         if (source) {
             sourcePayload._id = source._id;
         }

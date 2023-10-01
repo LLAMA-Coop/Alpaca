@@ -34,7 +34,7 @@ export async function POST(req) {
             return unauthorized;
         }
 
-        const { text, sources } = await req.json();
+        const { text, sources, tags, permissions } = await req.json();
 
         // Will need to redesign once images/videos are permitted in notes
 
@@ -60,6 +60,7 @@ export async function POST(req) {
             createdBy: user._id,
             text: text,
             sources: [...sources],
+            tags: [...tags],
             contributors: [user._id],
         };
 
@@ -80,7 +81,7 @@ export async function PUT(req) {
             return unauthorized;
         }
 
-        const { _id, text, sources, permissions } = await req.json();
+        const { _id, text, sources, tags, permissions } = await req.json();
 
         const note = await Note.findById(_id);
         if (!note) {
@@ -114,6 +115,10 @@ export async function PUT(req) {
                     note.sources.push(new Types.ObjectId(sourceId_req));
                 }
             });
+        }
+
+        if(tags) {
+            note.tags = tags;
         }
 
         if (permissions && note.createdBy.toString() === user._id.toString()) {

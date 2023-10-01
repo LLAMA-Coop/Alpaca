@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
     Label,
     Input,
     ListItem,
-    Select,
     InputPopup,
     Spinner,
     Alert,
 } from "@/app/components/client";
+import PermissionsInput from "../form/PermissionsInput";
 import { useStore } from "@/store/store";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import ListAdd from "../form/ListAdd";
+import { serializeOne } from "@/lib/db";
 
 export function NoteInput({ note }) {
     const [text, setText] = useState("");
@@ -20,6 +21,10 @@ export function NoteInput({ note }) {
     // const [isSelectOpen, setIsSelectOpen] = useState(false);
     const [textError, setTextError] = useState("");
     const [sourceError, setSourceError] = useState("");
+
+    const [tags, setTags] = useState([]);
+    const [newTag, setNewTag] = useState("");
+    const [permissions, setPermissions] = useState({});
 
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -39,18 +44,16 @@ export function NoteInput({ note }) {
                 availableSources.find((x) => x._id === srcId),
             ),
         );
+        if (note.tags?.length > 0) setTags(...note.tags);
+        if (note.permissions) setPermissions(serializeOne(note.permissions));
     }, []);
 
-    // useEffect(() => {
-    //     const handleOutsideClick = (e) => {
-    //         if (isSelectOpen && !addSourceRef.current?.contains(e.target)) {
-    //             setIsSelectOpen(false);
-    //         }
-    //     };
-
-    //     document.addEventListener("click", handleOutsideClick);
-    //     return () => document.removeEventListener("click", handleOutsideClick);
-    // }, [isSelectOpen]);
+    function handleAddTag(e) {
+        e.preventDefault();
+        if (!newTag || tags.includes(newTag)) return;
+        setTags([...tags, newTag]);
+        setNewTag("");
+    }
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -67,7 +70,12 @@ export function NoteInput({ note }) {
             return;
         }
 
-        const notePayload = { text, sources: sources.map((src) => src._id) };
+        const notePayload = {
+            text,
+            sources: sources.map((src) => src._id),
+            tags,
+        };
+        notePayload.permissions = permissions;
         if (note) {
             notePayload._id = note._id;
         }
@@ -145,44 +153,46 @@ export function NoteInput({ note }) {
                     listProperty={"title"}
                     listSetter={setSources}
                 />
+            </div>
 
-                {/* <ol className="chipList">
-                    <ListItem
-                        item="Add a source"
-                        action={() => {
-                            setIsSelectOpen((prev) => !prev);
-                        }}
-                        actionType={"add"}
-                        select={
-                            <Select
-                                listChoices={availableSources}
-                                listChosen={sources}
-                                listProperty={"title"}
-                                listSetter={setSources}
-                                setSelectState={setIsSelectOpen}
-                            />
-                        }
-                    />
+            <div>
+                <Input
+                    label={"Add Tag"}
+                    value={newTag}
+                    maxLength={16}
+                    description="A word or phrase that could be used to search for this note"
+                    autoComplete="off"
+                    onChange={(e) => setNewTag(e.target.value)}
+                    action="Add tag"
+                    onActionTrigger={handleAddTag}
+                />
 
-                    {sources.length > 0 &&
-                        sources.map((src) => (
+                <div style={{ marginTop: "24px" }}>
+                    <Label label="Tags" />
+
+                    <ul className="chipList">
+                        {tags.length === 0 && <ListItem item="No tags added" />}
+
+                        {tags.map((tag) => (
                             <ListItem
-                                key={src.id}
-                                link={src.url}
-                                item={src.title}
+                                key={tag}
+                                item={tag}
                                 action={() => {
-                                    setSources(
-                                        sources.filter((x) => x.id !== src.id),
-                                    );
-                                    setSourceError("");
+                                    setTags(tags.filter((t) => t !== tag));
                                 }}
                                 actionType={"delete"}
                             />
                         ))}
-                </ol> */}
+                    </ul>
+                </div>
             </div>
 
             <InputPopup type="source" />
+
+            <PermissionsInput
+                permissions={permissions}
+                setter={setPermissions}
+            />
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Note"}

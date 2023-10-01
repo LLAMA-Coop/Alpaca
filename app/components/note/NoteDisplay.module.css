@@ -1,3 +1,9 @@
+.tags {
+    background-color: var(--background-secondary);
+    padding: 10px;
+    border-radius: 4px;
+}
+
 .sourceLink {
     display: flex;
     align-items: center;
