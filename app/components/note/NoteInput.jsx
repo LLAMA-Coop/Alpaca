@@ -41,7 +41,7 @@ export function NoteInput({ note }) {
                 availableSources.find((x) => x._id === srcId),
             ),
         );
-        if (note.tags?.length > 0) setTags(...note.tags);
+        if (note.tags?.length > 0) setTags([...note.tags]);
         if (note.permissions) setPermissions(serializeOne(note.permissions));
     }, []);
 
@@ -92,7 +92,7 @@ export function NoteInput({ note }) {
         if (response.status === 201) {
             setText("");
             setSourceError("");
-            setSources([]);
+            // setSources([]);
             setText("");
 
             setRequestStatus({
