@@ -118,7 +118,7 @@ export function Input({
                         onBlur={onBlur}
                         value={value || ""}
                         minLength={minLength}
-                        maxlength={maxLength}
+                        maxLength={maxLength}
                         onKeyDown={(e) => {
                             if (e.key === "Enter" && action) onActionTrigger(e);
                         }}
