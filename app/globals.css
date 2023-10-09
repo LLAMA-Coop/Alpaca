@@ -341,11 +341,23 @@ input[type="date"] {
     margin-bottom: 12px;
 }
 
-.paragraph > p {
+.paragraph > p,
+.paragraph > ol > li,
+.paragraph > ul > li {
     font-size: clamp(16px, 2vw, 20px);
     line-height: 1.625;
     font-weight: 200;
     margin-bottom: 24px;
+}
+
+.paragraph > ul {
+    margin-left: 2rem;
+    list-style-type: disc;
+}
+
+.paragraph > ol {
+    margin-left: 2rem;
+    list-style-type: numeral;
 }
 
 .paragraph a {
