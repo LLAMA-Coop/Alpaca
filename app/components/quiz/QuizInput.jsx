@@ -52,7 +52,7 @@ export function QuizInput({ quiz }) {
     const availableNotes = useStore((state) => state.noteStore);
 
     const user = useStore((state) => state.user);
-    const canDelete = quiz && quiz.createdBy === user._id;
+    const canDelete = quiz && quiz.createdBy === user?._id;
 
     useEffect(() => {
         if (!quiz) return;

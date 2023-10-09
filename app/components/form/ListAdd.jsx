@@ -39,19 +39,24 @@ export default function ListAdd({
             />
 
             {listChosen.length > 0 &&
-                listChosen.map((choice) => (
-                    <ListItem
-                        key={choice._id}
-                        link={choice.url ? choice.url : undefined}
-                        item={choice[listProperty]}
-                        action={() => {
-                            listSetter(
-                                listChosen.filter((x) => x.id !== choice.id),
-                            );
-                        }}
-                        actionType={"delete"}
-                    />
-                ))}
+                listChosen.map((choice) => {
+                    if (!choice) return;
+                    return (
+                        <ListItem
+                            key={choice._id}
+                            link={choice.url ? choice.url : undefined}
+                            item={choice[listProperty]}
+                            action={() => {
+                                listSetter(
+                                    listChosen.filter(
+                                        (x) => x.id !== choice.id,
+                                    ),
+                                );
+                            }}
+                            actionType={"delete"}
+                        />
+                    );
+                })}
         </ol>
     );
 }

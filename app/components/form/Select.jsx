@@ -44,7 +44,7 @@ export function Select({
                 aria-orientation="vertical"
             >
                 {listChoices && listChoices.map((choice, index) => {
-                    const isChosen = listChosen.find((x) => x.id === choice.id);
+                    const isChosen = listChosen.find((x) => x?.id === choice.id);
                     return (
                         <div
                             key={choice._id}
