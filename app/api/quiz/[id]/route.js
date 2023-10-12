@@ -27,8 +27,8 @@ export async function POST(req) {
         }
 
         const { userResponse } = await req.json();
-        console.log(userResponse);
 
+        // Not set up for list answers or fill in the blanks
         const isCorrect = quiz.correctResponses.find(
             (x) => x.toLowerCase() === userResponse.toLowerCase(),
         );

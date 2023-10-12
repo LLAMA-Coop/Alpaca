@@ -50,8 +50,6 @@ export function ResponseCard({ canClientCheck, quiz }) {
             const resJson = await response.json();
             const message = resJson.message;
             const isCorrect = message.isCorrect;
-            console.log("Is it correct?", isCorrect);
-            console.log(resJson);
 
             if (isCorrect) {
                 setFailures(0);

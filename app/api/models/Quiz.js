@@ -34,10 +34,26 @@ const QuizSchema = new Schema(
         ],
         correctResponses: [
             {
-                type: String,
+                type: Schema.Types.Mixed,
                 required: true,
                 minLength: 1,
                 maxLength: 32,
+                validate: [
+                    {
+                        validator: function (value) {
+                            if (!Array.isArray(value)) return false;
+                            for (const item of value) {
+                                if (
+                                    !Array.isArray(item) &&
+                                    typeof item !== "string"
+                                ) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        },
+                    },
+                ],
             },
         ],
         hints: [
