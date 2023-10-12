@@ -5,6 +5,7 @@ import filetypeinfo from "magic-bytes.js";
 import { useState, useRef, useEffect } from "react";
 import styles from "./Group.module.css";
 import Image from "next/image";
+import MAX from "@/lib/max";
 
 export function GroupInput({group}) {
     const [name, setName] = useState("");
@@ -101,7 +102,7 @@ export function GroupInput({group}) {
                 label={"Group Name"}
                 error={nameError}
                 minLength={1}
-                maxLength={100}
+                maxLength={MAX.name}
                 onChange={(e) => {
                     setName(e.target.value);
                     setNameError("");
@@ -113,7 +114,7 @@ export function GroupInput({group}) {
                 label={"Group Description"}
                 error={descriptionError}
                 minLength={2}
-                maxLength={512}
+                maxLength={MAX.description}
                 onChange={(e) => {
                     setDescription(e.target.value);
                     setDescriptionError("");

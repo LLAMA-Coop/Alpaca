@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import PermissionsInput from "../form/PermissionsInput";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import { serializeOne } from "@/lib/db";
+import MAX from "@/lib/max";
 
 export function SourceInput({ source }) {
     const [title, setTitle] = useState("");
@@ -197,7 +198,7 @@ export function SourceInput({ source }) {
             <Input
                 label={"Title"}
                 value={title}
-                maxLength={100}
+                maxLength={MAX.title}
                 description="The title of the source"
                 autoComplete="off"
                 required={true}
@@ -230,7 +231,6 @@ export function SourceInput({ source }) {
                 value={url}
                 error={urlError}
                 minLength={8}
-                maxLength={200}
                 onChange={(e) => {
                     setUrl(e.target.value);
                     setUrlError("");
@@ -265,7 +265,7 @@ export function SourceInput({ source }) {
                 <Input
                     label={"Add Author"}
                     value={newAuthor}
-                    maxLength={100}
+                    maxLength={MAX.name}
                     description="People who contributed to the source"
                     autoComplete="off"
                     onChange={(e) => setNewAuthor(e.target.value)}
@@ -301,7 +301,7 @@ export function SourceInput({ source }) {
                 <Input
                     label={"Add Tag"}
                     value={newTag}
-                    maxLength={16}
+                    maxLength={MAX.tag}
                     description="A word or phrase that could be used to search for this source"
                     autoComplete="off"
                     onChange={(e) => setNewTag(e.target.value)}

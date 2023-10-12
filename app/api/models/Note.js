@@ -4,6 +4,7 @@ import PermissionSchema from "./PermissionSchema";
 // Should add option to link to videos/images instead of text
 // Captions will be required in those cases
 
+import MAX from "@/lib/max";
 // Don't forget to validate at least one source ID
 
 // Also should have searchable tags, like Source
@@ -14,13 +15,13 @@ const NoteSchema = new Schema(
             type: String,
             required: true,
             minLength: 1,
-            maxLength: 512,
+            maxLength: MAX.noteText,
         },
         tags: [
             {
                 type: String,
                 minLength: 1,
-                maxLength: 16,
+                maxLength: MAX.tag,
             },
         ],
         sources: [

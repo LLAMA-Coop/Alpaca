@@ -14,6 +14,7 @@ import { useStore } from "@/store/store";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import ListAdd from "../form/ListAdd";
 import { serializeOne } from "@/lib/db";
+import MAX from "@/lib/max";
 
 export function NoteInput({ note }) {
     const [text, setText] = useState("");
@@ -134,7 +135,7 @@ export function NoteInput({ note }) {
                 value={text}
                 error={textError}
                 label={"Text"}
-                maxLength={512}
+                maxLength={MAX.noteText}
             />
 
             <div>
@@ -157,7 +158,7 @@ export function NoteInput({ note }) {
                 <Input
                     label={"Add Tag"}
                     value={newTag}
-                    maxLength={16}
+                    maxLength={MAX.tag}
                     description="A word or phrase that could be used to search for this note"
                     autoComplete="off"
                     onChange={(e) => setNewTag(e.target.value)}

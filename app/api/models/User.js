@@ -1,4 +1,5 @@
 import { model, models, Schema } from "mongoose";
+import MAX from "@/lib/max";
 // import NotificationSchema from "./NotificationSchema";
 
 // This is for tracking progress on quiz questions
@@ -28,12 +29,12 @@ const UserSchema = new Schema(
             type: String,
             required: true,
             minLength: 2,
-            maxLength: 32,
+            maxLength: MAX.username,
         },
         displayName: {
             type: String,
             minLength: 2,
-            maxLength: 32,
+            maxLength: MAX.username,
         },
         avatar: {
             type: String,

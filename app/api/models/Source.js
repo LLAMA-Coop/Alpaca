@@ -1,5 +1,6 @@
 import PermissionSchema from "./PermissionSchema";
 import { model, models, Schema } from "mongoose";
+import MAX from "@/lib/max";
 
 //  validation:
 //  need either lastAccessed or publishDate
@@ -11,14 +12,14 @@ const SourceSchema = new Schema(
             type: String,
             required: true,
             minLength: 1,
-            maxLength: 100,
+            maxLength: MAX.title,
         },
         authors: [
             {
                 type: String,
                 required: true,
                 minLength: 1,
-                maxLength: 100,
+                maxLength: MAX.name,
             },
         ],
         medium: {
@@ -35,7 +36,7 @@ const SourceSchema = new Schema(
             {
                 type: String,
                 minLength: 1,
-                maxLength: 16,
+                maxLength: MAX.tag,
             },
         ],
         createdBy: {

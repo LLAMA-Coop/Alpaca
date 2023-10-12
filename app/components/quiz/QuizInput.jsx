@@ -16,6 +16,7 @@ import { useStore } from "@/store/store";
 import { buildPermissions } from "@/lib/permissions";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import ListAdd from "../form/ListAdd";
+import MAX from "@/lib/max";
 
 export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
@@ -291,7 +292,7 @@ export function QuizInput({ quiz }) {
                 description={"Question prompt. Can be a question or statement"}
                 required={true}
                 value={prompt}
-                maxLength={200}
+                maxLength={MAX.prompt}
                 error={promptError}
                 onChange={(e) => {
                     setPrompt(e.target.value);
@@ -305,7 +306,7 @@ export function QuizInput({ quiz }) {
                         label="Add new choice"
                         description={"Add a new choice. Press enter to add"}
                         value={newChoice}
-                        maxLength={32}
+                        maxLength={MAX.response}
                         required={choices.length < 1}
                         onSubmit={handleAddChoice}
                         error={choicesError}
@@ -348,7 +349,7 @@ export function QuizInput({ quiz }) {
                     label="Add new answer"
                     description={"Add a new answer. Press enter to add"}
                     value={newResponse}
-                    maxLength={32}
+                    maxLength={MAX.response}
                     required={responses.length === 0}
                     onSubmit={handleAddResponse}
                     error={responsesError}

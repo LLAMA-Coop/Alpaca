@@ -1,5 +1,6 @@
 import { model, models, Schema } from "mongoose";
 import PermissionSchema from "./PermissionSchema";
+import MAX from "@/lib/max";
 
 const QuizSchema = new Schema(
     {
@@ -22,14 +23,14 @@ const QuizSchema = new Schema(
             type: String,
             required: true,
             minLength: 1,
-            maxLength: 200,
+            maxLength: MAX.prompt,
         },
         choices: [
             {
                 type: String,
                 required: true,
                 minLength: 1,
-                maxLength: 32,
+                maxLength: MAX.response,
             },
         ],
         correctResponses: [
@@ -37,7 +38,7 @@ const QuizSchema = new Schema(
                 type: Schema.Types.Mixed,
                 required: true,
                 minLength: 1,
-                maxLength: 32,
+                maxLength: MAX.response,
                 validate: [
                     {
                         validator: function (value) {
@@ -60,7 +61,7 @@ const QuizSchema = new Schema(
             {
                 type: String,
                 minLength: 1,
-                maxLength: 32,
+                maxLength: MAX.response,
             },
         ],
         sources: [
