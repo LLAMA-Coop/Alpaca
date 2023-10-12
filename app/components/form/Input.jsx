@@ -95,7 +95,7 @@ export function Input({
                         style={{ outlineColor: outlineColor || "" }}
                     >
                         {choices.map((choice) => (
-                            <option key={choice.value} value={choice.value}>
+                            <option key={choice.key} value={choice.value}>
                                 {choice.label}
                             </option>
                         ))}
@@ -140,7 +140,9 @@ export function Input({
                         onChange={onChange}
                         onFocus={onFocus}
                         onBlur={onBlur}
-                        checked={value === "on" || value === true ? true : false}
+                        checked={
+                            value === "on" || value === true ? true : false
+                        }
                         minLength={minLength}
                         maxLength={maxLength}
                         onKeyDown={(e) => {

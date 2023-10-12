@@ -6,6 +6,7 @@ import styles from "./ResponseCard.module.css";
 import { useState } from "react";
 import correctConfetti from "@/lib/correctConfetti";
 import shuffleArray from "@/lib/shuffleArray";
+import makeUniqueId from "@/lib/uniqueId";
 
 export function ResponseCard({ canClientCheck, quiz }) {
     const [userResponse, setUserResponse] = useState("");
@@ -13,7 +14,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
     const [correctAnswer, setCorrectAnswer] = useState(false);
     const [failures, setFailures] = useState(0);
 
-    const type = quiz.type === "prompt-response" ? "input" : "select";
+    const type = quiz.type === "prompt-response" ? "text" : "select";
 
     function handleInput(e) {
         e.preventDefault();
@@ -74,8 +75,14 @@ export function ResponseCard({ canClientCheck, quiz }) {
     }
 
     const choices = quiz.choices
-        ? shuffleArray(quiz.choices.map((x) => ({ label: x, value: x })))
-        : [];
+        ? shuffleArray(
+              quiz.choices.map((x) => ({
+                  label: x,
+                  value: x,
+                  key: makeUniqueId(),
+              })),
+          )
+        : null;
 
     return (
         <Card
@@ -103,9 +110,9 @@ export function ResponseCard({ canClientCheck, quiz }) {
             border={hasAnswered && (correctAnswer ? "green" : "red")}
         >
             <Input
-                type={type === "input" ? "text" : "select"}
+                type={type}
                 description="Your response to the prompt"
-                choices={choices ?? null}
+                choices={choices}
                 label="Your Response"
                 value={userResponse}
                 onChange={handleInput}

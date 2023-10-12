@@ -52,7 +52,7 @@ export function Blankable({ canClientCheck, quiz }) {
             <h4 id="prompt">Fill in the blanks</h4>
             {texts.map((text, index) => {
                 return (
-                    <span key={text}>
+                    <span key={index}>
                         {text}
                         {index < texts.length - 1 && (
                             <input
