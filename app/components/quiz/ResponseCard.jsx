@@ -126,8 +126,8 @@ export function ResponseCard({ canClientCheck, quiz }) {
                 <div className={styles.hints}>
                     <p>You're having some trouble. Here are some hints:</p>
                     <ul>
-                        {quiz.correctResponses.map((x) => (
-                            <li key={x}>{x}</li>
+                        {quiz.correctResponses.map((x, index) => (
+                            <li key={index}>{x}</li>
                         ))}
                     </ul>
                 </div>

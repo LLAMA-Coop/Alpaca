@@ -318,9 +318,9 @@ export function QuizInput({ quiz }) {
                     <div style={{ marginTop: "24px" }}>
                         <Label label="Choices" />
                         <ul className="chipList">
-                            {choices.map((res) => (
+                            {choices.map((res, index) => (
                                 <ListItem
-                                    key={res}
+                                    key={index}
                                     item={res}
                                     actionType={"delete"}
                                     action={() => {
@@ -371,9 +371,9 @@ export function QuizInput({ quiz }) {
                 <div style={{ marginTop: "24px" }}>
                     <Label label="Answers" />
                     <ol className="chipList">
-                        {responses.map((res) => (
+                        {responses.map((res, index) => (
                             <ListItem
-                                key={res}
+                                key={index}
                                 item={res}
                                 actionType={"delete"}
                                 action={() =>
@@ -405,42 +405,6 @@ export function QuizInput({ quiz }) {
                     listProperty={"title"}
                     listSetter={setSources}
                 />
-
-                {/* <ol className="chipList">
-                    <ListItem
-                        item="Add a source"
-                        action={() => setIsSourceSelectOpen((prev) => !prev)}
-                        actionType={"add"}
-                        select={
-                            <Select
-                                listChoices={availableSources}
-                                listChosen={sources}
-                                listProperty={"title"}
-                                listSetter={setSources}
-                                setSelectState={setIsSourceSelectOpen}
-                            />
-                        }
-                    />
-
-                    {sources.length > 0 &&
-                        sources.map((src) => {
-                            return (
-                                <ListItem
-                                    key={src.id}
-                                    link={src.url}
-                                    item={src.title}
-                                    action={() => {
-                                        setSources(
-                                            sources.filter(
-                                                (x) => x.id !== src.id,
-                                            ),
-                                        );
-                                    }}
-                                    actionType={"delete"}
-                                />
-                            );
-                        })}
-                </ol> */}
             </div>
 
             <div>
@@ -457,39 +421,6 @@ export function QuizInput({ quiz }) {
                     listProperty={"text"}
                     listSetter={setNotes}
                 />
-
-                {/* <ol className="chipList">
-                    <ListItem
-                        item="Add a note"
-                        action={() => {
-                            setIsNoteSelectOpen((prev) => !prev);
-                        }}
-                        actionType={"add"}
-                        select={
-                            <Select
-                                listChoices={availableNotes}
-                                listChosen={notes}
-                                listProperty={"text"}
-                                listSetter={setNotes}
-                                setSelectState={setIsSourceSelectOpen}
-                            />
-                        }
-                    />
-
-                    {notes.length > 0 &&
-                        notes.map((note) => (
-                            <ListItem
-                                key={note.id}
-                                item={note.text}
-                                action={() => {
-                                    setNotes(
-                                        notes.filter((x) => x.id !== note.id),
-                                    );
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                </ol> */}
             </div>
 
             <PermissionsInput

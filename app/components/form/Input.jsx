@@ -95,7 +95,7 @@ export function Input({
                         style={{ outlineColor: outlineColor || "" }}
                     >
                         {choices.map((choice) => (
-                            <option key={choice.key} value={choice.value}>
+                            <option key={choice.key ?? choice.value} value={choice.value}>
                                 {choice.label}
                             </option>
                         ))}
