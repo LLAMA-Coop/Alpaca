@@ -10,3 +10,11 @@
     outline-color: var(--accent-primary-outline);
     transition: outline 0.1s ease-in-out;
 }
+
+.incorrect {
+    border: 1px solid red;
+}
+
+.correct {
+    border: 1px solid green;
+}

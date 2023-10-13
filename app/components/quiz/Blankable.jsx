@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input, Card } from "../client";
 import correctConfetti from "@/lib/correctConfetti";
-import styles from "./Blankable.module.css"
+import styles from "./Blankable.module.css";
+import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 
 // need to add server-side check
 
@@ -14,6 +15,18 @@ export function Blankable({ canClientCheck, quiz }) {
     const [responseStatus, setResponseStatus] = useState("empty");
     const [responseCorrect, setResponseCorrect] = useState(false);
     const [failures, setFailures] = useState(0);
+    const [incorrectIndexes, setIncorrectIndexes] = useState([]);
+
+    useEffect(() => {
+        if (responseStatus === "empty") return;
+        if (incorrectIndexes.length === 0) {
+            setResponseCorrect(true);
+            setFailures(0);
+            correctConfetti();
+        } else {
+            setFailures(failures + 1);
+        }
+    }, [incorrectIndexes]);
 
     const texts = quiz.prompt.split(/<blank \/>/);
 
@@ -26,24 +39,29 @@ export function Blankable({ canClientCheck, quiz }) {
 
     function handleCheckAnswer() {
         setResponseStatus("complete");
-        let isIncorrect = userResponse.find((res, index) => {
-            return (
-                res.toLocaleLowerCase() !==
-                quiz.correctResponses[index].toLocaleLowerCase()
+        if (canClientCheck || !canClientCheck) {
+            setIncorrectIndexes(
+                whichIndexesIncorrect(userResponse, quiz.correctResponses),
             );
-        });
-        if (isIncorrect == undefined) {
-            setResponseCorrect(true);
-            setFailures(0);
-            correctConfetti();
-        } else {
-            setFailures(failures + 1);
         }
+        // let isIncorrect = userResponse.find((res, index) => {
+        //     return (
+        //         res.toLocaleLowerCase() !==
+        //         quiz.correctResponses[index].toLowerCase()
+        //     );
+        // });
+        // if (isIncorrect == undefined) {
+        //     setResponseCorrect(true);
+        //     setFailures(0);
+        //     correctConfetti();
+        // } else {
+        //     setFailures(failures + 1);
+        // }
     }
 
-    function inputSize(string){
-        if(!string) return 1;
-        if(string.length < 4) return 1;
+    function inputSize(string) {
+        if (!string) return 1;
+        if (string.length < 4) return 1;
         return string.length - 3;
     }
 
@@ -56,7 +74,11 @@ export function Blankable({ canClientCheck, quiz }) {
                         {text}
                         {index < texts.length - 1 && (
                             <input
-                                className={styles.input}
+                                className={`${styles.input} ${
+                                    incorrectIndexes.includes(index)
+                                        ? styles.incorrect
+                                        : ""
+                                }`}
                                 type="text"
                                 aria-label="blank"
                                 id={"ans_" + index}
@@ -84,8 +106,8 @@ export function Blankable({ canClientCheck, quiz }) {
                     <div>
                         Incorrect. Acceptable answers are
                         <ul>
-                            {quiz.correctResponses.map((ans) => {
-                                return <li key={ans}>{ans}</li>;
+                            {quiz.correctResponses.map((ans, index) => {
+                                return <li key={index}>{ans}</li>;
                             })}
                         </ul>
                     </div>

@@ -26,9 +26,10 @@ export function ResponseCard({ canClientCheck, quiz }) {
         if (hasAnswered || !userResponse) return;
 
         if (canClientCheck) {
-            const isCorrect = quiz.correctResponses.find(
-                (x) => x.toLowerCase() === userResponse.toLowerCase(),
-            );
+            const isCorrect =
+                quiz.correctResponses.find(
+                    (x) => x.toLowerCase() === userResponse.toLowerCase(),
+                ) !== undefined;
 
             if (isCorrect) {
                 setFailures(0);
@@ -37,7 +38,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
                 setFailures(failures + 1);
             }
 
-            setCorrectAnswer(isCorrect != undefined);
+            setCorrectAnswer(isCorrect);
             setHasAnswered(true);
         } else {
             const response = await fetch(`/api/quiz/${quiz._id}`, {

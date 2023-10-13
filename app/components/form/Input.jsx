@@ -23,6 +23,7 @@ export function Label({ required, error, errorId, label, htmlFor }) {
 }
 
 export function Input({
+    id,
     type,
     description,
     autoComplete,
@@ -45,8 +46,7 @@ export function Input({
     const [errorId, setErrorId] = useState("");
 
     useEffect(() => {
-        // remove spaces from label or pick another id
-        setInputId(`${label}-${makeUniqueId()}`);
+        setInputId(`${id ?? label.split("").join("_")}-${makeUniqueId()}`);
         setErrorId(`${inputId}-error`);
     }, []);
 
@@ -95,7 +95,10 @@ export function Input({
                         style={{ outlineColor: outlineColor || "" }}
                     >
                         {choices.map((choice) => (
-                            <option key={choice.key ?? choice.value} value={choice.value}>
+                            <option
+                                key={choice.key ?? choice.value}
+                                value={choice.value}
+                            >
                                 {choice.label}
                             </option>
                         ))}
