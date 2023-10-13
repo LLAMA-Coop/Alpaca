@@ -3,6 +3,7 @@ import { useUser } from "@/lib/auth";
 // import { Quiz } from "@mneme_app/database-models";
 import { Quiz } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
+import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 
 // this will be used to check answers on server
 // THEN put result in User's quizzes list
@@ -29,28 +30,54 @@ export async function POST(req) {
         const { userResponse } = await req.json();
 
         // Not set up for list answers or fill in the blanks
-        const isCorrect = quiz.correctResponses.find(
-            (x) => x.toLowerCase() === userResponse.toLowerCase(),
-        );
-        console.log("Route, is correct?", isCorrect);
+        let isCorrect;
+        let incorrectIndexes;
+        if (
+            quiz.type === "prompt-response" ||
+            quiz.type === "multiple-choice"
+        ) {
+            let incorrect = quiz.correctResponses.find(
+                (x) => x.toLowerCase() === userResponse.toLowerCase(),
+            );
+            isCorrect = incorrect === undefined;
+        }
+        if (
+            quiz.type === "ordered-list-answer" ||
+            quiz.type === "unordered-list-answer" ||
+            quiz.type === "fill-in-the-blank" ||
+            quiz.type === "verbatim"
+        ) {
+            incorrectIndexes = whichIndexesIncorrect(
+                userResponse,
+                quiz.correctResponses,
+                quiz.type !== "unordered-list-answer"
+            );
+            isCorrect = incorrectIndexes.length === 0;
+        }
 
         let quizInUser = user.quizzes.find(
             (q) => q.quizId.toString() === quiz._id.toString(),
         );
+        let canProgressLevel = false;
         if (!quizInUser) {
+            canProgressLevel = true;
             quizInUser = {
                 quizId: quiz._id,
                 level: 0,
                 hiddenUntil: new Date(),
             };
             user.quizzes.push(quizInUser);
+        } else {
+            canProgressLevel = Date.now() < quizInUser.hiddenUntil.getTime();
         }
-        if (isCorrect != undefined) {
+        if (isCorrect && canProgressLevel) {
             quizInUser.lastCorrect = new Date();
             quizInUser.level += 1;
             quizInUser.hiddenUntil.setDate(
-                quizInUser.hiddenUntil.getDate() + 7 * quizInUser.level,
+                quizInUser.hiddenUntil.getDate() + quizInUser.level,
             );
+        } else if (isCorrect) {
+            quizInUser.lastCorrect = new Date();
         } else {
             quizInUser.lastCorrect = 0;
             quizInUser.level = quizInUser.level > 0 ? quizInUser.level - 1 : 0;
@@ -58,8 +85,15 @@ export async function POST(req) {
 
         await user.save();
 
+        console.log(incorrectIndexes, userResponse)
+
         return NextResponse.json({
-            message: { isCorrect: isCorrect != undefined, user, quiz: quizInUser },
+            message: {
+                isCorrect,
+                incorrectIndexes,
+                user,
+                quiz: quizInUser,
+            },
         });
     } catch (error) {
         console.error(`[Quiz] POST error:\n ${error}`);

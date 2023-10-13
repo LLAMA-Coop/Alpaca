@@ -1,7 +1,7 @@
 "use client";
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Input, Card } from "@components/client";
+import { Input, Card, Alert } from "@components/client";
 import styles from "./ResponseCard.module.css";
 import { useState } from "react";
 import correctConfetti from "@/lib/correctConfetti";
@@ -13,6 +13,9 @@ export function ResponseCard({ canClientCheck, quiz }) {
     const [hasAnswered, setHasAnswered] = useState(false);
     const [correctAnswer, setCorrectAnswer] = useState(false);
     const [failures, setFailures] = useState(0);
+    
+    const [showAlert, setShowAlert] = useState(false);
+    const [requestStatus, setRequestStatus] = useState({});
 
     const type = quiz.type === "prompt-response" ? "text" : "select";
 
@@ -49,7 +52,17 @@ export function ResponseCard({ canClientCheck, quiz }) {
                 body: JSON.stringify({ userResponse }),
             });
 
+            if (response.status === 401) {
+                setRequestStatus({
+                    success: false,
+                    message: 'Please log in and try again'
+                });
+                setShowAlert(true);
+                return;
+            }
+
             const resJson = await response.json();
+            console.log(resJson);
             const message = resJson.message;
             const isCorrect = message.isCorrect;
 
@@ -110,6 +123,13 @@ export function ResponseCard({ canClientCheck, quiz }) {
             ]}
             border={hasAnswered && (correctAnswer ? "green" : "red")}
         >
+            <Alert
+                show={showAlert}
+                setShow={setShowAlert}
+                success={requestStatus.success}
+                message={requestStatus.message}
+            />
+            
             <Input
                 type={type}
                 description="Your response to the prompt"

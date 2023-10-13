@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, Input } from "../client";
+import { Card, Input, Alert } from "../client";
 import correctConfetti from "@/lib/correctConfetti";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import styles from "./Blankable.module.css";
@@ -16,6 +16,9 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
     const [responseCorrect, setResponseCorrect] = useState(false);
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
+    
+    const [showAlert, setShowAlert] = useState(false);
+    const [requestStatus, setRequestStatus] = useState({});
 
     useEffect(() => {
         if (responseStatus === "empty") return;
@@ -35,72 +38,51 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
         setUserResponse(array);
     }
 
-    function handleCheckAnswer() {
-        setResponseStatus("complete");
+    async function handleCheckAnswer() {
+        if (canClientCheck) {
+            setIncorrectIndexes(
+                whichIndexesIncorrect(
+                    userResponse,
+                    quiz.correctResponses,
+                    isOrdered,
+                ),
+            );
+            setResponseStatus("complete");
+        } else {
+            const response = await fetch(`/api/quiz/${quiz._id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userResponse }),
+            });
 
-        if (canClientCheck || !canClientCheck) {
-            setIncorrectIndexes(whichIndexesIncorrect(
-                userResponse,
-                quiz.correctResponses,
-                isOrdered,
-            ));
+            if (response.status === 401) {
+                setRequestStatus({
+                    success: false,
+                    message: 'Please log in and try again'
+                });
+                setShowAlert(true);
+                return;
+            }
+
+            const resJson = await response.json();
+            console.log(resJson);
+            const message = resJson.message;
+            setIncorrectIndexes(message.incorrectIndexes);
+            setResponseStatus("complete");
         }
-        // if (isOrdered) {
-        //     // Easier to find right/wrong if only looking for one wrong
-        //     // But ux better if can clarify which ones wrong
-        //     let isIncorrect = userResponse.find((res, index) => {
-        //         return (
-        //             res.toLowerCase() !==
-        //             quiz.correctResponses[index].toLowerCase()
-        //         );
-        //     });
-        //     if (isIncorrect == undefined) {
-        //         setResponseCorrect(true);
-        //         setFailures(0);
-        //         correctConfetti();
-        //     } else {
-        //         setFailures(failures + 1);
-        //     }
-        // }
-
-        // if (!isOrdered) {
-        //     // we could just sort first if unordered, then use same logic for both
-        //     const sortLowerCase = (a, b) => {
-        //         let al = a.toLowerCase();
-        //         let bl = b.toLowerCase();
-        //         if (al < bl) return -1;
-        //         if (al > bl) return 1;
-        //         return 0;
-        //     };
-        //     let userAnswers = userResponse.sort(sortLowerCase);
-        //     let correctAnswers = quiz.correctResponses.sort(sortLowerCase);
-        //     let isIncorrect = userAnswers.find((res, index) => {
-        //         return (
-        //             res.toLowerCase() !== correctAnswers[index].toLowerCase()
-        //         );
-        //     });
-        //     if (isIncorrect == undefined) {
-        //         setResponseCorrect(true);
-        //         setFailures(0);
-        //         correctConfetti();
-        //     } else {
-        //         setFailures(failures + 1);
-        //     }
-        // }
     }
-
-    const colorsLight = {
-        correct: "var(--accent-tertiary-outline)",
-        incorrect: "var(--accent-secondary-outline)",
-    };
-
-    // let colorOverride;
-    // if (responseStatus === "complete") {
-    //     colorOverride = responseCorrect ? "correct" : "incorrect";
-    // }
 
     return (
         <Card>
+            <Alert
+                show={showAlert}
+                setShow={setShowAlert}
+                success={requestStatus.success}
+                message={requestStatus.message}
+            />
+            
             <h4 id="prompt">{quiz.prompt}</h4>
             <ul>
                 {userResponse.map((ans, index) => {
@@ -120,13 +102,6 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
                                 onChange={(e) =>
                                     handleChange(index, e.target.value)
                                 }
-                                // outlineColor={
-                                //     colorsLight[
-                                //         incorrectIndexes.includes(index)
-                                //             ? "incorrect"
-                                //             : "correct"
-                                //     ]
-                                // }
                             ></Input>
                         </li>
                     );

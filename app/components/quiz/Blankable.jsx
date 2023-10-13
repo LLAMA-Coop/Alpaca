@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Input, Card } from "../client";
+import { Card, Alert } from "../client";
 import correctConfetti from "@/lib/correctConfetti";
 import styles from "./Blankable.module.css";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
@@ -16,6 +16,9 @@ export function Blankable({ canClientCheck, quiz }) {
     const [responseCorrect, setResponseCorrect] = useState(false);
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
+    
+    const [showAlert, setShowAlert] = useState(false);
+    const [requestStatus, setRequestStatus] = useState({});
 
     useEffect(() => {
         if (responseStatus === "empty") return;
@@ -37,26 +40,36 @@ export function Blankable({ canClientCheck, quiz }) {
         setUserResponse(array);
     }
 
-    function handleCheckAnswer() {
+    async function handleCheckAnswer() {
         setResponseStatus("complete");
-        if (canClientCheck || !canClientCheck) {
+        if (canClientCheck) {
             setIncorrectIndexes(
                 whichIndexesIncorrect(userResponse, quiz.correctResponses),
             );
+        } else {
+            const response = await fetch(`/api/quiz/${quiz._id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userResponse }),
+            });
+
+            if (response.status === 401) {
+                setRequestStatus({
+                    success: false,
+                    message: "Please log in and try again",
+                });
+                setShowAlert(true);
+                return;
+            }
+
+            const resJson = await response.json();
+            console.log(resJson);
+            const message = resJson.message;
+            setIncorrectIndexes(message.incorrectIndexes);
+            setResponseStatus("complete");
         }
-        // let isIncorrect = userResponse.find((res, index) => {
-        //     return (
-        //         res.toLocaleLowerCase() !==
-        //         quiz.correctResponses[index].toLowerCase()
-        //     );
-        // });
-        // if (isIncorrect == undefined) {
-        //     setResponseCorrect(true);
-        //     setFailures(0);
-        //     correctConfetti();
-        // } else {
-        //     setFailures(failures + 1);
-        // }
     }
 
     function inputSize(string) {
@@ -67,6 +80,13 @@ export function Blankable({ canClientCheck, quiz }) {
 
     return (
         <Card>
+            <Alert
+                show={showAlert}
+                setShow={setShowAlert}
+                success={requestStatus.success}
+                message={requestStatus.message}
+            />
+
             <h4 id="prompt">Fill in the blanks</h4>
             {texts.map((text, index) => {
                 return (
