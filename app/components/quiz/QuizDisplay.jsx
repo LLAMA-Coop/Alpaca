@@ -1,5 +1,6 @@
 import { ResponseCard, ListAnswer } from "@/app/components/client";
 import { Blankable } from "./Blankable";
+import { memo } from "react";
 
 // The quiz displays depends on whether it is a client-checked or server-checked quiz component
 // If client-checked, everything is rendered from the Quiz object
@@ -33,3 +34,5 @@ export function QuizDisplay({ canClientCheck, quiz }) {
         )
     }
 }
+
+export default memo(QuizDisplay);
