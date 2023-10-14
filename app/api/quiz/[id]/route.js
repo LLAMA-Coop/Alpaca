@@ -39,7 +39,7 @@ export async function POST(req) {
             let incorrect = quiz.correctResponses.find(
                 (x) => x.toLowerCase() === userResponse.toLowerCase(),
             );
-            isCorrect = incorrect === undefined;
+            isCorrect = incorrect !== undefined;
         }
         if (
             quiz.type === "ordered-list-answer" ||
@@ -50,7 +50,7 @@ export async function POST(req) {
             incorrectIndexes = whichIndexesIncorrect(
                 userResponse,
                 quiz.correctResponses,
-                quiz.type !== "unordered-list-answer"
+                quiz.type !== "unordered-list-answer",
             );
             isCorrect = incorrectIndexes.length === 0;
         }
@@ -84,8 +84,6 @@ export async function POST(req) {
         }
 
         await user.save();
-
-        console.log(incorrectIndexes, userResponse)
 
         return NextResponse.json({
             message: {
@@ -131,7 +129,6 @@ export async function DELETE(req) {
         }
 
         const deletion = await Quiz.deleteOne({ _id });
-        console.log(deletion);
         if (deletion.deletedCount === 0) {
             console.error(`Unable to delete quiz ${_id}\nError: ${error}`);
             return NextResponse.json(
