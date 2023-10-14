@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import PermissionsInput from "../form/PermissionsInput";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import { serializeOne } from "@/lib/db";
+import htmlDate from "@/lib/htmlDate";
 import MAX from "@/lib/max";
 
 export function SourceInput({ source }) {
@@ -58,15 +59,6 @@ export function SourceInput({ source }) {
         if (source.permissions)
             setPermissions(serializeOne(source.permissions));
     }, []);
-
-    function htmlDate(dateString) {
-        const date = new Date(dateString);
-        return `${date.getFullYear().toString().padStart(4, "0")}-${(
-            date.getMonth() + 1
-        )
-            .toString()
-            .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
-    }
 
     function handleAddAuthor(e) {
         e.preventDefault();
