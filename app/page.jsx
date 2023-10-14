@@ -11,16 +11,9 @@ import Link from "next/link";
 
 export default async function Home({ searchParams }) {
     const user = serializeOne(await useUser());
-    // const sourceSample = serialize(
-    //     await Source.aggregate([{ $sample: { size: 1 } }])[0],
-    // )[0];
-    // const noteSample = serialize(
-    //     await Note.aggregate([{ $sample: { size: 1 } }])[0],
-    // )[0];
     const quizSample = serialize(
         await Quiz.aggregate([{ $sample: { size: 1 } }]),
     )[0];
-    console.log("SAMPLE", quizSample);
 
     return (
         <main className={styles.main}>
