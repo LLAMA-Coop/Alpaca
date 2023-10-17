@@ -29,7 +29,6 @@ export async function POST(req) {
 
         const { userResponse } = await req.json();
 
-        // Not set up for list answers or fill in the blanks
         let isCorrect;
         let incorrectIndexes;
         if (
@@ -60,6 +59,7 @@ export async function POST(req) {
         );
         let canProgressLevel = false;
         if (!quizInUser) {
+            console.log("new quiz question")
             canProgressLevel = true;
             quizInUser = {
                 quizId: quiz._id,
@@ -68,13 +68,15 @@ export async function POST(req) {
             };
             user.quizzes.push(quizInUser);
         } else {
-            canProgressLevel = Date.now() < quizInUser.hiddenUntil.getTime();
+            console.log("old quiz question", quizInUser.hiddenUntil)
+            canProgressLevel = Date.now() > quizInUser.hiddenUntil.getTime();
         }
         if (isCorrect && canProgressLevel) {
+            let hiddenUntil = new Date();
             quizInUser.lastCorrect = new Date();
             quizInUser.level += 1;
-            quizInUser.hiddenUntil.setDate(
-                quizInUser.hiddenUntil.getDate() + quizInUser.level,
+            quizInUser.hiddenUntil = hiddenUntil.setDate(
+                hiddenUntil.getDate() + quizInUser.level,
             );
         } else if (isCorrect) {
             quizInUser.lastCorrect = new Date();
