@@ -14,7 +14,7 @@ export default async function DailyPage({ searchParams }) {
     const quizzes = serialize(
         allQuizzes.filter((q) => {
             const quizInUser = userQuizzes?.find(
-                (quiz) => quiz.quizId === q._id.toString(),
+                (quiz) => quiz.quizId.toString() === q._id.toString(),
             );
             if (!quizInUser) return true;
             const hidden = new Date(quizInUser.hiddenUntil);
@@ -26,11 +26,13 @@ export default async function DailyPage({ searchParams }) {
         <main className={styles.main}>
             <h2>Ready to test your knowledge?</h2>
 
-            {user ? (
-                <DailyTrain quizzes={quizzes} />
-            ) : (
-                <p>Please log in to start training</p>
-            )}
+            <section>
+                {user ? (
+                    <DailyTrain quizzes={quizzes} />
+                ) : (
+                    <p>Please log in to start training</p>
+                )}
+            </section>
         </main>
     );
 }
