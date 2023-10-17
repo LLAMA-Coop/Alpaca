@@ -1,10 +1,12 @@
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
 import { QuizInput, InputPopup } from "@components/client";
+import { UserStats } from "../components/quiz/UserStats";
 import { serialize, serializeOne } from "@/lib/db";
 import { QuizDisplay } from "@components/server";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import htmlDate from "@/lib/htmlDate";
 // import { Group, User, Source, Quiz, Note } from "@mneme_app/database-models";
 import { Source, Note, Quiz, User, Group } from "@/app/api/models";
 
@@ -12,6 +14,11 @@ export default async function QuizzesPage({ searchParams }) {
     const user = await useUser();
     User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
+
+    let userQuizzes;
+    if (user) {
+        userQuizzes = user.quizzes;
+    }
 
     const page = Number(searchParams["page"] ?? 1);
     const amount = Number(searchParams["amount"] ?? 10);
@@ -49,20 +56,31 @@ export default async function QuizzesPage({ searchParams }) {
                     <h3>Available Quiz Cards</h3>
 
                     <ol className={styles.listGrid}>
-                        {quizzes.map((quiz) => (
-                            <li key={quiz.id}>
-                                <QuizDisplay
-                                    quiz={quiz}
-                                    canClientCheck={false}
-                                />
-                                {user && canEdit(quiz, serializeOne(user)) && (
-                                    <InputPopup
-                                        type="quiz"
-                                        resource={serializeOne(quiz)}
+                        {quizzes.map((quiz) => {
+                            const quizInUser = userQuizzes?.find(
+                                (q) =>
+                                    q.quizId.toString() === quiz._id.toString(),
+                            );
+
+                            return (
+                                <li key={quiz.id}>
+                                    <QuizDisplay
+                                        quiz={quiz}
+                                        canClientCheck={false}
                                     />
-                                )}
-                            </li>
-                        ))}
+                                    {quizInUser && (
+                                        <UserStats userQuizInfo={quizInUser} />
+                                    )}
+                                    {user &&
+                                        canEdit(quiz, serializeOne(user)) && (
+                                            <InputPopup
+                                                type="quiz"
+                                                resource={serializeOne(quiz)}
+                                            />
+                                        )}
+                                </li>
+                            );
+                        })}
                     </ol>
 
                     <div className={styles.paginationButtons}>

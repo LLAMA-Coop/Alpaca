@@ -3,35 +3,14 @@ import { useState, useEffect } from "react";
 import { useStore } from "@/store/store";
 import QuizDisplay from "@/app/components/quiz/QuizDisplay";
 import htmlDate from "@/lib/htmlDate";
+import { UserStats } from "../quiz/UserStats";
 
-export default function DailyTrain({ quizzes }) {
-    const [seconds, setSeconds] = useState(100);
+export default function DailyTrain({ quizzes, timeLimit = 300 }) {
+    const [seconds, setSeconds] = useState(timeLimit);
     const [isRunning, setIsRunning] = useState(false);
 
     const user = useStore((state) => state.user);
     const userQuizzes = user?.quizzes;
-    // const quizzes = useStore((state) => state.quizStore);
-
-    // if (!user) {
-    //     setAlertStatus({
-    //         success: false,
-    //         message: "Please log in",
-    //     });
-    //     setShowAlert(true);
-    // }
-
-    // const quizzes = useStore((state) => {
-    //     if (!user) return state.quizStore;
-    //     return state.quizStore.filter((q) => {
-    //         const quizInUser = userQuizzes.find(
-    //             (quiz) => quiz.quizId === q._id,
-    //         );
-    //         if (!quizInUser) return true;
-    //         const hidden = new Date(quizInUser.hiddenUntil);
-    //         return hidden.getTime() <= Date.now();
-    //     });
-    // });
-    // console.log(user, quizzes);
 
     let interval;
     useEffect(() => {
@@ -66,7 +45,7 @@ export default function DailyTrain({ quizzes }) {
 
     return (
         <>
-            <p>Seconds of Training: {formatTime(seconds)}</p>
+            <p>Time Limit: {formatTime(seconds)}</p>
             <button
                 onClick={() => {
                     setIsRunning(!isRunning);
@@ -84,14 +63,7 @@ export default function DailyTrain({ quizzes }) {
                         <li key={quiz._id}>
                             <QuizDisplay canClientCheck={false} quiz={quiz} />
                             {quizInUser && (
-                                <p>
-                                    Hidden Until:{" "}
-                                    <span>
-                                        {htmlDate(
-                                            new Date(quizInUser.hiddenUntil),
-                                        )}
-                                    </span>
-                                </p>
+                                <UserStats userQuizInfo={quizInUser} />
                             )}
                         </li>
                     );
