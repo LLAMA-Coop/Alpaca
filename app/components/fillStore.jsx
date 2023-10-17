@@ -52,7 +52,8 @@ export function FillStore({
             console.log("we are doing this:", operation, resource, storeName);
         };
 
-        if (sourceStore?.length > 0) addResources(stores.source, ...sourceStore);
+        if (sourceStore?.length > 0)
+            addResources(stores.source, ...sourceStore);
         if (noteStore?.length > 0) addResources(stores.note, ...noteStore);
         if (quizStore?.length > 0) addResources(stores.quiz, ...quizStore);
         if (groupStore?.length > 0) addResources(stores.group, ...groupStore);

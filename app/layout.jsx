@@ -66,8 +66,6 @@ export default async function RootLayout({ children }) {
           })
         : [];
 
-    console.log("notifications in layout", notifications[0]);
-
     const query = queryReadableResources(user);
     const sources = serialize(await Source.find(query));
     const notes = serialize(await Note.find(query));
