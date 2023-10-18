@@ -3,10 +3,13 @@ import { DynamicNav } from "./DynamicNav";
 import styles from "./Header.module.css";
 import { serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 import Link from "next/link";
 
 export async function Header() {
-    const user = serializeOne(await useUser());
+    const user = serializeOne(
+        await useUser({ token: cookies().get("token")?.value }),
+    );
 
     return (
         <header className={styles.header}>

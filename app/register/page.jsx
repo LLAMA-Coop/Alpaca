@@ -2,10 +2,11 @@ import { UserInput } from "@components/client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 import Link from "next/link";
 
 export default async function RegisterPage() {
-    const user = await useUser();
+    const user = await useUser({ token: cookies().get("token")?.value });
     if (user) return redirect(`/me/dashboard`);
 
     return (

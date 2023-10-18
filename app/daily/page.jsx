@@ -1,11 +1,12 @@
 import styles from "@/app/page.module.css";
 import DailyTrain from "../components/train/dailyTrain";
 import { useUser, queryReadableResources } from "@/lib/auth";
+import { cookies } from "next/headers";
 import { Quiz, User } from "../api/models";
 import { serialize } from "@/lib/db";
 
 export default async function DailyPage({ searchParams }) {
-    const user = await useUser();
+    const user = await useUser({ token: cookies().get("token")?.value });
     User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 

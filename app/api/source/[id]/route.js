@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 // import { Source } from "@mneme_app/database-models";
 import { Source } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 
 export async function DELETE(req) {
     try {
-        const user = await useUser();
+        const user = await useUser({ token: cookies().get("token")?.value });
 
         if (!user) {
             return unauthorized;

@@ -1,8 +1,10 @@
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 export async function POST(req) {
     try {
-        const user = await useUser();
+
+        const user = await useUser({token: cookies().get("token")?.value});
         if (!user) {
             return unauthorized;
         }

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { User } from "@/app/api/models";
 // import User from "@/app/api/models/User";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { serializeOne } from "@/lib/db";
 import { Types } from "mongoose";
@@ -11,7 +12,9 @@ export async function GET(req) {
     const userId = req.nextUrl.pathname.split("/")[3];
 
     try {
-        const user = serializeOne(await useUser());
+        const user = serializeOne(
+            await useUser({ token: cookies().get("token")?.value }),
+        );
         if (
             !user ||
             (user.id !== userId && user.roles.indexOf("admin") === -1)
@@ -31,7 +34,7 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-        const sender = await useUser();
+        const sender = await useUser({ token: cookies().get("token")?.value });
 
         if (!sender) {
             return unauthorized;

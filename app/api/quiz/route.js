@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 // import { Quiz } from "@mneme_app/database-models";
 import { Quiz } from "@/app/api/models";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
+import { cookies } from "next/headers";
 import { serializeOne } from "@/lib/db";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
@@ -11,12 +12,12 @@ const allowedType = [
     "multiple-choice",
     "unordered-list-answer",
     "ordered-list-answer",
-    "fill-in-the-blank"
+    "fill-in-the-blank",
 ];
 
 export async function GET(req) {
     try {
-        const user = await useUser();
+        const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) {
             return unauthorized;
         }
@@ -33,7 +34,7 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-        const user = await useUser();
+        const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) {
             return unauthorized;
         }
@@ -48,7 +49,7 @@ export async function POST(req) {
             permissions,
         } = await req.json();
 
-        console.log("perms in quiz route", permissions)
+        console.log("perms in quiz route", permissions);
 
         if (!allowedType.includes(type)) {
             return NextResponse.json(
@@ -119,7 +120,7 @@ export async function POST(req) {
 
 export async function PUT(req) {
     try {
-        const user = await useUser();
+        const user = await useUser({ token: cookies().get("token")?.value });
 
         if (!user) {
             return unauthorized;

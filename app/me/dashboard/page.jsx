@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import styles from "@/app/page.module.css";
 import { serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 // import { Source, Quiz, Note } from "@mneme_app/database-models";
 import { Source, Note, Quiz } from "@/app/api/models";
 import InviteAssociate from "@/app/components/inviteAssociate";
@@ -10,7 +11,7 @@ import { Notifications } from "@/app/components/notifications";
 import Image from "next/image";
 
 export default async function DashboardPage() {
-    const user = await useUser();
+    const user = await useUser({ token: cookies().get("token")?.value });
     if (!user) return redirect("/login");
     user.populate("associates");
 

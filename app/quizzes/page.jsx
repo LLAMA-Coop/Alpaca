@@ -1,4 +1,5 @@
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
+import { cookies } from "next/headers";
 import { QuizInput, InputPopup } from "@components/client";
 import { UserStats } from "../components/quiz/UserStats";
 import { serialize, serializeOne } from "@/lib/db";
@@ -11,7 +12,7 @@ import htmlDate from "@/lib/htmlDate";
 import { Source, Note, Quiz, User, Group } from "@/app/api/models";
 
 export default async function QuizzesPage({ searchParams }) {
-    const user = await useUser();
+    const user = await useUser({ token: cookies().get("token")?.value });
     User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 

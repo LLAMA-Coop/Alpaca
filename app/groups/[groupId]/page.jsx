@@ -3,6 +3,7 @@ import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 // import { Group, Quiz, Note, Source } from "@mneme_app/database-models";
 import { Source, Note, Quiz, Group } from "@/app/api/models";
 import { QuizDisplay } from "@/app/components/server";
@@ -13,7 +14,9 @@ export default async function GroupPage({ params }) {
     const group = serializeOne(await Group.findById(groupId).populate("users"));
     if (!group) return redirect("/groups");
 
-    const user = serializeOne(await useUser());
+    const user = serializeOne(
+        await useUser({ token: cookies().get("token")?.value }),
+    );
     if (!group.isPublic && !user?.groups?.includes(groupId)) {
         return redirect("/groups");
     }

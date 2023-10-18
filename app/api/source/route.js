@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 // import { Source } from "@mneme_app/database-models";
 import { Source } from "@/app/api/models";
 import { unauthorized, server } from "@/lib/apiErrorResponses";
@@ -8,7 +9,7 @@ import { serializeOne } from "@/lib/db";
 
 export async function GET(req) {
     try {
-        const user = await useUser();
+        const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) {
             return unauthorized;
         }
@@ -23,7 +24,7 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-        const user = await useUser();
+        const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) {
             return unauthorized;
         }
@@ -88,7 +89,7 @@ export async function POST(req) {
 
 export async function PUT(req) {
     try {
-        const user = await useUser();
+        const user = await useUser({ token: cookies().get("token")?.value });
 
         if (!user) {
             return unauthorized;

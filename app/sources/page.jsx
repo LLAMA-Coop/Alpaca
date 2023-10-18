@@ -5,11 +5,12 @@ import { redirect } from "next/navigation";
 import { serialize, serializeOne } from "@/lib/db";
 import Link from "next/link";
 import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 // import { Source, User } from "@mneme_app/database-models";
 import { Source, User } from "@/app/api/models";
 
 export default async function SourcesPage({ searchParams }) {
-    const user = await useUser();
+    const user = await useUser({ token: cookies().get("token")?.value });
     User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 

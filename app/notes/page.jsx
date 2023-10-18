@@ -3,13 +3,14 @@ import { NoteInput, InputPopup } from "@components/client";
 import styles from "@/app/page.module.css";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
+import { cookies } from "next/headers";
 // import { Source, Note, User } from "@mneme_app/database-models";
 import { Source, Note, User } from "@/app/api/models";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default async function NotesPage({ searchParams }) {
-    const user = await useUser();
+    const user = await useUser({ token: cookies().get("token")?.value });
     User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 

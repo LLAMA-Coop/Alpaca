@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 // import { Group } from "@mneme_app/database-models";
 // import User from "@mneme_app/database-models";
@@ -7,7 +8,7 @@ import { User, Group } from "@/app/api/models";
 
 export async function POST(req) {
     try {
-        const user = await useUser();
+        const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) {
             return unauthorized;
         }

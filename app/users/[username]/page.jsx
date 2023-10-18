@@ -1,10 +1,11 @@
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 import { serializeOne } from "@/lib/db";
 
 export default async function UserPage({ params: { username } }) {
-    const user = await useUser();
+    const user = await useUser({ token: cookies().get("token")?.value });
 
     if (!user) return redirect("/login");
     if (user.username === username) return redirect("/me/dashboard");

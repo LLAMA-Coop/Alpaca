@@ -8,6 +8,7 @@ import { Source, Note, Quiz, Group, User } from "@/app/api/models";
 import { FillStore } from "./components/fillStore";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser, queryReadableResources } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +18,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-    const user = await useUser();
+    const user = await useUser({ token: cookies().get("token")?.value });
     if (user) {
         await user.populate({
             path: "notifications",
@@ -35,7 +36,7 @@ export default async function RootLayout({ children }) {
                   from: {},
                   subject: x.subject,
                   message: x.message,
-                  responseActions: x.responseActions
+                  responseActions: x.responseActions,
               };
 
               if (x.from.user) {
@@ -58,7 +59,7 @@ export default async function RootLayout({ children }) {
                   notification.from.group = {
                       _id: x.from.group._id,
                       name: x.from.group.name,
-                      description: x.from.group.description
+                      description: x.from.group.description,
                   };
               }
 
@@ -72,13 +73,17 @@ export default async function RootLayout({ children }) {
     const quizzes = serialize(await Quiz.find(query));
 
     const publicUsers = await User.find({ isPublic: true });
-    const associates = user ? user.associates.filter(a => !publicUsers.includes(a)) : [];
-    const availableUsers = serialize([...associates, ...publicUsers]).map((x) => ({
-        _id: x._id,
-        username: x.username,
-        displayName: x.displayName,
-        avatar: x.avatar,
-    }));
+    const associates = user
+        ? user.associates.filter((a) => !publicUsers.includes(a))
+        : [];
+    const availableUsers = serialize([...associates, ...publicUsers]).map(
+        (x) => ({
+            _id: x._id,
+            username: x.username,
+            displayName: x.displayName,
+            avatar: x.avatar,
+        }),
+    );
     const publicGroups = await Group.find({ isPublic: true });
     const availableGroups = serialize(
         user?.hasOwnProperty() && user?.groups.length > 0

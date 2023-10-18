@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 // import { Quiz } from "@mneme_app/database-models";
 import { Quiz } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
@@ -9,7 +10,7 @@ import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 // THEN put result in User's quizzes list
 export async function POST(req) {
     try {
-        const user = await useUser();
+        const user = await useUser({ token: cookies().get("token")?.value });
 
         if (!user) {
             return unauthorized;
@@ -59,7 +60,7 @@ export async function POST(req) {
         );
         let canProgressLevel = false;
         if (!quizInUser) {
-            console.log("new quiz question")
+            console.log("new quiz question");
             canProgressLevel = true;
             quizInUser = {
                 quizId: quiz._id,
@@ -68,7 +69,7 @@ export async function POST(req) {
             };
             user.quizzes.push(quizInUser);
         } else {
-            console.log("old quiz question", quizInUser.hiddenUntil)
+            console.log("old quiz question", quizInUser.hiddenUntil);
             canProgressLevel = Date.now() > quizInUser.hiddenUntil.getTime();
         }
         if (isCorrect && canProgressLevel) {
@@ -103,7 +104,7 @@ export async function POST(req) {
 
 export async function DELETE(req) {
     try {
-        const user = await useUser();
+        const user = await useUser({ token: cookies().get("token")?.value });
 
         if (!user) {
             return unauthorized;

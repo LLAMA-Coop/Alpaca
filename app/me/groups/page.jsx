@@ -2,11 +2,12 @@ import { Card, GroupInput } from "@components/client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 // import { User } from "@mneme_app/database-models";
 import { User } from "@/app/api/models";
 
 export default async function GroupsPage() {
-    const user = await useUser();
+    const user = await useUser({ token: cookies().get("token")?.value });
     if (!user) return redirect("/login");
 
     const groups = (await User.findById(user.id).populate("groups")).groups;

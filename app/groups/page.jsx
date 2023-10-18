@@ -4,13 +4,14 @@ import { Card, GroupInput } from "@components/client";
 // import { Group } from "@mneme_app/database-models";
 import { Group } from "@/app/api/models";
 import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 export default async function GroupPage() {
     const groups = await Group.find({
         isPublic: true,
     });
 
-    const user = await useUser();
+    const user = await useUser({ token: cookies().get("token")?.value });
     const yourGroups = user
         ? await Group.find({
               $or: [
