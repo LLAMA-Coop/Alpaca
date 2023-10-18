@@ -51,9 +51,28 @@ export default async function QuizzesPage({ searchParams }) {
         <main className={styles.main}>
             <h2>Quiz Cards</h2>
 
+            <section className="paragraph">
+                <p>
+                    A quiz is a question that challenges your understanding and
+                    recall of information from a source or note.
+                </p>
+                {user ? (
+                    <p>
+                        These are the quizzes that are publicly viewable and
+                        viewable specifically by you.
+                    </p>
+                ) : (
+                    <p>
+                        You are only viewing the publicly available quizzes. Log
+                        in or register then log in to see quizzes available to
+                        you and create your own quizzes.
+                    </p>
+                )}
+            </section>
+
             {quizzes.length > 0 && (
                 <section>
-                    <h3>Available Quiz Cards</h3>
+                    <h3>Available Quiz Questions</h3>
 
                     <ol className={styles.listGrid}>
                         {quizzes.map((quiz) => {

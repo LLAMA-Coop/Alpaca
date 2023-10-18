@@ -44,9 +44,29 @@ export default async function SourcesPage({ searchParams }) {
         <main className={styles.main}>
             <h2>Sources</h2>
 
+            <section className="paragraph">
+                <p>
+                    A source is a record of a resource, such as a book, website,
+                    or video tutorial, that you can cite for your notes or quiz
+                    questions.
+                </p>
+                {user ? (
+                    <p>
+                        These are the sources that are publicly viewable and
+                        viewable specifically by you.
+                    </p>
+                ) : (
+                    <p>
+                        You are only viewing the publicly available sources. Log
+                        in or register then log in to see sources available to
+                        you and create your own sources.
+                    </p>
+                )}
+            </section>
+
             {sources.length > 0 && (
                 <section>
-                    <h3>Your sources</h3>
+                    <h3>Available Sources</h3>
 
                     <ol className={styles.listGrid}>
                         {sources.map((src) => (

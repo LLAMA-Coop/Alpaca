@@ -45,6 +45,24 @@ export default async function NotesPage({ searchParams }) {
     return (
         <main className={styles.main}>
             <h2>Notes</h2>
+            <section className="paragraph">
+                <p>
+                    A note is a response to or summary of information in a cited
+                    source or multiple sources.
+                </p>
+                {user ? (
+                    <p>
+                        These are the notes that are publicly viewable and
+                        viewable specifically by you.
+                    </p>
+                ) : (
+                    <p>
+                        You are only viewing the publicly available notes. Log
+                        in or register then log in to see notes available to you
+                        and create your own notes.
+                    </p>
+                )}
+            </section>
 
             {notes.length > 0 && (
                 <section>
