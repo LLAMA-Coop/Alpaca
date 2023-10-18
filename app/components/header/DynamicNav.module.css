@@ -12,6 +12,15 @@
     margin: 0 auto;
 }
 
+@media (max-width: 600px) {
+    .navMenu {
+      position: fixed;
+      top: 50px;
+      right: 1rem;
+      max-width: 100%;
+    }
+  }
+
 .navMenu > li > a {
     position: relative;
     display: flex;
