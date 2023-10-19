@@ -1,14 +1,17 @@
 import { Header, Footer } from "@components/server";
+import DatabaseConnectError from "./components/error/database-connect";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import connectDB from "./api/db";
-connectDB();
 // import { Source, Note, Quiz, Group, User } from "@mneme_app/database-models";
 import { Source, Note, Quiz, Group, User } from "@/app/api/models";
 import { FillStore } from "./components/fillStore";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser, queryReadableResources } from "@/lib/auth";
 import { cookies } from "next/headers";
+import NotFound from "./not-found";
+
+const connection = await connectDB();
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +21,17 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
+    if (connection === false) {
+        return (
+            <html lang="en">
+                <body className={inter.className}>
+                    <Header />
+                    <DatabaseConnectError />
+                    <Footer />
+                </body>
+            </html>
+        );
+    }
     const user = await useUser({ token: cookies().get("token")?.value });
     if (user) {
         await user.populate({
