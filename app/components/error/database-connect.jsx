@@ -12,6 +12,9 @@ export default function DatabaseConnectError() {
                         to a database.
                     </p>
                     <p>
+                        Contact the developer about this issue.
+                    </p>
+                    <p>
                         If you are the developer, check the `.env` file and make
                         sure the <em>DATABASE_URL</em> value is the correct URL
                         to the database.
