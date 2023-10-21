@@ -11,6 +11,7 @@ import { memo } from "react";
 // sent into component via canClientCheck boolean
 
 export function QuizDisplay({ canClientCheck, quiz }) {
+    if (!quiz) return;
     if (quiz.type === "prompt-response" || quiz.type === "multiple-choice") {
         return <ResponseCard canClientCheck={canClientCheck} quiz={quiz} />;
     }
