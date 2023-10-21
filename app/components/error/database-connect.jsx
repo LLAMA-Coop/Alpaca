@@ -3,7 +3,8 @@ import styles from "@/app/page.module.css";
 export default function DatabaseConnectError() {
     return (
         <main className={styles.main}>
-            <h2>Could not connect to database</h2>
+            <h2>Something went wrong</h2>
+            <h3>Could not connect to database</h3>
 
             <section>
                 <div className="paragraph">
