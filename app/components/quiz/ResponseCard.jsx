@@ -3,7 +3,7 @@
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Input, Card, Alert } from "@components/client";
 import styles from "./ResponseCard.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import correctConfetti from "@/lib/correctConfetti";
 import shuffleArray from "@/lib/shuffleArray";
 import makeUniqueId from "@/lib/uniqueId";
@@ -13,9 +13,29 @@ export function ResponseCard({ canClientCheck, quiz }) {
     const [hasAnswered, setHasAnswered] = useState(false);
     const [correctAnswer, setCorrectAnswer] = useState(false);
     const [failures, setFailures] = useState(0);
-    
+    const [choices, setChoices] = useState([]);
+
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+
+    useEffect(() => {
+        setChoices(
+            quiz.choices
+                ? shuffleArray(
+                      quiz.choices.map((x) => ({
+                          label: x,
+                          value: x,
+                          key: makeUniqueId(),
+                      })),
+                  )
+                : null,
+        );
+    }, []);
+
+    useEffect(() => {
+        if(choices.length) setUserResponse(choices[0].value);
+        console.log(userResponse);
+    }, [choices])
 
     const type = quiz.type === "prompt-response" ? "text" : "select";
 
@@ -44,18 +64,23 @@ export function ResponseCard({ canClientCheck, quiz }) {
             setCorrectAnswer(isCorrect);
             setHasAnswered(true);
         } else {
-            const response = await fetch(`/api/quiz/${quiz._id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
+                    quiz._id
+                }`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ userResponse }),
                 },
-                body: JSON.stringify({ userResponse }),
-            });
+            );
 
             if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: 'Please log in and try again'
+                    message: "Please log in and try again",
                 });
                 setShowAlert(true);
                 return;
@@ -88,16 +113,6 @@ export function ResponseCard({ canClientCheck, quiz }) {
         colorOverride = correctAnswer ? "correct" : "incorrect";
     }
 
-    const choices = quiz.choices
-        ? shuffleArray(
-              quiz.choices.map((x) => ({
-                  label: x,
-                  value: x,
-                  key: makeUniqueId(),
-              })),
-          )
-        : null;
-
     return (
         <Card
             title={quiz.prompt}
@@ -129,7 +144,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
                 success={requestStatus.success}
                 message={requestStatus.message}
             />
-            
+
             <Input
                 type={type}
                 description="Your response to the prompt"
