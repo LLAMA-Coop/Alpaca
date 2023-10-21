@@ -34,7 +34,6 @@ export function ResponseCard({ canClientCheck, quiz }) {
 
     useEffect(() => {
         if(choices.length) setUserResponse(choices[0].value);
-        console.log(userResponse);
     }, [choices])
 
     const type = quiz.type === "prompt-response" ? "text" : "select";
