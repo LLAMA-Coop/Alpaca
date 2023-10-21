@@ -128,13 +128,16 @@ export function SourceInput({ source }) {
 
         setLoading(true);
 
-        const response = await fetch("/api/source", {
-            method: source ? "PUT" : "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/source`,
+            {
+                method: source ? "PUT" : "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(sourcePayload),
             },
-            body: JSON.stringify(sourcePayload),
-        });
+        );
 
         setLoading(false);
 

@@ -25,13 +25,21 @@ export function Notifications() {
             return;
         }
 
-        const response = await fetch(`/api/${directory}/${recipientId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${
+                process.env.NEXT_PUBLIC_BASEPATH ?? ""
+            }/api/${directory}/${recipientId}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    action,
+                    notificationId: notification._id,
+                }),
             },
-            body: JSON.stringify({ action, notificationId: notification._id }),
-        });
+        );
 
         console.log(await response.json());
     }

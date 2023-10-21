@@ -7,13 +7,18 @@ export default function InviteAssociate() {
     const [associateId, setAssociateId] = useState("");
 
     async function sendInvitation() {
-        const response = await fetch(`/api/users/${associateId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${
+                process.env.NEXT_PUBLIC_BASEPATH ?? ""
+            }/api/users/${associateId}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ action: "associate" }),
             },
-            body: JSON.stringify({ action: "associate" }),
-        });
+        );
         console.log(await response.json());
     }
 

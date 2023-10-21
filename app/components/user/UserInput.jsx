@@ -108,13 +108,16 @@ export function UserInput({ isRegistering }) {
 
         setLoading(true);
 
-        const response = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/register`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
             },
-            body: JSON.stringify(user),
-        });
+        );
 
         setLoading(false);
 
@@ -167,13 +170,16 @@ export function UserInput({ isRegistering }) {
 
         setLoading(true);
 
-        const response = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/login`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
             },
-            body: JSON.stringify(user),
-        });
+        );
 
         setLoading(false);
 

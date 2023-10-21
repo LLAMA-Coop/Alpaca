@@ -42,9 +42,12 @@ export function Profile({ user }) {
     }, [showMenu]);
 
     const logout = async () => {
-        await fetch("/api/auth/logout", {
-            method: "POST",
-        });
+        await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/logout`,
+            {
+                method: "POST",
+            },
+        );
 
         if (protectedPaths.includes(path)) {
             router.push("/login");

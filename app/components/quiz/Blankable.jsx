@@ -6,8 +6,6 @@ import correctConfetti from "@/lib/correctConfetti";
 import styles from "./Blankable.module.css";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 
-// need to add server-side check
-
 export function Blankable({ canClientCheck, quiz }) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
@@ -16,7 +14,7 @@ export function Blankable({ canClientCheck, quiz }) {
     const [responseCorrect, setResponseCorrect] = useState(false);
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
-    
+
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 
@@ -47,13 +45,18 @@ export function Blankable({ canClientCheck, quiz }) {
                 whichIndexesIncorrect(userResponse, quiz.correctResponses),
             );
         } else {
-            const response = await fetch(`/api/quiz/${quiz._id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
+                    quiz._id
+                }`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ userResponse }),
                 },
-                body: JSON.stringify({ userResponse }),
-            });
+            );
 
             if (response.status === 401) {
                 setRequestStatus({
