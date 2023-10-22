@@ -5,7 +5,6 @@ import { Input, Label } from "@/app/components/client";
 // add this to client/index.js
 import ListAdd from "./ListAdd";
 import { useStore } from "@/store/store";
-import { serializeOne } from "@/lib/db";
 
 export default function PermissionsInput({ permissions, setter }) {
     const [allWrite, setAllWrite] = useState(false);
