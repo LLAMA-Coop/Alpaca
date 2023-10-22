@@ -1,7 +1,6 @@
 "use client";
 
 import { ListItem, Select } from "@/app/components/client";
-// import { useState } from "react";
 
 export default function ListAdd({
     item,
@@ -11,8 +10,6 @@ export default function ListAdd({
     listSetter,
     disabled,
 }) {
-    // const [isSelectOpen, setIsSelectOpen] = useState(false);
-
     return (
         <ol
             className={`chipList ${disabled ? "disabled" : ""}`}
@@ -23,7 +20,6 @@ export default function ListAdd({
         >
             <ListItem
                 item={item}
-                // action={() => setIsSelectOpen((prev) => !prev)}
                 actionType={"add"}
                 select={
                     <Select
@@ -32,7 +28,6 @@ export default function ListAdd({
                         listProperty={listProperty}
                         listSetter={listSetter}
                         disabled={disabled}
-                        // setSelectState={setIsSelectOpen}
                     />
                 }
                 disabled={disabled}
