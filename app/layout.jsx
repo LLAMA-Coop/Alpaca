@@ -41,6 +41,7 @@ export default async function RootLayout({ children }) {
         // await user.populate("notifications.from.group");
         // await user.populate("notifications.from.admin");
         await user.populate("associates");
+        await user.populate("groups");
     }
 
     const notifications = user
@@ -100,7 +101,7 @@ export default async function RootLayout({ children }) {
     );
     const publicGroups = await Group.find({ isPublic: true });
     const availableGroups = serialize(
-        user?.hasOwnProperty() && user?.groups.length > 0
+        user && user.groups
             ? [...user.groups, ...publicGroups]
             : [...publicGroups],
     );
