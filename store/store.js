@@ -69,7 +69,12 @@ export const useStore = create((set) => ({
 
     setUser: (user) => {
         return set(() => ({
-            user,
+            username: user.username,
+            displayName: user.displayName,
+            avatar: user.avatar,
+            associates: user.associates,
+            groups: user.groups,
+            quizzes: user.quizzes,
         }));
     },
 
