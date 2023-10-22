@@ -1,3 +1,5 @@
+"use client";
+
 import { ResponseCard, ListAnswer } from "@/app/components/client";
 import { Blankable } from "./Blankable";
 import { memo } from "react";
@@ -8,13 +10,23 @@ const sampleQuiz = {
     correctResponses: ["correct answer"],
 };
 
-export function QuizDisplay({ canClientCheck, quiz }) {
+export function QuizDisplay({
+    canClientCheck,
+    quiz,
+    handleWhenCorrect = () => {},
+}) {
     if (!quiz) {
         quiz = sampleQuiz;
         canClientCheck = true;
-    };
+    }
     if (quiz.type === "prompt-response" || quiz.type === "multiple-choice") {
-        return <ResponseCard canClientCheck={canClientCheck} quiz={quiz} />;
+        return (
+            <ResponseCard
+                canClientCheck={canClientCheck}
+                quiz={quiz}
+                handleWhenCorrect={handleWhenCorrect}
+            />
+        );
     }
 
     if (
@@ -30,12 +42,19 @@ export function QuizDisplay({ canClientCheck, quiz }) {
                     quiz.type === "ordered-list" ||
                     quiz.type === "ordered-list-answer"
                 }
+                handleWhenCorrect={handleWhenCorrect}
             />
         );
     }
 
     if (quiz.type === "fill-in-the-blank") {
-        return <Blankable canClientCheck={canClientCheck} quiz={quiz} />;
+        return (
+            <Blankable
+                canClientCheck={canClientCheck}
+                quiz={quiz}
+                handleWhenCorrect={handleWhenCorrect}
+            />
+        );
     }
 }
 

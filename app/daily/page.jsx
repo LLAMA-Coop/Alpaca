@@ -4,6 +4,7 @@ import { useUser, queryReadableResources } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { Quiz, User } from "../api/models";
 import { serialize } from "@/lib/db";
+import shuffleArray from "@/lib/shuffleArray";
 
 export default async function DailyPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
@@ -12,15 +13,17 @@ export default async function DailyPage({ searchParams }) {
 
     const userQuizzes = user?.quizzes;
     const allQuizzes = await Quiz.find(query);
-    const quizzes = serialize(
-        allQuizzes.filter((q) => {
-            const quizInUser = userQuizzes?.find(
-                (quiz) => quiz.quizId.toString() === q._id.toString(),
-            );
-            if (!quizInUser) return true;
-            const hidden = new Date(quizInUser.hiddenUntil);
-            return hidden.getTime() <= Date.now();
-        }),
+    const quizzes = shuffleArray(
+        serialize(
+            allQuizzes.filter((q) => {
+                const quizInUser = userQuizzes?.find(
+                    (quiz) => quiz.quizId.toString() === q._id.toString(),
+                );
+                if (!quizInUser) return true;
+                const hidden = new Date(quizInUser.hiddenUntil);
+                return hidden.getTime() <= Date.now();
+            }),
+        ),
     );
 
     return (

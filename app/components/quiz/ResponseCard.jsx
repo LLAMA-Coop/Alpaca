@@ -8,7 +8,7 @@ import correctConfetti from "@/lib/correctConfetti";
 import shuffleArray from "@/lib/shuffleArray";
 import makeUniqueId from "@/lib/uniqueId";
 
-export function ResponseCard({ canClientCheck, quiz }) {
+export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
     const [userResponse, setUserResponse] = useState("");
     const [hasAnswered, setHasAnswered] = useState(false);
     const [correctAnswer, setCorrectAnswer] = useState(false);
@@ -94,6 +94,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
             if (isCorrect) {
                 setFailures(0);
                 correctConfetti();
+                handleWhenCorrect();
             } else {
                 setFailures(failures + 1);
             }

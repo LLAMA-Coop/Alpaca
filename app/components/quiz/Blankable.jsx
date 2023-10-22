@@ -6,7 +6,7 @@ import correctConfetti from "@/lib/correctConfetti";
 import styles from "./Blankable.module.css";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 
-export function Blankable({ canClientCheck, quiz }) {
+export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
     );
@@ -24,6 +24,7 @@ export function Blankable({ canClientCheck, quiz }) {
             setResponseCorrect(true);
             setFailures(0);
             correctConfetti();
+            handleWhenCorrect();
         } else {
             setFailures(failures + 1);
         }
