@@ -19,22 +19,23 @@ export function ResponseCard({ canClientCheck, quiz }) {
     const [requestStatus, setRequestStatus] = useState({});
 
     useEffect(() => {
-        setChoices(
-            quiz.choices
-                ? shuffleArray(
-                      quiz.choices.map((x) => ({
-                          label: x,
-                          value: x,
-                          key: makeUniqueId(),
-                      })),
-                  )
-                : null,
-        );
+        if (quiz.choices)
+            setChoices(
+                quiz.choices
+                    ? shuffleArray(
+                          quiz.choices.map((x) => ({
+                              label: x,
+                              value: x,
+                              key: makeUniqueId(),
+                          })),
+                      )
+                    : null,
+            );
     }, []);
 
     useEffect(() => {
-        if(choices.length) setUserResponse(choices[0].value);
-    }, [choices])
+        if (choices.length) setUserResponse(choices[0].value);
+    }, [choices]);
 
     const type = quiz.type === "prompt-response" ? "text" : "select";
 
