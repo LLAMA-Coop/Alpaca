@@ -14,6 +14,7 @@ export default function PermissionsInput({ permissions, setter }) {
     const [groupsWrite, setGroupsWrite] = useState([]);
     const [groupsRead, setGroupsRead] = useState([]);
 
+    const user = useStore((state) => state.user);
     const availableUsers = useStore((state) => state.userStore);
     const availableGroups = useStore((state) => state.groupStore);
 
@@ -32,14 +33,14 @@ export default function PermissionsInput({ permissions, setter }) {
         if (permissions.usersWrite) {
             setUsersWrite(
                 permissions.usersWrite.map((userId) =>
-                    availableUsers.find((x) => x._id === userId),
+                    user?.associates.find((x) => x._id === userId),
                 ),
             );
         }
         if (permissions.usersRead) {
             setUsersRead(
                 permissions.usersRead.map((userId) =>
-                    availableUsers.find((x) => x._id === userId),
+                    user?.associates.find((x) => x._id === userId),
                 ),
             );
         }
@@ -111,7 +112,7 @@ export default function PermissionsInput({ permissions, setter }) {
                 {/* Need to add a disable */}
                 <ListAdd
                     item="User"
-                    listChoices={availableUsers}
+                    listChoices={user?.associates}
                     listChosen={usersWrite}
                     listProperty={"username"}
                     listSetter={setUsersWrite}
@@ -124,7 +125,7 @@ export default function PermissionsInput({ permissions, setter }) {
                 {/* Need to add a disable */}
                 <ListAdd
                     item="User"
-                    listChoices={availableUsers}
+                    listChoices={user?.associates}
                     listChosen={usersRead}
                     listProperty={"username"}
                     listSetter={setUsersRead}
