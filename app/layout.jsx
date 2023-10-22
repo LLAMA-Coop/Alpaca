@@ -87,18 +87,18 @@ export default async function RootLayout({ children }) {
     const notes = serialize(await Note.find(query));
     const quizzes = serialize(await Quiz.find(query));
 
-    // const publicUsers = await User.find({ isPublic: true });
+    const publicUsers = await User.find({ isPublic: true });
     const associates = user
         ? user.associates.filter((a) => !publicUsers.includes(a))
         : [];
-    const availableUsers = serialize([...associates]).map(
+    const availableUsers = serialize([...associates.filter(x => !x.isPublic), ...publicUsers]).map(
         (x) => ({
             _id: x._id,
             username: x.username,
             displayName: x.displayName,
             avatar: x.avatar,
         }),
-    ); // Everybody public now, so no longer using public users
+    );
     const publicGroups = await Group.find({ isPublic: true });
     const availableGroups = serialize(
         user && user.groups

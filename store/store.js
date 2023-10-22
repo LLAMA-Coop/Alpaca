@@ -21,8 +21,8 @@ const addResources = (state, storeName, ...resources) => {
 const addNotifications = (state, ...notifications) => {
     const newStore = [...state.notifications];
     notifications.forEach((n) => {
-        const alreadyStored = newStore.find(x => x._id === n._id)
-        if(!alreadyStored) newStore.push(n);
+        const alreadyStored = newStore.find((x) => x._id === n._id);
+        if (!alreadyStored) newStore.push(n);
     });
     const newState = {};
     newState.notifications = newStore;
@@ -69,12 +69,14 @@ export const useStore = create((set) => ({
 
     setUser: (user) => {
         return set(() => ({
-            username: user.username,
-            displayName: user.displayName,
-            avatar: user.avatar,
-            associates: user.associates,
-            groups: user.groups,
-            quizzes: user.quizzes,
+            user: {
+                username: user.username,
+                displayName: user.displayName,
+                avatar: user.avatar,
+                associates: user.associates,
+                groups: user.groups,
+                quizzes: user.quizzes,
+            },
         }));
     },
 
