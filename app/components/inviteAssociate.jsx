@@ -10,12 +10,16 @@ export default function InviteAssociate() {
     const user = useStore((state) => state.user);
     const publicUsers = useStore((state) => state.userStore);
     const availableUsers = publicUsers.filter(
-        (x) => user.associates.find((y) => y._id == x._id) === undefined,
+        (x) =>
+            user.associates.find(
+                (y) => y._id == x._id || y._id === user._id,
+            ) === undefined,
     );
 
     useEffect(() => {
+        console.log("I'm setting the associate id")
         setAssociateId(availableUsers[0]?._id);
-    }, [availableUsers]);
+    }, []);
 
     async function sendInvitation() {
         const response = await fetch(
@@ -46,8 +50,9 @@ export default function InviteAssociate() {
                 onChange={(e) => setAssociateId(e.target.value)}
             />
             <p>
-                Enter the user ID of someone you would like to list as an
-                associate.
+                If the associate you want to invite has a private profile, you
+                will need to get their user ID. Then enter the user ID of
+                someone you would like to list as an associate.
             </p>
             <p>
                 A notification will be sent to them which will include your user
