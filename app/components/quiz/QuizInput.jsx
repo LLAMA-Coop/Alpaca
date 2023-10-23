@@ -426,10 +426,12 @@ export function QuizInput({ quiz }) {
                 />
             </div>
 
-            <PermissionsInput
-                permissions={quiz ? quiz.permissions : {}}
-                setter={setPermissions}
-            />
+            {(!quiz || quiz.createdBy === user._id) && (
+                <PermissionsInput
+                    permissions={quiz ? quiz.permissions : {}}
+                    setter={setPermissions}
+                />
+            )}
 
             <div className="buttonContainer">
                 <InputPopup type="source" />

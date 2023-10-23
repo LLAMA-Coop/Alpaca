@@ -191,10 +191,12 @@ export function NoteInput({ note }) {
 
             <InputPopup type="source" />
 
-            <PermissionsInput
-                permissions={permissions}
-                setter={setPermissions}
-            />
+            {(!note || note.createdBy === user._id) && (
+                <PermissionsInput
+                    permissions={note ? note.permissions : {}}
+                    setter={setPermissions}
+                />
+            )}
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Note"}

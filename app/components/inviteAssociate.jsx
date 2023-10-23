@@ -17,7 +17,6 @@ export default function InviteAssociate() {
     );
 
     useEffect(() => {
-        console.log("I'm setting the associate id")
         setAssociateId(availableUsers[0]?._id);
     }, []);
 
