@@ -70,6 +70,7 @@ export const useStore = create((set) => ({
     setUser: (user) => {
         return set(() => ({
             user: {
+                _id: user._id,
                 username: user.username,
                 displayName: user.displayName,
                 avatar: user.avatar,
