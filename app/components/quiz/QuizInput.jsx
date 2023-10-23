@@ -426,7 +426,7 @@ export function QuizInput({ quiz }) {
                 />
             </div>
 
-            {(!quiz || quiz.createdBy === user._id) && (
+            {(!quiz || quiz.createdBy === user?._id) && (
                 <PermissionsInput
                     permissions={quiz ? quiz.permissions : {}}
                     setter={setPermissions}
