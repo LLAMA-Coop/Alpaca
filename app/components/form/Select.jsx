@@ -32,7 +32,9 @@ export function Select({
         }
     };
 
-    if(!disabled) return (
+    if(disabled) return;
+
+    return (
         <div
             aria-modal="true"
             className={`${styles.picker} thinScroller`}
@@ -81,7 +83,7 @@ export function Select({
                 {(!listChoices || listChoices.length === 0) && (
                     <div
                         aria-labelledby="emptyList"
-                        className={styles.emptyList}
+                        className={styles.item}
                     >
                         No choices available
                     </div>

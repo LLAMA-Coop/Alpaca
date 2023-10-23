@@ -192,13 +192,16 @@ export function QuizInput({ quiz }) {
 
         setLoading(true);
 
-        const response = await fetch("/api/quiz", {
-            method: quiz ? "PUT" : "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,
+            {
+                method: quiz ? "PUT" : "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(quizPayload),
             },
-            body: JSON.stringify(quizPayload),
-        });
+        );
 
         setLoading(false);
 
@@ -423,10 +426,12 @@ export function QuizInput({ quiz }) {
                 />
             </div>
 
-            <PermissionsInput
-                permissions={quiz ? quiz.permissions : {}}
-                setter={setPermissions}
-            />
+            {(!quiz || quiz.createdBy === user._id) && (
+                <PermissionsInput
+                    permissions={quiz ? quiz.permissions : {}}
+                    setter={setPermissions}
+                />
+            )}
 
             <div className="buttonContainer">
                 <InputPopup type="source" />

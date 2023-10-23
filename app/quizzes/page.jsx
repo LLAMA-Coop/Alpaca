@@ -7,9 +7,8 @@ import { QuizDisplay } from "@components/server";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import htmlDate from "@/lib/htmlDate";
 // import { Group, User, Source, Quiz, Note } from "@mneme_app/database-models";
-import { Source, Note, Quiz, User, Group } from "@/app/api/models";
+import { Quiz, User } from "@/app/api/models";
 
 export default async function QuizzesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
@@ -86,7 +85,7 @@ export default async function QuizzesPage({ searchParams }) {
                                 <li key={quiz.id}>
                                     <QuizDisplay
                                         quiz={quiz}
-                                        canClientCheck={false}
+                                        canClientCheck={user ? false : true}
                                     />
                                     {quizInUser && (
                                         <UserStats userQuizInfo={quizInUser} />

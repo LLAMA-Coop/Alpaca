@@ -7,7 +7,7 @@ import styles from "./Group.module.css";
 import Image from "next/image";
 import MAX from "@/lib/max";
 
-export function GroupInput({group}) {
+export function GroupInput({ group }) {
     const [name, setName] = useState("");
     const [nameError, setNameError] = useState("");
 
@@ -22,10 +22,10 @@ export function GroupInput({group}) {
     const [requestStatus, setRequestStatus] = useState({});
 
     useEffect(() => {
-        if(!group) return;
+        if (!group) return;
         setName(group.name);
         setDescription(group.description);
-    }, [])
+    }, []);
 
     const inputRef = useRef(null);
 
@@ -47,17 +47,20 @@ export function GroupInput({group}) {
 
         setLoading(true);
 
-        const response = await fetch("/api/groups", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/groups`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: name,
+                    description: description,
+                    icon: icon,
+                }),
             },
-            body: JSON.stringify({
-                name: name,
-                description: description,
-                icon: icon,
-            }),
-        });
+        );
 
         setLoading(false);
 

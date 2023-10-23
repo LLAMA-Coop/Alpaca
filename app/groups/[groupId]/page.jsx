@@ -6,7 +6,7 @@ import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 // import { Group, Quiz, Note, Source } from "@mneme_app/database-models";
 import { Source, Note, Quiz, Group } from "@/app/api/models";
-import { QuizDisplay } from "@/app/components/server";
+import { QuizDisplay, NoteDisplay, SourceDisplay } from "@/app/components/server";
 
 export default async function GroupPage({ params }) {
     const groupId = params.groupId;

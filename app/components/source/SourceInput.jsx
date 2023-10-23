@@ -8,6 +8,7 @@ import { DeletePopup } from "../delete-popup/DeletePopup";
 import { serializeOne } from "@/lib/db";
 import htmlDate from "@/lib/htmlDate";
 import MAX from "@/lib/max";
+import { buildPermissions } from "@/lib/permissions";
 
 export function SourceInput({ source }) {
     const [title, setTitle] = useState("");
@@ -48,6 +49,8 @@ export function SourceInput({ source }) {
             setLastAccessed(new Date().toISOString().split("T")[0]);
             return;
         }
+
+        console.log(source, user);
 
         setTitle(source.title);
         if (source.authors.length > 0) setAuthors([...source.authors]);
@@ -121,20 +124,23 @@ export function SourceInput({ source }) {
             authors,
             tags,
         };
-        sourcePayload.permissions = permissions;
+        sourcePayload.permissions = buildPermissions(permissions);
         if (source) {
             sourcePayload._id = source._id;
         }
 
         setLoading(true);
 
-        const response = await fetch("/api/source", {
-            method: source ? "PUT" : "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/source`,
+            {
+                method: source ? "PUT" : "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(sourcePayload),
             },
-            body: JSON.stringify(sourcePayload),
-        });
+        );
 
         setLoading(false);
 
@@ -321,10 +327,12 @@ export function SourceInput({ source }) {
                 </div>
             </div>
 
-            <PermissionsInput
-                permissions={permissions}
-                setter={setPermissions}
-            />
+            {(!source || source.createdBy === user._id) && (
+                <PermissionsInput
+                    permissions={source ? source.permissions : {}}
+                    setter={setPermissions}
+                />
+            )}
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Source"}

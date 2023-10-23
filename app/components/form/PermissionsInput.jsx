@@ -5,7 +5,6 @@ import { Input, Label } from "@/app/components/client";
 // add this to client/index.js
 import ListAdd from "./ListAdd";
 import { useStore } from "@/store/store";
-import { serializeOne } from "@/lib/db";
 
 export default function PermissionsInput({ permissions, setter }) {
     const [allWrite, setAllWrite] = useState(false);
@@ -15,7 +14,7 @@ export default function PermissionsInput({ permissions, setter }) {
     const [groupsWrite, setGroupsWrite] = useState([]);
     const [groupsRead, setGroupsRead] = useState([]);
 
-    const availableUsers = useStore((state) => state.userStore);
+    const user = useStore((state) => state.user);
     const availableGroups = useStore((state) => state.groupStore);
 
     useEffect(() => {
@@ -33,14 +32,14 @@ export default function PermissionsInput({ permissions, setter }) {
         if (permissions.usersWrite) {
             setUsersWrite(
                 permissions.usersWrite.map((userId) =>
-                    availableUsers.find((x) => x._id === userId),
+                    user?.associates.find((x) => x._id === userId),
                 ),
             );
         }
         if (permissions.usersRead) {
             setUsersRead(
                 permissions.usersRead.map((userId) =>
-                    availableUsers.find((x) => x._id === userId),
+                    user?.associates.find((x) => x._id === userId),
                 ),
             );
         }
@@ -112,7 +111,7 @@ export default function PermissionsInput({ permissions, setter }) {
                 {/* Need to add a disable */}
                 <ListAdd
                     item="User"
-                    listChoices={availableUsers}
+                    listChoices={user?.associates}
                     listChosen={usersWrite}
                     listProperty={"username"}
                     listSetter={setUsersWrite}
@@ -125,7 +124,7 @@ export default function PermissionsInput({ permissions, setter }) {
                 {/* Need to add a disable */}
                 <ListAdd
                     item="User"
-                    listChoices={availableUsers}
+                    listChoices={user?.associates}
                     listChosen={usersRead}
                     listProperty={"username"}
                     listSetter={setUsersRead}

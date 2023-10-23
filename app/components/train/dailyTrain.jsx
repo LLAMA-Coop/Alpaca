@@ -2,12 +2,14 @@
 import { useState, useEffect } from "react";
 import { useStore } from "@/store/store";
 import QuizDisplay from "@/app/components/quiz/QuizDisplay";
-import htmlDate from "@/lib/htmlDate";
 import { UserStats } from "../quiz/UserStats";
 
 export default function DailyTrain({ quizzes, timeLimit = 300 }) {
     const [seconds, setSeconds] = useState(timeLimit);
     const [isRunning, setIsRunning] = useState(false);
+    const [visibleSet, setVisibleSet] = useState(
+        new Array(quizzes.length).fill(true),
+    );
 
     const user = useStore((state) => state.user);
     const userQuizzes = user?.quizzes;
@@ -34,6 +36,12 @@ export default function DailyTrain({ quizzes, timeLimit = 300 }) {
         setSeconds(0);
     }, [seconds]);
 
+    function handleWhenCorrect(index){
+        const newVisible = [...visibleSet];
+        newVisible[index] = false;
+        setVisibleSet(newVisible);
+    }
+
     function formatTime(seconds) {
         const minutes = Math.floor((seconds % 3600) / 60);
         const remainingSeconds = seconds % 60;
@@ -54,14 +62,14 @@ export default function DailyTrain({ quizzes, timeLimit = 300 }) {
                 {isRunning ? "Pause Training" : "Start Training"}
             </button>
             <ol style={{ display: isRunning ? "block" : "none" }}>
-                {quizzes.map((quiz) => {
+                {quizzes.map((quiz, index) => {
                     const quizInUser = userQuizzes?.find(
                         (q) => q.quizId === quiz._id,
                     );
 
                     return (
-                        <li key={quiz._id}>
-                            <QuizDisplay canClientCheck={false} quiz={quiz} />
+                        <li key={quiz._id} style={{ display: visibleSet[index] ? 'list-item' : 'none'}}>
+                            <QuizDisplay canClientCheck={false} quiz={quiz} handleWhenCorrect={() => handleWhenCorrect(index)} />
                             {quizInUser && (
                                 <UserStats userQuizInfo={quizInUser} />
                             )}

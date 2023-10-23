@@ -1,37 +1,60 @@
+"use client";
+
 import { ResponseCard, ListAnswer } from "@/app/components/client";
 import { Blankable } from "./Blankable";
 import { memo } from "react";
 
-// The quiz displays depends on whether it is a client-checked or server-checked quiz component
-// If client-checked, everything is rendered from the Quiz object
-// If server-checked, only enough data for the prompt is displayed until the response is sent to the server
-//  after which, the server provides the remaining data for the Quiz object
-// Server-checked is for testing apps that want to prevent cheating
+const sampleQuiz = {
+    type: "prompt-response",
+    prompt: "This is a sample question. In order for it to be correct, you need to type 'correct answer' into the input.",
+    correctResponses: ["correct answer"],
+};
 
-// sent into component via canClientCheck boolean
-
-export function QuizDisplay({ canClientCheck, quiz }) {
-    if (quiz.type === "prompt-response" || quiz.type === "multiple-choice") {
-        return <ResponseCard canClientCheck={canClientCheck} quiz={quiz} />;
+export function QuizDisplay({
+    canClientCheck,
+    quiz,
+    handleWhenCorrect = () => {},
+}) {
+    if (!quiz) {
+        quiz = sampleQuiz;
+        canClientCheck = true;
     }
-
-    if (quiz.type === "unordered-list-answer" || quiz.type === "ordered-list-answer" || quiz.type === "unordered-list") {
+    if (quiz.type === "prompt-response" || quiz.type === "multiple-choice") {
         return (
-            <ListAnswer
+            <ResponseCard
                 canClientCheck={canClientCheck}
                 quiz={quiz}
-                isOrdered={quiz.type === "ordered-list" || quiz.type === "ordered-list-answer"}
+                handleWhenCorrect={handleWhenCorrect}
             />
         );
     }
 
-    if(quiz.type === "fill-in-the-blank"){
+    if (
+        quiz.type === "unordered-list-answer" ||
+        quiz.type === "ordered-list-answer" ||
+        quiz.type === "unordered-list"
+    ) {
+        return (
+            <ListAnswer
+                canClientCheck={canClientCheck}
+                quiz={quiz}
+                isOrdered={
+                    quiz.type === "ordered-list" ||
+                    quiz.type === "ordered-list-answer"
+                }
+                handleWhenCorrect={handleWhenCorrect}
+            />
+        );
+    }
+
+    if (quiz.type === "fill-in-the-blank") {
         return (
             <Blankable
                 canClientCheck={canClientCheck}
                 quiz={quiz}
+                handleWhenCorrect={handleWhenCorrect}
             />
-        )
+        );
     }
 }
 
