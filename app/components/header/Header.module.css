@@ -6,12 +6,12 @@
     margin: 0 auto;
     padding: 0 40px;
     height: 80px;
+    user-select: none;
 }
 
 .header > div > h1 > a {
     display: inline-flex;
     font-size: 32px;
-    user-select: none;
     border-radius: 5px;
     outline-offset: 4px;
     color: var(--foreground-primary);
@@ -31,7 +31,7 @@
     width: 120px;
 }
 
-.header > div > div > a {
+.rightContainer > div > a {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -39,14 +39,14 @@
     border-radius: 100vw;
     padding: 10px 20px;
     z-index: 1;
-    user-select: none;
     color: var(--foreground-secondary);
+    background-color: var(--background-secondary);
     transition:
         background-color 0.1s ease-in-out,
         color 0.1s ease-in-out;
 }
 
-.header > div > div > a:hover {
-    background-color: var(--background-secondary);
+.rightContainer > div > a:hover {
     color: var(--foreground-primary);
+    background-color: var(--background-tertiary);
 }
