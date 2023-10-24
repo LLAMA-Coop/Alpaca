@@ -106,26 +106,6 @@ export function Profile({ user }) {
                             tabIndex={0}
                             className="icon"
                             onClick={() => {
-                                router.push("/me/groups");
-                                setShowMenu(false);
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    router.push("/me/groups");
-                                    setShowMenu(false);
-                                }
-                            }}
-                        >
-                            <div>
-                                <FontAwesomeIcon icon={faUserGroup} />
-                            </div>
-                            Groups
-                        </li>
-
-                        <li
-                            tabIndex={0}
-                            className="icon"
-                            onClick={() => {
                                 router.push("/me/settings");
                                 setShowMenu(false);
                             }}
