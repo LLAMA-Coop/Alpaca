@@ -6,7 +6,7 @@ import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 // import { Source, Quiz, Note } from "@mneme_app/database-models";
 import { Source, Note, Quiz } from "@/app/api/models";
-import InviteAssociate from "@/app/components/inviteAssociate";
+import InviteUser from "@/app/components/inviteUser";
 import { Notifications } from "@/app/components/notifications";
 import Image from "next/image";
 
@@ -116,7 +116,7 @@ export default async function DashboardPage() {
 
                 {user.associates.length === 0 && <p>You have no associates</p>}
 
-                <InviteAssociate />
+                <InviteUser />
             </section>
         </main>
     );

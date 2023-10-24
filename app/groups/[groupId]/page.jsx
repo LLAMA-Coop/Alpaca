@@ -6,7 +6,12 @@ import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 // import { Group, Quiz, Note, Source } from "@mneme_app/database-models";
 import { Source, Note, Quiz, Group } from "@/app/api/models";
-import { QuizDisplay, NoteDisplay, SourceDisplay } from "@/app/components/server";
+import {
+    QuizDisplay,
+    NoteDisplay,
+    SourceDisplay,
+} from "@/app/components/server";
+import InviteUser from "@/app/components/inviteUser";
 
 export default async function GroupPage({ params }) {
     const groupId = params.groupId;
@@ -72,6 +77,12 @@ export default async function GroupPage({ params }) {
                         </ol>
                     )}
                 </div>
+
+                {user &&
+                    (user._id === group.owner ||
+                        group.admins.includes(user._id)) && (
+                        <InviteUser groupId={groupId} />
+                    )}
             </section>
 
             <section>

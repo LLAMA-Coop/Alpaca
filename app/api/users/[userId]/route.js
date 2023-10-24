@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 // import { User } from "@mneme_app/database-models";
-import { User } from "@/app/api/models";
+import { User, Group } from "@/app/api/models";
 // import User from "@/app/api/models/User";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
@@ -48,7 +48,7 @@ export async function POST(req) {
             );
         }
 
-        const { action, notificationId } = await req.json();
+        const { action, notificationId, groupId } = await req.json();
         const notification = {
             from: {
                 user: sender._id,
@@ -104,6 +104,42 @@ export async function POST(req) {
                 sender: await sender.save(),
                 recipient: await recipient.save(),
             };
+        }
+
+        if (action === "groupInvitation") {
+            const group = await Group.findById(groupId);
+            console.log("Group", group)
+            notification._id = new Types.ObjectId();
+            notification.subject = "A group is inviting you to be a member!";
+            notification.message = `You have been invited to join the group ${group.name}!\nHere's what they say about themselves:\n  "${group.description}"`;
+            notification.responseActions = [
+                "acceptInvitation",
+                "ignore",
+                "delete",
+            ];
+
+            if(recipient){
+                if(!recipient.notifications){
+                    recipient.notifications = []
+                }
+                const alreadyNotified = recipient.notifications.find(
+                    (x) => x._id === notification._id,
+                );
+                if (!alreadyNotified) {
+                    recipient.notifications.push(notification);
+                }
+                update = await recipient.save();
+            }
+            if(update.notifications.length === 0){
+                return NextResponse.json(
+                    {
+                        message: "Did not update"
+                    },
+                    {
+                        status: 500
+                    }
+                )
+            }
         }
 
         return NextResponse.json(
