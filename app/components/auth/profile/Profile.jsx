@@ -12,12 +12,15 @@ import { useEffect, useRef, useState } from "react";
 import { protectedPaths } from "@/app/data/paths";
 import { Avatar } from "@components/client";
 import styles from "./Profile.module.css";
+import { useStore } from "@/store/store";
 
 export function Profile({ user }) {
     const [showMenu, setShowMenu] = useState(false);
     const router = useRouter();
     const path = usePathname();
     const menu = useRef(null);
+
+    const notifications = useStore((state) => state.notifications);
 
     useEffect(() => {
         const handleOutsideClick = (e) => {
@@ -77,6 +80,7 @@ export function Profile({ user }) {
                     username={user.username}
                     outline={showMenu}
                 />
+                {notifications.length > 0 && <sub>{notifications.length}</sub>}
             </div>
 
             {showMenu && (
