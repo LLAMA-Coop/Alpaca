@@ -34,8 +34,8 @@ export function DynamicNav() {
         },
         {
             name: "Daily Train",
-            href: "/daily"
-        }
+            href: "/daily",
+        },
     ];
 
     return (
@@ -47,11 +47,24 @@ export function DynamicNav() {
                     opacity: 0,
                 }));
             }}
+            onBlur={() => {
+                setProps((prev) => ({
+                    ...prev,
+                    opacity: 0,
+                }));
+            }}
         >
             {links.map((link) => (
                 <li
                     key={link.name}
                     onMouseEnter={(e) => {
+                        const left = e.currentTarget.offsetLeft;
+                        setProps({
+                            transform: `translate(${left}px, -50%)`,
+                            width: e.currentTarget.offsetWidth,
+                        });
+                    }}
+                    onFocus={(e) => {
                         const left = e.currentTarget.offsetLeft;
                         setProps({
                             transform: `translate(${left}px, -50%)`,

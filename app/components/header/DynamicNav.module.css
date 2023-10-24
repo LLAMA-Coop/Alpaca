@@ -14,12 +14,12 @@
 
 @media (max-width: 600px) {
     .navMenu {
-      position: fixed;
-      top: 50px;
-      right: 1rem;
-      max-width: 100%;
+        position: fixed;
+        top: 50px;
+        right: 1rem;
+        max-width: 100%;
     }
-  }
+}
 
 .navMenu > li > a {
     position: relative;
@@ -46,6 +46,6 @@
     border-radius: 3px;
     height: 34px;
     z-index: 0;
-    background-color: var(--background-secondary);
+    background-color: var(--background-tertiary);
     transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
