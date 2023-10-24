@@ -3,9 +3,11 @@
 import styles from "./DynamicNav.module.css";
 import { useState } from "react";
 import Link from "next/link";
+import { Profile } from "../client";
 
-export function DynamicNav() {
+export function DynamicNav({ user }) {
     const [props, setProps] = useState({});
+    const [open, setOpen] = useState(false);
 
     const links = [
         {
@@ -39,44 +41,64 @@ export function DynamicNav() {
     ];
 
     return (
-        <menu
-            className={styles.navMenu}
-            onMouseLeave={() => {
-                setProps((prev) => ({
-                    ...prev,
-                    opacity: 0,
-                }));
-            }}
-            onBlur={() => {
-                setProps((prev) => ({
-                    ...prev,
-                    opacity: 0,
-                }));
-            }}
-        >
-            {links.map((link) => (
-                <li
-                    key={link.name}
-                    onMouseEnter={(e) => {
-                        const left = e.currentTarget.offsetLeft;
-                        setProps({
-                            transform: `translate(${left}px, -50%)`,
-                            width: e.currentTarget.offsetWidth,
-                        });
-                    }}
-                    onFocus={(e) => {
-                        const left = e.currentTarget.offsetLeft;
-                        setProps({
-                            transform: `translate(${left}px, -50%)`,
-                            width: e.currentTarget.offsetWidth,
-                        });
-                    }}
+        <nav className={styles.nav}>
+            <label htmlFor="menuClosed">
+                <svg
+                    className={styles.burger}
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                 >
-                    <Link href={link.href}>{link.name}</Link>
-                </li>
-            ))}
+                    <path d="M4 6l16 0" />
+                    <path d="M4 12l16 0" />
+                    <path d="M4 18l16 0" />
+                </svg>
+            </label>
+            <input
+                type="checkbox"
+                id="menuClosed"
+                value={open}
+                className={styles.menuClosed}
+            />
+            <menu
+                className={styles.navMenu}
+            >
+                {links.map((link) => (
+                    <li
+                        key={link.name}
+                        onMouseEnter={(e) => {
+                            const left = e.currentTarget.offsetLeft;
+                            setProps({
+                                transform: `translate(${left}px, -50%)`,
+                                width: e.currentTarget.offsetWidth,
+                            });
+                        }}
+                        onFocus={(e) => {
+                            const left = e.currentTarget.offsetLeft;
+                            setProps({
+                                transform: `translate(${left}px, -50%)`,
+                                width: e.currentTarget.offsetWidth,
+                            });
+                        }}
+                    >
+                        <Link href={link.href}>{link.name}</Link>
+                    </li>
+                ))}
 
-            <div className={styles.followingDiv} style={{ ...props }} />
-        </menu>
+                <li className={styles.profile}>
+                    {user ? (
+                        <Profile user={user} />
+                    ) : (
+                        <Link href="/login">Login</Link>
+                    )}
+                </li>
+
+                {/* <div className={styles.followingDiv} style={{ ...props }} /> */}
+            </menu>
+        </nav>
     );
 }

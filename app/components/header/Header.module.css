@@ -1,4 +1,4 @@
-.header > div {
+.header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -9,7 +9,7 @@
     user-select: none;
 }
 
-.header > div > h1 > a {
+.header > h1 > a {
     display: inline-flex;
     font-size: 32px;
     border-radius: 5px;
@@ -17,21 +17,21 @@
     color: var(--foreground-primary);
 }
 
-.header > div > nav {
+.header > nav {
     flex: 1;
 }
 
-.header > div > div {
+.profile {
     display: flex;
     align-items: center;
     justify-content: flex-end;
 }
 
-.header > div > :not(:nth-child(2)) {
+.header > :not(:nth-child(2)) {
     width: 120px;
 }
 
-.rightContainer > div > a {
+.profile > a {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -46,7 +46,21 @@
         color 0.1s ease-in-out;
 }
 
-.rightContainer > div > a:hover {
+.profile > a:hover {
     color: var(--foreground-primary);
     background-color: var(--background-tertiary);
+}
+
+/* .burger {
+    stroke: var(--foreground-primary);
+} */
+
+/* .header > button {
+    display: none;
+} */
+
+@media (max-width: 768px) {
+    .profile {
+        display: none;
+    }
 }
