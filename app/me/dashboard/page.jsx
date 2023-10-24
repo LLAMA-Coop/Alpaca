@@ -6,8 +6,8 @@ import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 // import { Source, Quiz, Note } from "@mneme_app/database-models";
 import { Source, Note, Quiz } from "@/app/api/models";
-import InviteUser from "@/app/components/inviteUser";
-import { Notifications } from "@/app/components/notifications";
+import InviteUser from "@/app/components/notification/inviteUser";
+import Notifications from "@/app/components/notification/notifications";
 import Image from "next/image";
 
 export default async function DashboardPage() {

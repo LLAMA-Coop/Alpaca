@@ -1,0 +1,15 @@
+.subject {
+    text-align: center;
+}
+
+.action {
+    min-width: 45px;
+    min-height: 45px;
+    margin: 0.2rem;
+    padding: 0.2rem;
+    text-transform: capitalize;
+}
+
+.message {
+    white-space: pre-wrap;
+}

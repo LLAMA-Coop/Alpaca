@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "./client";
+import { Input } from "../client";
 import { useState, useEffect } from "react";
 import { useStore } from "@/store/store";
 
@@ -10,10 +10,12 @@ export default function InviteUser({ groupId }) {
     const user = useStore((state) => state.user);
     const publicUsers = useStore((state) => state.userStore);
     const group = useStore((state) => state.groupStore).find(
-        (x) => x._id === groupId && x.admins.includes(user._id),
+        (x) =>
+            x._id === groupId &&
+            (x.owner === user._id || x.admins.includes(user._id)),
     );
     const availableUsers = publicUsers.filter(
-        (x) => user.associates.find((y) => y._id == x._id) === undefined,
+        (x) => user?.associates.find((y) => y._id == x._id) === undefined,
     );
 
     useEffect(() => {
