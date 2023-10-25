@@ -1,8 +1,13 @@
 "use client";
 import { useStore } from "@/store/store";
 import Notification from "./notification";
+import { Alert } from "../client";
+import { useState } from "react";
 
 export default function Notifications() {
+    const [showAlert, setShowAlert] = useState(false);
+    const [requestStatus, setRequestStatus] = useState({});
+
     const notifications = useStore((state) => state.notifications);
     const removeNotification = useStore((state) => state.removeNotification);
     console.log(notifications);
@@ -11,11 +16,6 @@ export default function Notifications() {
         console.log(action, notification);
         if (action === "ignore") {
             removeNotification(notification);
-            console.log(notifications)
-            // let index = notifications.indexOf(notification);
-            // notifications.splice(index, 1);
-            // This does not remove the notification from the state
-            // You have to do that like you do with useState setters
             return;
         }
         if (action === "accept association") {
@@ -40,23 +40,47 @@ export default function Notifications() {
                 }),
             },
         );
+
+        if (response.status === 200) {
+            setRequestStatus({
+                success: true,
+                message: `You succeeded in the task "${action}"`,
+            });
+            setShowAlert(true);
+            removeNotification(notification);
+        } else {
+            setRequestStatus({
+                success: false,
+                message: `Could not complete task "${action}"`,
+            });
+            setShowAlert(true);
+        }
     }
 
-    if (notifications.length > 0) {
-        return (
-            <ol>
-                {notifications.map((n) => {
-                    return (
-                        <Notification
-                            key={n._id}
-                            notification={n}
-                            handleAction={handleAction}
-                        />
-                    );
-                })}
-            </ol>
-        );
-    } else {
-        return <p>No current notifications</p>;
-    }
+    return (
+        <div>
+            <Alert
+                timeAlive={5000}
+                show={showAlert}
+                setShow={setShowAlert}
+                success={requestStatus.success}
+                message={requestStatus.message}
+            />
+            {notifications.length > 0 && (
+                <ol>
+                    {notifications.map((n) => {
+                        return (
+                            <Notification
+                                key={n._id}
+                                notification={n}
+                                handleAction={handleAction}
+                            />
+                        );
+                    })}
+                </ol>
+            )}
+
+            {notifications.length === 0 && <p>No current notifications</p>}
+        </div>
+    );
 }

@@ -1,11 +1,14 @@
 "use client";
 
-import { Input } from "../client";
+import { Input, Alert } from "../client";
 import { useState, useEffect } from "react";
 import { useStore } from "@/store/store";
 
 export default function InviteUser({ groupId }) {
     const [userId, setUserId] = useState("");
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [requestStatus, setRequestStatus] = useState({});
 
     const user = useStore((state) => state.user);
     const publicUsers = useStore((state) => state.userStore);
@@ -26,8 +29,8 @@ export default function InviteUser({ groupId }) {
         if (groupId) {
             payload.groupId = groupId;
         }
-        console.log("Payload",payload)
-        const response = await fetch(
+        console.log("Payload", payload);
+        const request = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/notifications`,
             {
                 method: "POST",
@@ -37,10 +40,32 @@ export default function InviteUser({ groupId }) {
                 body: JSON.stringify(payload),
             },
         );
+
+        if (request.status === 200) {
+            setRequestStatus({
+                success: true,
+                message: `You succeeded in the task "${action}"`,
+            });
+            setShowAlert(true);
+            setUserId("");
+        } else {
+            setRequestStatus({
+                success: false,
+                message: `Could not complete task "${action}"`,
+            });
+            setShowAlert(true);
+        }
     }
 
     return (
         <>
+            <Alert
+                timeAlive={5000}
+                show={showAlert}
+                setShow={setShowAlert}
+                success={requestStatus.success}
+                message={requestStatus.message}
+            />
             <Input
                 type="select"
                 label="Select from Public Users"
