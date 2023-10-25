@@ -4,13 +4,19 @@ import Notification from "./notification";
 
 export default function Notifications() {
     const notifications = useStore((state) => state.notifications);
+    const removeNotification = useStore((state) => state.removeNotification);
     console.log(notifications);
 
     async function handleAction(action, notification) {
         console.log(action, notification);
         if (action === "ignore") {
-            let index = notifications.indexOf(notification);
-            notifications.splice(index, 1);
+            removeNotification(notification);
+            console.log(notifications)
+            // let index = notifications.indexOf(notification);
+            // notifications.splice(index, 1);
+            // This does not remove the notification from the state
+            // You have to do that like you do with useState setters
+            return;
         }
         if (action === "accept association") {
         }

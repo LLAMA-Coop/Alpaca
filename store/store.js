@@ -29,6 +29,16 @@ const addNotifications = (state, ...notifications) => {
     return newState;
 };
 
+const removeNotification = (state, notification) => {
+    const newStore = [...state.notifications];
+    const notif = newStore.find((x) => x._id === notification._id);
+    const index = newStore.indexOf(notif);
+    newStore.splice(index, 1);
+    const newState = {};
+    newState.notifications = newStore;
+    return newState;
+};
+
 //needs testing
 const updateResource = (state, storeName, newResource) => {
     if (!Object.values(stores).includes(storeName)) {
@@ -84,6 +94,14 @@ export const useStore = create((set) => ({
     addNotifications: (...notifications) => {
         try {
             return set((state) => addNotifications(state, ...notifications));
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    removeNotification: (notification) => {
+        try {
+            return set((state) => removeNotification(state, notification));
         } catch (error) {
             console.error(error);
         }
