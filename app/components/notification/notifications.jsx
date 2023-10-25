@@ -4,7 +4,7 @@ import Notification from "./notification";
 
 export default function Notifications() {
     const notifications = useStore((state) => state.notifications);
-    console.log(notifications)
+    console.log(notifications);
 
     async function handleAction(action, notification) {
         console.log(action, notification);
@@ -14,23 +14,22 @@ export default function Notifications() {
         }
         let directory;
         let recipientId;
-        if (action === "acceptAssociation") {
+        if (action === "accept association") {
             directory = "users";
-            recipientId = notification.from.user._id;
+            recipientId = notification.senderUser._id;
         }
-        if (action === "join") {
+        if (action === "join group") {
             directory = "groups";
-            recipientId = notification.from.group._id;
+            recipientId = notification.senderGroup._id;
         }
-        if (action === "delete") {
+        if (action === "delete notification") {
             console.log("sorry to hear that");
-            return;
         }
 
         const response = await fetch(
-            `${
-                process.env.NEXT_PUBLIC_BASEPATH ?? ""
-            }/api/${directory}/${recipientId}`,
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/notifications/${
+                notification._id
+            }`,
             {
                 method: "POST",
                 headers: {
@@ -38,19 +37,22 @@ export default function Notifications() {
                 },
                 body: JSON.stringify({
                     action,
-                    notificationId: notification._id,
                 }),
             },
         );
-
-        console.log(await response.json());
     }
 
     if (notifications.length > 0) {
         return (
             <ol>
                 {notifications.map((n) => {
-                    return <Notification notification={n} handleAction={handleAction} />
+                    return (
+                        <Notification
+                            key={n._id}
+                            notification={n}
+                            handleAction={handleAction}
+                        />
+                    );
                 })}
             </ol>
         );

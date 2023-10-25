@@ -3,9 +3,9 @@ import { Card } from "../client";
 
 export default function Notification({ notification, handleAction }) {
     let type;
-    if (notification.from.user) {
+    if (notification.senderUser) {
         type = "associate";
-    } else if (notification.from.group) {
+    } else if (notification.senderGroup) {
         type = "group";
     }
     return (
@@ -15,20 +15,20 @@ export default function Notification({ notification, handleAction }) {
                 From:
                 {type === "associate" && (
                     <p>
-                        {notification.from.user.username ===
-                        notification.from.user.displayName
-                            ? `${notification.from.user.username}`
-                            : `${notification.from.user.displayName} (${notification.from.user.username})`}
+                        {notification.senderUser.username ===
+                        notification.senderUser.displayName
+                            ? `${notification.senderUser.username}`
+                            : `${notification.senderUser.displayName} (${notification.senderUser.username})`}
                     </p>
                 )}
                 {type === "group" && (
                     <p>
-                        {notification.from.admin.username ===
-                        notification.from.admin.displayName
-                            ? `${notification.from.admin.username}`
-                            : `${notification.from.admin.displayName} (${notification.from.admin.username})`}
+                        {notification.senderUser.username ===
+                        notification.senderUser.displayName
+                            ? `${notification.senderUser.username}`
+                            : `${notification.senderUser.displayName} (${notification.senderUser.username})`}
                         <br />
-                        of {notification.from.group.name}
+                        of {notification.senderGroup.name}
                     </p>
                 )}
             </div>

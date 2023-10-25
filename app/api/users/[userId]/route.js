@@ -48,12 +48,16 @@ export async function POST(req) {
             );
         }
 
-        const { action, notificationId, groupId } = await req.json();
+        const { action, groupId } = await req.json();
         const notification = {
-            from: {
-                user: sender._id,
-            },
+            from: {},
         };
+        if(groupId){
+            notification.from.group = groupId;
+            notification.from.admin = sender._id;
+        } else {
+            notification.from.user = sender._id;
+        }
 
         let update;
 
@@ -108,12 +112,12 @@ export async function POST(req) {
 
         if (action === "groupInvitation") {
             const group = await Group.findById(groupId);
-            console.log("Group", group)
+            console.log("Group", group);
             notification._id = new Types.ObjectId();
             notification.subject = "A group is inviting you to be a member!";
             notification.message = `You have been invited to join the group ${group.name}!\nHere's what they say about themselves:\n  "${group.description}"`;
             notification.responseActions = [
-                "acceptInvitation",
+                "join",
                 "ignore",
                 "delete",
             ];

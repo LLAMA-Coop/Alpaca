@@ -4,7 +4,14 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import connectDB from "./api/db";
 // import { Source, Note, Quiz, Group, User } from "@mneme_app/database-models";
-import { Source, Note, Quiz, Group, User } from "@/app/api/models";
+import {
+    Source,
+    Note,
+    Quiz,
+    Group,
+    User,
+    Notification,
+} from "@/app/api/models";
 import { FillStore } from "./components/fillStore";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser, queryReadableResources } from "@/lib/auth";
@@ -34,52 +41,60 @@ export default async function RootLayout({ children }) {
     }
     const user = await useUser({ token: cookies().get("token")?.value });
     if (user) {
-        await user.populate({
-            path: "notifications",
-            populate: { path: "from.user", model: "user" },
-        });
+        // await user.populate({
+        //     path: "notifications",
+        //     populate: { path: "from.user", model: "user" },
+        // });
         // await user.populate("notifications.from.group");
         // await user.populate("notifications.from.admin");
         await user.populate("associates");
         await user.populate("groups");
     }
 
+    // const notifications = user
+    //     ? user.notifications.map((x) => {
+    //           const notification = {
+    //               _id: x._id,
+    //               from: {},
+    //               subject: x.subject,
+    //               message: x.message,
+    //               responseActions: x.responseActions,
+    //           };
+
+    //           if (x.from.user) {
+    //               notification.from.user = {
+    //                   _id: x.from.user._id,
+    //                   username: x.from.user.username,
+    //                   displayName: x.from.user.displayName,
+    //               };
+    //           }
+
+    //           if (x.from.admin) {
+    //               notification.from.admin = {
+    //                   _id: x.from.admin._id,
+    //                   username: x.from.admin.username,
+    //                   displayName: x.from.admin.displayName,
+    //               };
+    //           }
+
+    //           if (x.from.group) {
+    //               notification.from.group = {
+    //                   _id: x.from.group._id,
+    //                   name: x.from.group.name,
+    //                   description: x.from.group.description,
+    //               };
+    //           }
+
+    //           return notification;
+    //       })
+    //     : [];
+
     const notifications = user
-        ? user.notifications.map((x) => {
-              const notification = {
-                  _id: x._id,
-                  from: {},
-                  subject: x.subject,
-                  message: x.message,
-                  responseActions: x.responseActions,
-              };
-
-              if (x.from.user) {
-                  notification.from.user = {
-                      _id: x.from.user._id,
-                      username: x.from.user.username,
-                      displayName: x.from.user.displayName,
-                  };
-              }
-
-              if (x.from.admin) {
-                  notification.from.admin = {
-                      _id: x.from.admin._id,
-                      username: x.from.admin.username,
-                      displayName: x.from.admin.displayName,
-                  };
-              }
-
-              if (x.from.group) {
-                  notification.from.group = {
-                      _id: x.from.group._id,
-                      name: x.from.group.name,
-                      description: x.from.group.description,
-                  };
-              }
-
-              return notification;
-          })
+        ? serialize(
+              await Notification.find({ recipient: user._id })
+                  .populate("senderUser")
+                  .populate("senderGroup"),
+          )
         : [];
 
     const query = queryReadableResources(user);
@@ -91,14 +106,15 @@ export default async function RootLayout({ children }) {
     const associates = user
         ? user.associates.filter((a) => !publicUsers.includes(a))
         : [];
-    const availableUsers = serialize([...associates.filter(x => !x.isPublic), ...publicUsers]).map(
-        (x) => ({
-            _id: x._id,
-            username: x.username,
-            displayName: x.displayName,
-            avatar: x.avatar,
-        }),
-    );
+    const availableUsers = serialize([
+        ...associates.filter((x) => !x.isPublic),
+        ...publicUsers,
+    ]).map((x) => ({
+        _id: x._id,
+        username: x.username,
+        displayName: x.displayName,
+        avatar: x.avatar,
+    }));
     const publicGroups = await Group.find({ isPublic: true });
     const availableGroups = serialize(
         user && user.groups

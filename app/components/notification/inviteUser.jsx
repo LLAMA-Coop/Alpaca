@@ -23,9 +23,9 @@ export default function InviteUser({ groupId }) {
     }, []);
 
     async function sendInvitation() {
-        let action = "associate";
+        let action = "request association";
         if (groupId) {
-            action = "groupInvitation";
+            action = "invite to group";
             if (!group) {
                 console.error(
                     "I'm sorry, but you need to be the owner of the group or an administrator",
@@ -33,12 +33,13 @@ export default function InviteUser({ groupId }) {
                 return;
             }
         }
-        const payload = { action };
+        const payload = { action, recipientId: user._id };
         if (groupId) {
             payload.groupId = groupId;
         }
+        console.log("Payload",payload)
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/users/${userId}`,
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/notifications`,
             {
                 method: "POST",
                 headers: {
@@ -47,7 +48,6 @@ export default function InviteUser({ groupId }) {
                 body: JSON.stringify(payload),
             },
         );
-        console.log(await response.json());
     }
 
     return (
