@@ -12,12 +12,12 @@ export async function POST(req) {
             return unauthorized;
         }
 
-        const { action, recipientId } = await req.json();
+        const { action, recipientId, groupId } = await req.json();
         let recipient = await User.findById(recipientId);
 
         if (!recipient) {
             console.error(
-                `${sender.username} sent a message to user id ${recipientId}, which does not exist`,
+                `${user.username} sent a message to user id ${recipientId}, which does not exist`,
             );
 
             recipient = await User.find({ username: "crash test dummy" });
@@ -44,6 +44,36 @@ export async function POST(req) {
         }
 
         if (action === "invite to group") {
+            const group = await Group.findById(groupId);
+            if (!group) {
+                return new NextResponse(
+                    { message: `Unable to find group with ID ${groupId}` },
+                    { status: 404 },
+                );
+            }
+
+            if (
+                group.owner.toString() !== user._id.toString() ||
+                !group.admins.includes(user._id)
+            ) {
+                return new NextResponse(
+                    {
+                        message: `I'm sorry, but you are not authorized to invite users to group ${group.name}`,
+                    },
+                    { status: 401 },
+                );
+            }
+
+            notifPayload.senderGroup = groupId;
+
+            notifPayload.subject = "A group is inviting you to join them!";
+            notifPayload.message = `${user.username} is inviting you to join the group ${group.name}. Here's is what the group says about themselves:\n  ${group.description}`;
+
+            notifPayload.responseActions.push(
+                "join group",
+                "delete notification",
+                "ignore",
+            );
         }
 
         if (action === "send message") {

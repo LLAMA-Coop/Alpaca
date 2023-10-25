@@ -9,11 +9,6 @@ export default function InviteUser({ groupId }) {
 
     const user = useStore((state) => state.user);
     const publicUsers = useStore((state) => state.userStore);
-    const group = useStore((state) => state.groupStore).find(
-        (x) =>
-            x._id === groupId &&
-            (x.owner === user._id || x.admins.includes(user._id)),
-    );
     const availableUsers = publicUsers.filter(
         (x) => user?.associates.find((y) => y._id == x._id) === undefined,
     );
@@ -26,12 +21,6 @@ export default function InviteUser({ groupId }) {
         let action = "request association";
         if (groupId) {
             action = "invite to group";
-            if (!group) {
-                console.error(
-                    "I'm sorry, but you need to be the owner of the group or an administrator",
-                );
-                return;
-            }
         }
         const payload = { action, recipientId: user._id };
         if (groupId) {

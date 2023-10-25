@@ -16,6 +16,16 @@ export async function POST(req) {
 
         const notification = await Notification.findById(notificationId);
 
+        if (!notification) {
+            console.error("no notification")
+            return new NextResponse(
+                {
+                    message: `The notification ${notificationId} is no longer available. It may have been deleted by the sender.`,
+                },
+                { status: 404 },
+            );
+        }
+
         const { action } = await req.json();
         let isUserRecipient = false;
         let isUserSender = false;
@@ -38,13 +48,37 @@ export async function POST(req) {
                 sender.associates.push(user.id);
                 update.sender = await sender.save();
             }
-            if (user.associates.indexOf(sender._id) === -l) {
+            if (user.associates.indexOf(sender._id) === -1) {
                 user.associates.push(sender._id);
                 update.recipient = await user.save();
             }
         }
 
         if (action === "join group") {
+            const sender = await User.findById(notification.senderUser);
+            const group = await Group.findById(notification.senderGroup);
+            if (
+                group.owner.toString() !== sender._id.toString() ||
+                !group.admins.includes(sender._id)
+            ) {
+                return new NextResponse(
+                    {
+                        message: `The user ${sender.username} was not authorized to invite you to group ${group.name}`,
+                    },
+                    { status: 401 },
+                );
+            }
+
+            if (group.users.indexOf(user._id) === -1) {
+                group.users.push(user._id);
+            }
+            if (user.groups.indexOf(group._id) === -1) {
+                user.groups.push(group._id);
+            }
+            update = {
+                group: await group.save(),
+                user: await user.save()
+            }
         }
 
         if (action === "reply") {
@@ -58,6 +92,7 @@ export async function POST(req) {
         }
 
         if (update === undefined) {
+            console.error("did not update")
             return new NextResponse(
                 {
                     message: `Did not update. The action ${action} is not recognized.`,

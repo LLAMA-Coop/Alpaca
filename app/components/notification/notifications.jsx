@@ -12,15 +12,9 @@ export default function Notifications() {
             let index = notifications.indexOf(notification);
             notifications.splice(index, 1);
         }
-        let directory;
-        let recipientId;
         if (action === "accept association") {
-            directory = "users";
-            recipientId = notification.senderUser._id;
         }
         if (action === "join group") {
-            directory = "groups";
-            recipientId = notification.senderGroup._id;
         }
         if (action === "delete notification") {
             console.log("sorry to hear that");
