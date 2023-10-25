@@ -17,7 +17,7 @@ export async function POST(req) {
         const notification = await Notification.findById(notificationId);
 
         if (!notification) {
-            console.error("no notification")
+            console.error("no notification");
             return new NextResponse(
                 {
                     message: `The notification ${notificationId} is no longer available. It may have been deleted by the sender.`,
@@ -77,8 +77,8 @@ export async function POST(req) {
             }
             update = {
                 group: await group.save(),
-                user: await user.save()
-            }
+                user: await user.save(),
+            };
         }
 
         if (action === "reply") {
@@ -92,7 +92,7 @@ export async function POST(req) {
         }
 
         if (update === undefined) {
-            console.error("did not update")
+            console.error("did not update");
             return new NextResponse(
                 {
                     message: `Did not update. The action ${action} is not recognized.`,
@@ -101,6 +101,8 @@ export async function POST(req) {
                     status: 404,
                 },
             );
+        } else {
+            await Notification.findByIdAndDelete(notificationId);
         }
 
         return new NextResponse(
