@@ -11,7 +11,7 @@ import {
     NoteDisplay,
     SourceDisplay,
 } from "@/app/components/server";
-import InviteUser from "@/app/components/inviteUser";
+import InviteUser from "@/app/components/notification/inviteUser";
 
 export default async function GroupPage({ params }) {
     const groupId = params.groupId;
