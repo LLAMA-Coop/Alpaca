@@ -51,9 +51,6 @@ export async function POST(req) {
             );
         }
 
-        // Default role only
-        // An admin will have to add role through PUT
-
         const user = new User({
             username: username.trim(),
             displayName: username.trim(),

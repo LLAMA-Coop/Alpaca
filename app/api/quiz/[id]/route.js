@@ -6,8 +6,6 @@ import { Quiz } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 
-// this will be used to check answers on server
-// THEN put result in User's quizzes list
 export async function POST(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
@@ -22,7 +20,7 @@ export async function POST(req) {
         if (!quiz) {
             return NextResponse.json(
                 {
-                    message: `The quiz ${_id} could not be found to delete`,
+                    message: `The quiz ${_id} could not be found`,
                 },
                 { status: 404 },
             );
