@@ -25,7 +25,7 @@ export default function InviteUser({ groupId }) {
         if (groupId) {
             action = "invite to group";
         }
-        const payload = { action, recipientId: user._id };
+        const payload = { action, recipientId: userId };
         if (groupId) {
             payload.groupId = groupId;
         }
