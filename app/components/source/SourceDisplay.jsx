@@ -1,12 +1,11 @@
 import { ListItem, Card } from "@components/client";
 import styles from "./SourceDisplay.module.css";
-import { capitalize } from "@/lib/strings";
 
 export function SourceDisplay({ source }) {
     return (
         <Card
             title={source.title}
-            subtitle={capitalize(source.medium)}
+            subtitle={source.medium}
             buttons={[
                 {
                     label: "Visit the source page",
