@@ -76,9 +76,9 @@ export function ListItem({ item, action, actionType, link, select, disabled }) {
     if (link)
         return (
             <li ref={liRef}>
-                <Link href={link} target="_blank" className={styles.listItem}>
+                <a href={link} target="_blank" className={styles.listItem}>
                     {content}
-                </Link>
+                </a>
             </li>
         );
 

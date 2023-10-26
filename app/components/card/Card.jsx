@@ -3,7 +3,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Card.module.css";
 import { useState } from "react";
-import Link from "next/link";
 
 export const Card = ({
     title,
@@ -46,7 +45,7 @@ export const Card = ({
                                     {title && (
                                         <header title={title}>
                                             {url ? (
-                                                <Link href={url}>{title}</Link>
+                                                <a href={url}>{title}</a>
                                             ) : (
                                                 title
                                             )}

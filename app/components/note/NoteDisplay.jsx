@@ -1,9 +1,7 @@
 import styles from "./NoteDisplay.module.css";
-import { capitalize } from "@/lib/strings";
 import { Card, ListItem } from "@components/client";
 // import { Source, User } from "@mneme_app/database-models";
 import { Source, User } from "@/app/api/models";
-import Link from "next/link";
 
 export async function NoteDisplay({ note }) {
     const user = await User.findById(note.createdBy);
@@ -30,14 +28,14 @@ export async function NoteDisplay({ note }) {
 
                     return (
                         <li key={sourceId}>
-                            <Link
+                            <a
                                 className={styles.sourceLink}
                                 href={source.url}
                             >
                                 <div>{source.title}</div>
 
-                                <div>{capitalize(source.medium)}</div>
-                            </Link>
+                                <div>{source.medium}</div>
+                            </a>
                         </li>
                     );
                 })}
