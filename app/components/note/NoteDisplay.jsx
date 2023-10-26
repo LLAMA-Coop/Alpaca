@@ -1,10 +1,11 @@
 import styles from "./NoteDisplay.module.css";
 import { Card, ListItem } from "@components/client";
 // import { Source, User } from "@mneme_app/database-models";
-import { Source, User } from "@/app/api/models";
+import { Note, Source, User } from "@/app/api/models";
 
 export async function NoteDisplay({ note }) {
     const user = await User.findById(note.createdBy);
+    const dbNote = await Note.findById(note._id).populate("sources");
 
     return (
         <Card description={`${note.text}`}>
@@ -23,15 +24,10 @@ export async function NoteDisplay({ note }) {
 
             <div>Sources linked:</div>
             <ul>
-                {note.sources.map(async (sourceId) => {
-                    const source = await Source.findOne({ _id: sourceId });
-
+                {dbNote.sources.map((source) => {
                     return (
-                        <li key={sourceId}>
-                            <a
-                                className={styles.sourceLink}
-                                href={source.url}
-                            >
+                        <li key={source._id}>
+                            <a className={styles.sourceLink} href={source.url}>
                                 <div>{source.title}</div>
 
                                 <div>{source.medium}</div>

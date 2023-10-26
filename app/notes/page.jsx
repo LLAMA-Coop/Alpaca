@@ -5,7 +5,7 @@ import { serialize, serializeOne } from "@/lib/db";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
 import { cookies } from "next/headers";
 // import { Source, Note, User } from "@mneme_app/database-models";
-import { Source, Note, User } from "@/app/api/models";
+import { Note, User } from "@/app/api/models";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -40,8 +40,6 @@ export default async function NotesPage({ searchParams }) {
     if (page > 1 && notes.length === 0) {
         return redirect(`/notes?page=1&amount=${amount}`);
     }
-
-    const sources = user ? serialize(await Source.find(query)) : [];
 
     return (
         <main className={styles.main}>
