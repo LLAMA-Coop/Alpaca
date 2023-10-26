@@ -64,9 +64,7 @@ export function DynamicNav({ user }) {
                 value={open}
                 className={styles.menuClosed}
             />
-            <menu
-                className={styles.navMenu}
-            >
+            <ul className={styles.navMenu}>
                 {links.map((link) => (
                     <li
                         key={link.name}
@@ -98,7 +96,7 @@ export function DynamicNav({ user }) {
                 </li>
 
                 {/* <div className={styles.followingDiv} style={{ ...props }} /> */}
-            </menu>
+            </ul>
         </nav>
     );
 }
