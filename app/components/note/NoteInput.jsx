@@ -32,7 +32,7 @@ export function NoteInput({ note }) {
 
     const availableSources = useStore((state) => state.sourceStore);
     const user = useStore((state) => state.user);
-    const canDelete = note && note.createdBy === user._id;
+    const canDelete = note && note.createdBy === user?._id;
 
     useEffect(() => {
         if (!note) return;
@@ -191,7 +191,7 @@ export function NoteInput({ note }) {
 
             <InputPopup type="source" />
 
-            {(!note || note.createdBy === user._id) && (
+            {(!note || note.createdBy === user?._id) && (
                 <PermissionsInput
                     permissions={note ? note.permissions : {}}
                     setter={setPermissions}

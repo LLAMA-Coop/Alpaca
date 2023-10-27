@@ -2,7 +2,9 @@
     position: fixed;
     top: 0;
     left: 0;
+    width: 100vw !important;
     width: 100dvw !important;
+    min-height: 100vh;
     min-height: 100dvh;
     z-index: 5;
     display: flex;
@@ -14,6 +16,7 @@
 }
 
 .popup > div {
+    max-height: calc(100vh - 128px);
     max-height: calc(100dvh - 128px);
     width: 480px;
     padding: 24px;
@@ -21,7 +24,8 @@
     position: relative;
     background-color: var(--background-tertiary);
     animation: popIn 0.225s ease-in-out;
-    overflow: hidden auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .popup > div::-webkit-scrollbar {
@@ -39,7 +43,7 @@
 }
 
 .closeButton {
-    display: none;
+    /* display: none; */
     align-items: center;
     justify-content: center;
     width: 32px;
@@ -102,8 +106,11 @@
 
 @media screen and (max-width: 550px) {
     .popup > div {
+        max-height: 100vh;
         max-height: 100dvh;
+        width: 100vw;
         width: 100dvw;
+        height: 100vh;
         height: 100dvh;
         border-radius: 0;
     }
