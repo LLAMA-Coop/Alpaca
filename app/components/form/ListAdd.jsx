@@ -44,7 +44,7 @@ export default function ListAdd({
                             action={() => {
                                 listSetter(
                                     listChosen.filter(
-                                        (x) => x.id !== choice.id,
+                                        (x) => x._id !== choice._id,
                                     ),
                                 );
                             }}
