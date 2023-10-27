@@ -46,7 +46,7 @@ export function Select({
                 aria-orientation="vertical"
             >
                 {listChoices && listChoices.map((choice, index) => {
-                    const isChosen = listChosen.find((x) => x?.id === choice.id);
+                    const isChosen = listChosen.find((x) => x._id === choice._id) != undefined;
                     return (
                         <div
                             key={choice._id}
@@ -55,9 +55,7 @@ export function Select({
                             aria-selected={isChosen}
                             aria-setsize={listChoices.length}
                             aria-posinset={index + 1}
-                            className={`${isChosen && styles.chosen} ${
-                                styles.item
-                            }`}
+                            className={styles.item}
                             onClick={() => clickEvent(choice)}
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {
