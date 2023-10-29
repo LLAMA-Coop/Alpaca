@@ -77,9 +77,8 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
     }
 
     function inputSize(string) {
-        if (!string) return 1;
-        if (string.length < 4) return 1;
-        return string.length - 3;
+        if (string.length < 5) return 5;
+        return string.length + 1;
     }
 
     return (
