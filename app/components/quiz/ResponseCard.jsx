@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import correctConfetti from "@/lib/correctConfetti";
 import shuffleArray from "@/lib/shuffleArray";
 import makeUniqueId from "@/lib/uniqueId";
+import stringCompare from "@/lib/stringCompare";
 
 export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
     const [userResponse, setUserResponse] = useState("");
@@ -51,7 +52,7 @@ export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
         if (canClientCheck) {
             const isCorrect =
                 quiz.correctResponses.find(
-                    (x) => x.toLowerCase() === userResponse.toLowerCase(),
+                    (x) => stringCompare(x, userResponse) >= 0.8,
                 ) !== undefined;
 
             if (isCorrect) {

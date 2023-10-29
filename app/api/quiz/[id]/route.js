@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { Quiz } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import stringCompare from "@/lib/stringCompare";
 
 export async function POST(req) {
     try {
@@ -35,7 +36,7 @@ export async function POST(req) {
             quiz.type === "multiple-choice"
         ) {
             let incorrect = quiz.correctResponses.find(
-                (x) => x.toLowerCase() === userResponse.toLowerCase(),
+                (x) => stringCompare(x, userResponse) >= 0.8,
             );
             isCorrect = incorrect !== undefined;
         }
