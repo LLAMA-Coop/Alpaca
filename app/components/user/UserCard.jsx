@@ -1,5 +1,3 @@
-"use client";
-
 import { faCrown, faHammer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./UserCard.module.css";
