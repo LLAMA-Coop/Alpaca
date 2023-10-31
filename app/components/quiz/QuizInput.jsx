@@ -17,6 +17,7 @@ import { buildPermissions } from "@/lib/permissions";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import ListAdd from "../form/ListAdd";
 import MAX from "@/lib/max";
+import styles from "./QuizInput.module.css";
 
 export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
@@ -54,6 +55,8 @@ export function QuizInput({ quiz }) {
 
     const user = useStore((state) => state.user);
     const canDelete = quiz && quiz.createdBy === user?._id;
+
+    const promptBank = useRef(null);
 
     useEffect(() => {
         if (!quiz) return;
@@ -165,6 +168,27 @@ export function QuizInput({ quiz }) {
             cannotSend = true;
         }
 
+        console.log("Heloo");
+        if (type === "fill-in-the-blank") {
+            const spans =
+                promptBank.current.querySelectorAll("span[data-word]");
+            let promptArray = [];
+            let answerArray = [];
+            spans.forEach((x) => {
+                let input = x.querySelector('input');
+                if (input.checked) {
+                    promptArray.push("<blank />");
+                    answerArray.push(x.getAttribute('data-word'));
+                    return;
+                }
+                promptArray.push(x.getAttribute('data-word'));
+            });
+            console.log(promptArray, answerArray);
+            setPrompt(promptArray.join(" "));
+            setResponses(answerArray);
+            cannotSend = false;
+        }
+
         if (type === "multiple-choice" && choices.length === 0) {
             setChoicesError("Need at least one choice");
             cannotSend = true;
@@ -270,6 +294,15 @@ export function QuizInput({ quiz }) {
         setChoicesError("");
     }
 
+    function handleMakeBlanks(e) {
+        e.preventDefault();
+    }
+
+    function handleBlankAnswers(e, index) {
+        e.preventDefault();
+        e.target.style.outline = "pink solid 3px";
+    }
+
     return (
         <form className="formGrid">
             <Alert
@@ -290,18 +323,45 @@ export function QuizInput({ quiz }) {
                 onChange={(e) => setType(e.target.value)}
             />
 
-            <Input
-                label="Prompt"
-                description={"Question prompt. Can be a question or statement"}
-                required={true}
-                value={prompt}
-                maxLength={MAX.prompt}
-                error={promptError}
-                onChange={(e) => {
-                    setPrompt(e.target.value);
-                    setPromptError("");
-                }}
-            />
+            <div>
+                <Input
+                    label={
+                        type === "fill-in-the-blank"
+                            ? "Enter text that you wish to make blanks within"
+                            : "Prompt"
+                    }
+                    description={
+                        "Question prompt. Can be a question or statement"
+                    }
+                    required={true}
+                    value={prompt}
+                    maxLength={MAX.prompt}
+                    error={promptError}
+                    onChange={(e) => {
+                        setPrompt(e.target.value);
+                        setPromptError("");
+                    }}
+                />
+
+                {/* {type === "fill-in-the-blank" && (
+                    <button onClick={handleMakeBlanks}>
+                        Submit to choose words to make blanks
+                    </button>
+                )} */}
+
+                {type === "fill-in-the-blank" && (
+                    <div ref={promptBank} className={styles.blankBank}>
+                        <p>Click the words you would like to be blank.</p>
+                        {prompt.split(" ").map((x, index) => (
+                            <span key={index} data-word={x}>
+                                <input type="checkbox" id={`${index}_${x}`} />
+                                <label htmlFor={`${index}_${x}`}>{x}</label>
+                                <span> </span>
+                            </span>
+                        ))}
+                    </div>
+                )}
+            </div>
 
             {type === "multiple-choice" && (
                 <div>
@@ -345,54 +405,63 @@ export function QuizInput({ quiz }) {
                 </div>
             )}
 
-            <div>
-                <Input
-                    type="text"
-                    choices={choices.map((x) => ({ label: x, value: x }))}
-                    label="Add new answer"
-                    description={"Add a new answer. Press enter to add"}
-                    value={newResponse}
-                    maxLength={MAX.response}
-                    required={responses.length === 0}
-                    onSubmit={handleAddResponse}
-                    error={responsesError}
-                    onChange={(e) => {
-                        setNewResponse(e.target.value);
-                        if (type === "multiple-choice") {
-                            setNewChoice(e.target.value);
-                        }
-                    }}
-                    action={type !== "multiple-choice" && "Add new answer"}
-                    onActionTrigger={(e) => {
-                        handleAddResponse(e);
-                        if (type === "multiple-choice") {
-                            handleAddChoice(e);
-                        }
-                    }}
-                />
+            {/* This is where we need to add stuff for fill in the blank UI.
+                The below list of choices should not appear.
+                You have an input for the statement in Prompt above.
+                Label will instead instruct user to type out statement which will have blanks. 
+                A button will be below it to submit the prompt to buttons.
+                In place of the choices input list, the statement submitted will be turned into buttons for the user to select which words are blank. */}
 
-                <div style={{ marginTop: "24px" }}>
-                    <Label label="Answers" />
-                    <ol className="chipList">
-                        {responses.map((res, index) => (
-                            <ListItem
-                                key={index}
-                                item={res}
-                                actionType={"delete"}
-                                action={() =>
-                                    setResponses((prev) =>
-                                        prev.filter((x) => x !== res),
-                                    )
-                                }
-                            />
-                        ))}
+            {type !== "fill-in-the-blank" && (
+                <div>
+                    <Input
+                        type="text"
+                        choices={choices.map((x) => ({ label: x, value: x }))}
+                        label="Add new answer"
+                        description={"Add a new answer. Press enter to add"}
+                        value={newResponse}
+                        maxLength={MAX.response}
+                        required={responses.length === 0}
+                        onSubmit={handleAddResponse}
+                        error={responsesError}
+                        onChange={(e) => {
+                            setNewResponse(e.target.value);
+                            if (type === "multiple-choice") {
+                                setNewChoice(e.target.value);
+                            }
+                        }}
+                        action={type !== "multiple-choice" && "Add new answer"}
+                        onActionTrigger={(e) => {
+                            handleAddResponse(e);
+                            if (type === "multiple-choice") {
+                                handleAddChoice(e);
+                            }
+                        }}
+                    />
 
-                        {responses.length === 0 && (
-                            <ListItem item={"No answers added yet"} />
-                        )}
-                    </ol>
+                    <div style={{ marginTop: "24px" }}>
+                        <Label label="Answers" />
+                        <ol className="chipList">
+                            {responses.map((res, index) => (
+                                <ListItem
+                                    key={index}
+                                    item={res}
+                                    actionType={"delete"}
+                                    action={() =>
+                                        setResponses((prev) =>
+                                            prev.filter((x) => x !== res),
+                                        )
+                                    }
+                                />
+                            ))}
+
+                            {responses.length === 0 && (
+                                <ListItem item={"No answers added yet"} />
+                            )}
+                        </ol>
+                    </div>
                 </div>
-            </div>
+            )}
 
             <div>
                 <Label

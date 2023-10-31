@@ -1,0 +1,22 @@
+.blankBank {
+    background-color: var(--background-tertiary);
+    color: var(--foreground-tertiary);
+    padding: 1rem;
+    font-size: 1.2rem;
+}
+
+.blankBank > p {
+    text-decoration: underline;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.blankBank input[type=checkbox] {
+    display: none;
+}
+
+.blankBank input:checked + label {
+    background-color: var(--foreground-primary);
+    color: var(--background-primary);
+    box-shadow: 2px 2px 2px lightblue;
+}
