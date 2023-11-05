@@ -106,11 +106,11 @@ export default function PermissionsInput({ permissions, setter }) {
             />
 
             <div>
-                <Label label="Users with Permission to Edit" />
+                <Label label="Associates with Permission to Edit" />
 
                 {/* Need to add a disable */}
                 <ListAdd
-                    item="User"
+                    item="Associate"
                     listChoices={user?.associates}
                     listChosen={usersWrite}
                     listProperty={"username"}
@@ -119,11 +119,11 @@ export default function PermissionsInput({ permissions, setter }) {
                 />
             </div>
             <div>
-                <Label label="Users with Permission to View" />
+                <Label label="Associates with Permission to View" />
 
                 {/* Need to add a disable */}
                 <ListAdd
-                    item="User"
+                    item="Associate"
                     listChoices={user?.associates}
                     listChosen={usersRead}
                     listProperty={"username"}

@@ -48,8 +48,8 @@ export default function BlankableInput({
     }, [prompt, responses]);
 
     function handleChangePrompt(e) {
-        setPrompt(e.target.value);
-        setPromptError("");
+        // setPrompt(e.target.value);
+        // setPromptError("");
     }
 
     function handleChangeBlank() {
