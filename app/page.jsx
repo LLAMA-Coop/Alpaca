@@ -19,8 +19,6 @@ export default async function Home({ searchParams }) {
         await Quiz.aggregate([{ $match: query }, { $sample: { size: 1 } }]),
     )[0];
 
-    console.log(query, quizSample);
-
     return (
         <main className={styles.main}>
             <h2>Welcome to Mneme!</h2>
