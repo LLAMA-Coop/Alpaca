@@ -18,9 +18,7 @@ const allowedType = [
 export async function GET(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
-        if (!user) {
-            return unauthorized;
-        }
+        if (!user) return unauthorized;
 
         const content = await Quiz.find(queryReadableResources(user));
         return NextResponse.json({
@@ -35,9 +33,7 @@ export async function GET(req) {
 export async function POST(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
-        if (!user) {
-            return unauthorized;
-        }
+        if (!user) return unauthorized;
 
         const {
             type,

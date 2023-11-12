@@ -2,12 +2,11 @@
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Input, Card, Alert } from "@components/client";
-import styles from "./ResponseCard.module.css";
-import { useState, useEffect } from "react";
 import correctConfetti from "@/lib/correctConfetti";
-import shuffleArray from "@/lib/shuffleArray";
-import makeUniqueId from "@/lib/uniqueId";
 import stringCompare from "@/lib/stringCompare";
+import shuffleArray from "@/lib/shuffleArray";
+import { useState, useEffect } from "react";
+import makeUniqueId from "@/lib/uniqueId";
 
 export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
     const [userResponse, setUserResponse] = useState("");
@@ -161,7 +160,7 @@ export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
             />
 
             {!correctAnswer && failures > 2 && (
-                <div className={styles.hints}>
+                <div data-type="hints">
                     <p>You're having some trouble. Here are some hints:</p>
                     <ul>
                         {quiz.correctResponses.map((x, index) => (

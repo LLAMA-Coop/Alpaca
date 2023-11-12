@@ -13,104 +13,67 @@ export default function BlankableInput({
     responses,
     setResponses,
 }) {
-    const [promptWords, setPromptWords] = useState([]);
-    const promptBank = useRef(null);
-
     useEffect(() => {
-        let resIndex = 0;
-        setPromptWords(
-            prompt
-                .split(/(<blank\s*\/>)|\b/)
-                .filter((x) => x !== undefined)
-                .map((x) => {
-                    if (/(<blank\s*\/>)/.test(x)) {
-                        let newWord = responses[resIndex];
-                        resIndex++;
-                        if(resIndex === responses.length){
-                            resIndex = 0;
-                        }
-                        return {
-                            word: newWord,
-                            isBlank: true,
-                        };
-                    } else if (/[\s.,!?;:"'<>\[\]{}()]+/.test(x)) {
-                        return {
-                            punctuation: x,
-                        };
-                    } else {
-                        return {
-                            word: x,
-                            isBlank: false,
-                        };
-                    }
-                }),
-        );
-    }, [prompt, responses]);
+        // If one of the word marked as blank is removed from the prompt,
+        // remove it from the responses
 
-    function handleChangePrompt(e) {
-        setPrompt(e.target.value);
-        setPromptError("");
-    }
+        const words = prompt?.match(/\b([\w']+)\b/g) ?? [];
+        const wordsWithIndex = words.map((x, index) => `${index}_${x}`);
 
-    function handleChangeBlank() {
-        const spans = promptBank.current.querySelectorAll("span");
-
-        let promptArray = [];
-        let responseArray = [];
-        spans.forEach((x) => {
-            let input = x.querySelector("input");
-            if (input && input.checked) {
-                promptArray.push("<blank />");
-                responseArray.push(x.getAttribute("data-word"));
-                return;
-            }
-            let word = x.getAttribute("data-word");
-            if (word) {
-                promptArray.push(word);
-                return;
-            }
-            promptArray.push(x.textContent);
+        setResponses((prev) => {
+            const newResponses = prev.filter((x) => wordsWithIndex.includes(x));
+            return newResponses;
         });
-        setPrompt(promptArray.join(""));
-        setResponses(responseArray);
-    }
+    }, [prompt]);
 
     return (
         <div>
             <Input
-                label={"Enter text that you wish to make blanks within"}
+                label={"Text"}
                 description={"Question prompt. Can be a question or statement"}
                 required={true}
-                value={promptWords
-                    .map((x) => {
-                        if(x.punctuation){
-                            return x.punctuation
-                        }
-                        return x.word;
-                    })
-                    .join("")}
+                value={prompt}
                 maxLength={MAX.prompt}
                 error={promptError}
-                onChange={handleChangePrompt}
+                onChange={(e) => {
+                    setPrompt(e.target.value);
+                    setPromptError("");
+                }}
             />
-            <div className={styles.blankBank} ref={promptBank}>
-                <p>Click the words you would like to be blank.</p>
-                {promptWords.map((x, index) => {
-                    if(x.punctuation){
-                        return <span key={index}>{x.punctuation}</span>
-                    } else {
-                        return <span key={index} data-word={x.word}>
-                            <input
-                                type="checkbox"
-                                id={`${index}_${x.word}`}
-                                checked={x.isBlank}
-                                onChange={handleChangeBlank}
-                            />
-                            <label htmlFor={`${index}_${x.word}`}>{x.word}</label>
-                        </span>
-                    }
-                })}
-            </div>
+
+            {prompt.length > 0 && (
+                <div className={styles.blankBank}>
+                    <p>Click the words you want to be blank.</p>
+
+                    {prompt?.match(/\b([\w']+)\b/g)?.map((x, index) => (
+                        <button
+                            type="button"
+                            key={index}
+                            data-word={x}
+                            className={`${styles.word} ${
+                                responses.includes(`${index}_${x}`) &&
+                                styles.checked
+                            }`}
+                            onClick={() => {
+                                if (responses.includes(`${index}_${x}`)) {
+                                    setResponses((prev) =>
+                                        prev.filter(
+                                            (y) => y !== `${index}_${x}`,
+                                        ),
+                                    );
+                                } else {
+                                    setResponses((prev) => [
+                                        ...prev,
+                                        `${index}_${x}`,
+                                    ]);
+                                }
+                            }}
+                        >
+                            {x}
+                        </button>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

@@ -50,8 +50,8 @@ export function QuizDisplay({
     if (quiz.type === "fill-in-the-blank") {
         return (
             <Blankable
-                canClientCheck={canClientCheck}
                 quiz={quiz}
+                canClientCheck={canClientCheck}
                 handleWhenCorrect={handleWhenCorrect}
             />
         );

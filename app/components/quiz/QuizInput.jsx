@@ -387,11 +387,16 @@ export function QuizInput({ quiz }) {
 
                 <div style={{ marginTop: "24px" }}>
                     <Label label="Answers" />
+
                     <ol className="chipList">
                         {responses.map((res, index) => (
                             <ListItem
                                 key={index}
-                                item={res}
+                                item={
+                                    type === "fill-in-the-blank"
+                                        ? res.match(/_([a-zA-Z]+)/)[1]
+                                        : res
+                                }
                                 actionType={"delete"}
                                 action={() =>
                                     setResponses((prev) =>

@@ -24,11 +24,13 @@ export default async function Home({ searchParams }) {
 
             <section id="overall" className="paragraph">
                 <h3>Overall Concept</h3>
+
                 <p>
                     This app is intended for people who want to organize and
                     reinforce in their memory information that they want to
                     learn. Here's how you would use Mneme:
                 </p>
+
                 <ol>
                     <li>
                         First, you need to register and sign in. This is a
@@ -39,6 +41,7 @@ export default async function Home({ searchParams }) {
                         created. You can use the{" "}
                         <Link href="/login">Login</Link> link in the menu above.
                     </li>
+
                     <li>
                         If you are working with an empty database, you first
                         need to input a Source. A Source is the resources that
@@ -54,6 +57,7 @@ export default async function Home({ searchParams }) {
                         A public figure would <em>not</em> be a reliable source.
                         You would want to instead cite scientific evidence.
                     </li>
+
                     <li>
                         Make notes from your sources. Notes are exactly what
                         they sound like. They are a summary or response to what
@@ -66,6 +70,7 @@ export default async function Home({ searchParams }) {
                         one Source confirms your Note, it means your note has
                         more sources to back up its claim.
                     </li>
+
                     <li>
                         For information you want to reinforce over time, create
                         one or more <a href="#quiz">Quiz</a> questions. The Quiz
@@ -76,15 +81,19 @@ export default async function Home({ searchParams }) {
                         This can come in a few different forms:
                         <ul>
                             <li>Prompt/Response, similar to flashcards</li>
+
                             <li>Multiple Choice</li>
+
                             <li>
                                 Ordered List Answers, when the response to a
                                 question is in a list and order matters
                             </li>
+
                             <li>
                                 Unordered List Answers, when order does not
                                 matter
                             </li>
+
                             <li>Fill-in-the-Blank</li>
                         </ul>
                         But you are required to point the Quiz to at least one
@@ -94,6 +103,7 @@ export default async function Home({ searchParams }) {
                         is to back up whatever the Quiz is claiming, including
                         what is considered a correct response to its prompt.
                     </li>
+
                     <li>
                         Now Mneme is ready to use for studying or organizing
                         information. You can use it any way you like. Say you
@@ -107,16 +117,20 @@ export default async function Home({ searchParams }) {
                     </li>
                 </ol>
             </section>
+
             <section id="quiz" className="paragraph">
                 <h3>Quiz Questions</h3>
+
                 <p>
                     Your main draw to Mneme may be its Quiz questions. You can
                     use those to put together quizzes that you can share.
                 </p>
+
                 <p>
                     There are, so far, five different types of quiz questions to
                     choose from:
                 </p>
+
                 <ul>
                     <li>Prompt/Response, similar to flashcards</li>
                     <li>Multiple Choice</li>
@@ -127,15 +141,26 @@ export default async function Home({ searchParams }) {
                     <li>Unordered List Answers, when order does not matter</li>
                     <li>Fill-in-the-Blank</li>
                 </ul>
+
                 <p>Here is an example of a quiz question:</p>
+
                 <QuizDisplay quiz={quizSample} canClientCheck={true} />
+
                 <p>
                     If you can edit it, you can see a few things about how it's
                     put together:
                 </p>
-                <div style={{ border: "1px solid white", padding: "1rem" }}>
+
+                <div
+                    style={{
+                        border: "1px solid var(--background-tertiary)",
+                        padding: "1rem",
+                        margin: "40px 0",
+                    }}
+                >
                     <QuizInput quiz={quizSample} />
                 </div>
+
                 <p>
                     Notice the "Type" select. Try out the various types that a
                     quiz question can be. Notice how the editor changes when the
@@ -144,6 +169,7 @@ export default async function Home({ searchParams }) {
                     type, the "Answers" list is a list of valid answers to the
                     one response a user can give.
                 </p>
+
                 <p>
                     When on type "Multiple Choice," you are also permitted to
                     add a list of "choices," which are choices a user will be
@@ -151,12 +177,14 @@ export default async function Home({ searchParams }) {
                     list are all the choices that will be accepted as correct
                     (and you can make more than one choice correct).
                 </p>
+
                 <p>
                     A Quiz question must have either a related Source or a Note.
                     This is the Note or Source from which the Quiz gets its
                     correct answer. You can have multiple sources and/or notes
                     for each Quiz question.
                 </p>
+
                 <p>
                     If you are creating a new Quiz question without a Note or
                     Source, you have the option to create a new Source or a Note

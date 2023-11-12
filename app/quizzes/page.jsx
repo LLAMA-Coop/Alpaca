@@ -54,20 +54,20 @@ export default async function QuizzesPage({ searchParams }) {
             <section className="paragraph">
                 <p>
                     A quiz is a question that challenges your understanding and
-                    recall of information from a source or note.
+                    recall of information from a source or note. <br />
+                    {user ? (
+                        <>
+                            These are the quizzes that are publicly viewable and
+                            viewable specifically by you.
+                        </>
+                    ) : (
+                        <>
+                            You are only viewing the publicly available quizzes.
+                            Log in or register then log in to see quizzes
+                            available to you and create your own quizzes.
+                        </>
+                    )}
                 </p>
-                {user ? (
-                    <p>
-                        These are the quizzes that are publicly viewable and
-                        viewable specifically by you.
-                    </p>
-                ) : (
-                    <p>
-                        You are only viewing the publicly available quizzes. Log
-                        in or register then log in to see quizzes available to
-                        you and create your own quizzes.
-                    </p>
-                )}
             </section>
 
             {quizzes.length > 0 && (
@@ -85,11 +85,14 @@ export default async function QuizzesPage({ searchParams }) {
                                 <li key={quiz.id}>
                                     <QuizDisplay
                                         quiz={quiz}
+                                        user={serializeOne(user)}
                                         canClientCheck={user ? false : true}
                                     />
+
                                     {quizInUser && (
                                         <UserStats userQuizInfo={quizInUser} />
                                     )}
+
                                     {user &&
                                         canEdit(quiz, serializeOne(user)) && (
                                             <InputPopup

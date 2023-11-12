@@ -88,7 +88,9 @@ export default function InviteUser({ groupId }) {
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
             />
-            <button onClick={sendInvitation}>Send Invitation</button>
+            <button className="button" onClick={sendInvitation}>
+                Send Invitation
+            </button>
             <p>
                 A notification will be sent to them which will include your user
                 ID and username.

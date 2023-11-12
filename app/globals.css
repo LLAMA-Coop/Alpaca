@@ -345,7 +345,7 @@ input[type="date"] {
 .paragraph > ol > li,
 .paragraph > ul > li {
     font-size: clamp(16px, 2vw, 20px);
-    line-height: 1.625;
+    line-height: 1.5;
     font-weight: 200;
     margin-bottom: 24px;
 }

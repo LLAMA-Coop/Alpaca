@@ -19,7 +19,7 @@
     border-color: var(--background-secondary);
 }
 
-.picker .item {
+.item {
     display: flex;
     align-items: center;
     font-size: 14px;
@@ -30,26 +30,31 @@
     cursor: pointer;
 }
 
-.picker .item:hover {
+.item:hover {
     background-color: var(--background-tertiary);
 }
 
-.picker .item:active {
+.item:active {
     opacity: 0.8;
 }
 
-.picker .item:focus-visible {
+.item:focus-visible {
     outline: none;
     background-color: var(--background-tertiary);
 }
 
-.picker .item > span {
+.item.disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.item > span {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.picker .item > .checkbox {
+.item > .checkbox {
     min-width: 20px;
     height: 20px;
     margin-left: 8px;
@@ -61,12 +66,12 @@
     background-color: var(--background-tertiary);
 }
 
-.picker .item:hover > .checkbox,
-.picker .item:focus-visible > .checkbox {
+.item:hover > .checkbox,
+.item:focus-visible > .checkbox {
     background-color: var(--background-secondary);
 }
 
-.picker .item > .checkbox > svg {
+.item > .checkbox > svg {
     width: 12px;
     height: 12px;
 }
@@ -76,6 +81,6 @@
     border: 1px solid var(--foreground-tertiary);
 }
 
-[data-theme="light"] .picker .item > .checkbox {
+[data-theme="light"] .checkbox {
     border: 1px solid var(--foreground-tertiary);
 }
