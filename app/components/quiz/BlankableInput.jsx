@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import styles from "./QuizInput.module.css";
 import { Input } from "../client";
+import { useEffect } from "react";
 import MAX from "@/lib/max";
 
 export default function BlankableInput({

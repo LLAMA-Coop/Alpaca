@@ -1,0 +1,7 @@
+.info {
+    display: flex;
+    font-size: 14px;
+    justify-content: space-between;
+    margin: 4px 0 10px;
+    padding: 0 10px;
+}

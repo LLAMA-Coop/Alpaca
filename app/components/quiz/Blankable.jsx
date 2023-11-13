@@ -3,34 +3,21 @@
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import correctConfetti from "@/lib/correctConfetti";
-import { useEffect, useState } from "react";
 import { Card, Alert } from "../client";
 import { Input } from "../client";
+import { useState } from "react";
 
 export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
     const [answers, setAnswers] = useState([]);
-    const [status, setStatus] = useState(0);
-    const [correctAnswer, setCorrectAnswer] = useState(false);
+    const [hasAnswered, setHasAnswered] = useState(false);
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 
-    useEffect(() => {
-        if (status === 0) return;
-        if (incorrectIndexes.length === 0) {
-            setCorrectAnswer(true);
-            setFailures(0);
-            correctConfetti();
-            handleWhenCorrect();
-        } else {
-            setFailures(failures + 1);
-        }
-    }, [incorrectIndexes]);
-
     function handleInput(index, value) {
-        setStatus(1);
+        setHasAnswered(false);
         setAnswers((prev) => {
             const newAnswers = [...prev];
             newAnswers[index] = value;
@@ -39,11 +26,22 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
     }
 
     async function handleCheckAnswer() {
-        setStatus(2);
+        if (hasAnswered || answers.length === 0) return;
+
+        setHasAnswered(true);
+
         if (canClientCheck) {
-            setIncorrectIndexes(
-                whichIndexesIncorrect(userResponse, quiz.correctResponses),
+            const indexes = whichIndexesIncorrect(
+                answers,
+                quiz.correctResponses,
             );
+
+            if (indexes.length > 0) {
+                if (failures > 2) setFailures(0);
+                else setFailures((prev) => prev + 1);
+            }
+
+            setIncorrectIndexes(indexes);
         } else {
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
@@ -54,7 +52,9 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ userResponse }),
+                    body: JSON.stringify({
+                        userResponse: answers,
+                    }),
                 },
             );
 
@@ -68,10 +68,16 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
             }
 
             const resJson = await response.json();
-            console.log(resJson);
             const message = resJson.message;
+
             setIncorrectIndexes(message.incorrectIndexes);
-            setStatus("complete");
+            if (message.incorrectIndexes.length > 0) {
+                if (failures > 2) setFailures(0);
+                else setFailures((prev) => prev + 1);
+            } else {
+                setFailures(0);
+                correctConfetti();
+            }
         }
     }
 
@@ -83,18 +89,17 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
     const renderPromptWithBlanks = () => {
         const words = quiz.prompt.split(/\b(\w+)\b/g);
 
-        return words.map((word, index) => {
+        let i = 0;
+
+        return words.map((word) => {
             const isBlankable = quiz.correctResponses
                 .map((answer) => answer.split("_")[1])
                 .includes(word);
 
             if (isBlankable) {
-                const answer = quiz.correctResponses.find((ans) => {
-                    const [answerIndex] = ans.split("_");
-                    return index.toString() === answerIndex;
-                });
+                const blankIndex = i;
+                i++;
 
-                const answerWord = answer ? answer.split("_")[1] : "";
                 return (
                     <Input
                         inline
@@ -103,9 +108,16 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
                         choices={quiz.correctResponses.map(
                             (ans) => ans.split("_")[1],
                         )}
-                        value={answers[index] ?? ""}
-                        onChange={(e) => handleInput(index, e.target.value)}
-                        outlineColor={0}
+                        value={answers[blankIndex] ?? ""}
+                        onChange={(e) =>
+                            handleInput(blankIndex, e.target.value)
+                        }
+                        outlineColor={
+                            hasAnswered &&
+                            (incorrectIndexes.includes(blankIndex)
+                                ? "var(--accent-secondary-1)"
+                                : "var(--accent-tertiary-1)")
+                        }
                     />
                 );
             }
@@ -119,28 +131,30 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
             title={"Fill in the blanks"}
             buttons={[
                 {
-                    label:
-                        status === 2
-                            ? correctAnswer
-                                ? "Correct"
-                                : "Incorrect"
-                            : "Check Answer",
-                    icon:
-                        status === 2
-                            ? correctAnswer
-                                ? faCheck
-                                : faXmark
-                            : undefined,
-                    color:
-                        status === 2
-                            ? correctAnswer
-                                ? "green"
-                                : "red"
-                            : undefined,
+                    label: hasAnswered
+                        ? incorrectIndexes.length
+                            ? "Incorrect"
+                            : "Correct"
+                        : "Check Answer",
+                    icon: hasAnswered
+                        ? incorrectIndexes.length
+                            ? faXmark
+                            : faCheck
+                        : undefined,
+                    color: hasAnswered
+                        ? incorrectIndexes.length
+                            ? "var(--accent-secondary-1)"
+                            : "var(--accent-tertiary-1)"
+                        : undefined,
                     onClick: handleCheckAnswer,
                 },
             ]}
-            border={status === 2 && (correctAnswer ? "green" : "red")}
+            border={
+                hasAnswered &&
+                (incorrectIndexes.length
+                    ? "var(--accent-tertiary-1)"
+                    : "var(--accent-secondary-1)")
+            }
         >
             <Alert
                 show={showAlert}
@@ -151,7 +165,7 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
 
             {renderPromptWithBlanks()}
 
-            {!correctAnswer && failures > 2 && (
+            {failures > 2 && (
                 <div data-type="hints">
                     <p>
                         You're having some trouble. Here are some acceptable

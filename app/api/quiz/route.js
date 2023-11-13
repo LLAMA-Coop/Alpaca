@@ -93,6 +93,20 @@ export async function POST(req) {
             );
         }
 
+        let responses = correctResponses;
+        if (type === "fill-in-the-blank") {
+            // Each string looks like this: "x_word", with x being the index of the blank
+            // We want to sort the words by the index of the blank, but also just keep the word
+
+            responses = responses
+                .sort((a, b) => {
+                    const a_index = parseInt(a.split("_")[0]);
+                    const b_index = parseInt(b.split("_")[0]);
+                    return a_index - b_index;
+                })
+                .map((x) => x.split("_")[1]);
+        }
+
         const quizRcvd = {
             type: type,
             prompt: prompt,
