@@ -1,22 +1,42 @@
 .blankBank {
-    background-color: var(--background-tertiary);
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-tertiary);
     color: var(--foreground-tertiary);
-    padding: 1rem;
+    padding: 10px;
     font-size: 1.2rem;
+    border-radius: 4px;
+    margin-top: 4px;
 }
 
 .blankBank > p {
-    text-decoration: underline;
-    margin-bottom: 1rem;
+    margin-bottom: 14px;
+    font-size: 14px;
+    font-style: italic;
+    user-select: none;
+}
+
+.word {
+    margin-right: 6px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background-color: var(--background-tertiary);
+    color: var(--foreground-tertiary);
     font-size: 1rem;
+    cursor: pointer;
+    user-select: none;
+    border: none;
 }
 
-.blankBank input[type=checkbox] {
-    display: none;
+.word:hover {
+    opacity: 0.8;
 }
 
-.blankBank input:checked + label {
-    background-color: var(--foreground-primary);
-    color: var(--background-primary);
-    box-shadow: 2px 2px 2px lightblue;
+.word.checked {
+    background-color: var(--accent-tertiary-2);
+    color: var(--foreground-secondary);
+}
+
+.word.checked:hover {
+    opacity: 1;
+    background-color: var(--accent-tertiary-3);
 }

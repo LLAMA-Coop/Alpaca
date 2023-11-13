@@ -224,6 +224,7 @@ export function UserInput({ isRegistering }) {
                 value={username}
                 error={usernameError}
                 label={"Username"}
+                autoFocus={true}
             />
 
             <div style={{ position: "relative" }} ref={passwordInput}>

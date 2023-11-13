@@ -82,6 +82,9 @@ export const Card = ({
                                             target="_blank"
                                             rel="noreferrer"
                                             className={`button ${button.color}`}
+                                            style={{
+                                                backgroundColor: button.color,
+                                            }}
                                         >
                                             {button.label}
 
@@ -95,9 +98,12 @@ export const Card = ({
                                 } else {
                                     return (
                                         <button
-                                            onClick={button.onClick}
-                                            className={button.color}
                                             key={button.label}
+                                            className={button.color}
+                                            onClick={button.onClick}
+                                            style={{
+                                                backgroundColor: button.color,
+                                            }}
                                         >
                                             {button.label}{" "}
                                             {button.icon && (

@@ -32,7 +32,7 @@ export function Select({
         }
     };
 
-    if(disabled) return;
+    if (disabled) return;
 
     return (
         <div
@@ -45,43 +45,48 @@ export function Select({
                 aria-multiselectable="true"
                 aria-orientation="vertical"
             >
-                {listChoices && listChoices.map((choice, index) => {
-                    const isChosen = listChosen.find((x) => x._id === choice._id) != undefined;
-                    return (
-                        <div
-                            key={choice._id}
-                            tabIndex={0}
-                            role="option"
-                            aria-selected={isChosen}
-                            aria-setsize={listChoices.length}
-                            aria-posinset={index + 1}
-                            className={styles.item}
-                            onClick={() => clickEvent(choice)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    clickEvent(choice);
-                                }
-                            }}
-                        >
-                            <span title={choice[listProperty]}>
-                                {choice[listProperty]}
-                            </span>
-
+                {listChoices &&
+                    listChoices.map((choice, index) => {
+                        const isChosen =
+                            listChosen.find((x) => x._id === choice._id) !=
+                            undefined;
+                        return (
                             <div
-                                role="checkbox"
-                                aria-checked={isChosen}
-                                className={styles.checkbox}
+                                key={choice._id}
+                                tabIndex={0}
+                                role="option"
+                                aria-selected={isChosen}
+                                aria-setsize={listChoices.length}
+                                aria-posinset={index + 1}
+                                className={styles.item}
+                                onClick={() => clickEvent(choice)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        clickEvent(choice);
+                                    }
+                                }}
                             >
-                                {isChosen && <FontAwesomeIcon icon={faCheck} />}
+                                <span title={choice[listProperty]}>
+                                    {choice[listProperty]}
+                                </span>
+
+                                <div
+                                    role="checkbox"
+                                    aria-checked={isChosen}
+                                    className={styles.checkbox}
+                                >
+                                    {isChosen && (
+                                        <FontAwesomeIcon icon={faCheck} />
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
 
                 {(!listChoices || listChoices.length === 0) && (
                     <div
                         aria-labelledby="emptyList"
-                        className={styles.item}
+                        className={styles.item + " " + styles.disabled}
                     >
                         No choices available
                     </div>

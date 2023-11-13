@@ -1,50 +1,47 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card, Alert } from "../client";
-import correctConfetti from "@/lib/correctConfetti";
-import styles from "./Blankable.module.css";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import correctConfetti from "@/lib/correctConfetti";
+import { Card, Alert } from "../client";
+import { Input } from "../client";
+import { useState } from "react";
 
 export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
-    const [userResponse, setUserResponse] = useState(
-        [...Array(quiz.correctResponses.length)].map(() => ""),
-    );
-    const [responseStatus, setResponseStatus] = useState("empty");
-    const [responseCorrect, setResponseCorrect] = useState(false);
+    const [answers, setAnswers] = useState([]);
+    const [hasAnswered, setHasAnswered] = useState(false);
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 
-    useEffect(() => {
-        if (responseStatus === "empty") return;
-        if (incorrectIndexes.length === 0) {
-            setResponseCorrect(true);
-            setFailures(0);
-            correctConfetti();
-            handleWhenCorrect();
-        } else {
-            setFailures(failures + 1);
-        }
-    }, [incorrectIndexes]);
-
-    const texts = quiz.prompt.split(/<blank \/>/);
-
-    function handleChange(index, value) {
-        setResponseStatus("incomplete");
-        let array = [...userResponse];
-        array[index] = value;
-        setUserResponse(array);
+    function handleInput(index, value) {
+        setHasAnswered(false);
+        setAnswers((prev) => {
+            const newAnswers = [...prev];
+            newAnswers[index] = value;
+            return newAnswers;
+        });
     }
 
     async function handleCheckAnswer() {
-        setResponseStatus("complete");
+        if (hasAnswered || answers.length === 0) return;
+
+        setHasAnswered(true);
+
         if (canClientCheck) {
-            setIncorrectIndexes(
-                whichIndexesIncorrect(userResponse, quiz.correctResponses),
+            const indexes = whichIndexesIncorrect(
+                answers,
+                quiz.correctResponses,
             );
+
+            if (indexes.length > 0) {
+                if (failures > 2) setFailures(0);
+                else setFailures((prev) => prev + 1);
+            }
+
+            setIncorrectIndexes(indexes);
         } else {
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
@@ -55,7 +52,9 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ userResponse }),
+                    body: JSON.stringify({
+                        userResponse: answers,
+                    }),
                 },
             );
 
@@ -69,10 +68,16 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
             }
 
             const resJson = await response.json();
-            console.log(resJson);
             const message = resJson.message;
+
             setIncorrectIndexes(message.incorrectIndexes);
-            setResponseStatus("complete");
+            if (message.incorrectIndexes.length > 0) {
+                if (failures > 2) setFailures(0);
+                else setFailures((prev) => prev + 1);
+            } else {
+                setFailures(0);
+                correctConfetti();
+            }
         }
     }
 
@@ -81,8 +86,76 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
         return string.length + 1;
     }
 
+    const renderPromptWithBlanks = () => {
+        const words = quiz.prompt.split(/\b(\w+)\b/g);
+
+        let i = 0;
+
+        return words.map((word) => {
+            const isBlankable = quiz.correctResponses
+                .map((answer) => answer.split("_")[1])
+                .includes(word);
+
+            if (isBlankable) {
+                const blankIndex = i;
+                i++;
+
+                return (
+                    <Input
+                        inline
+                        type={"text"}
+                        description=""
+                        choices={quiz.correctResponses.map(
+                            (ans) => ans.split("_")[1],
+                        )}
+                        value={answers[blankIndex] ?? ""}
+                        onChange={(e) =>
+                            handleInput(blankIndex, e.target.value)
+                        }
+                        outlineColor={
+                            hasAnswered &&
+                            (incorrectIndexes.includes(blankIndex)
+                                ? "var(--accent-secondary-1)"
+                                : "var(--accent-tertiary-1)")
+                        }
+                    />
+                );
+            }
+
+            return word;
+        });
+    };
+
     return (
-        <Card>
+        <Card
+            title={"Fill in the blanks"}
+            buttons={[
+                {
+                    label: hasAnswered
+                        ? incorrectIndexes.length
+                            ? "Incorrect"
+                            : "Correct"
+                        : "Check Answer",
+                    icon: hasAnswered
+                        ? incorrectIndexes.length
+                            ? faXmark
+                            : faCheck
+                        : undefined,
+                    color: hasAnswered
+                        ? incorrectIndexes.length
+                            ? "var(--accent-secondary-1)"
+                            : "var(--accent-tertiary-1)"
+                        : undefined,
+                    onClick: handleCheckAnswer,
+                },
+            ]}
+            border={
+                hasAnswered &&
+                (incorrectIndexes.length
+                    ? "var(--accent-tertiary-1)"
+                    : "var(--accent-secondary-1)")
+            }
+        >
             <Alert
                 show={showAlert}
                 setShow={setShowAlert}
@@ -90,51 +163,22 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
                 message={requestStatus.message}
             />
 
-            <h4 id="prompt">Fill in the blanks</h4>
-            {texts.map((text, index) => {
-                return (
-                    <span key={index}>
-                        {text}
-                        {index < texts.length - 1 && (
-                            <input
-                                className={`${styles.input} ${
-                                    incorrectIndexes.includes(index)
-                                        ? styles.incorrect
-                                        : ""
-                                }`}
-                                type="text"
-                                aria-label="blank"
-                                id={"ans_" + index}
-                                value={userResponse[index]}
-                                size={inputSize(String(userResponse[index]))}
-                                onChange={(e) => {
-                                    handleChange(index, e.target.value);
-                                }}
-                            />
-                        )}
-                    </span>
-                );
-            })}
+            {renderPromptWithBlanks()}
 
-            <button onClick={handleCheckAnswer} className="button">
-                Check Answer
-            </button>
+            {failures > 2 && (
+                <div data-type="hints">
+                    <p>
+                        You're having some trouble. Here are some acceptable
+                        answers:
+                    </p>
 
-            {responseCorrect && responseStatus === "complete" && (
-                <div>Correct!</div>
+                    <ul>
+                        {quiz.correctResponses.map((ans, index) => {
+                            return <li key={index}>{ans.split("_")[1]}</li>;
+                        })}
+                    </ul>
+                </div>
             )}
-            {!responseCorrect &&
-                responseStatus === "complete" &&
-                failures > 2 && (
-                    <div>
-                        Incorrect. Acceptable answers are
-                        <ul>
-                            {quiz.correctResponses.map((ans, index) => {
-                                return <li key={index}>{ans}</li>;
-                            })}
-                        </ul>
-                    </div>
-                )}
         </Card>
     );
 }

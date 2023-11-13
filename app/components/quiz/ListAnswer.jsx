@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card, Input, Alert } from "../client";
-import correctConfetti from "@/lib/correctConfetti";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
-import styles from "./Blankable.module.css";
+import correctConfetti from "@/lib/correctConfetti";
+import { Card, Input, Alert } from "../client";
+import { useEffect, useState } from "react";
 
-export function ListAnswer({ canClientCheck, quiz, isOrdered, handleWhenCorrect }) {
+export function ListAnswer({
+    canClientCheck,
+    quiz,
+    isOrdered,
+    handleWhenCorrect,
+}) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
     );
@@ -122,8 +126,12 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered, handleWhenCorrect 
             {!responseCorrect &&
                 responseStatus === "complete" &&
                 failures > 2 && (
-                    <div>
-                        Incorrect. Acceptable answers are
+                    <div data-type="hints">
+                        <p>
+                            You're having some trouble. Here are some acceptable
+                            answers:
+                        </p>
+
                         <ul>
                             {quiz.correctResponses.map((ans, index) => {
                                 return <li key={index}>{ans}</li>;
