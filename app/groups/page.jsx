@@ -17,7 +17,7 @@ export default async function GroupPage() {
               $or: [
                   { owner: user._id },
                   { users: { $in: [user._id] } },
-                  { admins: { $in: [user.id] } },
+                  { admins: { $in: [user._id] } },
               ],
           })
         : [];
