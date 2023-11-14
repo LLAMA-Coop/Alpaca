@@ -44,9 +44,10 @@ export async function POST(req, { params }) {
         ) {
             incorrectIndexes = whichIndexesIncorrect(
                 userResponse,
-                quiz.type === "fill-in-the-blank"
-                    ? quiz.correctResponses.map((x) => x.split("_")[1])
-                    : quiz.correctResponses,
+                quiz.correctResponses,
+                // quiz.type === "fill-in-the-blank"
+                //     ? quiz.correctResponses.map((x) => x.split("_")[1])
+                //     : quiz.correctResponses,
                 quiz.type !== "unordered-list-answer",
             );
             isCorrect = incorrectIndexes.length === 0;
