@@ -15,7 +15,7 @@
     user-select: none;
 }
 
-.word {
+.word, .blankBank span label {
     margin-right: 6px;
     padding: 2px 8px;
     border-radius: 4px;
@@ -31,7 +31,7 @@
     opacity: 0.8;
 }
 
-.word.checked {
+.word.checked, .blankBank input:checked + label {
     background-color: var(--accent-tertiary-2);
     color: var(--foreground-secondary);
 }
@@ -40,3 +40,14 @@
     opacity: 1;
     background-color: var(--accent-tertiary-3);
 }
+
+
+.blankBank input[type=checkbox] {
+    display: none;
+}
+
+/* .blankBank input:checked + label {
+    background-color: var(--foreground-primary);
+    color: var(--background-primary);
+    box-shadow: 2px 2px 2px lightblue;
+} */

@@ -392,10 +392,10 @@ export function QuizInput({ quiz }) {
                         {responses.map((res, index) => (
                             <ListItem
                                 key={index}
-                                item={
-                                    type === "fill-in-the-blank"
-                                        ? res.match(/_([a-zA-Z]+)/)[1]
-                                        : res
+                                item={res
+                                    // type === "fill-in-the-blank"
+                                    //     ? res.match(/_([a-zA-Z]+)/)[1]
+                                    //     : res
                                 }
                                 actionType={"delete"}
                                 action={() =>
