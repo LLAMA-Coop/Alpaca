@@ -20,7 +20,7 @@ export default function BlankableInput({
     useEffect(() => {
         let resIndex = 0;
         const promptArray = prompt
-            .split(/(<blank\s*\/>)|\b(?!')\b/)
+            .split(/(<blank\s*\/>)|([A-Za-z]+(?:'[A-Za-z]+)?|\W)/)
             .filter((x) => x !== undefined && x !== "")
             .map((x) => {
                 if (/(<blank\s*\/>)/.test(x)) {
@@ -55,7 +55,7 @@ export default function BlankableInput({
         setPromptInput(e.target.value);
         setPromptError("");
         let promptArray = e.target.value
-            .split(/\b(?!')\b|\s/g)
+            .split(/([A-Za-z]+(?:'[A-Za-z]+)?|\W)/)
             .filter((x) => x !== undefined && x !== "")
             .map((x) => {
                 if (/[\s.,!?;:"<>\[\]{}()]+/.test(x)) {

@@ -15,7 +15,7 @@
     user-select: none;
 }
 
-.word, .blankBank span label {
+.blankBank span label {
     margin-right: 6px;
     padding: 2px 8px;
     border-radius: 4px;
@@ -27,27 +27,15 @@
     border: none;
 }
 
-.word:hover {
+.blankBank span label:hover {
     opacity: 0.8;
 }
 
-.word.checked, .blankBank input:checked + label {
+.blankBank input:checked + label {
     background-color: var(--accent-tertiary-2);
-    color: var(--foreground-secondary);
+    color: var(--foreground-primary);
 }
-
-.word.checked:hover {
-    opacity: 1;
-    background-color: var(--accent-tertiary-3);
-}
-
 
 .blankBank input[type=checkbox] {
     display: none;
 }
-
-/* .blankBank input:checked + label {
-    background-color: var(--foreground-primary);
-    color: var(--background-primary);
-    box-shadow: 2px 2px 2px lightblue;
-} */
