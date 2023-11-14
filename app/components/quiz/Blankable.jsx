@@ -91,7 +91,7 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
 
         let i = 0;
 
-        return words.map((word) => {
+        return words.map((word, index) => {
             const isBlankable = quiz.correctResponses
                 .map((answer) => answer.split("_")[1])
                 .includes(word);
@@ -102,6 +102,7 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
 
                 return (
                     <Input
+                        key={index}
                         inline
                         type={"text"}
                         description=""
@@ -122,7 +123,7 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
                 );
             }
 
-            return word;
+            return <span key={index}>{word}</span>;
         });
     };
 
