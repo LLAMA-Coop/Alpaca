@@ -1,0 +1,21 @@
+.input {
+    height: 40px;
+    font-family: Courier, monospace;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 20px;
+    background-color: var(--background-secondary);
+    color: var(--foreground-primary);
+    outline-color: var(--accent-primary-outline);
+    transition: outline 0.1s ease-in-out;
+}
+
+.incorrect {
+    border: 1px solid red;
+}
+
+.correct {
+    border: 1px solid green;
+}

@@ -97,15 +97,15 @@ html,
 body {
     margin: 0;
     padding: 0;
-    width: 100dvw;
+    min-height: 100dvh;
     font-size: 16px;
     overflow-x: hidden;
+    scroll-behavior: smooth;
     color: var(--foreground-primary);
     background-color: var(--background-primary);
 }
 
 body {
-    min-height: 100dvh;
     display: flex;
     flex-direction: column;
 }
@@ -386,5 +386,11 @@ h4 {
     .formGrid {
         max-width: 550px;
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 550px) {
+    :root {
+        --padding: 40px 20px;
     }
 }

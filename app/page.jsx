@@ -2,20 +2,21 @@ import { NoteDisplay, SourceDisplay, QuizDisplay } from "@components/server";
 import { SourceInput, NoteInput, QuizInput, Card } from "@components/client";
 import { serialize, serializeOne } from "@/lib/db";
 import styles from "./page.module.css";
-import { useUser } from "@/lib/auth";
+import { useUser, queryReadableResources } from "@/lib/auth";
 import { cookies } from "next/headers";
 // import Source from "@models/Source";
 // import Note from "@models/Note";
 // import { Source, Note } from "@mneme_app/database-models";
-import { Source, Note, Quiz } from "@/app/api/models";
+import { Source, Note, Quiz, User } from "@/app/api/models";
 import Link from "next/link";
 
 export default async function Home({ searchParams }) {
-    const user = serializeOne(
-        await useUser({ token: cookies().get("token")?.value }),
-    );
+    const user = await useUser({ token: cookies().get("token")?.value });
+    User.populate(user, ["groups", "associates"]);
+    const query = queryReadableResources(user);
+
     const quizSample = serialize(
-        await Quiz.aggregate([{ $sample: { size: 1 } }]),
+        await Quiz.aggregate([{ $match: query }, { $sample: { size: 1 } }]),
     )[0];
 
     return (

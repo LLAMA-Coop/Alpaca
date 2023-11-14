@@ -15,7 +15,7 @@ import InviteUser from "@/app/components/notification/inviteUser";
 
 export default async function GroupPage({ params }) {
     const groupId = params.groupId;
-    console.log(groupId)
+    console.log(groupId);
 
     const group = serializeOne(await Group.findById(groupId).populate("users"));
     if (!group) return redirect("/groups");
@@ -29,8 +29,8 @@ export default async function GroupPage({ params }) {
 
     const permissionsQuery = {
         $or: [
-            { "permissions.groupsRead": { $in: group._id } },
-            { "permissions.groupsWrite": { $in: group._id } },
+            { "permissions.groupsRead": { $in: [group._id] } },
+            { "permissions.groupsWrite": { $in: [group._id] } },
         ],
     };
 
