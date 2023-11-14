@@ -100,30 +100,27 @@ export async function POST(req, { params }) {
     }
 }
 
-export async function DELETE(req) {
+export async function DELETE(req, { params }) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) return unauthorized;
 
-        if (!user) {
-            return unauthorized;
-        }
-
-        const id = req.nextUrl.pathname.split("/")[3];
+        const { id } = params;
 
         const quiz = await Quiz.findById(id);
         if (!quiz) {
             return NextResponse.json(
                 {
-                    message: `The quiz ${id} could not be found to delete`,
+                    message: `Quiz with id ${id} could not be found`,
                 },
                 { status: 404 },
             );
         }
 
-        if (quiz.createdBy.toString() !== user.id.toString()) {
+        if (quiz.createdBy.toString() !== user._id.toString()) {
             return NextResponse.json(
                 {
-                    message: `User ${user.id} is not authorized to delete quiz ${id}. Only the creator ${quiz.createdBy} is permitted`,
+                    message: `User ${user._id} is not authorized to delete quiz with id ${id}. Only the creator ${quiz.createdBy} is permitted`,
                 },
                 { status: 403 },
             );
@@ -131,10 +128,12 @@ export async function DELETE(req) {
 
         const deletion = await Quiz.deleteOne({ id });
         if (deletion.deletedCount === 0) {
-            console.error(`Unable to delete quiz ${id}\nError: ${error}`);
+            console.error(
+                `Unable to delete quiz with id ${id}\nError: ${error || "N/A"}`,
+            );
             return NextResponse.json(
                 {
-                    message: `Unable to delete quiz ${id}`,
+                    message: `Unable to delete quiz with id ${id}`,
                 },
                 { status: 500 },
             );

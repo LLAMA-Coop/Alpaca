@@ -81,6 +81,47 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
         return string.length + 1;
     }
 
+    const renderPromptWithBlanks = () => {
+        const words = quiz.prompt.split(/\b(\w+)\b/g);
+
+        let i = 0;
+
+        return words.map((word, index) => {
+            const isBlankable = quiz.correctResponses
+                .map((answer) => answer.split("_")[1])
+                .includes(word);
+
+            if (isBlankable) {
+                const blankIndex = i;
+                i++;
+
+                return (
+                    <Input
+                        key={index}
+                        inline
+                        type={"text"}
+                        description=""
+                        choices={quiz.correctResponses.map(
+                            (ans) => ans.split("_")[1],
+                        )}
+                        value={answers[blankIndex] ?? ""}
+                        onChange={(e) =>
+                            handleInput(blankIndex, e.target.value)
+                        }
+                        outlineColor={
+                            hasAnswered &&
+                            (incorrectIndexes.includes(blankIndex)
+                                ? "var(--accent-secondary-1)"
+                                : "var(--accent-tertiary-1)")
+                        }
+                    />
+                );
+            }
+
+            return <span key={index}>{word}</span>;
+        });
+    };
+
     return (
         <Card>
             <Alert

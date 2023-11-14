@@ -1,9 +1,9 @@
-import { Profile } from "@components/client";
+import { RightContainer } from "./RightContainer";
 import { DynamicNav } from "./DynamicNav";
 import styles from "./Header.module.css";
 import { serializeOne } from "@/lib/db";
-import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
+import { useUser } from "@/lib/auth";
 import Link from "next/link";
 
 export async function Header() {
@@ -18,14 +18,7 @@ export async function Header() {
             </h1>
 
             <DynamicNav user={user} />
-
-            <div className={styles.profile}>
-                {user ? (
-                    <Profile user={user} />
-                ) : (
-                    <Link href="/login">Login</Link>
-                )}
-            </div>
+            <RightContainer user={user} />
         </header>
     );
 }

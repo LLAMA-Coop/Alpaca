@@ -1,0 +1,135 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.container > :first-child {
+    display: block;
+}
+
+.button {
+    display: none;
+    border: none;
+    background: transparent;
+    padding: 10px;
+    cursor: pointer;
+    color: var(--foreground-secondary);
+    border-radius: 8px;
+    margin-right: -10px;
+}
+
+.button:hover {
+    color: var(--foreground-primary);
+}
+
+.container > :first-child > a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100vw;
+    padding: 10px 20px;
+    z-index: 1;
+    color: var(--foreground-secondary);
+    background-color: var(--background-secondary);
+    transition:
+        background-color 0.1s ease-in-out,
+        color 0.1s ease-in-out;
+}
+
+.container > :first-child > a:hover {
+    color: var(--foreground-primary);
+    background-color: var(--background-tertiary);
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-height: 100dvh;
+    min-width: 100dvw;
+    background-color: var(--background-primary);
+    z-index: 100;
+    display: none;
+    animation: rightToLeft 0.2s ease-in-out;
+}
+
+.menu > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--foreground-secondary);
+    background: transparent;
+    border: none;
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.menu > button:hover {
+    color: var(--foreground-primary);
+}
+
+.menu > nav {
+    margin-top: 80px;
+}
+
+.menu > nav > ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    list-style: none;
+    padding-left: 24px;
+    gap: 12px;
+    font-size: 24px;
+}
+
+.menu ul a {
+    color: var(--foreground-secondary);
+}
+
+.menu ul a:hover {
+    color: var(--accent-primary-1);
+}
+
+.profile {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+@keyframes rightToLeft {
+    0% {
+        transform: translateX(+100%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .container > :first-child {
+        display: none;
+    }
+
+    .menu {
+        display: flex;
+    }
+
+    .button {
+        display: flex;
+    }
+
+    .header > nav {
+        display: none;
+    }
+
+    .profile {
+        display: block;
+    }
+}
