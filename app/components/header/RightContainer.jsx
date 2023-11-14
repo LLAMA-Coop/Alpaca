@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./RightContainer.module.css";
+import { usePathname } from "next/navigation";
 import { Profile } from "@components/client";
 import { useState, useEffect } from "react";
 import { links } from "@/lib/nav";
@@ -8,8 +9,30 @@ import Link from "next/link";
 
 export function RightContainer({ user }) {
     const [open, setOpen] = useState(false);
+    const pathname = usePathname();
 
-    useEffect(() => {}, [open]);
+    useEffect(() => {
+        if (open) {
+            document.documentElement.style.overflow = "hidden";
+        } else {
+            document.documentElement.style.overflow = "auto";
+        }
+    }, [open]);
+
+    useEffect(() => {
+        setOpen(false);
+    }, [pathname]);
+
+    useEffect(() => {
+        function handleResize() {
+            if (window.innerWidth > 767) {
+                setOpen(false);
+            }
+        }
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     return (
         <div className={styles.container}>
@@ -33,10 +56,19 @@ export function RightContainer({ user }) {
                         </svg>
                     </button>
 
+                    {user && (
+                        <div className={styles.profile}>
+                            <Profile user={user} />
+                        </div>
+                    )}
+
                     <nav>
                         <ul>
                             {links.map((link) => (
-                                <li key={link.name}>
+                                <li
+                                    key={link.name}
+                                    onClick={() => setOpen(false)}
+                                >
                                     <Link href={link.href}>{link.name}</Link>
                                 </li>
                             ))}

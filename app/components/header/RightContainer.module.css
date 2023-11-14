@@ -15,6 +15,8 @@
     padding: 10px;
     cursor: pointer;
     color: var(--foreground-secondary);
+    border-radius: 8px;
+    margin-right: -10px;
 }
 
 .button:hover {
@@ -47,9 +49,9 @@
     left: 0;
     min-height: 100dvh;
     min-width: 100dvw;
-    background-color: var(--background-secondary);
+    background-color: var(--background-primary);
     z-index: 100;
-    display: flex;
+    display: none;
     animation: rightToLeft 0.2s ease-in-out;
 }
 
@@ -93,6 +95,13 @@
     color: var(--accent-primary-1);
 }
 
+.profile {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
 @keyframes rightToLeft {
     0% {
         transform: translateX(+100%);
@@ -108,11 +117,19 @@
         display: none;
     }
 
+    .menu {
+        display: flex;
+    }
+
     .button {
         display: flex;
     }
 
     .header > nav {
         display: none;
+    }
+
+    .profile {
+        display: block;
     }
 }
