@@ -4,6 +4,7 @@ import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import correctConfetti from "@/lib/correctConfetti";
 import { Card, Input, Alert } from "../client";
 import { useEffect, useState } from "react";
+import styles from "./Blankable.module.css";
 
 export function ListAnswer({
     canClientCheck,
