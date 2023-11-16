@@ -28,12 +28,14 @@ export default async function DailyPage({ searchParams }) {
 
     return (
         <main className={styles.main}>
+            <h2>Daily Train</h2>
+
             <section className="paragraph">
-                <h2>Daily Train</h2>
                 <p>
                     The Daily Train page is where you can practice on the quiz
                     questions.
                 </p>
+
                 <p>
                     When you get a quiz question correct, it levels up, and you
                     do not see it again until later. Say you achieve level 7
@@ -41,6 +43,7 @@ export default async function DailyPage({ searchParams }) {
                     question will not appear in Daily Training for another 7
                     days.
                 </p>
+
                 <p>
                     But if you get a quiz question wrong, you go down one level,
                     and you have to try to get it right again before it
@@ -49,11 +52,14 @@ export default async function DailyPage({ searchParams }) {
             </section>
 
             <section>
-                <h2>Ready to test your knowledge?</h2>
+                <h3>Ready to test your knowledge?</h3>
+
                 {user ? (
                     <DailyTrain quizzes={quizzes} />
                 ) : (
-                    <p>Please log in to start training</p>
+                    <p className={styles.centered}>
+                        Please log in to start training
+                    </p>
                 )}
             </section>
         </main>

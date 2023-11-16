@@ -36,6 +36,6 @@
     color: var(--foreground-primary);
 }
 
-.blankBank input[type=checkbox] {
+.blankBank input[type="checkbox"] {
     display: none;
 }

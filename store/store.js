@@ -132,3 +132,15 @@ export const useStore = create((set) => ({
         }
     },
 }));
+
+// Daily Train Store
+
+export const useDailyTrain = create()((set) => ({
+    start: false,
+    isPaused: false,
+    timeLimit: 1000 * 60 * 5,
+
+    setStart: (start) => set(() => ({ start })),
+    setIsPaused: (isPaused) => set(() => ({ isPaused })),
+    setTimeLimit: (timeLimit) => set(() => ({ timeLimit })),
+}));

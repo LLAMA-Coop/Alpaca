@@ -1,0 +1,20 @@
+.buttonContainer {
+    display: flex;
+    gap: 14px;
+}
+
+.settingsButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background-secondary);
+    border: none;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+.settingsButton:hover {
+    background: var(--background-tertiary);
+}

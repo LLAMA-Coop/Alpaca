@@ -136,7 +136,7 @@ a {
     user-select: none;
     color: var(--accent-foreground);
     background-color: var(--accent-primary-1);
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
 }
 
 .button:not(.submit) {
@@ -346,8 +346,9 @@ input[type="date"] {
 .paragraph > ul > li {
     font-size: clamp(16px, 2vw, 20px);
     line-height: 1.5;
-    font-weight: 200;
+    font-weight: 300;
     margin-bottom: 24px;
+    color: var(--foreground-secondary);
 }
 
 .paragraph > ul {
