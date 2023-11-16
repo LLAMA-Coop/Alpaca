@@ -84,7 +84,7 @@ export default function BlankableInput({
                 wordObj.isBlank = words[index].isBlank;
                 return;
             }
-            
+
             if (!words[index]) {
                 return;
             }
@@ -119,12 +119,16 @@ export default function BlankableInput({
 
         setPromptWords(promptArray);
         setResponses(promptArray.filter((x) => x.isBlank).map((x) => x.word));
-        setPrompt(promptArray.map(x => {
-            if(x.isBlank){
-                return '<blank />'
-            }
-            return x.punctuation ?? x.word
-        }).join(""))
+        setPrompt(
+            promptArray
+                .map((x) => {
+                    if (x.isBlank) {
+                        return "<blank />";
+                    }
+                    return x.punctuation ?? x.word;
+                })
+                .join(""),
+        );
     }
 
     function handleChangeBlank() {
@@ -140,7 +144,7 @@ export default function BlankableInput({
                 words[index].isBlank = true;
                 responseArray.push(x.getAttribute("data-word"));
             } else if (input && !input.checked) {
-                promptArray.push(x.getAttribute("data-word"))
+                promptArray.push(x.getAttribute("data-word"));
                 words[index].isBlank = false;
             } else {
                 promptArray.push(x.textContent);
@@ -152,7 +156,7 @@ export default function BlankableInput({
             // }
             // promptArray.push(x.textContent);
         });
-        console.log(promptArray)
+        console.log(promptArray);
         setPrompt(promptArray.join(""));
         setPromptWords(words);
         setResponses(responseArray);

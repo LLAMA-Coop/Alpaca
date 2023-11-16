@@ -16,6 +16,7 @@ import { FillStore } from "./components/fillStore";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser, queryReadableResources } from "@/lib/auth";
 import { cookies } from "next/headers";
+import { Timer } from "./components/Layers/Timer";
 
 const connection = await connectDB();
 
@@ -23,7 +24,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
     title: "Mneme",
-    description: "Quizzes you can customize, information traces back to its source",
+    description:
+        "Quizzes you can customize, information traces back to its source",
 };
 
 export default async function RootLayout({ children }) {
@@ -89,10 +91,13 @@ export default async function RootLayout({ children }) {
                 notifications={notifications}
                 webSocketURL={process.env.WS_URL}
             />
+
             <body className={inter.className}>
                 <Header />
                 {children}
                 <Footer />
+
+                <Timer />
             </body>
         </html>
     );

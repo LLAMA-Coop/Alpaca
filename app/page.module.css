@@ -1,5 +1,5 @@
 .main h2 {
-    font-size: clamp(32px, 8vw, 42px);
+    font-size: 42px;
     text-align: center;
     margin: 120px 0 24px 0;
     padding: 0 24px;
@@ -15,10 +15,6 @@
     max-width: var(--max-width);
     margin: 0 auto;
 }
-
-/* .main > section > div {
-    margin: 1rem;
-} */
 
 .main > .authContainer {
     max-width: 550px;
@@ -53,6 +49,20 @@
     display: flex;
     margin-top: 48px;
     justify-content: space-between;
+}
+
+.subtitle {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: -100px;
+    margin-bottom: 80px;
+}
+
+@media (max-width: 767px) {
+    .main h2 {
+        font-size: clamp(24px, 8vw, 32px);
+    }
 }
 
 @media (max-width: 550px) {

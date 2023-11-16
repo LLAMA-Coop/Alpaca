@@ -56,11 +56,13 @@ export function RightContainer({ user }) {
                         </svg>
                     </button>
 
-                    {user && (
-                        <div className={styles.profile}>
+                    <div className={styles.profile}>
+                        {user ? (
                             <Profile user={user} />
-                        </div>
-                    )}
+                        ) : (
+                            <Link href="/login">Login</Link>
+                        )}
+                    </div>
 
                     <nav>
                         <ul>
