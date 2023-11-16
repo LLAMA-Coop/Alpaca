@@ -23,7 +23,7 @@ const paletteAttributes = [
     "--accent-tertiary-light",
 ];
 
-export default function ThemePicker() {
+export function ThemePicker() {
     const [showThemes, setShowThemes] = useState(false);
     const [showPalettes, setShowPalettes] = useState(false);
 

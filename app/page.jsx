@@ -1,13 +1,9 @@
-import { NoteDisplay, SourceDisplay, QuizDisplay } from "@components/server";
-import { SourceInput, NoteInput, QuizInput, Card } from "@components/client";
-import { serialize, serializeOne } from "@/lib/db";
-import styles from "./page.module.css";
 import { useUser, queryReadableResources } from "@/lib/auth";
+import { QuizInput, QuizDisplay } from "@client";
+import styles from "./page.module.css";
 import { cookies } from "next/headers";
-// import Source from "@models/Source";
-// import Note from "@models/Note";
-// import { Source, Note } from "@mneme_app/database-models";
-import { Source, Note, Quiz, User } from "@/app/api/models";
+import { Quiz, User } from "@models";
+import { serialize } from "@/lib/db";
 import Link from "next/link";
 
 export default async function Home({ searchParams }) {

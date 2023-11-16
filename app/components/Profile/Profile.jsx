@@ -1,18 +1,13 @@
 "use client";
 
-import {
-    faCog,
-    faSignOut,
-    faUser,
-    faUserGroup,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCog, faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { protectedPaths } from "@/app/data/paths";
-import { Avatar } from "@components/client";
 import styles from "./Profile.module.css";
 import { useStore } from "@/store/store";
+import { Avatar } from "@client";
 
 export function Profile({ user }) {
     const [showMenu, setShowMenu] = useState(false);

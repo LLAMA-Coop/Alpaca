@@ -1,5 +1,5 @@
 import styles from "./Footer.module.css";
-import ThemePicker from "./ThemePicker";
+import { ThemePicker } from "@client";
 
 export function Footer() {
     return (

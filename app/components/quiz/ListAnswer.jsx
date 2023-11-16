@@ -2,7 +2,7 @@
 
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import correctConfetti from "@/lib/correctConfetti";
-import { Card, Input, Alert } from "../client";
+import { Card, Input, Alert } from "@client";
 import { useEffect, useState } from "react";
 
 export function ListAnswer({

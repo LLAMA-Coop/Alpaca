@@ -1,14 +1,20 @@
 "use client";
 
-import { useStore } from "@/store/store";
-import { Alert, Input, Label, ListItem, Spinner } from "@components/client";
+import { buildPermissions } from "@/lib/permissions";
 import { useState, useEffect } from "react";
-import PermissionsInput from "../form/PermissionsInput";
-import { DeletePopup } from "../delete-popup/DeletePopup";
+import { useStore } from "@/store/store";
 import { serializeOne } from "@/lib/db";
 import htmlDate from "@/lib/htmlDate";
 import MAX from "@/lib/max";
-import { buildPermissions } from "@/lib/permissions";
+import {
+    Alert,
+    Input,
+    Label,
+    ListItem,
+    Spinner,
+    DeletePopup,
+    PermissionsInput,
+} from "@client";
 
 export function SourceInput({ source }) {
     const [title, setTitle] = useState("");

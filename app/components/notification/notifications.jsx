@@ -1,10 +1,10 @@
 "use client";
+
+import { Alert, Notification } from "@client";
 import { useStore } from "@/store/store";
-import Notification from "./notification";
-import { Alert } from "../client";
 import { useState } from "react";
 
-export default function Notifications() {
+export function Notifications() {
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 

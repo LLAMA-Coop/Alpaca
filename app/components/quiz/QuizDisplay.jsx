@@ -1,7 +1,6 @@
 "use client";
 
-import { ResponseCard, ListAnswer } from "@/app/components/client";
-import { Blankable } from "./Blankable";
+import { ResponseCard, ListAnswer, Blankable } from "@client";
 import { memo } from "react";
 
 const sampleQuiz = {

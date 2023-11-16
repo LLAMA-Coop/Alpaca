@@ -1,13 +1,9 @@
-import { NoteDisplay, QuizDisplay, SourceDisplay } from "@components/server";
+import { InviteUser, Notifications } from "@client";
+import { Source, Note, Quiz } from "@models";
 import { redirect } from "next/navigation";
 import styles from "@/app/page.module.css";
-import { serializeOne } from "@/lib/db";
-import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-// import { Source, Quiz, Note } from "@mneme_app/database-models";
-import { Source, Note, Quiz } from "@/app/api/models";
-import InviteUser from "@/app/components/notification/inviteUser";
-import Notifications from "@/app/components/notification/notifications";
+import { useUser } from "@/lib/auth";
 import Image from "next/image";
 
 export default async function DashboardPage() {

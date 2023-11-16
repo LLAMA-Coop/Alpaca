@@ -7,10 +7,11 @@ export default function NotFound() {
             <h2>Page Not Found</h2>
 
             <section>
-                <div className="paragraph">
+                <div>
                     <p>
                         I'm sorry, but the address you are seeking is not valid.
                     </p>
+
                     <p>
                         Check the above navigation to see if you can find what
                         you are looking for. <br />

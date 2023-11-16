@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useStore } from "@/store/store";
+import { serializeOne } from "@/lib/db";
+import MAX from "@/lib/max";
 import {
     Label,
     Input,
@@ -8,13 +11,10 @@ import {
     InputPopup,
     Spinner,
     Alert,
-} from "@/app/components/client";
-import PermissionsInput from "../form/PermissionsInput";
-import { useStore } from "@/store/store";
-import { DeletePopup } from "../delete-popup/DeletePopup";
-import ListAdd from "../form/ListAdd";
-import { serializeOne } from "@/lib/db";
-import MAX from "@/lib/max";
+    PermissionsInput,
+    DeletePopup,
+    ListAdd,
+} from "@client";
 
 export function NoteInput({ note }) {
     const [text, setText] = useState("");

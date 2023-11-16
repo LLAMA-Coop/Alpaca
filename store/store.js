@@ -1,3 +1,4 @@
+import makeUniqueId from "@/lib/uniqueId";
 import { create } from "zustand";
 
 const addResources = (state, storeName, ...resources) => {
@@ -143,4 +144,26 @@ export const useDailyTrain = create()((set) => ({
     setStart: (start) => set(() => ({ start })),
     setIsPaused: (isPaused) => set(() => ({ isPaused })),
     setTimeLimit: (timeLimit) => set(() => ({ timeLimit })),
+}));
+
+// Alerts Store
+
+export const useAlerts = create()((set) => ({
+    alerts: [],
+
+    addAlert: (alert) =>
+        set((state) => ({
+            alerts: [
+                ...state.alerts,
+                {
+                    ...alert,
+                    id: makeUniqueId(),
+                },
+            ],
+        })),
+
+    removeAlert: (id) =>
+        set((state) => ({
+            alerts: state.alerts.filter((alert) => alert.id !== id),
+        })),
 }));

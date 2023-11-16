@@ -1,12 +1,12 @@
 "use client";
-import { Label } from "../client";
-import ListAdd from "../form/ListAdd";
+
+import { Label, ListAdd } from "@client";
 import { useState } from "react";
 
-export function SourceReferenceInput({ sourceRef }) {
-        const [sourceError, setSourceError] = useState("");
-    
-        return (
+export function SourceReference({ sourceRef }) {
+    const [sourceError, setSourceError] = useState("");
+
+    return (
         <div>
             <Label
                 required={true}

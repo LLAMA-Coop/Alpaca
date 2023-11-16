@@ -1,7 +1,7 @@
 import { faCrown, faHammer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./UserCard.module.css";
-import { Avatar } from "../client";
+import { Avatar } from "@client";
 import Link from "next/link";
 
 export function UserCard({ user, isOwner, isAdmin }) {

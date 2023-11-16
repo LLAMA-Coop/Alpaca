@@ -1,10 +1,10 @@
 "use client";
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Input, Card, Alert } from "@components/client";
 import correctConfetti from "@/lib/correctConfetti";
 import stringCompare from "@/lib/stringCompare";
 import shuffleArray from "@/lib/shuffleArray";
+import { Input, Card, Alert } from "@client";
 import { useState, useEffect } from "react";
 import makeUniqueId from "@/lib/uniqueId";
 

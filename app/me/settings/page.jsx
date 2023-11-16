@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import styles from "@/app/page.module.css";
-import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
+import { useUser } from "@/lib/auth";
 
 export default async function SettingsPage() {
     const user = await useUser({ token: cookies().get("token")?.value });

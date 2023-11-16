@@ -1,6 +1,11 @@
 "use client";
 
+import { DeletePopup } from "../DeletePopup/DeletePopup";
+import { buildPermissions } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
+import { useStore } from "@/store/store";
+import { serializeOne } from "@/lib/db";
+import MAX from "@/lib/max";
 import {
     Input,
     Label,
@@ -8,15 +13,10 @@ import {
     InputPopup,
     Spinner,
     Alert,
-} from "@components/client";
-import PermissionsInput from "../form/PermissionsInput";
-import { serializeOne } from "@/lib/db";
-import { useStore } from "@/store/store";
-import { buildPermissions } from "@/lib/permissions";
-import { DeletePopup } from "../delete-popup/DeletePopup";
-import ListAdd from "../form/ListAdd";
-import MAX from "@/lib/max";
-import BlankableInput from "./BlankableInput";
+    PermissionsInput,
+    ListAdd,
+    BlankableInput,
+} from "@client";
 
 export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
@@ -392,7 +392,8 @@ export function QuizInput({ quiz }) {
                         {responses.map((res, index) => (
                             <ListItem
                                 key={index}
-                                item={res
+                                item={
+                                    res
                                     // type === "fill-in-the-blank"
                                     //     ? res.match(/_([a-zA-Z]+)/)[1]
                                     //     : res

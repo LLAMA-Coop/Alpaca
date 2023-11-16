@@ -1,10 +1,10 @@
 "use client";
 
-import { Input, Alert } from "../client";
 import { useState, useEffect } from "react";
 import { useStore } from "@/store/store";
+import { Input, Alert } from "@client";
 
-export default function InviteUser({ groupId }) {
+export function InviteUser({ groupId }) {
     const [userId, setUserId] = useState("");
 
     const [showAlert, setShowAlert] = useState(false);

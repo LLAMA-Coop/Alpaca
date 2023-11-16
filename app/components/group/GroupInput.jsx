@@ -1,8 +1,8 @@
 "use client";
 
-import { Label, Input, Spinner, Alert } from "@/app/components/client";
-import filetypeinfo from "magic-bytes.js";
+import { Label, Input, Spinner, Alert } from "@client";
 import { useState, useRef, useEffect } from "react";
+import filetypeinfo from "magic-bytes.js";
 import styles from "./Group.module.css";
 import Image from "next/image";
 import MAX from "@/lib/max";

@@ -2,8 +2,8 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { Input, Alert, Spinner } from "@components/client";
 import { useState, useRef, useEffect } from "react";
+import { Input, Alert, Spinner } from "@client";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
 import { useStore } from "@/store/store";

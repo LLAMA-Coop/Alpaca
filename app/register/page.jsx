@@ -1,8 +1,8 @@
-import { UserInput } from "@components/client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
-import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
+import { useUser } from "@/lib/auth";
+import { UserInput } from "@client";
 import Link from "next/link";
 
 export default async function RegisterPage() {

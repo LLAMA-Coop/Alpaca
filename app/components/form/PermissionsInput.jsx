@@ -1,12 +1,10 @@
 "use client";
 
+import { Input, Label, ListAdd } from "@client";
 import { useState, useEffect } from "react";
-import { Input, Label } from "@/app/components/client";
-// add this to client/index.js
-import ListAdd from "./ListAdd";
 import { useStore } from "@/store/store";
 
-export default function PermissionsInput({ permissions, setter }) {
+export function PermissionsInput({ permissions, setter }) {
     const [allWrite, setAllWrite] = useState(false);
     const [allRead, setAllRead] = useState(false);
     const [usersWrite, setUsersWrite] = useState([]);

@@ -1,11 +1,10 @@
 "use client";
 
-import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import correctConfetti from "@/lib/correctConfetti";
+import { Card, Alert, Input } from "@client";
 import { useEffect, useState } from "react";
-import { Card, Alert } from "../client";
-import { Input } from "../client";
 
 export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
     const [userResponse, setUserResponse] = useState(

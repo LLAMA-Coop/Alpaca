@@ -2,9 +2,9 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 import makeUniqueId from "@/lib/uniqueId";
 import styles from "./Input.module.css";
-import { useEffect, useState } from "react";
 
 export function Label({ required, error, errorId, label, htmlFor }) {
     return (

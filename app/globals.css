@@ -108,6 +108,7 @@ body {
 body {
     display: flex;
     flex-direction: column;
+    padding-left: calc(100vw - 100%);
 }
 
 body > main {

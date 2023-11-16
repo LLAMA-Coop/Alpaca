@@ -1,6 +1,6 @@
 import styles from "@/app/page.module.css";
 
-export default function DatabaseConnectError() {
+export function DBConnectError() {
     return (
         <main className={styles.main}>
             <h2>Could not connect to database</h2>
@@ -11,9 +11,7 @@ export default function DatabaseConnectError() {
                         I'm sorry, but this application was not able to connect
                         to a database.
                     </p>
-                    <p>
-                        Contact the developer about this issue.
-                    </p>
+                    <p>Contact the developer about this issue.</p>
                     <p>
                         If you are the developer, check the `.env` file and make
                         sure the <em>DATABASE_URL</em> value is the correct URL

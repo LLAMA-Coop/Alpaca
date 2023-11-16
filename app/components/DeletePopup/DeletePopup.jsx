@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Alert } from "../client";
+import { Alert } from "@client";
 
 export function DeletePopup({ resourceType, resourceId }) {
     const [showPopup, setShowPopup] = useState(false);

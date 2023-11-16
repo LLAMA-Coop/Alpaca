@@ -5,7 +5,7 @@ import styles from "./Card.module.css";
 import { useState } from "react";
 import Link from "next/link";
 
-export const Card = ({
+export function Card({
     title,
     subtitle,
     description,
@@ -15,7 +15,7 @@ export const Card = ({
     buttons,
     children,
     border,
-}) => {
+}) {
     const [isFocused, setIsFocused] = useState(false);
 
     return (
@@ -121,4 +121,4 @@ export const Card = ({
             </div>
         </div>
     );
-};
+}

@@ -1,8 +1,8 @@
 "use client";
 
-import { ListItem, Select } from "@/app/components/client";
+import { ListItem, Select } from "@client";
 
-export default function ListAdd({
+export function ListAdd({
     item,
     listChoices,
     listChosen,

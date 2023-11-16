@@ -1,5 +1,5 @@
-import { ListItem, Card } from "@components/client";
 import styles from "./SourceDisplay.module.css";
+import { ListItem, Card } from "@client";
 
 export function SourceDisplay({ source }) {
     return (
