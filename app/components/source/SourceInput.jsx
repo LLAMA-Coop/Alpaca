@@ -224,7 +224,7 @@ export function SourceInput({ source }) {
             <Input
                 description="The URL of the source"
                 autoComplete="off"
-                required={true}
+                required={medium === "website"}
                 label={"URL of Source"}
                 value={url}
                 error={urlError}
