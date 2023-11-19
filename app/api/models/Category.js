@@ -34,6 +34,10 @@ const CategorySchema = new Schema(
             ref: "user",
             required: true,
         },
+        updatedBy: {
+            type: Schema.Types.ObjectId,
+            ref: "user"
+        }
     },
     {
         timestamps: true,
