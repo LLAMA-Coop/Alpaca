@@ -7,8 +7,8 @@ import ListAdd from "./ListAdd";
 import { useStore } from "@/store/store";
 
 export default function PermissionsInput({ permissions, setter }) {
-    const [allWrite, setAllWrite] = useState(permissions.allWrite || false);
-    const [allRead, setAllRead] = useState(permissions.allRead || false);
+    const [allWrite, setAllWrite] = useState(permissions ? permissions.allWrite || false : false);
+    const [allRead, setAllRead] = useState(permissions ? permissions.allRead || false : false);
     const [usersWrite, setUsersWrite] = useState([]);
     const [usersRead, setUsersRead] = useState([]);
     const [groupsWrite, setGroupsWrite] = useState([]);

@@ -48,8 +48,10 @@ export function Select({
                 {listChoices &&
                     listChoices.map((choice, index) => {
                         const isChosen =
-                            listChosen.find((x) => x._id === choice._id) !=
-                            undefined;
+                            listChosen.find((x) => {
+                                if (!x) return false;
+                                return x._id === choice._id;
+                            }) != undefined;
                         return (
                             <div
                                 key={choice._id}
