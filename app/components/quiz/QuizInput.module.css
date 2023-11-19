@@ -33,7 +33,7 @@
 
 .blankBank input:checked + label {
     background-color: var(--accent-tertiary-2);
-    color: var(--foreground-primary);
+    color: white;
 }
 
 .blankBank input[type="checkbox"] {

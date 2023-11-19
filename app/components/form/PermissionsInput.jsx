@@ -7,8 +7,8 @@ import ListAdd from "./ListAdd";
 import { useStore } from "@/store/store";
 
 export default function PermissionsInput({ permissions, setter }) {
-    const [allWrite, setAllWrite] = useState(false);
-    const [allRead, setAllRead] = useState(false);
+    const [allWrite, setAllWrite] = useState(permissions.allWrite || false);
+    const [allRead, setAllRead] = useState(permissions.allRead || false);
     const [usersWrite, setUsersWrite] = useState([]);
     const [usersRead, setUsersRead] = useState([]);
     const [groupsWrite, setGroupsWrite] = useState([]);
@@ -18,16 +18,7 @@ export default function PermissionsInput({ permissions, setter }) {
     const availableGroups = useStore((state) => state.groupStore);
 
     useEffect(() => {
-        if (!permissions) {
-            return;
-        }
-
-        if (permissions.allWrite) {
-            setAllWrite(permissions.allWrite);
-        }
-        if (permissions.allRead) {
-            setAllRead(permissions.allRead);
-        }
+        if (!permissions) return;
 
         if (permissions.usersWrite) {
             setUsersWrite(
@@ -36,6 +27,7 @@ export default function PermissionsInput({ permissions, setter }) {
                 ),
             );
         }
+
         if (permissions.usersRead) {
             setUsersRead(
                 permissions.usersRead.map((userId) =>
@@ -91,12 +83,17 @@ export default function PermissionsInput({ permissions, setter }) {
     return (
         <details className="formGrid">
             <summary>Edit Permissions</summary>
+
             <Input
                 type="checkbox"
                 label="Allow All Users to Edit?"
                 value={allWrite}
-                onChange={() => setAllWrite(!allWrite)}
+                onChange={() => {
+                    if (!allWrite) setAllRead(true);
+                    setAllWrite((prev) => !prev);
+                }}
             />
+
             <Input
                 type="checkbox"
                 label="Allow All Users to Read?"
@@ -118,6 +115,7 @@ export default function PermissionsInput({ permissions, setter }) {
                     disabled={allWrite}
                 />
             </div>
+
             <div>
                 <Label label="Associates with Permission to View" />
 

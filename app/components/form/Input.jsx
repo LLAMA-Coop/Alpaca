@@ -4,11 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import makeUniqueId from "@/lib/uniqueId";
 import styles from "./Input.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export function Label({ required, error, errorId, label, htmlFor }) {
+export function Label({ required, error, errorId, label, htmlFor, checkbox }) {
     return (
-        <div className={styles.labelContainer}>
+        <div
+            className={`${styles.labelContainer} ${checkbox && styles.normal}`}
+        >
             <label htmlFor={htmlFor}>
                 {label} {required && <span>*</span>}
             </label>
@@ -46,6 +48,10 @@ export function Input({
 }) {
     const [inputId, setInputId] = useState("");
     const [errorId, setErrorId] = useState("");
+    const [open, setOpen] = useState(false);
+
+    const container = useRef(null);
+    const firstElement = useRef(null);
 
     useEffect(() => {
         if (!id || !label) return;
@@ -53,15 +59,50 @@ export function Input({
         setErrorId(`${inputId}-error`);
     }, []);
 
+    useEffect(() => {
+        const handleEscape = (e) => {
+            if (e.key === "Escape") setOpen(false);
+        };
+
+        const handleKeyDown = (e) => {
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                const next = e.target.nextSibling;
+                if (next) next.focus();
+            }
+
+            if (e.key === "ArrowUp") {
+                e.preventDefault();
+                const prev = e.target.previousSibling;
+                if (prev) prev.focus();
+            }
+        };
+
+        const handleClickOutside = (e) => {
+            if (!container.current.contains(e.target)) setOpen(false);
+        };
+
+        if (open) {
+            firstElement.current.focus();
+            document.addEventListener("keydown", handleEscape);
+            document.addEventListener("keydown", handleKeyDown);
+            document.addEventListener("click", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("keydown", handleEscape);
+            document.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, [open]);
+
     if (type === "checkbox" && typeof value === "boolean")
         return (
             <div
-                className={styles.inlineContainer}
-                onClick={(e) => onActionTrigger(e)}
-                style={{
-                    opacity: disabled ? "0.3" : "",
-                    cursor: disabled ? "not-allowed" : "",
-                }}
+                className={`${styles.inlineContainer} ${
+                    disabled && styles.disabled
+                }`}
+                onClick={type === "checkbox" && !disabled && onChange}
             >
                 {label && (
                     <Label
@@ -70,6 +111,7 @@ export function Input({
                         errorId={errorId}
                         htmlFor={inputId}
                         required={required}
+                        checkbox={true}
                     />
                 )}
 
@@ -164,41 +206,93 @@ export function Input({
             )}
 
             <div
+                ref={container}
                 className={styles.inputContainer}
                 style={{ pointerEvents: disabled ? "none" : "" }}
             >
                 {type === "select" && choices && (
-                    <select
-                        id={inputId}
-                        autoFocus={autoFocus ? true : false}
-                        autoComplete={autoComplete || "off"}
-                        aria-describedby={description}
-                        aria-required={error ? error : ""}
-                        aria-disabled={disabled}
-                        aria-invalid={error ? "true" : "false"}
-                        aria-errormessage={error ? errorId : ""}
-                        required={required}
-                        disabled={disabled}
-                        onChange={onChange}
-                        onFocus={onFocus}
-                        onBlur={onBlur}
-                        value={value || ""}
-                        minLength={minLength}
-                        maxLength={maxLength}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter" && action) onActionTrigger(e);
-                        }}
-                        style={{ outlineColor: outlineColor || "" }}
-                    >
-                        {choices.map((choice) => (
-                            <option
-                                key={choice.key ?? choice.value}
-                                value={choice.value}
+                    <>
+                        <div
+                            tabIndex={0}
+                            role="button"
+                            aria-haspopup="listbox"
+                            aria-labelledby={inputId}
+                            aria-expanded={open ? "true" : "false"}
+                            className={styles.select}
+                            onClick={() => setOpen(!open)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") setOpen(!open);
+                            }}
+                        >
+                            {
+                                choices.find((choice) => choice.value === value)
+                                    ?.label
+                            }
+
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                strokeWidth="2"
+                                fill="transparent"
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             >
-                                {choice.label}
-                            </option>
-                        ))}
-                    </select>
+                                {open ? (
+                                    <path d="M6 15l6 -6l6 6" />
+                                ) : (
+                                    <path d="M6 9l6 6l6 -6" />
+                                )}
+                            </svg>
+                        </div>
+
+                        <ul
+                            role="listbox"
+                            aria-disabled={disabled}
+                            aria-activedescendant={value}
+                            aria-invalid={error ? "true" : "false"}
+                            aria-errormessage={error ? errorId : ""}
+                            className={styles.dropdown}
+                            style={{ display: open ? "block" : "none" }}
+                        >
+                            {choices.map((choice, index) => (
+                                <li
+                                    ref={index === 0 ? firstElement : null}
+                                    role="option"
+                                    aria-selected={
+                                        choice.value === value ? "true" : ""
+                                    }
+                                    tabIndex={0}
+                                    key={choice.value}
+                                    onClick={() => {
+                                        onChange({
+                                            target: {
+                                                value: choice.value,
+                                            },
+                                        });
+                                        setOpen(false);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            onChange({
+                                                target: {
+                                                    value: choice.value,
+                                                },
+                                            });
+                                            setOpen(false);
+                                        }
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.focus();
+                                    }}
+                                >
+                                    {choice.label}
+                                </li>
+                            ))}
+                        </ul>
+                    </>
                 )}
 
                 {type === "textarea" && (
