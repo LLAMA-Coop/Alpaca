@@ -37,7 +37,7 @@ export async function DELETE(req) {
         const deletion = await Note.deleteOne({ _id });
         console.log(deletion);
         if (deletion.deletedCount === 0) {
-            console.error(`Unable to delete note ${_id}\nError: ${error}`);
+            console.error(`Unable to delete note ${_id}`);
             return NextResponse.json(
                 {
                     message: `Unable to delete note ${_id}`,
