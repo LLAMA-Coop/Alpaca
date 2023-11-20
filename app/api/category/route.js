@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import Category from "../api/models/Category"; // Don't forget to add this to index.js
+import Category from "../models/Category"; // Don't forget to add this to index.js
 import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { buildPermissions } from "@/lib/permissions";
-import { PUT } from "../api/note/route";
 import { Types } from "mongoose";
 import { serializeOne } from "@/lib/db";
 

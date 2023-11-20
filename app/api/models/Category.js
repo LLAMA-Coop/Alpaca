@@ -10,6 +10,12 @@ const CategorySchema = new Schema(
             minLength: 1,
             maxLength: MAX.title,
         },
+        description: {
+            type: String,
+            required: true,
+            minLength: 1,
+            maxLength: MAX.description,
+        },
         subcategoryOf: [
             {
                 type: Schema.Types.ObjectId,
@@ -36,8 +42,8 @@ const CategorySchema = new Schema(
         },
         updatedBy: {
             type: Schema.Types.ObjectId,
-            ref: "user"
-        }
+            ref: "user",
+        },
     },
     {
         timestamps: true,
