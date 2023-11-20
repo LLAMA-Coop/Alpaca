@@ -29,7 +29,8 @@ export async function POST(req) {
             return unauthorized;
         }
 
-        const { name, subcategoryOf, prerequisites, permissions } = req.json();
+        const { name, description, subcategoryOf, prerequisites, permissions } =
+            req.json();
 
         if (!name) {
             return NextResponse.json(
@@ -40,6 +41,7 @@ export async function POST(req) {
 
         const category = new Category({
             name,
+            description,
             subcategoryOf,
             prerequisites,
         });
@@ -69,8 +71,14 @@ export async function PUT(req) {
             return unauthorized;
         }
 
-        const { _id, name, subcategoryOf, prerequisites, permissions } =
-            await req.json();
+        const {
+            _id,
+            name,
+            description,
+            subcategoryOf,
+            prerequisites,
+            permissions,
+        } = await req.json();
 
         const category = await Category.findById(_id);
         if (!category) {
@@ -93,6 +101,9 @@ export async function PUT(req) {
 
         if (name) {
             category.name = name;
+        }
+        if (description) {
+            category.description = description;
         }
         if (subcategoryOf) {
             subcategoryOf.forEach((catId_req) => {
