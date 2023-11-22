@@ -1,10 +1,11 @@
 "use client";
 
 import QuizDisplay from "@/app/components/quiz/QuizDisplay";
-import { useDailyTrain, useStore } from "@/store/store";
+import { useDailyTrain, useModals, useStore } from "@/store/store";
 import { UserStats } from "../quiz/UserStats";
 import styles from "./DailyTrain.module.css";
 import { useState } from "react";
+import { Input } from "../client";
 
 export default function DailyTrain({ quizzes }) {
     const [visibleSet, setVisibleSet] = useState(
@@ -18,12 +19,43 @@ export default function DailyTrain({ quizzes }) {
     const start = useDailyTrain((state) => state.start);
     const isPaused = useDailyTrain((state) => state.isPaused);
     const setIsPaused = useDailyTrain((state) => state.setIsPaused);
+    const settings = useDailyTrain((state) => state.settings);
+    const setSettings = useDailyTrain((state) => state.setSettings);
+
+    const addModal = useModals((state) => state.addModal);
 
     function handleWhenCorrect(index) {
         const newVisible = [...visibleSet];
         newVisible[index] = false;
         setVisibleSet(newVisible);
     }
+
+    const parameters = (
+        <>
+            <Input
+                type="text"
+                label={`Time Limit`}
+                value={settings.timeLimit}
+                onChange={(e) =>
+                    setSettings({ timeLimit: e.target.value * 1000 })
+                }
+            />
+
+            {/* <Input
+                type="select"
+                label={`Tags Filter`}
+                value={settings.tags}
+                choices={settings.tags.map((tag) => ({ value: tag }))}
+                onChange={(e) =>
+                    setSettings({
+                        tags: [...e.target.selectedOptions].map(
+                            (option) => option.value,
+                        ),
+                    })
+                }
+            /> */}
+        </>
+    );
 
     return (
         <>
@@ -45,7 +77,15 @@ export default function DailyTrain({ quizzes }) {
                         : "Start Training"}
                 </button>
 
-                <button className={styles.settingsButton}>
+                <button
+                    onClick={() =>
+                        addModal({
+                            title: "Change Settings",
+                            content: parameters,
+                        })
+                    }
+                    className={styles.settingsButton}
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="20"
@@ -63,39 +103,61 @@ export default function DailyTrain({ quizzes }) {
                 </button>
             </div>
 
-            <div className={styles.popup}></div>
-
             {start && (
-                <ol className="listGrid">
-                    {quizzes.map((quiz, index) => {
-                        const quizInUser = userQuizzes?.find(
-                            (q) => q.quizId === quiz._id,
-                        );
+                <div className={styles.popup}>
+                    <ol className="listGrid">
+                        {quizzes.map((quiz, index) => {
+                            const quizInUser = userQuizzes?.find(
+                                (q) => q.quizId === quiz._id,
+                            );
 
-                        return (
-                            <li
-                                key={quiz._id}
-                                style={{
-                                    display: visibleSet[index]
-                                        ? "list-item"
-                                        : "none",
-                                }}
-                            >
-                                <QuizDisplay
-                                    quiz={quiz}
-                                    canClientCheck={false}
-                                    handleWhenCorrect={() =>
-                                        handleWhenCorrect(index)
-                                    }
-                                />
+                            return (
+                                <li
+                                    key={quiz._id}
+                                    style={{
+                                        display: visibleSet[index]
+                                            ? "list-item"
+                                            : "none",
+                                    }}
+                                >
+                                    <QuizDisplay
+                                        quiz={quiz}
+                                        canClientCheck={false}
+                                        handleWhenCorrect={() =>
+                                            handleWhenCorrect(index)
+                                        }
+                                    />
 
-                                {quizInUser && (
-                                    <UserStats userQuizInfo={quizInUser} />
-                                )}
-                            </li>
-                        );
-                    })}
-                </ol>
+                                    {quizInUser && (
+                                        <UserStats userQuizInfo={quizInUser} />
+                                    )}
+                                </li>
+                            );
+                        })}
+                    </ol>
+
+                    <button
+                        onClick={() => {
+                            setStart(false);
+                            setIsPaused(false);
+                        }}
+                        className={styles.closeButton}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            strokeWidth="2"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M18 6l-12 12" />
+                            <path d="M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
             )}
         </>
     );
