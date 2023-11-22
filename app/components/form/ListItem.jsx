@@ -47,7 +47,9 @@ export function ListItem({ item, action, actionType, link, select, disabled }) {
                     aria-haspopup={select ? "true" : "false"}
                     aria-expanded={showSelect ? "true" : "false"}
                     aria-controls={showSelect ? `${item}-select` : null}
-                    className={`${styles.action} ${disabled ? styles.disabled : ""}`}
+                    className={`${styles.action} ${
+                        disabled ? styles.disabled : ""
+                    }`}
                     onClick={(e) => {
                         e.preventDefault();
                         action();
@@ -64,7 +66,13 @@ export function ListItem({ item, action, actionType, link, select, disabled }) {
             )}
 
             {link && !action && (
-                <button tabIndex={-1} className={`${styles.action} ${disabled ? styles.disabled : ""}`} title={label}>
+                <button
+                    tabIndex={-1}
+                    className={`${styles.action} ${
+                        disabled ? styles.disabled : ""
+                    }`}
+                    title={label}
+                >
                     <FontAwesomeIcon icon={faArrowRight} />
                 </button>
             )}
@@ -76,9 +84,9 @@ export function ListItem({ item, action, actionType, link, select, disabled }) {
     if (link)
         return (
             <li ref={liRef}>
-                <Link href={link} target="_blank" className={styles.listItem}>
+                <a href={link} target="_blank" className={styles.listItem}>
                     {content}
-                </Link>
+                </a>
             </li>
         );
 
@@ -86,7 +94,9 @@ export function ListItem({ item, action, actionType, link, select, disabled }) {
         <li
             ref={liRef}
             onClick={() => select && setShowSelect((prev) => !prev)}
-            className={`${styles.listItem} ${select && styles.select} ${disabled ? styles.disabled : ""}`}
+            className={`${styles.listItem} ${select && styles.select} ${
+                disabled ? styles.disabled : ""
+            }`}
         >
             {content}
         </li>

@@ -1,9 +1,12 @@
-.navMenu {
+.nav {
+    display: flex;
+}
+
+.nav > ul {
     list-style: none;
 }
 
-.navMenu {
-    position: relative;
+.nav > ul {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -12,40 +15,17 @@
     margin: 0 auto;
 }
 
-@media (max-width: 600px) {
-    .navMenu {
-      position: fixed;
-      top: 50px;
-      right: 1rem;
-      max-width: 100%;
-    }
-  }
-
-.navMenu > li > a {
-    position: relative;
+.nav > ul > li > a {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 3px;
     padding: 7px 14px;
-    z-index: 1;
     user-select: none;
     color: var(--foreground-secondary);
 }
 
-.navMenu > li > a:hover {
+.nav > ul > li > a:hover {
     color: var(--foreground-primary);
-}
-
-.followingDiv {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    border-radius: 3px;
-    height: 34px;
-    z-index: 0;
-    background-color: var(--background-secondary);
-    transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
 }

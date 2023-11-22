@@ -5,7 +5,6 @@ import {
     Input,
     Label,
     ListItem,
-    Select,
     InputPopup,
     Spinner,
     Alert,
@@ -17,6 +16,7 @@ import { buildPermissions } from "@/lib/permissions";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import ListAdd from "../form/ListAdd";
 import MAX from "@/lib/max";
+import BlankableInput from "./BlankableInput";
 
 export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
@@ -122,14 +122,14 @@ export function QuizInput({ quiz }) {
     }, [sources, notes]);
 
     useEffect(() => {
-        if (type !== "multiple-choice") return;
-
-        responses.forEach((response) => {
-            if (!choices.includes(response)) {
-                setChoices((prev) => [...prev, response]);
-            }
-        });
-    }, [type, choices, responses]);
+        if (type === "multiple-choice") {
+            responses.forEach((response) => {
+                if (!choices.includes(response)) {
+                    setChoices((prev) => [...prev, response]);
+                }
+            });
+        }
+    }, [type, choices, responses, prompt]);
 
     const types = [
         { label: "Prompt/Response", value: "prompt-response" },
@@ -188,17 +188,21 @@ export function QuizInput({ quiz }) {
         }
 
         quizPayload.permissions = buildPermissions(permissions);
-        console.log("payload perms", quizPayload.permissions);
 
         setLoading(true);
 
-        const response = await fetch("/api/quiz", {
-            method: quiz ? "PUT" : "POST",
-            headers: {
-                "Content-Type": "application/json",
+        console.log(quizPayload);
+
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,
+            {
+                method: quiz ? "PUT" : "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(quizPayload),
             },
-            body: JSON.stringify(quizPayload),
-        });
+        );
 
         setLoading(false);
 
@@ -287,18 +291,31 @@ export function QuizInput({ quiz }) {
                 onChange={(e) => setType(e.target.value)}
             />
 
-            <Input
-                label="Prompt"
-                description={"Question prompt. Can be a question or statement"}
-                required={true}
-                value={prompt}
-                maxLength={MAX.prompt}
-                error={promptError}
-                onChange={(e) => {
-                    setPrompt(e.target.value);
-                    setPromptError("");
-                }}
-            />
+            {type === "fill-in-the-blank" ? (
+                <BlankableInput
+                    prompt={prompt}
+                    setPrompt={setPrompt}
+                    promptError={promptError}
+                    setPromptError={setPromptError}
+                    responses={responses}
+                    setResponses={setResponses}
+                />
+            ) : (
+                <Input
+                    label={"Prompt"}
+                    description={
+                        "Question prompt. Can be a question or statement"
+                    }
+                    required={true}
+                    value={prompt}
+                    maxLength={MAX.prompt}
+                    error={promptError}
+                    onChange={(e) => {
+                        setPrompt(e.target.value);
+                        setPromptError("");
+                    }}
+                />
+            )}
 
             {type === "multiple-choice" && (
                 <div>
@@ -370,11 +387,16 @@ export function QuizInput({ quiz }) {
 
                 <div style={{ marginTop: "24px" }}>
                     <Label label="Answers" />
+
                     <ol className="chipList">
                         {responses.map((res, index) => (
                             <ListItem
                                 key={index}
-                                item={res}
+                                item={res
+                                    // type === "fill-in-the-blank"
+                                    //     ? res.match(/_([a-zA-Z]+)/)[1]
+                                    //     : res
+                                }
                                 actionType={"delete"}
                                 action={() =>
                                     setResponses((prev) =>
@@ -423,10 +445,12 @@ export function QuizInput({ quiz }) {
                 />
             </div>
 
-            <PermissionsInput
-                permissions={quiz ? quiz.permissions : {}}
-                setter={setPermissions}
-            />
+            {(!quiz || quiz.createdBy === user?._id.toString()) && (
+                <PermissionsInput
+                    permissions={quiz ? quiz.permissions : {}}
+                    setter={setPermissions}
+                />
+            )}
 
             <div className="buttonContainer">
                 <InputPopup type="source" />

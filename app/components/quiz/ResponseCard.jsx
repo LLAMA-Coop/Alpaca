@@ -2,20 +2,40 @@
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Input, Card, Alert } from "@components/client";
-import styles from "./ResponseCard.module.css";
-import { useState } from "react";
 import correctConfetti from "@/lib/correctConfetti";
+import stringCompare from "@/lib/stringCompare";
 import shuffleArray from "@/lib/shuffleArray";
+import { useState, useEffect } from "react";
 import makeUniqueId from "@/lib/uniqueId";
 
-export function ResponseCard({ canClientCheck, quiz }) {
+export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
     const [userResponse, setUserResponse] = useState("");
     const [hasAnswered, setHasAnswered] = useState(false);
     const [correctAnswer, setCorrectAnswer] = useState(false);
     const [failures, setFailures] = useState(0);
-    
+    const [choices, setChoices] = useState([]);
+
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+
+    useEffect(() => {
+        if (quiz.choices)
+            setChoices(
+                quiz.choices
+                    ? shuffleArray(
+                          quiz.choices.map((x) => ({
+                              label: x,
+                              value: x,
+                              key: makeUniqueId(),
+                          })),
+                      )
+                    : null,
+            );
+    }, []);
+
+    useEffect(() => {
+        if (choices.length) setUserResponse(choices[0].value);
+    }, [choices]);
 
     const type = quiz.type === "prompt-response" ? "text" : "select";
 
@@ -31,7 +51,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
         if (canClientCheck) {
             const isCorrect =
                 quiz.correctResponses.find(
-                    (x) => x.toLowerCase() === userResponse.toLowerCase(),
+                    (x) => stringCompare(x, userResponse) >= 0.8,
                 ) !== undefined;
 
             if (isCorrect) {
@@ -44,18 +64,23 @@ export function ResponseCard({ canClientCheck, quiz }) {
             setCorrectAnswer(isCorrect);
             setHasAnswered(true);
         } else {
-            const response = await fetch(`/api/quiz/${quiz._id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
+                    quiz._id
+                }`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ userResponse }),
                 },
-                body: JSON.stringify({ userResponse }),
-            });
+            );
 
             if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: 'Please log in and try again'
+                    message: "Please log in and try again",
                 });
                 setShowAlert(true);
                 return;
@@ -69,6 +94,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
             if (isCorrect) {
                 setFailures(0);
                 correctConfetti();
+                handleWhenCorrect();
             } else {
                 setFailures(failures + 1);
             }
@@ -87,16 +113,6 @@ export function ResponseCard({ canClientCheck, quiz }) {
     if (hasAnswered) {
         colorOverride = correctAnswer ? "correct" : "incorrect";
     }
-
-    const choices = quiz.choices
-        ? shuffleArray(
-              quiz.choices.map((x) => ({
-                  label: x,
-                  value: x,
-                  key: makeUniqueId(),
-              })),
-          )
-        : null;
 
     return (
         <Card
@@ -129,7 +145,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
                 success={requestStatus.success}
                 message={requestStatus.message}
             />
-            
+
             <Input
                 type={type}
                 description="Your response to the prompt"
@@ -144,7 +160,7 @@ export function ResponseCard({ canClientCheck, quiz }) {
             />
 
             {!correctAnswer && failures > 2 && (
-                <div className={styles.hints}>
+                <div data-type="hints">
                     <p>You're having some trouble. Here are some hints:</p>
                     <ul>
                         {quiz.correctResponses.map((x, index) => (

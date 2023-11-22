@@ -1,14 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card, Input, Alert } from "../client";
-import correctConfetti from "@/lib/correctConfetti";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import correctConfetti from "@/lib/correctConfetti";
+import { Card, Input, Alert } from "../client";
+import { useEffect, useState } from "react";
 import styles from "./Blankable.module.css";
 
-// need to add server-side check
-
-export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
+export function ListAnswer({
+    canClientCheck,
+    quiz,
+    isOrdered,
+    handleWhenCorrect,
+}) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
     );
@@ -16,7 +19,7 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
     const [responseCorrect, setResponseCorrect] = useState(false);
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
-    
+
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 
@@ -26,6 +29,7 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
             setResponseCorrect(true);
             setFailures(0);
             correctConfetti();
+            handleWhenCorrect();
         } else {
             setFailures(failures + 1);
         }
@@ -49,18 +53,23 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
             );
             setResponseStatus("complete");
         } else {
-            const response = await fetch(`/api/quiz/${quiz._id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
+                    quiz._id
+                }`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ userResponse }),
                 },
-                body: JSON.stringify({ userResponse }),
-            });
+            );
 
             if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: 'Please log in and try again'
+                    message: "Please log in and try again",
                 });
                 setShowAlert(true);
                 return;
@@ -82,7 +91,7 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
                 success={requestStatus.success}
                 message={requestStatus.message}
             />
-            
+
             <h4 id="prompt">{quiz.prompt}</h4>
             <ul>
                 {userResponse.map((ans, index) => {
@@ -118,8 +127,12 @@ export function ListAnswer({ canClientCheck, quiz, isOrdered }) {
             {!responseCorrect &&
                 responseStatus === "complete" &&
                 failures > 2 && (
-                    <div>
-                        Incorrect. Acceptable answers are
+                    <div data-type="hints">
+                        <p>
+                            You're having some trouble. Here are some acceptable
+                            answers:
+                        </p>
+
                         <ul>
                             {quiz.correctResponses.map((ans, index) => {
                                 return <li key={index}>{ans}</li>;

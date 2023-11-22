@@ -42,7 +42,7 @@ export function NoteInput({ note }) {
                 availableSources.find((x) => x._id === srcId),
             ),
         );
-        if (note.tags?.length > 0) setTags([...note.tags]);
+        if (note.tags.length > 0) setTags([...note.tags]);
         if (note.permissions) setPermissions(serializeOne(note.permissions));
     }, []);
 
@@ -80,13 +80,16 @@ export function NoteInput({ note }) {
 
         setLoading(true);
 
-        const response = await fetch("/api/note", {
-            method: note ? "PUT" : "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/note`,
+            {
+                method: note ? "PUT" : "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(notePayload),
             },
-            body: JSON.stringify(notePayload),
-        });
+        );
 
         setLoading(false);
 
@@ -188,10 +191,12 @@ export function NoteInput({ note }) {
 
             <InputPopup type="source" />
 
-            <PermissionsInput
-                permissions={permissions}
-                setter={setPermissions}
-            />
+            {(!note || note.createdBy === user._id) && (
+                <PermissionsInput
+                    permissions={note ? note.permissions : {}}
+                    setter={setPermissions}
+                />
+            )}
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Note"}

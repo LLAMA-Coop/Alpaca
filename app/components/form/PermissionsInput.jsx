@@ -5,42 +5,33 @@ import { Input, Label } from "@/app/components/client";
 // add this to client/index.js
 import ListAdd from "./ListAdd";
 import { useStore } from "@/store/store";
-import { serializeOne } from "@/lib/db";
 
 export default function PermissionsInput({ permissions, setter }) {
-    const [allWrite, setAllWrite] = useState(false);
-    const [allRead, setAllRead] = useState(false);
+    const [allWrite, setAllWrite] = useState(permissions ? permissions.allWrite || false : false);
+    const [allRead, setAllRead] = useState(permissions ? permissions.allRead || false : false);
     const [usersWrite, setUsersWrite] = useState([]);
     const [usersRead, setUsersRead] = useState([]);
     const [groupsWrite, setGroupsWrite] = useState([]);
     const [groupsRead, setGroupsRead] = useState([]);
 
-    const availableUsers = useStore((state) => state.userStore);
+    const user = useStore((state) => state.user);
     const availableGroups = useStore((state) => state.groupStore);
 
     useEffect(() => {
-        if (!permissions) {
-            return;
-        }
-
-        if (permissions.allWrite) {
-            setAllWrite(permissions.allWrite);
-        }
-        if (permissions.allRead) {
-            setAllRead(permissions.allRead);
-        }
+        if (!permissions) return;
 
         if (permissions.usersWrite) {
             setUsersWrite(
                 permissions.usersWrite.map((userId) =>
-                    availableUsers.find((x) => x._id === userId),
+                    user?.associates.find((x) => x._id === userId),
                 ),
             );
         }
+
         if (permissions.usersRead) {
             setUsersRead(
                 permissions.usersRead.map((userId) =>
-                    availableUsers.find((x) => x._id === userId),
+                    user?.associates.find((x) => x._id === userId),
                 ),
             );
         }
@@ -92,12 +83,17 @@ export default function PermissionsInput({ permissions, setter }) {
     return (
         <details className="formGrid">
             <summary>Edit Permissions</summary>
+
             <Input
                 type="checkbox"
                 label="Allow All Users to Edit?"
                 value={allWrite}
-                onChange={() => setAllWrite(!allWrite)}
+                onChange={() => {
+                    if (!allWrite) setAllRead(true);
+                    setAllWrite((prev) => !prev);
+                }}
             />
+
             <Input
                 type="checkbox"
                 label="Allow All Users to Read?"
@@ -107,25 +103,26 @@ export default function PermissionsInput({ permissions, setter }) {
             />
 
             <div>
-                <Label label="Users with Permission to Edit" />
+                <Label label="Associates with Permission to Edit" />
 
                 {/* Need to add a disable */}
                 <ListAdd
-                    item="User"
-                    listChoices={availableUsers}
+                    item="Associate"
+                    listChoices={user?.associates}
                     listChosen={usersWrite}
                     listProperty={"username"}
                     listSetter={setUsersWrite}
                     disabled={allWrite}
                 />
             </div>
+
             <div>
-                <Label label="Users with Permission to View" />
+                <Label label="Associates with Permission to View" />
 
                 {/* Need to add a disable */}
                 <ListAdd
-                    item="User"
-                    listChoices={availableUsers}
+                    item="Associate"
+                    listChoices={user?.associates}
                     listChosen={usersRead}
                     listProperty={"username"}
                     listSetter={setUsersRead}

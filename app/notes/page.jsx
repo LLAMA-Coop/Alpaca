@@ -5,7 +5,7 @@ import { serialize, serializeOne } from "@/lib/db";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
 import { cookies } from "next/headers";
 // import { Source, Note, User } from "@mneme_app/database-models";
-import { Source, Note, User } from "@/app/api/models";
+import { Note, User } from "@/app/api/models";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -41,28 +41,20 @@ export default async function NotesPage({ searchParams }) {
         return redirect(`/notes?page=1&amount=${amount}`);
     }
 
-    const sources = user ? serialize(await Source.find(query)) : [];
-
     return (
         <main className={styles.main}>
             <h2>Notes</h2>
             <section className="paragraph">
                 <p>
                     A note is a response to or summary of information in a cited
-                    source or multiple sources.
+                    source or multiple sources. <br />
+                    {user
+                        ? `These are the notes that are publicly viewable and
+                            viewable specifically by you.`
+                        : `You are only viewing the publicly available notes.
+                            Log in or register then log in to see notes
+                            available to you and create your own notes.`}
                 </p>
-                {user ? (
-                    <p>
-                        These are the notes that are publicly viewable and
-                        viewable specifically by you.
-                    </p>
-                ) : (
-                    <p>
-                        You are only viewing the publicly available notes. Log
-                        in or register then log in to see notes available to you
-                        and create your own notes.
-                    </p>
-                )}
             </section>
 
             {notes.length > 0 && (

@@ -7,3 +7,17 @@
     cursor: pointer;
     border-radius: 50%;
 }
+
+.avatarContainer > sub {
+    display: inline-block;
+    min-width: 1rem;
+    min-height: 1rem;
+    background-color: red;
+    text-align: center;
+    line-height: 1.5;
+    border-radius: 50%;
+    font-weight: bolder;
+    position: relative;
+    top: -1.5rem;
+    right: -1.5rem;
+}

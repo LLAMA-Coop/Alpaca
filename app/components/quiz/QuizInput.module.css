@@ -1,0 +1,41 @@
+.blankBank {
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-tertiary);
+    color: var(--foreground-tertiary);
+    padding: 10px;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    margin-top: 4px;
+}
+
+.blankBank > p {
+    margin-bottom: 14px;
+    font-size: 14px;
+    font-style: italic;
+    user-select: none;
+}
+
+.blankBank span label {
+    margin-right: 6px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background-color: var(--background-tertiary);
+    color: var(--foreground-tertiary);
+    font-size: 1rem;
+    cursor: pointer;
+    user-select: none;
+    border: none;
+}
+
+.blankBank span label:hover {
+    opacity: 0.8;
+}
+
+.blankBank input:checked + label {
+    background-color: var(--accent-tertiary-2);
+    color: white;
+}
+
+.blankBank input[type="checkbox"] {
+    display: none;
+}

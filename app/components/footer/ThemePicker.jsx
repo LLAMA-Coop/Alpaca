@@ -156,9 +156,9 @@ export default function ThemePicker() {
                     <div>
                         <svg
                             fill="none"
-                            viewBox="2 2 20 20"
-                            width="12"
-                            height="12"
+                            viewBox="0 0 24 24"
+                            width="16"
+                            height="16"
                             stroke="currentColor"
                         >
                             <path

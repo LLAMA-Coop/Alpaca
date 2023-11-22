@@ -2,11 +2,11 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { Input, Alert, Spinner } from "@components/client";
+import { Input, Spinner } from "@components/client";
 import { useState, useRef, useEffect } from "react";
+import { useAlerts, useStore } from "@/store/store";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
-import { useStore } from "@/store/store";
 
 export function UserInput({ isRegistering }) {
     const [username, setUsername] = useState("");
@@ -19,12 +19,11 @@ export function UserInput({ isRegistering }) {
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
 
     const [passwordFocus, setPasswordFocus] = useState(false);
 
     const setIsAuthenticated = useStore((state) => state.setIsAuthenticated);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     const passwordTooltip = useRef(null);
     const passwordInput = useRef(null);
@@ -108,13 +107,16 @@ export function UserInput({ isRegistering }) {
 
         setLoading(true);
 
-        const response = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/register`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
             },
-            body: JSON.stringify(user),
-        });
+        );
 
         setLoading(false);
 
@@ -134,17 +136,15 @@ export function UserInput({ isRegistering }) {
             setConfirmPasswordError("");
             setPasswordFocus(false);
 
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Account created successfully",
             });
-            setShowAlert(true);
         } else {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "Something went wrong",
             });
-            setShowAlert(true);
         }
     }
 
@@ -167,13 +167,16 @@ export function UserInput({ isRegistering }) {
 
         setLoading(true);
 
-        const response = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/login`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
             },
-            body: JSON.stringify(user),
-        });
+        );
 
         setLoading(false);
 
@@ -190,11 +193,10 @@ export function UserInput({ isRegistering }) {
             setConfirmPasswordError("");
             setPasswordFocus(false);
 
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Logged in successfully",
             });
-            setShowAlert(true);
         } else {
             setUsernameError("Invalid username or password");
         }
@@ -202,13 +204,6 @@ export function UserInput({ isRegistering }) {
 
     return (
         <form className="formGrid">
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <Input
                 required={true}
                 onChange={(e) => {
@@ -218,6 +213,7 @@ export function UserInput({ isRegistering }) {
                 value={username}
                 error={usernameError}
                 label={"Username"}
+                autoFocus={true}
             />
 
             <div style={{ position: "relative" }} ref={passwordInput}>

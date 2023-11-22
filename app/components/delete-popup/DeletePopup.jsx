@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Alert } from "../client";
-import styles from "@/app/components/input-popup/InputPopup.module.css";
 
 export function DeletePopup({ resourceType, resourceId }) {
     const [showPopup, setShowPopup] = useState(false);
@@ -11,9 +10,14 @@ export function DeletePopup({ resourceType, resourceId }) {
     const [requestStatus, setRequestStatus] = useState({});
 
     const handleDelete = async () => {
-        const response = await fetch(`/api/${resourceType}/${resourceId}`, {
-            method: "DELETE",
-        });
+        const response = await fetch(
+            `${
+                process.env.NEXT_PUBLIC_BASEPATH ?? ""
+            }/api/${resourceType}/${resourceId}`,
+            {
+                method: "DELETE",
+            },
+        );
 
         if (response.status === 204) {
             setRequestStatus({

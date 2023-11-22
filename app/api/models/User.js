@@ -1,9 +1,5 @@
 import { model, models, Schema } from "mongoose";
 import MAX from "@/lib/max";
-// import NotificationSchema from "./NotificationSchema";
-
-// This is for tracking progress on quiz questions
-// and spaced repetition (Leitner method)
 
 const TQuiz = new Schema({
     quizId: {
@@ -66,7 +62,7 @@ const UserSchema = new Schema(
         },
         isPublic: {
             type: Boolean,
-            default: false,
+            default: true,
         },
     },
     {

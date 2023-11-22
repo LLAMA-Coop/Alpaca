@@ -27,6 +27,7 @@
         transparent,
         transparent
     );
+    opacity: 0.5;
     animation: animate 4s linear infinite;
 }
 
@@ -92,6 +93,7 @@
     line-height: 28px;
     font-weight: 600;
     word-wrap: break-word;
+    margin-bottom: 14px;
 }
 
 .textContent > div > h5 {
@@ -100,10 +102,40 @@
     line-height: 16px;
     font-weight: 400;
     word-wrap: break-word;
+    text-transform: capitalize;
 }
 
 .textContent > p {
     word-wrap: break-word;
+}
+
+.content [data-type="hints"] {
+    margin-top: 24px;
+}
+
+.content [data-type="hints"] > p {
+    margin-bottom: 8px;
+}
+
+.content [data-type="hints"] li {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    word-wrap: break-word;
+    margin-left: 16px;
+    position: relative;
+}
+
+.content [data-type="hints"] li::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--accent-primary-1);
 }
 
 .buttonContainer {
@@ -134,10 +166,10 @@
 .buttonContainer > *:active {
     background-color: var(--accent-primary-3);
 }
-
+/* 
 .childrenContent {
     margin-top: 24px;
-}
+} */
 
 @property --gradient-angle {
     syntax: "<angle>";

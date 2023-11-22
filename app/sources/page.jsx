@@ -49,20 +49,14 @@ export default async function SourcesPage({ searchParams }) {
                 <p>
                     A source is a record of a resource, such as a book, website,
                     or video tutorial, that you can cite for your notes or quiz
-                    questions.
-                </p>
-                {user ? (
-                    <p>
-                        These are the sources that are publicly viewable and
-                        viewable specifically by you.
-                    </p>
-                ) : (
-                    <p>
-                        You are only viewing the publicly available sources. Log
+                    questions. <br />
+                    {user
+                        ? `These are the sources that are publicly viewable and
+                        viewable specifically by you.`
+                        : `You are only viewing the publicly available sources. Log
                         in or register then log in to see sources available to
-                        you and create your own sources.
-                    </p>
-                )}
+                        you and create your own sources.`}
+                </p>
             </section>
 
             {sources.length > 0 && (

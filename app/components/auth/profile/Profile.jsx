@@ -12,12 +12,15 @@ import { useEffect, useRef, useState } from "react";
 import { protectedPaths } from "@/app/data/paths";
 import { Avatar } from "@components/client";
 import styles from "./Profile.module.css";
+import { useStore } from "@/store/store";
 
 export function Profile({ user }) {
     const [showMenu, setShowMenu] = useState(false);
     const router = useRouter();
     const path = usePathname();
     const menu = useRef(null);
+
+    const notifications = useStore((state) => state.notifications);
 
     useEffect(() => {
         const handleOutsideClick = (e) => {
@@ -42,9 +45,12 @@ export function Profile({ user }) {
     }, [showMenu]);
 
     const logout = async () => {
-        await fetch("/api/auth/logout", {
-            method: "POST",
-        });
+        await fetch(
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/logout`,
+            {
+                method: "POST",
+            },
+        );
 
         if (protectedPaths.includes(path)) {
             router.push("/login");
@@ -74,6 +80,7 @@ export function Profile({ user }) {
                     username={user.username}
                     outline={showMenu}
                 />
+                {notifications.length > 0 && <sub>{notifications.length}</sub>}
             </div>
 
             {showMenu && (
@@ -97,26 +104,6 @@ export function Profile({ user }) {
                                 <FontAwesomeIcon icon={faUser} />
                             </div>
                             Profile
-                        </li>
-
-                        <li
-                            tabIndex={0}
-                            className="icon"
-                            onClick={() => {
-                                router.push("/me/groups");
-                                setShowMenu(false);
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    router.push("/me/groups");
-                                    setShowMenu(false);
-                                }
-                            }}
-                        >
-                            <div>
-                                <FontAwesomeIcon icon={faUserGroup} />
-                            </div>
-                            Groups
                         </li>
 
                         <li

@@ -17,7 +17,7 @@ export default async function GroupPage() {
               $or: [
                   { owner: user._id },
                   { users: { $in: [user._id] } },
-                  { admins: { $in: [user.id] } },
+                  { admins: { $in: [user._id] } },
               ],
           })
         : [];
@@ -71,7 +71,7 @@ export default async function GroupPage() {
             </section>
 
             <section>
-                <h3>Add Group</h3>
+                <h3>Create Group</h3>
                 <GroupInput />
             </section>
         </main>

@@ -1,4 +1,4 @@
-import { UserCard } from "@components/client";
+import { UserCard } from "@components/server";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { serialize, serializeOne } from "@/lib/db";
@@ -6,10 +6,16 @@ import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 // import { Group, Quiz, Note, Source } from "@mneme_app/database-models";
 import { Source, Note, Quiz, Group } from "@/app/api/models";
-import { QuizDisplay } from "@/app/components/server";
+import {
+    QuizDisplay,
+    NoteDisplay,
+    SourceDisplay,
+} from "@/app/components/server";
+import InviteUser from "@/app/components/notification/inviteUser";
 
 export default async function GroupPage({ params }) {
     const groupId = params.groupId;
+    console.log(groupId);
 
     const group = serializeOne(await Group.findById(groupId).populate("users"));
     if (!group) return redirect("/groups");
@@ -23,8 +29,8 @@ export default async function GroupPage({ params }) {
 
     const permissionsQuery = {
         $or: [
-            { "permissions.groupsRead": { $in: group._id } },
-            { "permissions.groupsWrite": { $in: group._id } },
+            { "permissions.groupsRead": { $in: [group._id] } },
+            { "permissions.groupsWrite": { $in: [group._id] } },
         ],
     };
 
@@ -58,12 +64,12 @@ export default async function GroupPage({ params }) {
                         <ol className={styles.listGrid}>
                             {group.users.map((user) => {
                                 return (
-                                    <li key={user.id}>
+                                    <li key={user._id}>
                                         <UserCard
                                             user={user}
-                                            isOwner={user.id === group.owner}
+                                            isOwner={user._id === group.owner}
                                             isAdmin={group.admins.includes(
-                                                user.id,
+                                                user._id,
                                             )}
                                         />
                                     </li>
@@ -72,6 +78,12 @@ export default async function GroupPage({ params }) {
                         </ol>
                     )}
                 </div>
+
+                {user &&
+                    (user._id === group.owner ||
+                        group.admins.includes(user._id)) && (
+                        <InviteUser groupId={groupId} />
+                    )}
             </section>
 
             <section>

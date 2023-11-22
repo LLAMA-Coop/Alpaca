@@ -6,8 +6,8 @@ import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 // import { Source, Quiz, Note } from "@mneme_app/database-models";
 import { Source, Note, Quiz } from "@/app/api/models";
-import InviteAssociate from "@/app/components/inviteAssociate";
-import { Notifications } from "@/app/components/notifications";
+import InviteUser from "@/app/components/notification/inviteUser";
+import Notifications from "@/app/components/notification/notifications";
 import Image from "next/image";
 
 export default async function DashboardPage() {
@@ -53,13 +53,12 @@ export default async function DashboardPage() {
 
                 <h4>Quiz Questions</h4>
                 {quizzes.length > 0 ? (
-                    <ol className={styles.listGrid}>
-                        {quizzes.map((quiz) => (
-                            <li key={quiz._id}>
-                                <QuizDisplay quiz={serializeOne(quiz)} />
-                            </li>
-                        ))}
-                    </ol>
+                    <div className="paragraph">
+                        <p>
+                            You have {quizzes.length} quiz questions to which
+                            you have contributed.
+                        </p>
+                    </div>
                 ) : (
                     <div className="paragraph">
                         <p>No quiz questions</p>
@@ -68,13 +67,12 @@ export default async function DashboardPage() {
 
                 <h4>Notes</h4>
                 {notes.length > 0 ? (
-                    <ol className={styles.listGrid}>
-                        {notes.map((note) => (
-                            <li key={note._id}>
-                                <NoteDisplay note={serializeOne(note)} />
-                            </li>
-                        ))}
-                    </ol>
+                    <div className="paragraph">
+                        <p>
+                            You have {notes.length} notes to which you have
+                            contributed.
+                        </p>
+                    </div>
                 ) : (
                     <div className="paragraph">
                         <p>No notes</p>
@@ -83,13 +81,12 @@ export default async function DashboardPage() {
 
                 <h4>Sources</h4>
                 {sources.length > 0 ? (
-                    <ol className={styles.listGrid}>
-                        {sources.map((source) => (
-                            <li key={source._id}>
-                                <SourceDisplay source={serializeOne(source)} />
-                            </li>
-                        ))}
-                    </ol>
+                    <div className="paragraph">
+                        <p>
+                            You have {sources.length} sources to which you have
+                            contributed.
+                        </p>
+                    </div>
                 ) : (
                     <div className="paragraph">
                         <p>No sources</p>
@@ -119,7 +116,7 @@ export default async function DashboardPage() {
 
                 {user.associates.length === 0 && <p>You have no associates</p>}
 
-                <InviteAssociate />
+                <InviteUser />
             </section>
         </main>
     );

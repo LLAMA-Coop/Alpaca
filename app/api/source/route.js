@@ -147,7 +147,7 @@ export async function PUT(req) {
         if (tags) {
             source.tags = [...tags];
         }
-        if (permissions && source.createdBy.toString() === user._id) {
+        if (permissions && source.createdBy.toString() === user._id.toString()) {
             source.permissions = serializeOne(permissions);
         }
         source.updateBy = user._id;

@@ -7,8 +7,6 @@ import PermissionSchema from "./PermissionSchema";
 import MAX from "@/lib/max";
 // Don't forget to validate at least one source ID
 
-// Also should have searchable tags, like Source
-
 const NoteSchema = new Schema(
     {
         text: {

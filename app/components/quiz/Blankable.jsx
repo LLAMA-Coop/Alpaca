@@ -1,14 +1,13 @@
 "use client";
 
+import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import correctConfetti from "@/lib/correctConfetti";
 import { useEffect, useState } from "react";
 import { Card, Alert } from "../client";
-import correctConfetti from "@/lib/correctConfetti";
-import styles from "./Blankable.module.css";
-import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import { Input } from "../client";
 
-// need to add server-side check
-
-export function Blankable({ canClientCheck, quiz }) {
+export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
     );
@@ -16,7 +15,7 @@ export function Blankable({ canClientCheck, quiz }) {
     const [responseCorrect, setResponseCorrect] = useState(false);
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
-    
+
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 
@@ -26,6 +25,7 @@ export function Blankable({ canClientCheck, quiz }) {
             setResponseCorrect(true);
             setFailures(0);
             correctConfetti();
+            handleWhenCorrect();
         } else {
             setFailures(failures + 1);
         }
@@ -47,13 +47,18 @@ export function Blankable({ canClientCheck, quiz }) {
                 whichIndexesIncorrect(userResponse, quiz.correctResponses),
             );
         } else {
-            const response = await fetch(`/api/quiz/${quiz._id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
+                    quiz._id
+                }`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ userResponse }),
                 },
-                body: JSON.stringify({ userResponse }),
-            });
+            );
 
             if (response.status === 401) {
                 setRequestStatus({
@@ -73,13 +78,102 @@ export function Blankable({ canClientCheck, quiz }) {
     }
 
     function inputSize(string) {
-        if (!string) return 1;
-        if (string.length < 4) return 1;
-        return string.length - 3;
+        if (string.length < 5) return 5;
+        return string.length + 1;
     }
 
+    const renderPromptWithBlanks = () => {
+        const words = quiz.prompt.split(/\b(\w+)\b/g);
+
+        let i = 0;
+
+        return words.map((word, index) => {
+            const isBlankable = quiz.correctResponses
+                .map((answer) => answer.split("_")[1])
+                .includes(word);
+
+            if (isBlankable) {
+                const blankIndex = i;
+                i++;
+
+                return (
+                    <Input
+                        inline
+                        key={index}
+                        type={"text"}
+                        description=""
+                        choices={quiz.correctResponses.map(
+                            (ans) => ans.split("_")[1],
+                        )}
+                        value={answers[blankIndex] ?? ""}
+                        onChange={(e) =>
+                            handleInput(blankIndex, e.target.value)
+                        }
+                        outlineColor={
+                            hasAnswered &&
+                            (incorrectIndexes.includes(blankIndex)
+                                ? "var(--accent-secondary-1)"
+                                : "var(--accent-tertiary-1)")
+                        }
+                    />
+                );
+            }
+
+            return <span key={index}>{word}</span>;
+        });
+    };
+
     return (
-        <Card>
+        <Card
+            title={"Fill in the blanks"}
+            buttons={[
+                {
+                    label:
+                        responseStatus === "complete"
+                            ? responseCorrect
+                                ? "Correct"
+                                : "Incorrect"
+                            : "Check Answer",
+                    icon:
+                        responseStatus === "complete"
+                            ? responseCorrect
+                                ? faCheck
+                                : faXmark
+                            : undefined,
+                    color:
+                        responseStatus === "complete"
+                            ? responseCorrect
+                                ? "green"
+                                : "red"
+                            : undefined,
+                    label:
+                        responseStatus === "complete"
+                            ? incorrectIndexes.length
+                                ? "Incorrect"
+                                : "Correct"
+                            : "Check Answer",
+                    icon:
+                        responseStatus === "complete"
+                            ? incorrectIndexes.length
+                                ? faXmark
+                                : faCheck
+                            : undefined,
+                    color:
+                        responseStatus === "complete"
+                            ? incorrectIndexes.length
+                                ? "var(--accent-secondary-1)"
+                                : "var(--accent-tertiary-1)"
+                            : undefined,
+                    onClick: handleCheckAnswer,
+                },
+            ]}
+            border={
+                responseStatus === "complete" &&
+                (incorrectIndexes.length
+                    ? "var(--accent-tertiary-1)"
+                    : "var(--accent-secondary-1)")
+            }
+        >
             <Alert
                 show={showAlert}
                 setShow={setShowAlert}
@@ -87,44 +181,38 @@ export function Blankable({ canClientCheck, quiz }) {
                 message={requestStatus.message}
             />
 
-            <h4 id="prompt">Fill in the blanks</h4>
             {texts.map((text, index) => {
                 return (
                     <span key={index}>
                         {text}
                         {index < texts.length - 1 && (
-                            <input
-                                className={`${styles.input} ${
-                                    incorrectIndexes.includes(index)
-                                        ? styles.incorrect
-                                        : ""
-                                }`}
-                                type="text"
-                                aria-label="blank"
-                                id={"ans_" + index}
-                                value={userResponse[index]}
+                            <Input
+                                inline
                                 size={inputSize(String(userResponse[index]))}
+                                choices={quiz.correctResponses.map(
+                                    (ans) => ans.split("_")[1],
+                                )}
+                                value={userResponse[index]}
                                 onChange={(e) => {
                                     handleChange(index, e.target.value);
                                 }}
+                                outlineColor={
+                                    responseStatus === "complete" &&
+                                    (incorrectIndexes.includes(index)
+                                        ? "var(--accent-secondary-1)"
+                                        : "var(--accent-tertiary-1)")
+                                }
                             />
                         )}
                     </span>
                 );
             })}
 
-            <button onClick={handleCheckAnswer} className="button">
-                Check Answer
-            </button>
-
-            {responseCorrect && responseStatus === "complete" && (
-                <div>Correct!</div>
-            )}
             {!responseCorrect &&
                 responseStatus === "complete" &&
                 failures > 2 && (
-                    <div>
-                        Incorrect. Acceptable answers are
+                    <div data-type="hints">
+                        <p>You're having some trouble. Here are some hints:</p>
                         <ul>
                             {quiz.correctResponses.map((ans, index) => {
                                 return <li key={index}>{ans}</li>;

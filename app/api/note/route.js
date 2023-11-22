@@ -37,8 +37,6 @@ export async function POST(req) {
 
         const { text, sources, tags, permissions } = await req.json();
 
-        // Will need to redesign once images/videos are permitted in notes
-
         if (!text) {
             return NextResponse.json(
                 {

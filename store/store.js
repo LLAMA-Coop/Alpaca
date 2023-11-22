@@ -1,3 +1,4 @@
+import makeUniqueId from "@/lib/uniqueId";
 import { create } from "zustand";
 
 const addResources = (state, storeName, ...resources) => {
@@ -21,9 +22,19 @@ const addResources = (state, storeName, ...resources) => {
 const addNotifications = (state, ...notifications) => {
     const newStore = [...state.notifications];
     notifications.forEach((n) => {
-        const alreadyStored = newStore.find(x => x._id === n._id)
-        if(!alreadyStored) newStore.push(n);
+        const alreadyStored = newStore.find((x) => x._id === n._id);
+        if (!alreadyStored) newStore.push(n);
     });
+    const newState = {};
+    newState.notifications = newStore;
+    return newState;
+};
+
+const removeNotification = (state, notification) => {
+    const newStore = [...state.notifications];
+    const notif = newStore.find((x) => x._id === notification._id);
+    const index = newStore.indexOf(notif);
+    newStore.splice(index, 1);
     const newState = {};
     newState.notifications = newStore;
     return newState;
@@ -69,13 +80,29 @@ export const useStore = create((set) => ({
 
     setUser: (user) => {
         return set(() => ({
-            user,
+            user: {
+                _id: user._id,
+                username: user.username,
+                displayName: user.displayName,
+                avatar: user.avatar,
+                associates: user.associates,
+                groups: user.groups,
+                quizzes: user.quizzes,
+            },
         }));
     },
 
     addNotifications: (...notifications) => {
         try {
             return set((state) => addNotifications(state, ...notifications));
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    removeNotification: (notification) => {
+        try {
+            return set((state) => removeNotification(state, notification));
         } catch (error) {
             console.error(error);
         }
@@ -105,4 +132,71 @@ export const useStore = create((set) => ({
             console.error(e);
         }
     },
+}));
+
+// Daily Train Store
+
+export const useDailyTrain = create()((set) => ({
+    start: false,
+    isPaused: false,
+    settings: {
+        timeLimit: 1000 * 60 * 5,
+        tags: [],
+        categories: [],
+    },
+
+    setStart: (start) => set(() => ({ start })),
+    setIsPaused: (isPaused) => set(() => ({ isPaused })),
+    setTimeLimit: (timeLimit) => set(() => ({ timeLimit })),
+    setSettings: (newValues) =>
+        set(() => ({
+            settings: {
+                ...settings,
+                ...newValues,
+            },
+        })),
+}));
+
+// Alerts Store
+
+export const useAlerts = create()((set) => ({
+    alerts: [],
+
+    addAlert: (alert) =>
+        set((state) => ({
+            alerts: [
+                ...state.alerts,
+                {
+                    id: makeUniqueId(),
+                    ...alert,
+                },
+            ],
+        })),
+
+    removeAlert: (id) =>
+        set((state) => ({
+            alerts: state.alerts.filter((alert) => alert.id !== id),
+        })),
+}));
+
+// Modals Store
+
+export const useModals = create()((set) => ({
+    modals: [],
+
+    addModal: (modal) =>
+        set((state) => ({
+            modals: [
+                ...state.modals,
+                {
+                    id: makeUniqueId(),
+                    ...modal,
+                },
+            ],
+        })),
+
+    removeModal: (id) =>
+        set((state) => ({
+            modals: state.modals.filter((modal) => modal.id !== id),
+        })),
 }));

@@ -1,52 +1,40 @@
-.header > div {
+.header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     max-width: var(--max-width);
+    width: 100%;
     margin: 0 auto;
     padding: 0 40px;
     height: 80px;
+    user-select: none;
 }
 
-.header > div > h1 > a {
+.header > h1 > a {
     display: inline-flex;
     font-size: 32px;
-    user-select: none;
     border-radius: 5px;
     outline-offset: 4px;
     color: var(--foreground-primary);
 }
 
-.header > div > nav {
+.header > nav {
     flex: 1;
 }
 
-.header > div > div {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.header > div > :not(:nth-child(2)) {
+.header > :not(:nth-child(2)) {
     width: 120px;
 }
 
-.header > div > div > a {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 100vw;
-    padding: 10px 20px;
-    z-index: 1;
-    user-select: none;
-    color: var(--foreground-secondary);
-    transition:
-        background-color 0.1s ease-in-out,
-        color 0.1s ease-in-out;
+@media (max-width: 768px) {
+    .header > nav {
+        display: none;
+    }
 }
 
-.header > div > div > a:hover {
-    background-color: var(--background-secondary);
-    color: var(--foreground-primary);
+@media (max-width: 550px) {
+    .header {
+        padding: 0 20px;
+        height: 60px;
+    }
 }
