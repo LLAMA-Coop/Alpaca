@@ -18,6 +18,8 @@ import { serialize, serializeOne } from "@/lib/db";
 import { useUser, queryReadableResources } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { Timer } from "./components/Layers/Timer";
+import { Alerts } from "./components/Layers/Alerts";
+import { Modals } from "./components/Modals/Modals";
 
 const connection = await connectDB();
 
@@ -101,6 +103,8 @@ export default async function RootLayout({ children }) {
                 <Footer />
 
                 <Timer />
+                <Alerts />
+                <Modals />
             </body>
         </html>
     );

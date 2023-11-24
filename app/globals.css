@@ -12,6 +12,7 @@
     --background-primary: hsl(0, 0%, 100%);
     --background-secondary: hsl(0, 0%, 97%);
     --background-tertiary: hsl(0, 0%, 94%);
+    --background-4: hsl(0, 0%, 90%);
 
     --foreground-primary: hsl(240, 10%, 4%);
     --foreground-secondary: hsl(240, 6%, 10%);
@@ -44,6 +45,7 @@
         --background-primary: hsl(240, 4%, 5%);
         --background-secondary: hsl(240, 6%, 10%);
         --background-tertiary: hsl(240, 4%, 16%);
+        --background-4: hsl(240, 4%, 20%);
 
         --foreground-primary: hsl(0, 0%, 98%);
         --foreground-secondary: hsl(240, 2%, 80%);
@@ -190,6 +192,11 @@ a {
 .button.red:active {
     background-color: var(--accent-secondary-3);
     color: var(--accent-foreground);
+}
+
+.button.transparent {
+    background-color: transparent;
+    color: var(--foreground-primary);
 }
 
 ul,
@@ -376,6 +383,14 @@ input[type="date"] {
 
 h4 {
     margin-bottom: 12px;
+}
+
+.listGrid {
+    width: 100%;
+    max-width: var(--max-width);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 500px));
+    grid-gap: 16px;
 }
 
 @media screen and (max-width: 1024px) {

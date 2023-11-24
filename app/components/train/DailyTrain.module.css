@@ -18,3 +18,36 @@
 .settingsButton:hover {
     background: var(--background-tertiary);
 }
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: var(--background-secondary);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.closeButton {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    padding: 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--background-tertiary);
+    color: var(--foreground-secondary);
+    cursor: pointer;
+}
+
+.closeButton:hover {
+    background: var(--background-4);
+    color: var(--foreground-primary);
+}

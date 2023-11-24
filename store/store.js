@@ -1,3 +1,4 @@
+import makeUniqueId from "@/lib/uniqueId";
 import { create } from "zustand";
 
 const addResources = (state, storeName, ...resources) => {
@@ -140,9 +141,64 @@ export const useStore = create((set) => ({
 export const useDailyTrain = create()((set) => ({
     start: false,
     isPaused: false,
-    timeLimit: 1000 * 60 * 5,
+    settings: {
+        timeLimit: 1000 * 60 * 5,
+        tags: [],
+        categories: [],
+    },
 
     setStart: (start) => set(() => ({ start })),
     setIsPaused: (isPaused) => set(() => ({ isPaused })),
     setTimeLimit: (timeLimit) => set(() => ({ timeLimit })),
+    setSettings: (newValues) =>
+        set(() => ({
+            settings: {
+                ...settings,
+                ...newValues,
+            },
+        })),
+}));
+
+// Alerts Store
+
+export const useAlerts = create()((set) => ({
+    alerts: [],
+
+    addAlert: (alert) =>
+        set((state) => ({
+            alerts: [
+                ...state.alerts,
+                {
+                    id: makeUniqueId(),
+                    ...alert,
+                },
+            ],
+        })),
+
+    removeAlert: (id) =>
+        set((state) => ({
+            alerts: state.alerts.filter((alert) => alert.id !== id),
+        })),
+}));
+
+// Modals Store
+
+export const useModals = create()((set) => ({
+    modals: [],
+
+    addModal: (modal) =>
+        set((state) => ({
+            modals: [
+                ...state.modals,
+                {
+                    id: makeUniqueId(),
+                    ...modal,
+                },
+            ],
+        })),
+
+    removeModal: (id) =>
+        set((state) => ({
+            modals: state.modals.filter((modal) => modal.id !== id),
+        })),
 }));
