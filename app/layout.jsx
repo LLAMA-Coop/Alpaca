@@ -12,6 +12,7 @@ import {
     User,
     Notification,
 } from "@/app/api/models";
+import Category from "./api/models/Category";
 import { FillStore } from "./components/fillStore";
 import { serialize, serializeOne } from "@/lib/db";
 import { useUser, queryReadableResources } from "@/lib/auth";
@@ -58,6 +59,7 @@ export default async function RootLayout({ children }) {
     const sources = serialize(await Source.find(query));
     const notes = serialize(await Note.find(query));
     const quizzes = serialize(await Quiz.find(query));
+    const categories = serialize(await Category.find(query));
 
     const publicUsers = await User.find({ isPublic: true });
     const associates = user
@@ -85,6 +87,7 @@ export default async function RootLayout({ children }) {
                 sourceStore={sources}
                 noteStore={notes}
                 quizStore={quizzes}
+                categoryStore={categories}
                 groupStore={availableGroups}
                 userStore={availableUsers}
                 user={serializeOne(user)}

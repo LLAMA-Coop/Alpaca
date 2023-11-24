@@ -30,9 +30,9 @@ export async function POST(req) {
         }
 
         const { name, description, subcategoryOf, prerequisites, permissions } =
-            req.json();
+            await req.json();
 
-        if (!name) {
+        if (!name || !description) {
             return NextResponse.json(
                 { message: "Missing required information" },
                 { status: 400 },
@@ -44,6 +44,8 @@ export async function POST(req) {
             description,
             subcategoryOf,
             prerequisites,
+            createdBy: user._id,
+            contributors: [user._id]
         });
 
         category.permissions = buildPermissions(permissions);
@@ -108,7 +110,7 @@ export async function PUT(req) {
         if (subcategoryOf) {
             subcategoryOf.forEach((catId_req) => {
                 if (
-                    category.subcategoryOf.find(
+                    !category.subcategoryOf.find(
                         (catId) => catId.toString() == catId_req,
                     )
                 ) {
@@ -119,7 +121,7 @@ export async function PUT(req) {
         if (prerequisites) {
             prerequisites.forEach((catId_req) => {
                 if (
-                    category.prerequisites.find(
+                    !category.prerequisites.find(
                         (catId) => catId.toString() == catId_req,
                     )
                 ) {

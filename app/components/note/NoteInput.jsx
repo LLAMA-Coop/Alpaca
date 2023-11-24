@@ -96,12 +96,10 @@ export function NoteInput({ note }) {
         if (response.status === 201) {
             setText("");
             setSourceError("");
-            // setSources([]);
-            setText("");
 
             setRequestStatus({
                 success: true,
-                message: "Note added succesfully.",
+                message: "Note added succesfully",
             });
             setShowAlert(true);
         } else if (response.status === 200) {

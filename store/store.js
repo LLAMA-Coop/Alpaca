@@ -64,6 +64,7 @@ export const stores = {
     source: "sourceStore",
     note: "noteStore",
     quiz: "quizStore",
+    category: "categoryStore",
     group: "groupStore",
     user: "userStore",
 };
@@ -72,6 +73,7 @@ export const useStore = create((set) => ({
     sourceStore: [],
     noteStore: [],
     quizStore: [],
+    categoryStore: [],
     groupStore: [],
     userStore: [],
     user: undefined,
