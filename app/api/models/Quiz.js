@@ -64,6 +64,19 @@ const QuizSchema = new Schema(
                 maxLength: MAX.response,
             },
         ],
+        tags: [
+            {
+                type: String,
+                minLength: 1,
+                maxLength: MAX.tag,
+            },
+        ],
+        categories: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "category"
+            }
+        ],
         sources: [
             {
                 type: Schema.Types.ObjectId,

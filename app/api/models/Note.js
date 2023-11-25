@@ -22,6 +22,12 @@ const NoteSchema = new Schema(
                 maxLength: MAX.tag,
             },
         ],
+        categories: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "category"
+            }
+        ],
         sources: [
             {
                 type: Schema.Types.ObjectId,
