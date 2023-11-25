@@ -22,6 +22,7 @@ export function NoteInput({ note }) {
     const [textError, setTextError] = useState("");
     const [sourceError, setSourceError] = useState("");
 
+    const [courses, setCourses] = useState([]);
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
     const [permissions, setPermissions] = useState({});
@@ -31,6 +32,7 @@ export function NoteInput({ note }) {
     const [requestStatus, setRequestStatus] = useState({});
 
     const availableSources = useStore((state) => state.sourceStore);
+    const availableCourses = useStore((state) => state.courseStore);
     const user = useStore((state) => state.user);
     const canDelete = note && note.createdBy === user._id;
 
@@ -42,7 +44,14 @@ export function NoteInput({ note }) {
                 availableSources.find((x) => x._id === srcId),
             ),
         );
-        if (note.tags.length > 0) setTags([...note.tags]);
+        if (note.courses && note.courses.length > 0) {
+            setCourses(
+                note.courses.map((courseId) =>
+                    availableCourses.find((x) => x._id === courseId),
+                ),
+            );
+        }
+        if (note.tags && note.tags.length > 0) setTags([...note.tags]);
         if (note.permissions) setPermissions(serializeOne(note.permissions));
     }, []);
 
@@ -71,6 +80,7 @@ export function NoteInput({ note }) {
         const notePayload = {
             text,
             sources: sources.map((src) => src._id),
+            courses: courses.map((course) => course._id),
             tags,
         };
         notePayload.permissions = permissions;
@@ -152,6 +162,18 @@ export function NoteInput({ note }) {
                     listChosen={sources}
                     listProperty={"title"}
                     listSetter={setSources}
+                />
+            </div>
+
+            <div>
+                <Label required={false} label="Courses" />
+
+                <ListAdd
+                    item="Add a course"
+                    listChoices={availableCourses}
+                    listChosen={courses}
+                    listProperty={"name"}
+                    listSetter={setCourses}
                 />
             </div>
 

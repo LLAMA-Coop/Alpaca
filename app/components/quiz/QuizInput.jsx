@@ -88,8 +88,8 @@ export function QuizInput({ quiz }) {
         }
         if (quiz.courses) {
             setCourses(
-                quiz.courses.map((catId) =>
-                    availableCourses.find((x) => x._id === catId),
+                quiz.courses.map((courseId) =>
+                    availableCourses.find((x) => x._id === courseId),
                 ),
             );
         }
@@ -201,7 +201,7 @@ export function QuizInput({ quiz }) {
             hints: hints,
             sources: sources.map((src) => src._id),
             notes: notes.map((nt) => nt._id),
-            courses: courses.map((cat) => cat._id),
+            courses: courses.map((course) => course._id),
             tags,
         };
         if (quiz) {
