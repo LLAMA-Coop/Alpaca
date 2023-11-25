@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 // import { Source } from "@mneme_app/database-models";
 import { Source } from "@/app/api/models";
 import { unauthorized, server } from "@/lib/apiErrorResponses";
+import { Types } from "mongoose";
 import { buildPermissions } from "@/lib/permissions";
 import { serializeOne } from "@/lib/db";
 
@@ -36,6 +37,7 @@ export async function POST(req) {
             publishDate,
             lastAccessed,
             authors,
+            courses,
             tags,
             permissions,
         } = await req.json();
@@ -65,7 +67,8 @@ export async function POST(req) {
             publishedAt: publishDate,
             lastAccessed: lastAccessed,
             authors: authors,
-            tags: tags,
+            courses: courses ?? [],
+            tags,
             createdBy: user._id,
             contributors: [user._id],
         });
@@ -103,6 +106,7 @@ export async function PUT(req) {
             publishDate,
             lastAccessed,
             authors,
+            courses,
             tags,
             permissions,
         } = await req.json();
@@ -143,6 +147,17 @@ export async function PUT(req) {
         }
         if (authors) {
             source.authors = [...authors];
+        }
+        if(courses){
+            courses.forEach((courseId_req) => {
+                if (
+                    !source.courses.find(
+                        (course) => course._id.toString() === courseId_req,
+                    )
+                ) {
+                    source.courses.push(new Types.ObjectId(courseId_req));
+                }
+            });
         }
         if (tags) {
             source.tags = [...tags];

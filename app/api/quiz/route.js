@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { serializeOne } from "@/lib/db";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
+import { buildPermissions } from "@/lib/permissions";
 
 const allowedType = [
     "prompt-response",
@@ -42,8 +43,8 @@ export async function POST(req) {
             correctResponses,
             sources,
             notes,
-            tags,
             courses,
+            tags,
             permissions,
         } = await req.json();
 
@@ -107,21 +108,21 @@ export async function POST(req) {
                 .map((x) => x.split("_")[1]);
         }
 
-        const quizRcvd = {
+        const quiz = new Quiz({
             type: type,
             prompt: prompt,
             choices: choices,
             correctResponses: correctResponses,
-            contributors: [user._id],
-            createdBy: user._id,
             notes: notes ?? [],
             sources: sources ?? [],
             courses: courses ?? [],
             tags: tags ?? [],
-            permissions: serializeOne(permissions) ?? {},
-        };
+            contributors: [user._id],
+            createdBy: user._id,
+        });
 
-        const quiz = new Quiz(quizRcvd);
+        quiz.permissions = buildPermissions(permissions);
+
         const content = await quiz.save();
         return NextResponse.json({ content }, { status: 201 });
     } catch (error) {
@@ -220,20 +221,20 @@ export async function PUT(req) {
                 }
             });
         }
-        
+
         if (courses) {
-            courses.forEach((catId_req) => {
+            courses.forEach((courseId_req) => {
                 if (
                     !quiz.courses.find(
-                        (cat) => cat._id.toString() === catId_req,
+                        (course) => course._id.toString() === courseId_req,
                     )
                 ) {
-                    quiz.courses.push(new Types.ObjectId(catId_req));
+                    quiz.courses.push(new Types.ObjectId(courseId_req));
                 }
             });
         }
 
-        if(tags){
+        if (tags) {
             quiz.tags = tags;
         }
 

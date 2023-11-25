@@ -6,6 +6,7 @@ import { Note } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
 import { serializeOne } from "@/lib/db";
+import { buildPermissions } from "@/lib/permissions";
 
 export async function GET(req) {
     try {
@@ -35,7 +36,7 @@ export async function POST(req) {
             return unauthorized;
         }
 
-        const { text, sources, tags, permissions } = await req.json();
+        const { text, sources, courses, tags, permissions } = await req.json();
 
         if (!text) {
             return NextResponse.json(
@@ -55,15 +56,16 @@ export async function POST(req) {
             );
         }
 
-        const noteRcvd = {
+        const note = new Note({
             createdBy: user._id,
             text: text,
             sources: [...sources],
+            courses: courses ?? [],
             tags: [...tags],
             contributors: [user._id],
-        };
+        });
+        note.permissions = buildPermissions(permissions);
 
-        const note = new Note(noteRcvd);
         const content = await note.save();
         return NextResponse.json({ content }, { status: 201 });
     } catch (error) {
@@ -80,7 +82,8 @@ export async function PUT(req) {
             return unauthorized;
         }
 
-        const { _id, text, sources, tags, permissions } = await req.json();
+        const { _id, text, sources, courses, tags, permissions } =
+            await req.json();
 
         const note = await Note.findById(_id);
         if (!note) {
@@ -112,6 +115,18 @@ export async function PUT(req) {
                     )
                 ) {
                     note.sources.push(new Types.ObjectId(sourceId_req));
+                }
+            });
+        }
+
+        if (courses) {
+            courses.forEach((courseId_req) => {
+                if (
+                    !note.courses.find(
+                        (course) => course._id.toString() === courseId_req,
+                    )
+                ) {
+                    note.courses.push(new Types.ObjectId(courseId_req));
                 }
             });
         }
