@@ -65,7 +65,7 @@ export const stores = {
     source: "sourceStore",
     note: "noteStore",
     quiz: "quizStore",
-    category: "categoryStore",
+    course: "courseStore",
     group: "groupStore",
     user: "userStore",
 };
@@ -74,7 +74,7 @@ export const useStore = create((set) => ({
     sourceStore: [],
     noteStore: [],
     quizStore: [],
-    categoryStore: [],
+    courseStore: [],
     groupStore: [],
     userStore: [],
     user: undefined,
@@ -144,7 +144,7 @@ export const useDailyTrain = create()((set) => ({
     settings: {
         timeLimit: 1000 * 60 * 5,
         tags: [],
-        categories: [],
+        courses: [],
     },
 
     setStart: (start) => set(() => ({ start })),

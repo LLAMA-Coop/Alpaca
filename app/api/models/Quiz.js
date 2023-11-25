@@ -71,10 +71,10 @@ const QuizSchema = new Schema(
                 maxLength: MAX.tag,
             },
         ],
-        categories: [
+        courses: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "category"
+                ref: "course"
             }
         ],
         sources: [

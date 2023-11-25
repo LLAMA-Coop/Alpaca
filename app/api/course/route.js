@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import Category from "../models/Category"; // Don't forget to add this to index.js
+import Course from "../models/Course"; // Don't forget to add this to index.js
 import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { buildPermissions } from "@/lib/permissions";
 import { Types } from "mongoose";
@@ -12,12 +12,12 @@ export async function GET(req) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const content = await Category.find(queryReadableResources(user));
+        const content = await Course.find(queryReadableResources(user));
         return NextResponse.json({
             content,
         });
     } catch (error) {
-        console.error(`[Category] GET error: ${error}`);
+        console.error(`[Course] GET error: ${error}`);
         return server;
     }
 }
@@ -29,7 +29,7 @@ export async function POST(req) {
             return unauthorized;
         }
 
-        const { name, description, subcategoryOf, prerequisites, permissions } =
+        const { name, description, parentCourses, prerequisites, permissions } =
             await req.json();
 
         if (!name || !description) {
@@ -39,28 +39,28 @@ export async function POST(req) {
             );
         }
 
-        const category = new Category({
+        const course = new Course({
             name,
             description,
-            subcategoryOf,
+            parentCourses,
             prerequisites,
             createdBy: user._id,
-            contributors: [user._id]
+            contributors: [user._id],
         });
 
-        category.permissions = buildPermissions(permissions);
+        course.permissions = buildPermissions(permissions);
 
-        const content = await category.save();
+        const content = await course.save();
 
         return NextResponse.json(
             {
-                message: "Category created successfully",
+                message: "Course created successfully",
                 content,
             },
             { status: 201 },
         );
     } catch (error) {
-        console.error(`[Category] POST error: ${error}`);
+        console.error(`[Course] POST error: ${error}`);
         return server;
     }
 }
@@ -77,71 +77,71 @@ export async function PUT(req) {
             _id,
             name,
             description,
-            subcategoryOf,
+            parentCourses,
             prerequisites,
             permissions,
         } = await req.json();
 
-        const category = await Category.findById(_id);
-        if (!category) {
+        const course = await Course.findById(_id);
+        if (!course) {
             return NextResponse.json(
                 {
-                    message: `No category found with id ${_id}`,
+                    message: `No course found with id ${_id}`,
                 },
                 { status: 404 },
             );
         }
 
-        if (!canEdit(category, user)) {
+        if (!canEdit(course, user)) {
             return NextResponse.json(
                 {
-                    message: `You are not permitted to edit category ${_id}`,
+                    message: `You are not permitted to edit course ${_id}`,
                 },
                 { status: 403 },
             );
         }
 
         if (name) {
-            category.name = name;
+            course.name = name;
         }
         if (description) {
-            category.description = description;
+            course.description = description;
         }
-        if (subcategoryOf) {
-            subcategoryOf.forEach((catId_req) => {
+        if (parentCourses) {
+            parentCourses.forEach((catId_req) => {
                 if (
-                    !category.subcategoryOf.find(
+                    !course.parentCourses.find(
                         (catId) => catId.toString() == catId_req,
                     )
                 ) {
-                    category.subcategoryOf.push(new Types.ObjectId(catId_req));
+                    course.parentCourses.push(new Types.ObjectId(catId_req));
                 }
             });
         }
         if (prerequisites) {
             prerequisites.forEach((catId_req) => {
                 if (
-                    !category.prerequisites.find(
+                    !course.prerequisites.find(
                         (catId) => catId.toString() == catId_req,
                     )
                 ) {
-                    category.prerequisites.push(new Types.ObjectId(catId_req));
+                    course.prerequisites.push(new Types.ObjectId(catId_req));
                 }
             });
         }
 
         if (
             permissions &&
-            category.createdBy.toString() === user._id.toString()
+            course.createdBy.toString() === user._id.toString()
         ) {
-            category.permissions = serializeOne(permissions);
+            course.permissions = serializeOne(permissions);
         }
-        category.updatedBy = user._id;
+        course.updatedBy = user._id;
 
-        const content = await category.save();
+        const content = await course.save();
         return NextResponse.json({ content });
     } catch (error) {
-        console.error(`[Category] PUT error: ${error}`);
+        console.error(`[Course] PUT error: ${error}`);
         return server;
     }
 }

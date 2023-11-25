@@ -6,7 +6,7 @@ export function FillStore({
     sourceStore,
     noteStore,
     quizStore,
-    categoryStore,
+    courseStore,
     groupStore,
     userStore,
     webSocketURL,
@@ -57,7 +57,7 @@ export function FillStore({
             addResources(stores.source, ...sourceStore);
         if (noteStore?.length > 0) addResources(stores.note, ...noteStore);
         if (quizStore?.length > 0) addResources(stores.quiz, ...quizStore);
-        if(categoryStore?.length > 0) addResources(stores.category, ...categoryStore)
+        if(courseStore?.length > 0) addResources(stores.course, ...courseStore)
         if (groupStore?.length > 0) addResources(stores.group, ...groupStore);
         if (userStore?.length > 0) addResources(stores.user, ...userStore);
         if (user) setUser(user);

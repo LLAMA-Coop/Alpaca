@@ -9,43 +9,43 @@ import { Input, InputPopup, Label, Spinner, Alert } from "../client";
 import ListAdd from "../form/ListAdd";
 import PermissionsInput from "../form/PermissionsInput";
 
-export function CategoryInput({ category }) {
+export function CourseInput({ course }) {
     const [name, setName] = useState("");
     const [nameError, setNameError] = useState("");
     const [description, setDescription] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
     const [permissions, setPermissions] = useState("");
 
-    const [subcategoryOf, setSubcategoryOf] = useState([]);
+    const [parentCourses, setParentCourses] = useState([]);
     const [prerequisites, setPrerequisites] = useState([]);
 
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 
-    const availableCategories = useStore((state) => state.categoryStore);
+    const availableCourses = useStore((state) => state.courseStore);
     const user = useStore((state) => state.user);
-    const canDelete = category && user && category.createdBy === user._id;
+    const canDelete = course && user && course.createdBy === user._id;
 
     useEffect(() => {
-        if (!category) return;
-        setName(category.name);
-        setDescription(category.description);
+        if (!course) return;
+        setName(course.name);
+        setDescription(course.description);
 
-        setSubcategoryOf(
-            category.subcategoryOf.map((catId) =>
-                availableCategories.find((x) => x._id === catId),
+        setParentCourses(
+            course.parentCourses.map((catId) =>
+                availableCourses.find((x) => x._id === catId),
             ),
         );
 
         setPrerequisites(
-            category.prerequisites.map((catId) =>
-                availableCategories.find((x) => x._id === catId),
+            course.prerequisites.map((catId) =>
+                availableCourses.find((x) => x._id === catId),
             ),
         );
 
-        if (category.permissions)
-            setPermissions(serializeOne(category.permissions));
+        if (course.permissions)
+            setPermissions(serializeOne(course.permissions));
     }, []);
 
     async function handleSubmit(e) {
@@ -53,12 +53,12 @@ export function CategoryInput({ category }) {
 
         if (name.length === 0) {
             setNameError(
-                `Category name must be between 1 and ${MAX.name} characters`,
+                `Course name must be between 1 and ${MAX.name} characters`,
             );
         }
         if (description.length === 0) {
             setDescriptionError(
-                `Category description must be between 1 and ${MAX.description} characters`,
+                `Course description must be between 1 and ${MAX.description} characters`,
             );
         }
         if (name.length === 0 || description.length === 0) {
@@ -68,21 +68,21 @@ export function CategoryInput({ category }) {
         const catPayload = {
             name,
             description,
-            subcategoryOf: subcategoryOf.map((cat) => cat._id),
+            parentCourses: parentCourses.map((cat) => cat._id),
             prerequisites: prerequisites.map((cat) => cat._id),
         };
         catPayload.permissions = permissions;
-        if (category) {
+        if (course) {
             // this will change to implement PATCH in /[id]/route.js
-            catPayload._id = category._id;
+            catPayload._id = course._id;
         }
 
         setLoading(true);
 
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/category`,
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/course`,
             {
-                method: category ? "PUT" : "POST",
+                method: course ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -98,13 +98,13 @@ export function CategoryInput({ category }) {
 
             setRequestStatus({
                 success: true,
-                message: "Category added successfully",
+                message: "Course added successfully",
             });
             setShowAlert(true);
         } else if (response.status === 200) {
             setRequestStatus({
                 success: true,
-                message: "Category edited successfully",
+                message: "Course edited successfully",
             });
             setShowAlert(true);
         } else {
@@ -153,50 +153,50 @@ export function CategoryInput({ category }) {
             <div>
                 <Label
                     required={false}
-                    label="This is a subcategory of which categories?"
+                    label="Parent Courses"
                 />
 
                 <ListAdd
-                    item="Add a category for which this is a subcategory"
-                    listChoices={availableCategories}
-                    listChosen={subcategoryOf}
+                    item="Add parent course"
+                    listChoices={availableCourses}
+                    listChosen={parentCourses}
                     listProperty={"name"}
-                    listSetter={setSubcategoryOf}
+                    listSetter={setParentCourses}
                 />
 
-                <InputPopup type="category" />
+                <InputPopup type="course" />
             </div>
 
             <div>
                 <Label
                     required={false}
-                    label="Prerequisite categories (to be studied before this category)"
+                    label="Prerequisite courses (to be studied before this course)"
                 />
 
                 <ListAdd
-                    item="Add a category required before learning this one"
-                    listChoices={availableCategories}
+                    item="Add prerequisite course"
+                    listChoices={availableCourses}
                     listChosen={prerequisites}
                     listProperty={"name"}
                     listSetter={setPrerequisites}
                 />
 
-                <InputPopup type="category" />
+                <InputPopup type="course" />
             </div>
 
-            {(!category || category.createdBy === user._id) && (
+            {(!course || course.createdBy === user._id) && (
                 <PermissionsInput
-                    permissions={category ? category.permissions : {}}
+                    permissions={course ? course.permissions : {}}
                     setter={setPermissions}
                 />
             )}
 
             <button onClick={handleSubmit} className="button submit">
-                {loading ? <Spinner /> : "Submit Category"}
+                {loading ? <Spinner /> : "Submit Course"}
             </button>
 
             {canDelete && (
-                <DeletePopup resourceType="category" resourceId={category.id} />
+                <DeletePopup resourceType="course" resourceId={course.id} />
             )}
         </div>
     );

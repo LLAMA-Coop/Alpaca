@@ -43,7 +43,7 @@ export async function POST(req) {
             sources,
             notes,
             tags,
-            categories,
+            courses,
             permissions,
         } = await req.json();
 
@@ -116,7 +116,7 @@ export async function POST(req) {
             createdBy: user._id,
             notes: notes ?? [],
             sources: sources ?? [],
-            categories: categories ?? [],
+            courses: courses ?? [],
             tags: tags ?? [],
             permissions: serializeOne(permissions) ?? {},
         };
@@ -147,7 +147,7 @@ export async function PUT(req) {
             hints,
             sources,
             notes,
-            categories,
+            courses,
             tags,
             permissions,
         } = await req.json();
@@ -220,15 +220,15 @@ export async function PUT(req) {
                 }
             });
         }
-
-        if (categories) {
-            categories.forEach((catId_req) => {
+        
+        if (courses) {
+            courses.forEach((catId_req) => {
                 if (
-                    !quiz.categories.find(
+                    !quiz.courses.find(
                         (cat) => cat._id.toString() === catId_req,
                     )
                 ) {
-                    quiz.categories.push(new Types.ObjectId(catId_req));
+                    quiz.courses.push(new Types.ObjectId(catId_req));
                 }
             });
         }

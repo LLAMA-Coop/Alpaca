@@ -35,7 +35,7 @@ export function QuizInput({ quiz }) {
 
     const [hints, setHints] = useState([]);
 
-    const [categories, setCategories] = useState([]);
+    const [courses, setCourses] = useState([]);
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
     const [permissions, setPermissions] = useState({});
@@ -54,7 +54,7 @@ export function QuizInput({ quiz }) {
 
     const availableSources = useStore((state) => state.sourceStore);
     const availableNotes = useStore((state) => state.noteStore);
-    const availableCategories = useStore((state) => state.categoryStore);
+    const availableCourses = useStore((state) => state.courseStore);
 
     const user = useStore((state) => state.user);
     const canDelete = quiz && quiz.createdBy === user?._id;
@@ -86,14 +86,14 @@ export function QuizInput({ quiz }) {
                 ),
             );
         }
-        if (quiz.categories) {
-            setCategories(
-                quiz.categories.map((catId) =>
-                    availableCategories.find((x) => x._id === catId),
+        if (quiz.courses) {
+            setCourses(
+                quiz.courses.map((catId) =>
+                    availableCourses.find((x) => x._id === catId),
                 ),
             );
         }
-        if (quiz.tags.length > 0) setTags([...quiz.tags]);
+        if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
             setPermissions(serializeOne(quiz.permissions));
         }
@@ -201,7 +201,7 @@ export function QuizInput({ quiz }) {
             hints: hints,
             sources: sources.map((src) => src._id),
             notes: notes.map((nt) => nt._id),
-            categories: categories.map((cat) => cat._id),
+            courses: courses.map((cat) => cat._id),
             tags,
         };
         if (quiz) {
@@ -463,14 +463,14 @@ export function QuizInput({ quiz }) {
             </div>
 
             <div>
-                <Label required={false} label="Categories" />
+                <Label required={false} label="Courses" />
 
                 <ListAdd
-                    item="Add a category"
-                    listChoices={availableCategories}
-                    listChosen={categories}
+                    item="Add a course"
+                    listChoices={availableCourses}
+                    listChosen={courses}
                     listProperty={"name"}
-                    listSetter={setCategories}
+                    listSetter={setCourses}
                 />
             </div>
 
