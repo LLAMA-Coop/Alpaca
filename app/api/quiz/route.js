@@ -42,10 +42,10 @@ export async function POST(req) {
             correctResponses,
             sources,
             notes,
+            tags,
+            categories,
             permissions,
         } = await req.json();
-
-        console.log("perms in quiz route", permissions);
 
         if (!allowedType.includes(type)) {
             return NextResponse.json(
@@ -116,6 +116,8 @@ export async function POST(req) {
             createdBy: user._id,
             notes: notes ?? [],
             sources: sources ?? [],
+            categories: categories ?? [],
+            tags: tags ?? [],
             permissions: serializeOne(permissions) ?? {},
         };
 
@@ -145,6 +147,8 @@ export async function PUT(req) {
             hints,
             sources,
             notes,
+            categories,
+            tags,
             permissions,
         } = await req.json();
 
@@ -215,6 +219,22 @@ export async function PUT(req) {
                     quiz.notes.push(new Types.ObjectId(noteId_req));
                 }
             });
+        }
+
+        if (categories) {
+            categories.forEach((catId_req) => {
+                if (
+                    !quiz.categories.find(
+                        (cat) => cat._id.toString() === catId_req,
+                    )
+                ) {
+                    quiz.categories.push(new Types.ObjectId(catId_req));
+                }
+            });
+        }
+
+        if(tags){
+            quiz.tags = tags;
         }
 
         if (permissions && quiz.createdBy.toString() === user._id.toString()) {

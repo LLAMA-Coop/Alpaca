@@ -35,6 +35,9 @@ export function QuizInput({ quiz }) {
 
     const [hints, setHints] = useState([]);
 
+    const [categories, setCategories] = useState([]);
+    const [tags, setTags] = useState([]);
+    const [newTag, setNewTag] = useState("");
     const [permissions, setPermissions] = useState({});
 
     const [sources, setSources] = useState([]);
@@ -51,6 +54,7 @@ export function QuizInput({ quiz }) {
 
     const availableSources = useStore((state) => state.sourceStore);
     const availableNotes = useStore((state) => state.noteStore);
+    const availableCategories = useStore((state) => state.categoryStore);
 
     const user = useStore((state) => state.user);
     const canDelete = quiz && quiz.createdBy === user?._id;
@@ -82,6 +86,14 @@ export function QuizInput({ quiz }) {
                 ),
             );
         }
+        if (quiz.categories) {
+            setCategories(
+                quiz.categories.map((catId) =>
+                    availableCategories.find((x) => x._id === catId),
+                ),
+            );
+        }
+        if (quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
             setPermissions(serializeOne(quiz.permissions));
         }
@@ -140,6 +152,13 @@ export function QuizInput({ quiz }) {
         { label: "Verbatim", value: "verbatim" },
     ];
 
+    function handleAddTag(e) {
+        e.preventDefault();
+        if (!newTag || tags.includes(newTag)) return;
+        setTags([...tags, newTag]);
+        setNewTag("");
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -182,6 +201,8 @@ export function QuizInput({ quiz }) {
             hints: hints,
             sources: sources.map((src) => src._id),
             notes: notes.map((nt) => nt._id),
+            categories: categories.map((cat) => cat._id),
+            tags,
         };
         if (quiz) {
             quizPayload._id = quiz._id;
@@ -392,11 +413,7 @@ export function QuizInput({ quiz }) {
                         {responses.map((res, index) => (
                             <ListItem
                                 key={index}
-                                item={res
-                                    // type === "fill-in-the-blank"
-                                    //     ? res.match(/_([a-zA-Z]+)/)[1]
-                                    //     : res
-                                }
+                                item={res}
                                 actionType={"delete"}
                                 action={() =>
                                     setResponses((prev) =>
@@ -443,6 +460,50 @@ export function QuizInput({ quiz }) {
                     listProperty={"text"}
                     listSetter={setNotes}
                 />
+            </div>
+
+            <div>
+                <Label required={false} label="Categories" />
+
+                <ListAdd
+                    item="Add a category"
+                    listChoices={availableCategories}
+                    listChosen={categories}
+                    listProperty={"name"}
+                    listSetter={setCategories}
+                />
+            </div>
+
+            <div>
+                <Input
+                    label={"Add Tag"}
+                    value={newTag}
+                    maxLength={MAX.tag}
+                    description="A word or phrase that could be used to search for this note"
+                    autoComplete="off"
+                    onChange={(e) => setNewTag(e.target.value)}
+                    action="Add tag"
+                    onActionTrigger={handleAddTag}
+                />
+
+                <div style={{ marginTop: "24px" }}>
+                    <Label label="Tags" />
+
+                    <ul className="chipList">
+                        {tags.length === 0 && <ListItem item="No tags added" />}
+
+                        {tags.map((tag) => (
+                            <ListItem
+                                key={tag}
+                                item={tag}
+                                action={() => {
+                                    setTags(tags.filter((t) => t !== tag));
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul>
+                </div>
             </div>
 
             {(!quiz || quiz.createdBy === user?._id.toString()) && (
