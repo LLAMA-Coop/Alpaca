@@ -8,12 +8,19 @@ import shuffleArray from "@/lib/shuffleArray";
 import { useState, useEffect } from "react";
 import makeUniqueId from "@/lib/uniqueId";
 
-export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
+export function ResponseCard({
+    canClientCheck,
+    quiz,
+    handleWhenCorrect,
+    isFlashcard,
+}) {
     const [userResponse, setUserResponse] = useState("");
     const [hasAnswered, setHasAnswered] = useState(false);
     const [correctAnswer, setCorrectAnswer] = useState(false);
     const [failures, setFailures] = useState(0);
     const [choices, setChoices] = useState([]);
+
+    const [showAnswer, setShowAnswer] = useState(false);
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
@@ -42,6 +49,7 @@ export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
     function handleInput(e) {
         e.preventDefault();
         setHasAnswered(false);
+        console.log(e.target.value);
         setUserResponse(e.target.value);
     }
 
@@ -104,14 +112,27 @@ export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
         }
     }
 
-    const colorsLight = {
-        correct: "var(--accent-tertiary-outline)",
-        incorrect: "var(--accent-secondary-outline)",
-    };
+    function handleShowAnswer() {
+        if (!isFlashcard) return;
+        setShowAnswer((prev) => !prev);
+    }
 
-    let colorOverride;
-    if (hasAnswered) {
-        colorOverride = correctAnswer ? "correct" : "incorrect";
+    let label, color, icon, outline;
+    if (isFlashcard) {
+        label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
+        color = showAnswer ? "var(--accent-tertiary-1)" : undefined;
+        outline = showAnswer ? "var(--accent-tertiary-outline)" : undefined;
+    } else if (hasAnswered) {
+        label = correctAnswer ? "Correct" : "Incorrect";
+        icon = correctAnswer ? faCheck : faXmark;
+        color = correctAnswer
+            ? "var(--accent-tertiary-1)"
+            : "var(--accent-secondary-1)";
+        outline = correctAnswer
+            ? "var(--accent-tertiary-outline)"
+            : "var(--accent-secondary-outline)";
+    } else {
+        label = "Check Answer";
     }
 
     return (
@@ -119,25 +140,12 @@ export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
             title={quiz.prompt}
             buttons={[
                 {
-                    label: hasAnswered
-                        ? correctAnswer
-                            ? "Correct"
-                            : "Incorrect"
-                        : "Check Answer",
-                    icon: hasAnswered
-                        ? correctAnswer
-                            ? faCheck
-                            : faXmark
-                        : undefined,
-                    color: hasAnswered
-                        ? correctAnswer
-                            ? "green"
-                            : "red"
-                        : undefined,
-                    onClick: handleCheckAnswer,
+                    label,
+                    icon,
+                    color,
+                    onClick: isFlashcard ? handleShowAnswer : handleCheckAnswer,
                 },
             ]}
-            border={hasAnswered && (correctAnswer ? "green" : "red")}
         >
             <Alert
                 show={showAlert}
@@ -151,12 +159,14 @@ export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
                 description="Your response to the prompt"
                 choices={choices}
                 label="Your Response"
-                value={userResponse}
+                value={
+                    isFlashcard && showAnswer
+                        ? quiz.correctResponses[0]
+                        : userResponse
+                }
                 onChange={handleInput}
                 onActionTrigger={handleCheckAnswer}
-                outlineColor={
-                    colorOverride ? colorsLight[colorOverride] : undefined
-                }
+                outlineColor={outline}
             />
 
             {!correctAnswer && failures > 2 && (

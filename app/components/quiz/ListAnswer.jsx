@@ -1,6 +1,7 @@
 "use client";
 
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
 import { Card, Input, Alert } from "../client";
 import { useEffect, useState } from "react";
@@ -11,6 +12,7 @@ export function ListAnswer({
     quiz,
     isOrdered,
     handleWhenCorrect,
+    isFlashcard,
 }) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
@@ -19,6 +21,8 @@ export function ListAnswer({
     const [responseCorrect, setResponseCorrect] = useState(false);
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
+
+    const [showAnswer, setShowAnswer] = useState(false);
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
@@ -83,8 +87,41 @@ export function ListAnswer({
         }
     }
 
+    // let color;
+    // if(isFlashcard){
+    //     color = showAnswer ? "var(--accent-tertiary-1)" : undefined;
+    // }
+
+    function handleShowAnswer() {
+        if (!isFlashcard) return;
+        setShowAnswer((prev) => !prev);
+    }
+
+    let label, color, icon;
+    if (isFlashcard) {
+        label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
+        color = showAnswer ? "var(--accent-tertiary-1)" : undefined;
+    } else if (responseStatus === "complete") {
+        label = incorrectIndexes.length ? "Incorrect" : "Correct";
+        color = incorrectIndexes.length
+            ? "var(--accent-secondary-1)"
+            : "var(--accent-tertiary-1)";
+        icon = incorrectIndexes.length ? faXmark : faCheck;
+    } else {
+        label = "Check Answer";
+    }
+
     return (
-        <Card>
+        <Card
+            buttons={[
+                {
+                    label,
+                    icon,
+                    color,
+                    onClick: isFlashcard ? handleShowAnswer : handleCheckAnswer,
+                },
+            ]}
+        >
             <Alert
                 show={showAlert}
                 setShow={setShowAlert}
@@ -107,9 +144,18 @@ export function ListAnswer({
                                 type="text"
                                 aria-labelledby="prompt"
                                 id={"ans_" + index}
-                                value={ans}
+                                value={
+                                    isFlashcard && showAnswer
+                                        ? quiz.correctResponses[index]
+                                        : ans
+                                }
                                 onChange={(e) =>
                                     handleChange(index, e.target.value)
+                                }
+                                outlineColor={
+                                    isFlashcard && showAnswer
+                                        ? "var(--accent-tertiary-outline)"
+                                        : undefined
                                 }
                             ></Input>
                         </li>
@@ -117,9 +163,16 @@ export function ListAnswer({
                 })}
             </ul>
 
-            <button onClick={handleCheckAnswer} className="button">
-                Check Answer
-            </button>
+            {/* <button
+                onClick={isFlashcard ? handleShowAnswer : handleCheckAnswer}
+                className="button"
+                style={{ backgroundColor: color }}
+            >
+                {isFlashcard && showAnswer
+                    ? "Return to Your Answers"
+                    : "Show Correct Answers"}
+                {!isFlashcard && "Check Answer"}
+            </button> */}
 
             {responseCorrect && responseStatus === "complete" && (
                 <div>Correct!</div>

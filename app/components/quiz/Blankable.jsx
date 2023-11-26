@@ -7,7 +7,12 @@ import { useEffect, useState } from "react";
 import { Card, Alert } from "../client";
 import { Input } from "../client";
 
-export function Blankable({ canClientCheck, quiz, handleWhenCorrect, isFlashcard }) {
+export function Blankable({
+    canClientCheck,
+    quiz,
+    handleWhenCorrect,
+    isFlashcard,
+}) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
     );
@@ -79,9 +84,28 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect, isFlashcard
         }
     }
 
+    function handleShowAnswer() {
+        if (!isFlashcard) return;
+        setShowAnswer((prev) => !prev);
+    }
+
     function inputSize(string) {
         if (string.length < 5) return 5;
         return string.length + 1;
+    }
+
+    let label, color, icon;
+    if (isFlashcard) {
+        label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
+        color = showAnswer ? "var(--accent-tertiary-1)" : undefined;
+    } else if (responseStatus === "complete") {
+        label = incorrectIndexes.length ? "Incorrect" : "Correct";
+        color = incorrectIndexes.length
+            ? "var(--accent-secondary-1)"
+            : "var(--accent-tertiary-1)";
+        icon = incorrectIndexes.length ? faXmark : faCheck;
+    } else {
+        label = "Check Answer";
     }
 
     return (
@@ -89,51 +113,12 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect, isFlashcard
             title={"Fill in the blanks"}
             buttons={[
                 {
-                    label:
-                        responseStatus === "complete"
-                            ? responseCorrect
-                                ? "Correct"
-                                : "Incorrect"
-                            : "Check Answer",
-                    icon:
-                        responseStatus === "complete"
-                            ? responseCorrect
-                                ? faCheck
-                                : faXmark
-                            : undefined,
-                    color:
-                        responseStatus === "complete"
-                            ? responseCorrect
-                                ? "green"
-                                : "red"
-                            : undefined,
-                    label:
-                        responseStatus === "complete"
-                            ? incorrectIndexes.length
-                                ? "Incorrect"
-                                : "Correct"
-                            : "Check Answer",
-                    icon:
-                        responseStatus === "complete"
-                            ? incorrectIndexes.length
-                                ? faXmark
-                                : faCheck
-                            : undefined,
-                    color:
-                        responseStatus === "complete"
-                            ? incorrectIndexes.length
-                                ? "var(--accent-secondary-1)"
-                                : "var(--accent-tertiary-1)"
-                            : undefined,
-                    onClick: handleCheckAnswer,
+                    label,
+                    icon,
+                    color,
+                    onClick: isFlashcard ? handleShowAnswer : handleCheckAnswer,
                 },
             ]}
-            border={
-                responseStatus === "complete" &&
-                (incorrectIndexes.length
-                    ? "var(--accent-tertiary-1)"
-                    : "var(--accent-secondary-1)")
-            }
         >
             <Alert
                 show={showAlert}
@@ -150,10 +135,11 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect, isFlashcard
                             <Input
                                 inline
                                 size={inputSize(String(userResponse[index]))}
-                                choices={quiz.correctResponses.map(
-                                    (ans) => ans.split("_")[1],
-                                )}
-                                value={userResponse[index]}
+                                value={
+                                    isFlashcard && showAnswer
+                                        ? quiz.correctResponses[index]
+                                        : userResponse[index]
+                                }
                                 onChange={(e) => {
                                     handleChange(index, e.target.value);
                                 }}

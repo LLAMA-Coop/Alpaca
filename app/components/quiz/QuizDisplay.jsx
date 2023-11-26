@@ -14,6 +14,7 @@ export function QuizDisplay({
     canClientCheck,
     quiz,
     handleWhenCorrect = () => {},
+    isFlashcard = false
 }) {
     if (!quiz) {
         quiz = sampleQuiz;
@@ -25,6 +26,7 @@ export function QuizDisplay({
                 canClientCheck={canClientCheck}
                 quiz={quiz}
                 handleWhenCorrect={handleWhenCorrect}
+                isFlashcard={isFlashcard}
             />
         );
     }
@@ -43,6 +45,7 @@ export function QuizDisplay({
                     quiz.type === "ordered-list-answer"
                 }
                 handleWhenCorrect={handleWhenCorrect}
+                isFlashcard={isFlashcard}
             />
         );
     }
@@ -53,6 +56,7 @@ export function QuizDisplay({
                 quiz={quiz}
                 canClientCheck={canClientCheck}
                 handleWhenCorrect={handleWhenCorrect}
+                isFlashcard={isFlashcard}
             />
         );
     }
