@@ -99,7 +99,6 @@ export const Card = ({
                                     return (
                                         <button
                                             key={button.label}
-                                            className={button.color}
                                             onClick={button.onClick}
                                             style={{
                                                 backgroundColor: button.color,
