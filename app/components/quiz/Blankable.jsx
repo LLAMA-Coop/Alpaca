@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Card, Alert } from "../client";
 import { Input } from "../client";
 
-export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
+export function Blankable({ canClientCheck, quiz, handleWhenCorrect, isFlashcard }) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
     );
@@ -15,6 +15,8 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
     const [responseCorrect, setResponseCorrect] = useState(false);
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
+
+    const [showAnswer, setShowAnswer] = useState(false);
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
@@ -81,47 +83,6 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
         if (string.length < 5) return 5;
         return string.length + 1;
     }
-
-    const renderPromptWithBlanks = () => {
-        const words = quiz.prompt.split(/\b(\w+)\b/g);
-
-        let i = 0;
-
-        return words.map((word, index) => {
-            const isBlankable = quiz.correctResponses
-                .map((answer) => answer.split("_")[1])
-                .includes(word);
-
-            if (isBlankable) {
-                const blankIndex = i;
-                i++;
-
-                return (
-                    <Input
-                        inline
-                        key={index}
-                        type={"text"}
-                        description=""
-                        choices={quiz.correctResponses.map(
-                            (ans) => ans.split("_")[1],
-                        )}
-                        value={answers[blankIndex] ?? ""}
-                        onChange={(e) =>
-                            handleInput(blankIndex, e.target.value)
-                        }
-                        outlineColor={
-                            hasAnswered &&
-                            (incorrectIndexes.includes(blankIndex)
-                                ? "var(--accent-secondary-1)"
-                                : "var(--accent-tertiary-1)")
-                        }
-                    />
-                );
-            }
-
-            return <span key={index}>{word}</span>;
-        });
-    };
 
     return (
         <Card
