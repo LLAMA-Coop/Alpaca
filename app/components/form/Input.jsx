@@ -211,88 +211,31 @@ export function Input({
                 style={{ pointerEvents: disabled ? "none" : "" }}
             >
                 {type === "select" && choices && (
-                    <>
-                        <div
-                            tabIndex={0}
-                            role="button"
-                            aria-haspopup="listbox"
-                            aria-labelledby={inputId}
-                            aria-expanded={open ? "true" : "false"}
-                            className={styles.select}
-                            onClick={() => setOpen(!open)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") setOpen(!open);
-                            }}
-                        >
-                            {
-                                choices.find((choice) => choice.value === value)
-                                    ?.label
-                            }
-
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                strokeWidth="2"
-                                fill="transparent"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                {open ? (
-                                    <path d="M6 15l6 -6l6 6" />
-                                ) : (
-                                    <path d="M6 9l6 6l6 -6" />
-                                )}
-                            </svg>
-                        </div>
-
-                        <ul
-                            role="listbox"
-                            aria-disabled={disabled}
-                            aria-activedescendant={value}
-                            aria-invalid={error ? "true" : "false"}
-                            aria-errormessage={error ? errorId : ""}
-                            className={styles.dropdown}
-                            style={{ display: open ? "block" : "none" }}
-                        >
-                            {choices.map((choice, index) => (
-                                <li
-                                    ref={index === 0 ? firstElement : null}
-                                    role="option"
-                                    aria-selected={
-                                        choice.value === value ? "true" : ""
-                                    }
-                                    tabIndex={0}
-                                    key={choice.value}
-                                    onClick={() => {
-                                        onChange({
-                                            target: {
-                                                value: choice.value,
-                                            },
-                                        });
-                                        setOpen(false);
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            onChange({
-                                                target: {
-                                                    value: choice.value,
-                                                },
-                                            });
-                                            setOpen(false);
-                                        }
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.target.focus();
-                                    }}
-                                >
-                                    {choice.label}
-                                </li>
-                            ))}
-                        </ul>
-                    </>
+                    <select
+                        id={inputId}
+                        autoFocus={autoFocus ? true : false}
+                        autoComplete={autoComplete || "off"}
+                        aria-describedby={description}
+                        aria-required={error ? error : ""}
+                        aria-disabled={disabled}
+                        aria-invalid={error ? "true" : "false"}
+                        aria-errormessage={error ? errorId : ""}
+                        className="thinScroller"
+                        required={required}
+                        onChange={onChange}
+                        onFocus={onFocus}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        minLength={minLength}
+                        maxLength={maxLength}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && action) onActionTrigger(e);
+                        }}
+                    >
+                        {choices.map((choice) => (
+                            <option key={choice.key ?? choice.label} value={choice.value}>{choice.label}</option>
+                        ))}
+                    </select>
                 )}
 
                 {type === "textarea" && (
