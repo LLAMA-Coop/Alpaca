@@ -14,7 +14,6 @@ export const Card = ({
     urlLabel,
     buttons,
     children,
-    border,
 }) => {
     const [isFocused, setIsFocused] = useState(false);
 
@@ -47,10 +46,10 @@ export const Card = ({
                                         <header title={title}>
                                             {url ? (
                                                 url.startsWith("http") ? (
-                                                    <a href={url}>{title}</a>
+                                                    <a href={url}>{urlLabel ?? title}</a>
                                                 ) : (
                                                     <Link href={url}>
-                                                        {title}
+                                                        {urlLabel ?? title}
                                                     </Link>
                                                 )
                                             ) : (
