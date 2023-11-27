@@ -20,11 +20,6 @@
 }
 
 .popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100dvw;
-    height: 100dvh;
     background-color: var(--background-secondary);
     z-index: 10;
     display: flex;

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import styles from "./Timer.module.css";
 
 export function Timer() {
-    const [milliseconds, setMilliseconds] = useState(0);
+    const [milliseconds, setMilliseconds] = useState(1000*60*15);
     const [danger, setDanger] = useState(false);
     const dangerTrigger = 1000 * 30; // 30 seconds
 
@@ -57,7 +57,7 @@ export function Timer() {
                 className={isPaused && styles.paused}
                 style={{ color: danger ? "var(--accent-secondary-1)" : "" }}
             >
-                {new Date(milliseconds).toISOString().substr(14, 5)}
+                {isNaN(milliseconds) ? "00:00" : new Date(milliseconds).toISOString().substr(14, 5)}
             </p>
 
             <button

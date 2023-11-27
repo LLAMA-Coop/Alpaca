@@ -4,13 +4,14 @@ import QuizDisplay from "@/app/components/quiz/QuizDisplay";
 import { useDailyTrain, useModals, useStore } from "@/store/store";
 import { UserStats } from "../quiz/UserStats";
 import styles from "./DailyTrain.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../client";
 
 export default function DailyTrain({ quizzes }) {
     const [visibleSet, setVisibleSet] = useState(
         new Array(quizzes.length).fill(true),
     );
+    const [localTime, setLocalTime] = useState(0);
 
     const user = useStore((state) => state.user);
     const userQuizzes = user?.quizzes;
@@ -36,9 +37,10 @@ export default function DailyTrain({ quizzes }) {
                 type="text"
                 label={`Time Limit`}
                 value={settings.timeLimit}
-                onChange={(e) =>
-                    setSettings({ timeLimit: e.target.value * 1000 })
-                }
+                onChange={(e) => {
+                    console.log(e.target.value);
+                    setSettings({ timeLimit: e.target.value * 1000 });
+                }}
             />
 
             {/* <Input

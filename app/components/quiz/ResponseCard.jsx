@@ -49,7 +49,6 @@ export function ResponseCard({
     function handleInput(e) {
         e.preventDefault();
         setHasAnswered(false);
-        console.log(e.target.value);
         setUserResponse(e.target.value);
     }
 

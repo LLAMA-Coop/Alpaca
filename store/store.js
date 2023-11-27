@@ -151,9 +151,9 @@ export const useDailyTrain = create()((set) => ({
     setIsPaused: (isPaused) => set(() => ({ isPaused })),
     setTimeLimit: (timeLimit) => set(() => ({ timeLimit })),
     setSettings: (newValues) =>
-        set(() => ({
+        set((state) => ({
             settings: {
-                ...settings,
+                ...state.settings,
                 ...newValues,
             },
         })),
