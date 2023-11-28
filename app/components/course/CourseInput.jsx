@@ -107,9 +107,13 @@ export function CourseInput({ course }) {
                 message: "Course edited successfully",
             });
             setShowAlert(true);
+        } else if(response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again."
+            })
+            setShowAlert(true);
         } else {
-            // need to add alert if not signed in
-            // later add signin popup
             setRequestStatus({
                 success: false,
                 message: "Something went wrong",

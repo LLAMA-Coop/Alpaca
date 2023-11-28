@@ -176,6 +176,12 @@ export function SourceInput({ source }) {
             setUrlError("");
             setLastAccessedError("");
             setPublishDateError("");
+        } else if(response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again."
+            })
+            setShowAlert(true);
         } else {
             setRequestStatus({
                 success: false,

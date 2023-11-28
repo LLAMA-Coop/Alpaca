@@ -26,6 +26,12 @@ export function DeletePopup({ resourceType, resourceId }) {
             });
             setShowAlert(true);
             setIsDeleted(true);
+        } else if(response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again."
+            })
+            setShowAlert(true);
         } else if (response.status === 404) {
             setRequestStatus({
                 success: true,

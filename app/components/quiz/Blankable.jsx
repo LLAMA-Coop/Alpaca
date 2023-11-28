@@ -67,14 +67,13 @@ export function Blankable({
                 },
             );
 
-            if (response.status === 401) {
+            if(response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: "Please log in and try again",
-                });
+                    message: "You have been signed out. Please sign in again."
+                })
                 setShowAlert(true);
-                return;
-            }
+            } 
 
             const resJson = await response.json();
             console.log(resJson);

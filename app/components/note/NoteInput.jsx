@@ -118,6 +118,12 @@ export function NoteInput({ note }) {
                 message: "Note edited succesfully.",
             });
             setShowAlert(true);
+        } else if(response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again."
+            })
+            setShowAlert(true);
         } else {
             setRequestStatus({
                 success: false,
