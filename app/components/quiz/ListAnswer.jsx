@@ -191,8 +191,7 @@ export function ListAnswer({
                 failures > 2 && (
                     <div data-type="hints">
                         <p>
-                            You're having some trouble. Here are some acceptable
-                            answers:
+                            You're having some trouble. Here are some hints:
                         </p>
 
                         <ul>
