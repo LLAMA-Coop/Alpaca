@@ -5,7 +5,8 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
 import { useEffect, useState } from "react";
 import { Card, Alert } from "../client";
-import { Input } from "../client";
+import { Input, UserInput } from "../client";
+import { useModals } from "@/store/store";
 
 export function Blankable({
     canClientCheck,
@@ -25,6 +26,9 @@ export function Blankable({
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+    
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (responseStatus === "empty") return;
@@ -73,6 +77,10 @@ export function Blankable({
                     message: "You have been signed out. Please sign in again."
                 })
                 setShowAlert(true);
+                addModal({
+                    title: "Sign back in",
+                    content: <UserInput onSubmit={removeModal} />,
+                });
             } 
 
             const resJson = await response.json();

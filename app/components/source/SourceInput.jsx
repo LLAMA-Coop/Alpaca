@@ -1,7 +1,7 @@
 "use client";
 
 import { useStore } from "@/store/store";
-import { Alert, Input, Label, ListItem, Spinner } from "@components/client";
+import { Alert, Input, Label, ListItem, Spinner, UserInput } from "@components/client";
 import ListAdd from "../form/ListAdd";
 import { useState, useEffect } from "react";
 import PermissionsInput from "../form/PermissionsInput";
@@ -46,6 +46,9 @@ export function SourceInput({ source }) {
     const user = useStore((state) => state.user);
     const availableCourses = useStore((state) => state.courseStore);
     const canDelete = source && source.createdBy === user._id;
+    
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (!source) {
@@ -182,6 +185,10 @@ export function SourceInput({ source }) {
                 message: "You have been signed out. Please sign in again."
             })
             setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,

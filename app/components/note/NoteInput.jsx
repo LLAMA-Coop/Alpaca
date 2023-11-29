@@ -8,9 +8,10 @@ import {
     InputPopup,
     Spinner,
     Alert,
+    UserInput,
 } from "@/app/components/client";
 import PermissionsInput from "../form/PermissionsInput";
-import { useStore } from "@/store/store";
+import { useStore, useModals } from "@/store/store";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import ListAdd from "../form/ListAdd";
 import { serializeOne } from "@/lib/db";
@@ -34,6 +35,9 @@ export function NoteInput({ note }) {
     const availableSources = useStore((state) => state.sourceStore);
     const availableCourses = useStore((state) => state.courseStore);
     const user = useStore((state) => state.user);
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
+
     const canDelete = note && note.createdBy === user._id;
 
     useEffect(() => {
@@ -118,12 +122,16 @@ export function NoteInput({ note }) {
                 message: "Note edited succesfully.",
             });
             setShowAlert(true);
-        } else if(response.status === 401) {
+        } else if (response.status === 401) {
             setRequestStatus({
                 success: false,
-                message: "You have been signed out. Please sign in again."
-            })
+                message: "You have been signed out. Please sign in again.",
+            });
             setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,

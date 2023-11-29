@@ -1,12 +1,13 @@
 "use client";
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Input, Card, Alert } from "@components/client";
+import { Input, Card, Alert, UserInput } from "@components/client";
 import correctConfetti from "@/lib/correctConfetti";
 import stringCompare from "@/lib/stringCompare";
 import shuffleArray from "@/lib/shuffleArray";
 import { useState, useEffect } from "react";
 import makeUniqueId from "@/lib/uniqueId";
+import { useModals } from "@/store/store";
 
 export function ResponseCard({
     canClientCheck,
@@ -24,6 +25,9 @@ export function ResponseCard({
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+    
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (quiz.choices)
@@ -90,6 +94,10 @@ export function ResponseCard({
                     message: "You have been signed out. Please sign in again."
                 })
                 setShowAlert(true);
+                addModal({
+                    title: "Sign back in",
+                    content: <UserInput onSubmit={removeModal} />,
+                });
             } 
 
             const resJson = await response.json();

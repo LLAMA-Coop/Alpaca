@@ -3,9 +3,10 @@
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
-import { Card, Input, Alert } from "../client";
+import { Card, Input, Alert, UserInput } from "../client";
 import { useEffect, useState } from "react";
 import styles from "./Blankable.module.css";
+import { useModals } from "@/store/store";
 
 export function ListAnswer({
     canClientCheck,
@@ -26,6 +27,9 @@ export function ListAnswer({
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+    
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (responseStatus === "empty") return;
@@ -76,6 +80,10 @@ export function ListAnswer({
                     message: "You have been signed out. Please sign in again."
                 })
                 setShowAlert(true);
+                addModal({
+                    title: "Sign back in",
+                    content: <UserInput onSubmit={removeModal} />,
+                });
             } 
 
             const resJson = await response.json();

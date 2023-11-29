@@ -8,10 +8,11 @@ import {
     InputPopup,
     Spinner,
     Alert,
+    UserInput
 } from "@components/client";
 import PermissionsInput from "../form/PermissionsInput";
 import { serializeOne } from "@/lib/db";
-import { useStore } from "@/store/store";
+import { useStore, useModals } from "@/store/store";
 import { buildPermissions } from "@/lib/permissions";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import ListAdd from "../form/ListAdd";
@@ -58,6 +59,9 @@ export function QuizInput({ quiz }) {
 
     const user = useStore((state) => state.user);
     const canDelete = quiz && quiz.createdBy === user?._id;
+    
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (!quiz) return;
@@ -263,6 +267,10 @@ export function QuizInput({ quiz }) {
                 message: "You have been signed out. Please sign in again."
             })
             setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,

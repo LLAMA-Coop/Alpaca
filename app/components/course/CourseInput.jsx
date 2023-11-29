@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useStore } from "@/store/store";
+import { useStore, useModals } from "@/store/store";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import MAX from "@/lib/max";
 import { serializeOne } from "@/lib/db";
-import { Input, InputPopup, Label, Spinner, Alert } from "../client";
+import { Input, InputPopup, Label, Spinner, Alert, UserInput } from "../client";
 import ListAdd from "../form/ListAdd";
 import PermissionsInput from "../form/PermissionsInput";
 
@@ -26,6 +26,8 @@ export function CourseInput({ course }) {
     const availableCourses = useStore((state) => state.courseStore);
     const user = useStore((state) => state.user);
     const canDelete = course && user && course.createdBy === user._id;
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (!course) return;
@@ -107,12 +109,16 @@ export function CourseInput({ course }) {
                 message: "Course edited successfully",
             });
             setShowAlert(true);
-        } else if(response.status === 401) {
+        } else if (response.status === 401) {
             setRequestStatus({
                 success: false,
-                message: "You have been signed out. Please sign in again."
-            })
+                message: "You have been signed out. Please sign in again.",
+            });
             setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,
@@ -155,10 +161,7 @@ export function CourseInput({ course }) {
             />
 
             <div>
-                <Label
-                    required={false}
-                    label="Parent Courses"
-                />
+                <Label required={false} label="Parent Courses" />
 
                 <ListAdd
                     item="Add parent course"
