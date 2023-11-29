@@ -123,6 +123,7 @@ export function Verbatim({
     return (
         <Card
             title={"Verbatim"}
+            description={quiz.prompt}
             buttons={[
                 {
                     label,
@@ -139,8 +140,7 @@ export function Verbatim({
                 message={requestStatus.message}
             />
 
-            <h4 id="prompt">{quiz.prompt}</h4>
-            <p>
+            <div>
                 {userResponse.map((word, index) => {
                     let isCorrect;
                     if (incorrectIndexes.includes(index)) {
@@ -172,7 +172,7 @@ export function Verbatim({
                         />
                     );
                 })}
-            </p>
+            </div>
 
             {!responseCorrect &&
                 responseStatus === "complete" &&

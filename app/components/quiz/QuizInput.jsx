@@ -292,9 +292,15 @@ export function QuizInput({ quiz }) {
 
     function handleAddResponse(e) {
         e.preventDefault();
-
         const answer = newResponse.trim();
+
         if (!answer || responses.includes(answer)) {
+            return;
+        }
+
+        if (type === "verbatim") {
+            setResponses(newResponse.split(" "));
+            setResponsesError("");
             return;
         }
 
@@ -348,6 +354,7 @@ export function QuizInput({ quiz }) {
             ) : (
                 <Input
                     label={"Prompt"}
+                    type={type === "verbatim" ? "textarea" : "text"}
                     description={
                         "Question prompt. Can be a question or statement"
                     }
@@ -406,12 +413,14 @@ export function QuizInput({ quiz }) {
 
             <div>
                 <Input
-                    type="text"
+                    type={type === "verbatim" ? "textarea" : "text"}
                     choices={choices.map((x) => ({ label: x, value: x }))}
                     label="Add new answer"
                     description={"Add a new answer. Press enter to add"}
                     value={newResponse}
-                    maxLength={MAX.response}
+                    maxLength={
+                        type !== "verbatim" ? MAX.response : MAX.description
+                    }
                     required={responses.length === 0}
                     onSubmit={handleAddResponse}
                     error={responsesError}
