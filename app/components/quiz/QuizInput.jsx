@@ -58,15 +58,15 @@ export function QuizInput({ quiz }) {
     const availableCourses = useStore((state) => state.courseStore);
 
     const user = useStore((state) => state.user);
-    const canDelete = quiz && quiz.createdBy === user?._id;
+    const canDelete = quiz && user && quiz.createdBy === user._id;
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (!quiz) return;
-        setType(quiz.type);
-        setPrompt(quiz.prompt);
+        if (quiz.type) setType(quiz.type);
+        if (quiz.prompt) setPrompt(quiz.prompt);
         if (quiz.choices) {
             setChoices([...quiz.choices]);
         }
@@ -208,7 +208,7 @@ export function QuizInput({ quiz }) {
             courses: courses.map((course) => course._id),
             tags,
         };
-        if (quiz) {
+        if (quiz._id) {
             quizPayload._id = quiz._id;
         }
 
@@ -221,7 +221,7 @@ export function QuizInput({ quiz }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,
             {
-                method: quiz ? "PUT" : "POST",
+                method: quiz._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },

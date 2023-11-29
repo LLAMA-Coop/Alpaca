@@ -1,7 +1,14 @@
 "use client";
 
 import { useStore } from "@/store/store";
-import { Alert, Input, Label, ListItem, Spinner, UserInput } from "@components/client";
+import {
+    Alert,
+    Input,
+    Label,
+    ListItem,
+    Spinner,
+    UserInput,
+} from "@components/client";
 import ListAdd from "../form/ListAdd";
 import { useState, useEffect } from "react";
 import PermissionsInput from "../form/PermissionsInput";
@@ -46,7 +53,7 @@ export function SourceInput({ source }) {
     const user = useStore((state) => state.user);
     const availableCourses = useStore((state) => state.courseStore);
     const canDelete = source && source.createdBy === user._id;
-    
+
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
 
@@ -56,7 +63,7 @@ export function SourceInput({ source }) {
             return;
         }
 
-        setTitle(source.title);
+        if (source.title) setTitle(source.title);
         if (source.authors && source.authors.length > 0)
             setAuthors([...source.authors]);
         if (source.tags && source.tags.length > 0) setTags([...source.tags]);
@@ -138,7 +145,7 @@ export function SourceInput({ source }) {
             tags,
         };
         sourcePayload.permissions = buildPermissions(permissions);
-        if (source) {
+        if (source._id) {
             sourcePayload._id = source._id;
         }
 
@@ -147,7 +154,7 @@ export function SourceInput({ source }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/source`,
             {
-                method: source ? "PUT" : "POST",
+                method: source._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -179,11 +186,11 @@ export function SourceInput({ source }) {
             setUrlError("");
             setLastAccessedError("");
             setPublishDateError("");
-        } else if(response.status === 401) {
+        } else if (response.status === 401) {
             setRequestStatus({
                 success: false,
-                message: "You have been signed out. Please sign in again."
-            })
+                message: "You have been signed out. Please sign in again.",
+            });
             setShowAlert(true);
             addModal({
                 title: "Sign back in",
