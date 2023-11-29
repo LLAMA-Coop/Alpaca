@@ -31,6 +31,14 @@ export default function DailyTrain({ quizzes }) {
         setVisibleSet(newVisible);
     }
 
+    useEffect(() => {
+        if (start) {
+            document.documentElement.style.overflowY = "hidden";
+        } else {
+            document.documentElement.style.overflowY = "auto";
+        }
+    }, [start]);
+
     const parameters = (
         <>
             <Input
@@ -129,10 +137,6 @@ export default function DailyTrain({ quizzes }) {
                                             handleWhenCorrect(index)
                                         }
                                     />
-
-                                    {quizInUser && (
-                                        <UserStats userQuizInfo={quizInUser} />
-                                    )}
                                 </li>
                             );
                         })}
@@ -159,6 +163,23 @@ export default function DailyTrain({ quizzes }) {
                             <path d="M6 6l12 12" />
                         </svg>
                     </button>
+
+                    {isPaused && (
+                        <div className={styles.blurContainer}>
+                            <div>
+                                <p>Paused</p>
+
+                                <button
+                                    className="button"
+                                    onClick={() => {
+                                        setIsPaused(false);
+                                    }}
+                                >
+                                    Resume
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </>
