@@ -36,7 +36,7 @@ export function Input({
     value,
     minLength,
     maxLength,
-    size,
+    isCorrect,
     error,
     label,
     onFocus,
@@ -97,6 +97,13 @@ export function Input({
             document.removeEventListener("click", handleClickOutside);
         };
     }, [open]);
+
+    let status = ""
+    if(isCorrect === true){
+        status = styles.correct;
+    } else if(isCorrect === false){
+        status = styles.incorrect;
+    }
 
     if (type === "checkbox" && typeof value === "boolean")
         return (
@@ -166,6 +173,7 @@ export function Input({
                     </svg>
 
                     <input
+                        className={status}
                         type="checkbox"
                         id={inputId}
                         autoFocus={autoFocus ? true : false}
@@ -222,7 +230,7 @@ export function Input({
                         aria-disabled={disabled}
                         aria-invalid={error ? "true" : "false"}
                         aria-errormessage={error ? errorId : ""}
-                        className="thinScroller"
+                        className={`thinScroller ${status}`}
                         required={required}
                         onChange={onChange}
                         onFocus={onFocus}
@@ -255,7 +263,7 @@ export function Input({
                         aria-disabled={disabled}
                         aria-invalid={error ? "true" : "false"}
                         aria-errormessage={error ? errorId : ""}
-                        className="thinScroller"
+                        className={`thinScroller ${status}`}
                         required={required}
                         onChange={onChange}
                         onFocus={onFocus}
@@ -273,6 +281,7 @@ export function Input({
                     <input
                         type="checkbox"
                         id={inputId}
+                        className={status}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -299,6 +308,7 @@ export function Input({
                 {!["select", "checkbox", "textarea"].includes(type) && (
                     <input
                         id={inputId}
+                        className={status}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}

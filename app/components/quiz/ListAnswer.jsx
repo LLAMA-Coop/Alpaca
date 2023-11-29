@@ -134,16 +134,17 @@ export function ListAnswer({
             <h4 id="prompt">{quiz.prompt}</h4>
             <ul>
                 {userResponse.map((ans, index) => {
-                    let status = "";
+                    let isCorrect = "";
                     if (incorrectIndexes.includes(index)) {
-                        status = styles.incorrect;
+                        isCorrect = false;
                     } else if (responseStatus === "complete") {
-                        status = styles.correct;
+                        isCorrect = true;
                     }
                     return (
-                        <li key={index} className={status}>
+                        <li key={index}>
                             <Input
                                 type="text"
+                                isCorrect={isCorrect}
                                 aria-labelledby="prompt"
                                 id={"ans_" + index}
                                 value={

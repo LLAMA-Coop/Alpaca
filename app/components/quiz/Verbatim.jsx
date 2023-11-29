@@ -142,33 +142,34 @@ export function Verbatim({
             <h4 id="prompt">{quiz.prompt}</h4>
             <p>
                 {userResponse.map((word, index) => {
-                    let status = "";
+                    let isCorrect;
                     if (incorrectIndexes.includes(index)) {
-                        status = styles.incorrect;
+                        isCorrect = false;
                     } else if (responseStatus === "complete") {
-                        status = styles.correct;
+                        isCorrect = true;
                     }
 
                     return (
-                            <Input
-                                key={`verbatim-${index}`}
-                                id={`verbatim-${index}`}
-                                inline
-                                value={
-                                    isFlashcard && showAnswer
-                                        ? quiz.correctResponses[index]
-                                        : word
-                                }
-                                onChange={(e) => {
-                                    handleChange(index, e.target.value);
-                                }}
-                                outlineColor={
-                                    responseStatus === "complete" &&
-                                    (incorrectIndexes.includes(index)
-                                        ? "var(--accent-secondary-1)"
-                                        : "var(--accent-tertiary-1)")
-                                }
-                            />
+                        <Input
+                            key={`verbatim-${index}`}
+                            id={`verbatim-${index}`}
+                            inline
+                            isCorrect={isCorrect}
+                            value={
+                                isFlashcard && showAnswer
+                                    ? quiz.correctResponses[index]
+                                    : word
+                            }
+                            onChange={(e) => {
+                                handleChange(index, e.target.value);
+                            }}
+                            outlineColor={
+                                responseStatus === "complete" &&
+                                (incorrectIndexes.includes(index)
+                                    ? "var(--accent-secondary-1)"
+                                    : "var(--accent-tertiary-1)")
+                            }
+                        />
                     );
                 })}
             </p>

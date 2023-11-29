@@ -6,6 +6,7 @@ import correctConfetti from "@/lib/correctConfetti";
 import { useEffect, useState } from "react";
 import { Card, Alert, Input, UserInput } from "../client";
 import { useModals } from "@/store/store";
+import styles from "./Blankable.module.css"
 
 export function Blankable({
     canClientCheck,
@@ -129,6 +130,13 @@ export function Blankable({
             />
 
             {texts.map((text, index) => {
+                    let isCorrect;
+                    if (incorrectIndexes.includes(index)) {
+                        isCorrect = false;
+                    } else if (responseStatus === "complete") {
+                        isCorrect = true;
+                    }
+
                 return (
                     <span key={index}>
                         {text}
@@ -136,6 +144,7 @@ export function Blankable({
                             <Input
                                 id={`blank-${index}`}
                                 inline
+                                isCorrect={isCorrect}
                                 value={
                                     isFlashcard && showAnswer
                                         ? quiz.correctResponses[index]

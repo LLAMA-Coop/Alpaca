@@ -219,3 +219,11 @@
     outline: none;
     background-color: var(--background-tertiary);
 }
+
+.inputContainer .incorrect {
+    border: 1px solid red;
+}
+
+.inputContainer .correct {
+    border: 1px solid green;
+}
