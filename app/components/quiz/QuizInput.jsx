@@ -8,7 +8,7 @@ import {
     InputPopup,
     Spinner,
     Alert,
-    UserInput
+    UserInput,
 } from "@components/client";
 import PermissionsInput from "../form/PermissionsInput";
 import { serializeOne } from "@/lib/db";
@@ -59,7 +59,7 @@ export function QuizInput({ quiz }) {
 
     const user = useStore((state) => state.user);
     const canDelete = quiz && quiz.createdBy === user?._id;
-    
+
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
 
@@ -261,11 +261,11 @@ export function QuizInput({ quiz }) {
                 message: "Quiz updated successfully",
             });
             setShowAlert(true);
-        } else if(response.status === 401) {
+        } else if (response.status === 401) {
             setRequestStatus({
                 success: false,
-                message: "You have been signed out. Please sign in again."
-            })
+                message: "You have been signed out. Please sign in again.",
+            });
             setShowAlert(true);
             addModal({
                 title: "Sign back in",
@@ -471,7 +471,7 @@ export function QuizInput({ quiz }) {
                     item="Add a note"
                     listChoices={availableNotes}
                     listChosen={notes}
-                    listProperty={"text"}
+                    listProperty={["title", "text"]}
                     listSetter={setNotes}
                 />
             </div>
