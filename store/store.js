@@ -197,8 +197,19 @@ export const useModals = create()((set) => ({
             ],
         })),
 
-    removeModal: (id) =>
-        set((state) => ({
+    removeModal: (id) => {
+        if (!id) {
+            return set((state) => {
+                let newModals = [...state.modals];
+                newModals.pop();
+                return {
+                    modals: newModals,
+                };
+            });
+        }
+
+        return set((state) => ({
             modals: state.modals.filter((modal) => modal.id !== id),
-        })),
+        }));
+    },
 }));
