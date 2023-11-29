@@ -14,6 +14,7 @@ const allowedType = [
     "unordered-list-answer",
     "ordered-list-answer",
     "fill-in-the-blank",
+    "verbatim"
 ];
 
 export async function GET(req) {

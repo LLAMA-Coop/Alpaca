@@ -2,6 +2,7 @@
 
 import { ResponseCard, ListAnswer } from "@/app/components/client";
 import { Blankable } from "./Blankable";
+import { Verbatim } from "./Verbatim";
 import { memo } from "react";
 
 const sampleQuiz = {
@@ -59,6 +60,17 @@ export function QuizDisplay({
                 isFlashcard={isFlashcard}
             />
         );
+    }
+
+    if(quiz.type === "verbatim"){
+        return (
+            <Verbatim
+                quiz={quiz}
+                canClientCheck={canClientCheck}
+                handleWhenCorrect={handleWhenCorrect}
+                isFlashcard={isFlashcard}
+            />
+        )
     }
 }
 
