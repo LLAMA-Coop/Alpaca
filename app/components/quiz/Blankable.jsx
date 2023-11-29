@@ -140,6 +140,7 @@ export function Blankable({
                         {text}
                         {index < texts.length - 1 && (
                             <Input
+                                id={`blank-${index}`}
                                 inline
                                 size={inputSize(String(userResponse[index]))}
                                 value={
