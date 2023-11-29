@@ -208,7 +208,7 @@ export function QuizInput({ quiz }) {
             courses: courses.map((course) => course._id),
             tags,
         };
-        if (quiz._id) {
+        if (quiz && quiz._id) {
             quizPayload._id = quiz._id;
         }
 
@@ -221,7 +221,7 @@ export function QuizInput({ quiz }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,
             {
-                method: quiz._id ? "PUT" : "POST",
+                method: quiz && quiz._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },

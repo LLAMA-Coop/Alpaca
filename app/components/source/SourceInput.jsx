@@ -145,7 +145,7 @@ export function SourceInput({ source }) {
             tags,
         };
         sourcePayload.permissions = buildPermissions(permissions);
-        if (source._id) {
+        if (source && source._id) {
             sourcePayload._id = source._id;
         }
 
@@ -154,7 +154,7 @@ export function SourceInput({ source }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/source`,
             {
-                method: source._id ? "PUT" : "POST",
+                method: source && source._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },

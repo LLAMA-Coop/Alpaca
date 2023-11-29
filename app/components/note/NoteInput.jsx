@@ -93,7 +93,7 @@ export function NoteInput({ note }) {
             tags,
         };
         notePayload.permissions = permissions;
-        if (note._id) {
+        if (note && note._id) {
             notePayload._id = note._id;
         }
 
@@ -102,7 +102,7 @@ export function NoteInput({ note }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/note`,
             {
-                method: note._id ? "PUT" : "POST",
+                method: note && note._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
