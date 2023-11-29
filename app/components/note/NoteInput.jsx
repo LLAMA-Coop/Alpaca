@@ -43,12 +43,15 @@ export function NoteInput({ note }) {
 
     useEffect(() => {
         if (!note) return;
-        setText(note.text);
-        setSources(
-            note.sources.map((srcId) =>
-                availableSources.find((x) => x._id === srcId),
-            ),
-        );
+        if (note.title) setTitle(note.title);
+        if (note.text) setText(note.text);
+        if (note.sources && note.sources.length > 0) {
+            setSources(
+                note.sources.map((srcId) =>
+                    availableSources.find((x) => x._id === srcId),
+                ),
+            );
+        }
         if (note.courses && note.courses.length > 0) {
             setCourses(
                 note.courses.map((courseId) =>
@@ -90,7 +93,7 @@ export function NoteInput({ note }) {
             tags,
         };
         notePayload.permissions = permissions;
-        if (note) {
+        if (note._id) {
             notePayload._id = note._id;
         }
 
@@ -99,7 +102,7 @@ export function NoteInput({ note }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/note`,
             {
-                method: note ? "PUT" : "POST",
+                method: note._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
