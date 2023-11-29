@@ -27,7 +27,7 @@ export function ListAnswer({
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
-    
+
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
 
@@ -74,17 +74,17 @@ export function ListAnswer({
                 },
             );
 
-            if(response.status === 401) {
+            if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: "You have been signed out. Please sign in again."
-                })
+                    message: "You have been signed out. Please sign in again.",
+                });
                 setShowAlert(true);
                 addModal({
                     title: "Sign back in",
                     content: <UserInput onSubmit={removeModal} />,
                 });
-            } 
+            }
 
             const resJson = await response.json();
             console.log(resJson);
@@ -186,6 +186,8 @@ export function ListAnswer({
             )}
             {!responseCorrect &&
                 responseStatus === "complete" &&
+                quiz.hints &&
+                quiz.hints.length > 0 &&
                 failures > 2 && (
                     <div data-type="hints">
                         <p>
@@ -194,8 +196,8 @@ export function ListAnswer({
                         </p>
 
                         <ul>
-                            {quiz.correctResponses.map((ans, index) => {
-                                return <li key={index}>{ans}</li>;
+                            {quiz.hints.map((hint, index) => {
+                                return <li key={`hint_${index}`}>{hint}</li>;
                             })}
                         </ul>
                     </div>

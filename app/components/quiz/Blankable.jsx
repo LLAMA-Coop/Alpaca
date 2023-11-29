@@ -26,7 +26,7 @@ export function Blankable({
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
-    
+
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
 
@@ -71,17 +71,17 @@ export function Blankable({
                 },
             );
 
-            if(response.status === 401) {
+            if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: "You have been signed out. Please sign in again."
-                })
+                    message: "You have been signed out. Please sign in again.",
+                });
                 setShowAlert(true);
                 addModal({
                     title: "Sign back in",
                     content: <UserInput onSubmit={removeModal} />,
                 });
-            } 
+            }
 
             const resJson = await response.json();
             console.log(resJson);
@@ -165,12 +165,14 @@ export function Blankable({
 
             {!responseCorrect &&
                 responseStatus === "complete" &&
+                quiz.hints &&
+                quiz.hints.length > 0 &&
                 failures > 2 && (
                     <div data-type="hints">
                         <p>You're having some trouble. Here are some hints:</p>
                         <ul>
-                            {quiz.correctResponses.map((ans, index) => {
-                                return <li key={index}>{ans}</li>;
+                            {quiz.hints.map((hint, index) => {
+                                return <li key={`hint_${index}`}>{hint}</li>;
                             })}
                         </ul>
                     </div>

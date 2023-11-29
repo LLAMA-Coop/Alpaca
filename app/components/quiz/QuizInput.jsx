@@ -35,10 +35,13 @@ export function QuizInput({ quiz }) {
     const [choicesError, setChoicesError] = useState("");
 
     const [hints, setHints] = useState([]);
+    const [newHint, setNewHint] = useState([]);
 
     const [courses, setCourses] = useState([]);
+
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
+
     const [permissions, setPermissions] = useState({});
 
     const [sources, setSources] = useState([]);
@@ -155,6 +158,13 @@ export function QuizInput({ quiz }) {
         { label: "Unordered List Answer", value: "unordered-list-answer" },
         { label: "Verbatim", value: "verbatim" },
     ];
+
+    function handleAddHint(e) {
+        e.preventDefault();
+        if (!newHint || hints.includes(newHint)) return;
+        setHints([...hints, newHint]);
+        setNewHint("");
+    }
 
     function handleAddTag(e) {
         e.preventDefault();
@@ -486,6 +496,39 @@ export function QuizInput({ quiz }) {
                     listProperty={"name"}
                     listSetter={setCourses}
                 />
+            </div>
+
+            <div>
+                <Input
+                    label={"Add Hint"}
+                    value={newHint}
+                    maxLength={MAX.response}
+                    description="A hint that may help the user remember the correct answer"
+                    onChange={(e) => setNewHint(e.target.value)}
+                    action="Add hint"
+                    onActionTrigger={handleAddHint}
+                />
+
+                <div style={{ marginTop: "24px" }}>
+                    <Label label="Hints" />
+
+                    <ul className="chipList">
+                        {hints.length === 0 && (
+                            <ListItem item="No hints added" />
+                        )}
+
+                        {hints.map((hint) => (
+                            <ListItem
+                                key={hint}
+                                item={hint}
+                                action={() => {
+                                    setHints(hints.filter((h) => h !== hint));
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul>
+                </div>
             </div>
 
             <div>

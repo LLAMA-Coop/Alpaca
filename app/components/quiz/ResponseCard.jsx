@@ -25,7 +25,7 @@ export function ResponseCard({
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
-    
+
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
 
@@ -88,17 +88,17 @@ export function ResponseCard({
                 },
             );
 
-            if(response.status === 401) {
+            if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: "You have been signed out. Please sign in again."
-                })
+                    message: "You have been signed out. Please sign in again.",
+                });
                 setShowAlert(true);
                 addModal({
                     title: "Sign back in",
                     content: <UserInput onSubmit={removeModal} />,
                 });
-            } 
+            }
 
             const resJson = await response.json();
             console.log(resJson);
@@ -175,16 +175,19 @@ export function ResponseCard({
                 outlineColor={outline}
             />
 
-            {!correctAnswer && failures > 2 && (
-                <div data-type="hints">
-                    <p>You're having some trouble. Here are some hints:</p>
-                    <ul>
-                        {quiz.correctResponses.map((x, index) => (
-                            <li key={index}>{x}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            {!correctAnswer &&
+                quiz.hints &&
+                quiz.hints.length > 0 &&
+                failures > 2 && (
+                    <div data-type="hints">
+                        <p>You're having some trouble. Here are some hints:</p>
+                        <ul>
+                            {quiz.hints.map((hint, index) => (
+                                <li key={`hint_${index}`}>{hint}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
         </Card>
     );
 }
