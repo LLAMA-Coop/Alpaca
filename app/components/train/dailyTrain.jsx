@@ -31,6 +31,14 @@ export default function DailyTrain({ quizzes }) {
         setVisibleSet(newVisible);
     }
 
+    useEffect(() => {
+        if (start) {
+            document.documentElement.style.overflowY = "hidden";
+        } else {
+            document.documentElement.style.overflowY = "auto";
+        }
+    }, [start]);
+
     const parameters = (
         <>
             <Input
