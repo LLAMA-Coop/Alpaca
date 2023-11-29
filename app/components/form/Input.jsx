@@ -5,6 +5,7 @@ import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import makeUniqueId from "@/lib/uniqueId";
 import styles from "./Input.module.css";
 import { useEffect, useRef, useState } from "react";
+import inputSize from "@/lib/inputSize";
 
 export function Label({ required, error, errorId, label, htmlFor, checkbox }) {
     return (
@@ -35,6 +36,7 @@ export function Input({
     value,
     minLength,
     maxLength,
+    size,
     error,
     label,
     onFocus,
@@ -233,7 +235,12 @@ export function Input({
                         }}
                     >
                         {choices.map((choice) => (
-                            <option key={choice.key ?? choice.label} value={choice.value}>{choice.label}</option>
+                            <option
+                                key={choice.key ?? choice.label}
+                                value={choice.value}
+                            >
+                                {choice.label}
+                            </option>
                         ))}
                     </select>
                 )}
@@ -300,6 +307,7 @@ export function Input({
                         aria-invalid={error ? "true" : "false"}
                         aria-errormessage={error ? errorId : ""}
                         type={type || "text"}
+                        size={inline ? inputSize(String(value)) : undefined}
                         required={required}
                         onChange={onChange}
                         onFocus={onFocus}
