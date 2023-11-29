@@ -20,14 +20,29 @@
 }
 
 .popup {
-    background-color: var(--background-secondary);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: var(--background-primary);
     z-index: 10;
     display: flex;
     justify-content: center;
-    align-items: center;
+    padding: 140px;
+    overflow: hidden scroll;
 }
 
-.closeButton {
+.popup::-webkit-scrollbar {
+    width: 0;
+}
+
+.popup > ol {
+    overflow: hidden;
+    height: fit-content;
+}
+
+.popup .closeButton {
     position: fixed;
     top: 24px;
     right: 24px;
@@ -45,4 +60,24 @@
 .closeButton:hover {
     background: var(--background-4);
     color: var(--foreground-primary);
+}
+
+.blurContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    backdrop-filter: blur(20px);
+    z-index: 11;
+}
+
+.blurContainer > div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
 }
