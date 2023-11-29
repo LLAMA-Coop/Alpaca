@@ -3,9 +3,10 @@
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
-import { Card, Input, Alert } from "../client";
+import { Card, Input, Alert, UserInput } from "../client";
 import { useEffect, useState } from "react";
 import styles from "./Blankable.module.css";
+import { useModals } from "@/store/store";
 
 export function ListAnswer({
     canClientCheck,
@@ -26,6 +27,9 @@ export function ListAnswer({
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (responseStatus === "empty") return;
@@ -73,10 +77,13 @@ export function ListAnswer({
             if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: "Please log in and try again",
+                    message: "You have been signed out. Please sign in again.",
                 });
                 setShowAlert(true);
-                return;
+                addModal({
+                    title: "Sign back in",
+                    content: <UserInput onSubmit={removeModal} />,
+                });
             }
 
             const resJson = await response.json();
@@ -179,16 +186,17 @@ export function ListAnswer({
             )}
             {!responseCorrect &&
                 responseStatus === "complete" &&
+                quiz.hints &&
+                quiz.hints.length > 0 &&
                 failures > 2 && (
                     <div data-type="hints">
                         <p>
-                            You're having some trouble. Here are some acceptable
-                            answers:
+                            You're having some trouble. Here are some hints:
                         </p>
 
                         <ul>
-                            {quiz.correctResponses.map((ans, index) => {
-                                return <li key={index}>{ans}</li>;
+                            {quiz.hints.map((hint, index) => {
+                                return <li key={`hint_${index}`}>{hint}</li>;
                             })}
                         </ul>
                     </div>

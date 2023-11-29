@@ -41,6 +41,7 @@ export async function POST(req) {
             prompt,
             choices,
             correctResponses,
+            hints,
             sources,
             notes,
             courses,
@@ -109,10 +110,11 @@ export async function POST(req) {
         }
 
         const quiz = new Quiz({
-            type: type,
-            prompt: prompt,
-            choices: choices,
-            correctResponses: correctResponses,
+            type,
+            prompt,
+            choices,
+            correctResponses,
+            hints: hints ?? [],
             notes: notes ?? [],
             sources: sources ?? [],
             courses: courses ?? [],

@@ -36,7 +36,8 @@ export async function POST(req) {
             return unauthorized;
         }
 
-        const { text, sources, courses, tags, permissions } = await req.json();
+        const { title, text, sources, courses, tags, permissions } =
+            await req.json();
 
         if (!text) {
             return NextResponse.json(
@@ -58,7 +59,8 @@ export async function POST(req) {
 
         const note = new Note({
             createdBy: user._id,
-            text: text,
+            title,
+            text,
             sources: [...sources],
             courses: courses ?? [],
             tags: [...tags],
@@ -82,7 +84,7 @@ export async function PUT(req) {
             return unauthorized;
         }
 
-        const { _id, text, sources, courses, tags, permissions } =
+        const { _id, title, text, sources, courses, tags, permissions } =
             await req.json();
 
         const note = await Note.findById(_id);
@@ -104,6 +106,9 @@ export async function PUT(req) {
             );
         }
 
+        if (title) {
+            note.title = title;
+        }
         if (text) {
             note.text = text;
         }

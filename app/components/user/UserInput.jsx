@@ -8,7 +8,7 @@ import { useAlerts, useStore } from "@/store/store";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
 
-export function UserInput({ isRegistering }) {
+export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
     const [usernameError, setUsernameError] = useState("");
 
@@ -126,7 +126,7 @@ export function UserInput({ isRegistering }) {
         }
 
         if (response.status === 201) {
-            router.push("/login");
+            if (!onSubmit) router.push("/login");
 
             setUsername("");
             setPassword("");
@@ -140,6 +140,7 @@ export function UserInput({ isRegistering }) {
                 success: true,
                 message: "Account created successfully",
             });
+            if (onSubmit) onSubmit();
         } else {
             addAlert({
                 success: false,
@@ -182,7 +183,7 @@ export function UserInput({ isRegistering }) {
 
         if (response.status === 200) {
             setIsAuthenticated(true);
-            router.push(`/users/${username}`);
+            if (!onSubmit) router.push(`/users/${username}`);
             router.refresh();
 
             setUsername("");
@@ -197,6 +198,7 @@ export function UserInput({ isRegistering }) {
                 success: true,
                 message: "Logged in successfully",
             });
+            if (onSubmit) onSubmit();
         } else {
             setUsernameError("Invalid username or password");
         }

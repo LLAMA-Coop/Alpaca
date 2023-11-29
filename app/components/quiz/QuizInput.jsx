@@ -8,10 +8,11 @@ import {
     InputPopup,
     Spinner,
     Alert,
+    UserInput,
 } from "@components/client";
 import PermissionsInput from "../form/PermissionsInput";
 import { serializeOne } from "@/lib/db";
-import { useStore } from "@/store/store";
+import { useStore, useModals } from "@/store/store";
 import { buildPermissions } from "@/lib/permissions";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import ListAdd from "../form/ListAdd";
@@ -34,10 +35,13 @@ export function QuizInput({ quiz }) {
     const [choicesError, setChoicesError] = useState("");
 
     const [hints, setHints] = useState([]);
+    const [newHint, setNewHint] = useState([]);
 
     const [courses, setCourses] = useState([]);
+
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
+
     const [permissions, setPermissions] = useState({});
 
     const [sources, setSources] = useState([]);
@@ -57,12 +61,15 @@ export function QuizInput({ quiz }) {
     const availableCourses = useStore((state) => state.courseStore);
 
     const user = useStore((state) => state.user);
-    const canDelete = quiz && quiz.createdBy === user?._id;
+    const canDelete = quiz && user && quiz.createdBy === user._id;
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (!quiz) return;
-        setType(quiz.type);
-        setPrompt(quiz.prompt);
+        if (quiz.type) setType(quiz.type);
+        if (quiz.prompt) setPrompt(quiz.prompt);
         if (quiz.choices) {
             setChoices([...quiz.choices]);
         }
@@ -152,6 +159,13 @@ export function QuizInput({ quiz }) {
         { label: "Verbatim", value: "verbatim" },
     ];
 
+    function handleAddHint(e) {
+        e.preventDefault();
+        if (!newHint || hints.includes(newHint)) return;
+        setHints([...hints, newHint]);
+        setNewHint("");
+    }
+
     function handleAddTag(e) {
         e.preventDefault();
         if (!newTag || tags.includes(newTag)) return;
@@ -204,7 +218,7 @@ export function QuizInput({ quiz }) {
             courses: courses.map((course) => course._id),
             tags,
         };
-        if (quiz) {
+        if (quiz && quiz._id) {
             quizPayload._id = quiz._id;
         }
 
@@ -217,7 +231,7 @@ export function QuizInput({ quiz }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,
             {
-                method: quiz ? "PUT" : "POST",
+                method: quiz && quiz._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -257,6 +271,16 @@ export function QuizInput({ quiz }) {
                 message: "Quiz updated successfully",
             });
             setShowAlert(true);
+        } else if (response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again.",
+            });
+            setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,
@@ -457,7 +481,7 @@ export function QuizInput({ quiz }) {
                     item="Add a note"
                     listChoices={availableNotes}
                     listChosen={notes}
-                    listProperty={"text"}
+                    listProperty={["title", "text"]}
                     listSetter={setNotes}
                 />
             </div>
@@ -472,6 +496,39 @@ export function QuizInput({ quiz }) {
                     listProperty={"name"}
                     listSetter={setCourses}
                 />
+            </div>
+
+            <div>
+                <Input
+                    label={"Add Hint"}
+                    value={newHint}
+                    maxLength={MAX.response}
+                    description="A hint that may help the user remember the correct answer"
+                    onChange={(e) => setNewHint(e.target.value)}
+                    action="Add hint"
+                    onActionTrigger={handleAddHint}
+                />
+
+                <div style={{ marginTop: "24px" }}>
+                    <Label label="Hints" />
+
+                    <ul className="chipList">
+                        {hints.length === 0 && (
+                            <ListItem item="No hints added" />
+                        )}
+
+                        {hints.map((hint) => (
+                            <ListItem
+                                key={hint}
+                                item={hint}
+                                action={() => {
+                                    setHints(hints.filter((h) => h !== hint));
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul>
+                </div>
             </div>
 
             <div>

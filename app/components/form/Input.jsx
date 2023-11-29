@@ -54,8 +54,8 @@ export function Input({
     const firstElement = useRef(null);
 
     useEffect(() => {
-        if (!id || !label) return;
-        setInputId(`${id ?? label.split("").join("_")}-${makeUniqueId()}`);
+        if (!id && !label) return;
+        setInputId(`${id ?? label.split(" ").join("_")}-${makeUniqueId()}`);
         setErrorId(`${inputId}-error`);
     }, []);
 

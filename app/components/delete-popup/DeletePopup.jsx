@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Alert } from "../client";
+import { Alert, UserInput } from "../client";
+import { useModals } from "@/store/store";
 
 export function DeletePopup({ resourceType, resourceId }) {
     const [showPopup, setShowPopup] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     const handleDelete = async () => {
         const response = await fetch(
@@ -26,6 +29,16 @@ export function DeletePopup({ resourceType, resourceId }) {
             });
             setShowAlert(true);
             setIsDeleted(true);
+        } else if (response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again.",
+            });
+            setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else if (response.status === 404) {
             setRequestStatus({
                 success: true,

@@ -8,15 +8,17 @@ import {
     InputPopup,
     Spinner,
     Alert,
+    UserInput,
 } from "@/app/components/client";
 import PermissionsInput from "../form/PermissionsInput";
-import { useStore } from "@/store/store";
+import { useStore, useModals } from "@/store/store";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import ListAdd from "../form/ListAdd";
 import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
 
 export function NoteInput({ note }) {
+    const [title, setTitle] = useState("");
     const [text, setText] = useState("");
     const [sources, setSources] = useState([]);
     const [textError, setTextError] = useState("");
@@ -34,16 +36,22 @@ export function NoteInput({ note }) {
     const availableSources = useStore((state) => state.sourceStore);
     const availableCourses = useStore((state) => state.courseStore);
     const user = useStore((state) => state.user);
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
+
     const canDelete = note && note.createdBy === user._id;
 
     useEffect(() => {
         if (!note) return;
-        setText(note.text);
-        setSources(
-            note.sources.map((srcId) =>
-                availableSources.find((x) => x._id === srcId),
-            ),
-        );
+        if (note.title) setTitle(note.title);
+        if (note.text) setText(note.text);
+        if (note.sources && note.sources.length > 0) {
+            setSources(
+                note.sources.map((srcId) =>
+                    availableSources.find((x) => x._id === srcId),
+                ),
+            );
+        }
         if (note.courses && note.courses.length > 0) {
             setCourses(
                 note.courses.map((courseId) =>
@@ -78,13 +86,14 @@ export function NoteInput({ note }) {
         }
 
         const notePayload = {
+            title,
             text,
             sources: sources.map((src) => src._id),
             courses: courses.map((course) => course._id),
             tags,
         };
         notePayload.permissions = permissions;
-        if (note) {
+        if (note && note._id) {
             notePayload._id = note._id;
         }
 
@@ -93,7 +102,7 @@ export function NoteInput({ note }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/note`,
             {
-                method: note ? "PUT" : "POST",
+                method: note && note._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -118,6 +127,16 @@ export function NoteInput({ note }) {
                 message: "Note edited succesfully.",
             });
             setShowAlert(true);
+        } else if (response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again.",
+            });
+            setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,
@@ -134,6 +153,15 @@ export function NoteInput({ note }) {
                 setShow={setShowAlert}
                 success={requestStatus.success}
                 message={requestStatus.message}
+            />
+
+            <Input
+                onChange={(e) => {
+                    setTitle(e.target.value);
+                }}
+                value={title}
+                label={"Title"}
+                maxLength={MAX.title}
             />
 
             <Input

@@ -5,7 +5,8 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
 import { useEffect, useState } from "react";
 import { Card, Alert } from "../client";
-import { Input } from "../client";
+import { Input, UserInput } from "../client";
+import { useModals } from "@/store/store";
 
 export function Blankable({
     canClientCheck,
@@ -25,6 +26,9 @@ export function Blankable({
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (responseStatus === "empty") return;
@@ -70,10 +74,13 @@ export function Blankable({
             if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: "Please log in and try again",
+                    message: "You have been signed out. Please sign in again.",
                 });
                 setShowAlert(true);
-                return;
+                addModal({
+                    title: "Sign back in",
+                    content: <UserInput onSubmit={removeModal} />,
+                });
             }
 
             const resJson = await response.json();
@@ -133,6 +140,7 @@ export function Blankable({
                         {text}
                         {index < texts.length - 1 && (
                             <Input
+                                id={`blank-${index}`}
                                 inline
                                 size={inputSize(String(userResponse[index]))}
                                 value={
@@ -157,12 +165,14 @@ export function Blankable({
 
             {!responseCorrect &&
                 responseStatus === "complete" &&
+                quiz.hints &&
+                quiz.hints.length > 0 &&
                 failures > 2 && (
                     <div data-type="hints">
                         <p>You're having some trouble. Here are some hints:</p>
                         <ul>
-                            {quiz.correctResponses.map((ans, index) => {
-                                return <li key={index}>{ans}</li>;
+                            {quiz.hints.map((hint, index) => {
+                                return <li key={`hint_${index}`}>{hint}</li>;
                             })}
                         </ul>
                     </div>

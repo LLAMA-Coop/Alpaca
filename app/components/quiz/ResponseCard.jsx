@@ -1,12 +1,13 @@
 "use client";
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Input, Card, Alert } from "@components/client";
+import { Input, Card, Alert, UserInput } from "@components/client";
 import correctConfetti from "@/lib/correctConfetti";
 import stringCompare from "@/lib/stringCompare";
 import shuffleArray from "@/lib/shuffleArray";
 import { useState, useEffect } from "react";
 import makeUniqueId from "@/lib/uniqueId";
+import { useModals } from "@/store/store";
 
 export function ResponseCard({
     canClientCheck,
@@ -24,6 +25,9 @@ export function ResponseCard({
 
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (quiz.choices)
@@ -87,10 +91,13 @@ export function ResponseCard({
             if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: "Please log in and try again",
+                    message: "You have been signed out. Please sign in again.",
                 });
                 setShowAlert(true);
-                return;
+                addModal({
+                    title: "Sign back in",
+                    content: <UserInput onSubmit={removeModal} />,
+                });
             }
 
             const resJson = await response.json();
@@ -168,16 +175,19 @@ export function ResponseCard({
                 outlineColor={outline}
             />
 
-            {!correctAnswer && failures > 2 && (
-                <div data-type="hints">
-                    <p>You're having some trouble. Here are some hints:</p>
-                    <ul>
-                        {quiz.correctResponses.map((x, index) => (
-                            <li key={index}>{x}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            {!correctAnswer &&
+                quiz.hints &&
+                quiz.hints.length > 0 &&
+                failures > 2 && (
+                    <div data-type="hints">
+                        <p>You're having some trouble. Here are some hints:</p>
+                        <ul>
+                            {quiz.hints.map((hint, index) => (
+                                <li key={`hint_${index}`}>{hint}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
         </Card>
     );
 }

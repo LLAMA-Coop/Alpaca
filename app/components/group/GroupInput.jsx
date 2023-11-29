@@ -1,11 +1,18 @@
 "use client";
 
-import { Label, Input, Spinner, Alert } from "@/app/components/client";
+import {
+    Label,
+    Input,
+    Spinner,
+    Alert,
+    UserInput,
+} from "@/app/components/client";
 import filetypeinfo from "magic-bytes.js";
 import { useState, useRef, useEffect } from "react";
 import styles from "./Group.module.css";
 import Image from "next/image";
 import MAX from "@/lib/max";
+import { useModals } from "@/store/store";
 
 export function GroupInput({ group }) {
     const [name, setName] = useState("");
@@ -20,6 +27,9 @@ export function GroupInput({ group }) {
     const [loading, setLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (!group) return;
@@ -81,6 +91,16 @@ export function GroupInput({ group }) {
                 message: "Group created successfully.",
             });
             setShowAlert(true);
+        } else if (response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again.",
+            });
+            setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,
