@@ -94,11 +94,6 @@ export function ListAnswer({
         }
     }
 
-    // let color;
-    // if(isFlashcard){
-    //     color = showAnswer ? "var(--accent-tertiary-1)" : undefined;
-    // }
-
     function handleShowAnswer() {
         if (!isFlashcard) return;
         setShowAnswer((prev) => !prev);

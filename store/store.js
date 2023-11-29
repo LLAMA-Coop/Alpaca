@@ -40,7 +40,6 @@ const removeNotification = (state, notification) => {
     return newState;
 };
 
-//needs testing
 const updateResource = (state, storeName, newResource) => {
     if (!Object.values(stores).includes(storeName)) {
         throw Error(`We do not have a list called ${storeName}`);

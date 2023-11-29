@@ -4,8 +4,7 @@ import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
 import { useEffect, useState } from "react";
-import { Card, Alert } from "../client";
-import { Input, UserInput } from "../client";
+import { Card, Alert, Input, UserInput } from "../client";
 import { useModals } from "@/store/store";
 
 export function Blankable({
@@ -96,11 +95,6 @@ export function Blankable({
         setShowAnswer((prev) => !prev);
     }
 
-    function inputSize(string) {
-        if (string.length < 5) return 5;
-        return string.length + 1;
-    }
-
     let label, color, icon;
     if (isFlashcard) {
         label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
@@ -142,7 +136,6 @@ export function Blankable({
                             <Input
                                 id={`blank-${index}`}
                                 inline
-                                size={inputSize(String(userResponse[index]))}
                                 value={
                                     isFlashcard && showAnswer
                                         ? quiz.correctResponses[index]
