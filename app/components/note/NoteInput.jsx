@@ -18,6 +18,7 @@ import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
 
 export function NoteInput({ note }) {
+    const [title, setTitle] = useState("");
     const [text, setText] = useState("");
     const [sources, setSources] = useState([]);
     const [textError, setTextError] = useState("");
@@ -82,6 +83,7 @@ export function NoteInput({ note }) {
         }
 
         const notePayload = {
+            title,
             text,
             sources: sources.map((src) => src._id),
             courses: courses.map((course) => course._id),
@@ -148,6 +150,15 @@ export function NoteInput({ note }) {
                 setShow={setShowAlert}
                 success={requestStatus.success}
                 message={requestStatus.message}
+            />
+
+            <Input
+                onChange={(e) => {
+                    setTitle(e.target.value);
+                }}
+                value={title}
+                label={"Title"}
+                maxLength={MAX.title}
             />
 
             <Input

@@ -8,7 +8,7 @@ export async function NoteDisplay({ note }) {
     const dbNote = await Note.findById(note._id).populate("sources").populate("courses");
 
     return (
-        <Card description={`${note.text}`}>
+        <Card title={note.title} description={`${note.text}`}>
             <div className={styles.tags}>
                 <h5>Tags</h5>
                 {note.tags?.length > 0 ? (
