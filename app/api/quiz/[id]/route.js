@@ -129,7 +129,7 @@ export async function DELETE(req, { params }) {
         const deletion = await Quiz.deleteOne({ id });
         if (deletion.deletedCount === 0) {
             console.error(
-                `Unable to delete quiz with id ${id}\nError: ${error || "N/A"}`,
+                `Unable to delete quiz with id ${id}`,
             );
             return NextResponse.json(
                 {

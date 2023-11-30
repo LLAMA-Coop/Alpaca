@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { serializeOne } from "@/lib/db";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
+import { buildPermissions } from "@/lib/permissions";
 
 const allowedType = [
     "prompt-response",
@@ -13,6 +14,7 @@ const allowedType = [
     "unordered-list-answer",
     "ordered-list-answer",
     "fill-in-the-blank",
+    "verbatim"
 ];
 
 export async function GET(req) {
@@ -40,12 +42,13 @@ export async function POST(req) {
             prompt,
             choices,
             correctResponses,
+            hints,
             sources,
             notes,
+            courses,
+            tags,
             permissions,
         } = await req.json();
-
-        console.log("perms in quiz route", permissions);
 
         if (!allowedType.includes(type)) {
             return NextResponse.json(
@@ -107,19 +110,22 @@ export async function POST(req) {
                 .map((x) => x.split("_")[1]);
         }
 
-        const quizRcvd = {
-            type: type,
-            prompt: prompt,
-            choices: choices,
-            correctResponses: correctResponses,
-            contributors: [user._id],
-            createdBy: user._id,
+        const quiz = new Quiz({
+            type,
+            prompt,
+            choices,
+            correctResponses,
+            hints: hints ?? [],
             notes: notes ?? [],
             sources: sources ?? [],
-            permissions: serializeOne(permissions) ?? {},
-        };
+            courses: courses ?? [],
+            tags: tags ?? [],
+            contributors: [user._id],
+            createdBy: user._id,
+        });
 
-        const quiz = new Quiz(quizRcvd);
+        quiz.permissions = buildPermissions(permissions);
+
         const content = await quiz.save();
         return NextResponse.json({ content }, { status: 201 });
     } catch (error) {
@@ -145,6 +151,8 @@ export async function PUT(req) {
             hints,
             sources,
             notes,
+            courses,
+            tags,
             permissions,
         } = await req.json();
 
@@ -215,6 +223,22 @@ export async function PUT(req) {
                     quiz.notes.push(new Types.ObjectId(noteId_req));
                 }
             });
+        }
+
+        if (courses) {
+            courses.forEach((courseId_req) => {
+                if (
+                    !quiz.courses.find(
+                        (course) => course._id.toString() === courseId_req,
+                    )
+                ) {
+                    quiz.courses.push(new Types.ObjectId(courseId_req));
+                }
+            });
+        }
+
+        if (tags) {
+            quiz.tags = tags;
         }
 
         if (permissions && quiz.createdBy.toString() === user._id.toString()) {

@@ -39,6 +39,12 @@ const SourceSchema = new Schema(
                 maxLength: MAX.tag,
             },
         ],
+        courses: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "course"
+            }
+        ],
         createdBy: {
             type: Schema.Types.ObjectId,
             ref: "user",

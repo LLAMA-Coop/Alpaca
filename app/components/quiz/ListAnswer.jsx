@@ -1,15 +1,19 @@
 "use client";
 
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
-import { Card, Input, Alert } from "@client";
+import { Card, Input, Alert, UserInput } from "@client";
 import { useEffect, useState } from "react";
+import styles from "./Blankable.module.css";
+import { useModals } from "@/store/store";
 
 export function ListAnswer({
     canClientCheck,
     quiz,
     isOrdered,
     handleWhenCorrect,
+    isFlashcard,
 }) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
@@ -19,8 +23,13 @@ export function ListAnswer({
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
 
+    const [showAnswer, setShowAnswer] = useState(false);
+
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (responseStatus === "empty") return;
@@ -68,10 +77,13 @@ export function ListAnswer({
             if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: "Please log in and try again",
+                    message: "You have been signed out. Please sign in again.",
                 });
                 setShowAlert(true);
-                return;
+                addModal({
+                    title: "Sign back in",
+                    content: <UserInput onSubmit={removeModal} />,
+                });
             }
 
             const resJson = await response.json();
@@ -82,8 +94,36 @@ export function ListAnswer({
         }
     }
 
+    function handleShowAnswer() {
+        if (!isFlashcard) return;
+        setShowAnswer((prev) => !prev);
+    }
+
+    let label, color, icon;
+    if (isFlashcard) {
+        label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
+        color = showAnswer ? "var(--accent-tertiary-1)" : undefined;
+    } else if (responseStatus === "complete") {
+        label = incorrectIndexes.length ? "Incorrect" : "Correct";
+        color = incorrectIndexes.length
+            ? "var(--accent-secondary-1)"
+            : "var(--accent-tertiary-1)";
+        icon = incorrectIndexes.length ? faXmark : faCheck;
+    } else {
+        label = "Check Answer";
+    }
+
     return (
-        <Card>
+        <Card
+            buttons={[
+                {
+                    label,
+                    icon,
+                    color,
+                    onClick: isFlashcard ? handleShowAnswer : handleCheckAnswer,
+                },
+            ]}
+        >
             <Alert
                 show={showAlert}
                 setShow={setShowAlert}
@@ -94,21 +134,31 @@ export function ListAnswer({
             <h4 id="prompt">{quiz.prompt}</h4>
             <ul>
                 {userResponse.map((ans, index) => {
-                    let status = "";
+                    let isCorrect = "";
                     if (incorrectIndexes.includes(index)) {
-                        status = styles.incorrect;
+                        isCorrect = false;
                     } else if (responseStatus === "complete") {
-                        status = styles.correct;
+                        isCorrect = true;
                     }
                     return (
-                        <li key={index} className={status}>
+                        <li key={index}>
                             <Input
                                 type="text"
+                                isCorrect={isCorrect}
                                 aria-labelledby="prompt"
                                 id={"ans_" + index}
-                                value={ans}
+                                value={
+                                    isFlashcard && showAnswer
+                                        ? quiz.correctResponses[index]
+                                        : ans
+                                }
                                 onChange={(e) =>
                                     handleChange(index, e.target.value)
+                                }
+                                outlineColor={
+                                    isFlashcard && showAnswer
+                                        ? "var(--accent-tertiary-outline)"
+                                        : undefined
                                 }
                             ></Input>
                         </li>
@@ -116,25 +166,31 @@ export function ListAnswer({
                 })}
             </ul>
 
-            <button onClick={handleCheckAnswer} className="button">
-                Check Answer
-            </button>
+            {/* <button
+                onClick={isFlashcard ? handleShowAnswer : handleCheckAnswer}
+                className="button"
+                style={{ backgroundColor: color }}
+            >
+                {isFlashcard && showAnswer
+                    ? "Return to Your Answers"
+                    : "Show Correct Answers"}
+                {!isFlashcard && "Check Answer"}
+            </button> */}
 
             {responseCorrect && responseStatus === "complete" && (
                 <div>Correct!</div>
             )}
             {!responseCorrect &&
                 responseStatus === "complete" &&
+                quiz.hints &&
+                quiz.hints.length > 0 &&
                 failures > 2 && (
                     <div data-type="hints">
-                        <p>
-                            You're having some trouble. Here are some acceptable
-                            answers:
-                        </p>
+                        <p>You're having some trouble. Here are some hints:</p>
 
                         <ul>
-                            {quiz.correctResponses.map((ans, index) => {
-                                return <li key={index}>{ans}</li>;
+                            {quiz.hints.map((hint, index) => {
+                                return <li key={`hint_${index}`}>{hint}</li>;
                             })}
                         </ul>
                     </div>

@@ -3,6 +3,7 @@
 import { SourceInput, NoteInput, QuizInput } from "@client";
 import { useEffect, useRef, useState } from "react";
 import styles from "./InputPopup.module.css";
+import { CourseInput } from "../course/CourseInput";
 
 export function InputPopup({ type, resource }) {
     const [showPopup, setShowPopup] = useState(false);
@@ -32,6 +33,7 @@ export function InputPopup({ type, resource }) {
         quiz: resource ? "Edit quiz question" : "Create new quiz question",
         source: resource ? "Edit source" : "Create new source",
         note: resource ? "Edit note" : "Create new note",
+        course: resource ? "Edit course" : "Create new course",
     };
 
     return (
@@ -107,6 +109,13 @@ export function InputPopup({ type, resource }) {
                                 <SourceInput source={resource} />
                             ) : (
                                 <SourceInput />
+                            ))}
+
+                        {type === "course" &&
+                            (resource ? (
+                                <CourseInput course={resource} />
+                            ) : (
+                                <CourseInput />
                             ))}
                     </div>
                 </div>

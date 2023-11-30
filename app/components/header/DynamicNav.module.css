@@ -7,7 +7,6 @@
 }
 
 .nav > ul {
-    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -17,14 +16,12 @@
 }
 
 .nav > ul > li > a {
-    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 3px;
     padding: 7px 14px;
-    z-index: 1;
     user-select: none;
     color: var(--foreground-secondary);
 }

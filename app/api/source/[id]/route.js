@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { Source } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 
-export async function DELETE(req) {
+export async function DELETE(req, { params }) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
 
@@ -13,13 +13,13 @@ export async function DELETE(req) {
             return unauthorized;
         }
 
-        const _id = req.nextUrl.pathname.split("/")[3];
+        const { id } = params;
 
-        const source = await Source.findById(_id);
+        const source = await Source.findById(id);
         if (!source) {
             return NextResponse.json(
                 {
-                    message: `The source ${_id} could not be found to delete`,
+                    message: `The source ${id} could not be found to delete`,
                 },
                 { status: 404 },
             );
@@ -28,19 +28,19 @@ export async function DELETE(req) {
         if (source.createdBy.toString() !== user._id.toString()) {
             return NextResponse.json(
                 {
-                    message: `User ${user._id} is not authorized to delete source ${_id}. Only the creator ${source.createdBy} is permitted`,
+                    message: `User ${user._id} is not authorized to delete source ${id}. Only the creator ${source.createdBy} is permitted`,
                 },
                 { status: 403 },
             );
         }
 
-        const deletion = await Source.deleteOne({ _id });
+        const deletion = await Source.deleteOne({ _id: id });
         console.log(deletion);
         if (deletion.deletedCount === 0) {
-            console.error(`Unable to delete source ${_id}\nError: ${error}`);
+            console.error(`Unable to delete source ${id}`);
             return NextResponse.json(
                 {
-                    message: `Unable to delete source ${_id}`,
+                    message: `Unable to delete source ${id}`,
                 },
                 { status: 500 },
             );

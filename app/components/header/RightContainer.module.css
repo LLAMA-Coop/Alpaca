@@ -31,7 +31,6 @@
     align-items: center;
     border-radius: 100vw;
     padding: 10px 20px;
-    z-index: 1;
     color: var(--foreground-secondary);
     background-color: var(--background-secondary);
     transition:

@@ -2,7 +2,7 @@
 
 import { buildPermissions } from "@/lib/permissions";
 import { useState, useEffect } from "react";
-import { useStore } from "@/store/store";
+import { useStore, useModals } from "@/store/store";
 import { serializeOne } from "@/lib/db";
 import htmlDate from "@/lib/htmlDate";
 import MAX from "@/lib/max";
@@ -14,6 +14,8 @@ import {
     Spinner,
     DeletePopup,
     PermissionsInput,
+    ListAdd,
+    UserInput,
 } from "@client";
 
 export function SourceInput({ source }) {
@@ -35,6 +37,7 @@ export function SourceInput({ source }) {
     const [authors, setAuthors] = useState([]);
     const [newAuthor, setNewAuthor] = useState("");
 
+    const [courses, setCourses] = useState([]);
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
 
@@ -48,7 +51,11 @@ export function SourceInput({ source }) {
     const publishRegex = /^\d{4}-\d{2}-\d{2}$/;
 
     const user = useStore((state) => state.user);
+    const availableCourses = useStore((state) => state.courseStore);
     const canDelete = source && source.createdBy === user._id;
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (!source) {
@@ -56,15 +63,21 @@ export function SourceInput({ source }) {
             return;
         }
 
-        console.log(source, user);
-
-        setTitle(source.title);
-        if (source.authors.length > 0) setAuthors([...source.authors]);
-        if (source.tags?.length > 0) setTags([...source.tags]);
+        if (source.title) setTitle(source.title);
+        if (source.authors && source.authors.length > 0)
+            setAuthors([...source.authors]);
+        if (source.tags && source.tags.length > 0) setTags([...source.tags]);
         if (source.medium) setMedium(source.medium);
         if (source.url) setUrl(source.url);
         if (source.publishedAt) setPublishDate(htmlDate(source.publishedAt));
         if (source.lastAccessed) setLastAccessed(htmlDate(source.lastAccessed));
+        if (source.courses && source.courses.length > 0) {
+            setCourses(
+                source.courses.map((courseId) =>
+                    availableCourses.find((x) => x._id === courseId),
+                ),
+            );
+        }
         if (source.permissions)
             setPermissions(serializeOne(source.permissions));
     }, []);
@@ -128,10 +141,11 @@ export function SourceInput({ source }) {
             publishDate: formatDate(publishDate),
             lastAccessed: formatDate(lastAccessed),
             authors,
+            courses: courses.map((course) => course._id),
             tags,
         };
         sourcePayload.permissions = buildPermissions(permissions);
-        if (source) {
+        if (source && source._id) {
             sourcePayload._id = source._id;
         }
 
@@ -140,7 +154,7 @@ export function SourceInput({ source }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/source`,
             {
-                method: source ? "PUT" : "POST",
+                method: source && source._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -172,6 +186,16 @@ export function SourceInput({ source }) {
             setUrlError("");
             setLastAccessedError("");
             setPublishDateError("");
+        } else if (response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again.",
+            });
+            setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,
@@ -230,7 +254,7 @@ export function SourceInput({ source }) {
             <Input
                 description="The URL of the source"
                 autoComplete="off"
-                required={true}
+                required={medium === "website"}
                 label={"URL of Source"}
                 value={url}
                 error={urlError}
@@ -299,6 +323,18 @@ export function SourceInput({ source }) {
                         ))}
                     </ul>
                 </div>
+            </div>
+
+            <div>
+                <Label required={false} label="Courses" />
+
+                <ListAdd
+                    item="Add a course"
+                    listChoices={availableCourses}
+                    listChosen={courses}
+                    listProperty={"name"}
+                    listSetter={setCourses}
+                />
             </div>
 
             <div>

@@ -4,19 +4,30 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
 import stringCompare from "@/lib/stringCompare";
 import shuffleArray from "@/lib/shuffleArray";
-import { Input, Card, Alert } from "@client";
+import { Input, Card, Alert, UserInput } from "@client";
 import { useState, useEffect } from "react";
 import makeUniqueId from "@/lib/uniqueId";
+import { useModals } from "@/store/store";
 
-export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
+export function ResponseCard({
+    canClientCheck,
+    quiz,
+    handleWhenCorrect,
+    isFlashcard,
+}) {
     const [userResponse, setUserResponse] = useState("");
     const [hasAnswered, setHasAnswered] = useState(false);
     const [correctAnswer, setCorrectAnswer] = useState(false);
     const [failures, setFailures] = useState(0);
     const [choices, setChoices] = useState([]);
 
+    const [showAnswer, setShowAnswer] = useState(false);
+
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (quiz.choices)
@@ -80,10 +91,13 @@ export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
             if (response.status === 401) {
                 setRequestStatus({
                     success: false,
-                    message: "Please log in and try again",
+                    message: "You have been signed out. Please sign in again.",
                 });
                 setShowAlert(true);
-                return;
+                addModal({
+                    title: "Sign back in",
+                    content: <UserInput onSubmit={removeModal} />,
+                });
             }
 
             const resJson = await response.json();
@@ -104,14 +118,27 @@ export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
         }
     }
 
-    const colorsLight = {
-        correct: "var(--accent-tertiary-outline)",
-        incorrect: "var(--accent-secondary-outline)",
-    };
+    function handleShowAnswer() {
+        if (!isFlashcard) return;
+        setShowAnswer((prev) => !prev);
+    }
 
-    let colorOverride;
-    if (hasAnswered) {
-        colorOverride = correctAnswer ? "correct" : "incorrect";
+    let label, color, icon, outline;
+    if (isFlashcard) {
+        label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
+        color = showAnswer ? "var(--accent-tertiary-1)" : undefined;
+        outline = showAnswer ? "var(--accent-tertiary-outline)" : undefined;
+    } else if (hasAnswered) {
+        label = correctAnswer ? "Correct" : "Incorrect";
+        icon = correctAnswer ? faCheck : faXmark;
+        color = correctAnswer
+            ? "var(--accent-tertiary-1)"
+            : "var(--accent-secondary-1)";
+        outline = correctAnswer
+            ? "var(--accent-tertiary-outline)"
+            : "var(--accent-secondary-outline)";
+    } else {
+        label = "Check Answer";
     }
 
     return (
@@ -119,25 +146,12 @@ export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
             title={quiz.prompt}
             buttons={[
                 {
-                    label: hasAnswered
-                        ? correctAnswer
-                            ? "Correct"
-                            : "Incorrect"
-                        : "Check Answer",
-                    icon: hasAnswered
-                        ? correctAnswer
-                            ? faCheck
-                            : faXmark
-                        : undefined,
-                    color: hasAnswered
-                        ? correctAnswer
-                            ? "green"
-                            : "red"
-                        : undefined,
-                    onClick: handleCheckAnswer,
+                    label,
+                    icon,
+                    color,
+                    onClick: isFlashcard ? handleShowAnswer : handleCheckAnswer,
                 },
             ]}
-            border={hasAnswered && (correctAnswer ? "green" : "red")}
         >
             <Alert
                 show={showAlert}
@@ -151,24 +165,29 @@ export function ResponseCard({ canClientCheck, quiz, handleWhenCorrect }) {
                 description="Your response to the prompt"
                 choices={choices}
                 label="Your Response"
-                value={userResponse}
+                value={
+                    isFlashcard && showAnswer
+                        ? quiz.correctResponses[0]
+                        : userResponse
+                }
                 onChange={handleInput}
                 onActionTrigger={handleCheckAnswer}
-                outlineColor={
-                    colorOverride ? colorsLight[colorOverride] : undefined
-                }
+                outlineColor={outline}
             />
 
-            {!correctAnswer && failures > 2 && (
-                <div data-type="hints">
-                    <p>You're having some trouble. Here are some hints:</p>
-                    <ul>
-                        {quiz.correctResponses.map((x, index) => (
-                            <li key={index}>{x}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            {!correctAnswer &&
+                quiz.hints &&
+                quiz.hints.length > 0 &&
+                failures > 2 && (
+                    <div data-type="hints">
+                        <p>You're having some trouble. Here are some hints:</p>
+                        <ul>
+                            {quiz.hints.map((hint, index) => (
+                                <li key={`hint_${index}`}>{hint}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
         </Card>
     );
 }

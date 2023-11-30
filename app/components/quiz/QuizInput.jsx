@@ -3,7 +3,7 @@
 import { DeletePopup } from "../DeletePopup/DeletePopup";
 import { buildPermissions } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
-import { useStore } from "@/store/store";
+import { useStore, useModals } from "@/store/store";
 import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
 import {
@@ -16,6 +16,7 @@ import {
     PermissionsInput,
     ListAdd,
     BlankableInput,
+    UserInput,
 } from "@client";
 
 export function QuizInput({ quiz }) {
@@ -34,6 +35,12 @@ export function QuizInput({ quiz }) {
     const [choicesError, setChoicesError] = useState("");
 
     const [hints, setHints] = useState([]);
+    const [newHint, setNewHint] = useState([]);
+
+    const [courses, setCourses] = useState([]);
+
+    const [tags, setTags] = useState([]);
+    const [newTag, setNewTag] = useState("");
 
     const [permissions, setPermissions] = useState({});
 
@@ -51,14 +58,18 @@ export function QuizInput({ quiz }) {
 
     const availableSources = useStore((state) => state.sourceStore);
     const availableNotes = useStore((state) => state.noteStore);
+    const availableCourses = useStore((state) => state.courseStore);
 
     const user = useStore((state) => state.user);
-    const canDelete = quiz && quiz.createdBy === user?._id;
+    const canDelete = quiz && user && quiz.createdBy === user._id;
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         if (!quiz) return;
-        setType(quiz.type);
-        setPrompt(quiz.prompt);
+        if (quiz.type) setType(quiz.type);
+        if (quiz.prompt) setPrompt(quiz.prompt);
         if (quiz.choices) {
             setChoices([...quiz.choices]);
         }
@@ -82,6 +93,14 @@ export function QuizInput({ quiz }) {
                 ),
             );
         }
+        if (quiz.courses) {
+            setCourses(
+                quiz.courses.map((courseId) =>
+                    availableCourses.find((x) => x._id === courseId),
+                ),
+            );
+        }
+        if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
             setPermissions(serializeOne(quiz.permissions));
         }
@@ -140,6 +159,20 @@ export function QuizInput({ quiz }) {
         { label: "Verbatim", value: "verbatim" },
     ];
 
+    function handleAddHint(e) {
+        e.preventDefault();
+        if (!newHint || hints.includes(newHint)) return;
+        setHints([...hints, newHint]);
+        setNewHint("");
+    }
+
+    function handleAddTag(e) {
+        e.preventDefault();
+        if (!newTag || tags.includes(newTag)) return;
+        setTags([...tags, newTag]);
+        setNewTag("");
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -181,9 +214,11 @@ export function QuizInput({ quiz }) {
             correctResponses: responses,
             hints: hints,
             sources: sources.map((src) => src._id),
-            notes: notes.map((nt) => nt._id),
+            notes: notes.map((nt) => nt ?? nt._id),
+            courses: courses.map((course) => course._id),
+            tags,
         };
-        if (quiz) {
+        if (quiz && quiz._id) {
             quizPayload._id = quiz._id;
         }
 
@@ -196,7 +231,7 @@ export function QuizInput({ quiz }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,
             {
-                method: quiz ? "PUT" : "POST",
+                method: quiz && quiz._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -236,6 +271,16 @@ export function QuizInput({ quiz }) {
                 message: "Quiz updated successfully",
             });
             setShowAlert(true);
+        } else if (response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again.",
+            });
+            setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,
@@ -247,9 +292,15 @@ export function QuizInput({ quiz }) {
 
     function handleAddResponse(e) {
         e.preventDefault();
-
         const answer = newResponse.trim();
+
         if (!answer || responses.includes(answer)) {
+            return;
+        }
+
+        if (type === "verbatim") {
+            setResponses(newResponse.split(" "));
+            setResponsesError("");
             return;
         }
 
@@ -303,6 +354,7 @@ export function QuizInput({ quiz }) {
             ) : (
                 <Input
                     label={"Prompt"}
+                    type={type === "verbatim" ? "textarea" : "text"}
                     description={
                         "Question prompt. Can be a question or statement"
                     }
@@ -361,12 +413,14 @@ export function QuizInput({ quiz }) {
 
             <div>
                 <Input
-                    type="text"
+                    type={type === "verbatim" ? "textarea" : "text"}
                     choices={choices.map((x) => ({ label: x, value: x }))}
                     label="Add new answer"
                     description={"Add a new answer. Press enter to add"}
                     value={newResponse}
-                    maxLength={MAX.response}
+                    maxLength={
+                        type !== "verbatim" ? MAX.response : MAX.description
+                    }
                     required={responses.length === 0}
                     onSubmit={handleAddResponse}
                     error={responsesError}
@@ -441,9 +495,86 @@ export function QuizInput({ quiz }) {
                     item="Add a note"
                     listChoices={availableNotes}
                     listChosen={notes}
-                    listProperty={"text"}
+                    listProperty={["title", "text"]}
                     listSetter={setNotes}
                 />
+            </div>
+
+            <div>
+                <Label required={false} label="Courses" />
+
+                <ListAdd
+                    item="Add a course"
+                    listChoices={availableCourses}
+                    listChosen={courses}
+                    listProperty={"name"}
+                    listSetter={setCourses}
+                />
+            </div>
+
+            <div>
+                <Input
+                    label={"Add Hint"}
+                    value={newHint}
+                    maxLength={MAX.response}
+                    description="A hint that may help the user remember the correct answer"
+                    onChange={(e) => setNewHint(e.target.value)}
+                    action="Add hint"
+                    onActionTrigger={handleAddHint}
+                />
+
+                <div style={{ marginTop: "24px" }}>
+                    <Label label="Hints" />
+
+                    <ul className="chipList">
+                        {hints.length === 0 && (
+                            <ListItem item="No hints added" />
+                        )}
+
+                        {hints.map((hint) => (
+                            <ListItem
+                                key={hint}
+                                item={hint}
+                                action={() => {
+                                    setHints(hints.filter((h) => h !== hint));
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <Input
+                    label={"Add Tag"}
+                    value={newTag}
+                    maxLength={MAX.tag}
+                    description="A word or phrase that could be used to search for this note"
+                    autoComplete="off"
+                    onChange={(e) => setNewTag(e.target.value)}
+                    action="Add tag"
+                    onActionTrigger={handleAddTag}
+                />
+
+                <div style={{ marginTop: "24px" }}>
+                    <Label label="Tags" />
+
+                    <ul className="chipList">
+                        {tags.length === 0 && <ListItem item="No tags added" />}
+
+                        {tags.map((tag) => (
+                            <ListItem
+                                key={tag}
+                                item={tag}
+                                action={() => {
+                                    setTags(tags.filter((t) => t !== tag));
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul>
+                </div>
             </div>
 
             {(!quiz || quiz.createdBy === user?._id.toString()) && (

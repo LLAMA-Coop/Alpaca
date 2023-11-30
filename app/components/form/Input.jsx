@@ -5,10 +5,14 @@ import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import makeUniqueId from "@/lib/uniqueId";
 import styles from "./Input.module.css";
+import { useEffect, useRef, useState } from "react";
+import inputSize from "@/lib/inputSize";
 
-export function Label({ required, error, errorId, label, htmlFor }) {
+export function Label({ required, error, errorId, label, htmlFor, checkbox }) {
     return (
-        <div className={styles.labelContainer}>
+        <div
+            className={`${styles.labelContainer} ${checkbox && styles.normal}`}
+        >
             <label htmlFor={htmlFor}>
                 {label} {required && <span>*</span>}
             </label>
@@ -25,14 +29,18 @@ export function Label({ required, error, errorId, label, htmlFor }) {
 export function Input({
     id,
     type,
+    pattern,
     description,
     autoComplete,
     choices,
     required,
     onChange,
     value,
+    min,
+    max,
     minLength,
     maxLength,
+    isCorrect,
     error,
     label,
     onFocus,
@@ -46,22 +54,68 @@ export function Input({
 }) {
     const [inputId, setInputId] = useState("");
     const [errorId, setErrorId] = useState("");
+    const [open, setOpen] = useState(false);
+
+    const container = useRef(null);
+    const firstElement = useRef(null);
 
     useEffect(() => {
-        if (!id || !label) return;
-        setInputId(`${id ?? label.split("").join("_")}-${makeUniqueId()}`);
+        if (!id && !label) return;
+        setInputId(`${id ?? label.split(" ").join("_")}-${makeUniqueId()}`);
         setErrorId(`${inputId}-error`);
     }, []);
+
+    useEffect(() => {
+        const handleEscape = (e) => {
+            if (e.key === "Escape") setOpen(false);
+        };
+
+        const handleKeyDown = (e) => {
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                const next = e.target.nextSibling;
+                if (next) next.focus();
+            }
+
+            if (e.key === "ArrowUp") {
+                e.preventDefault();
+                const prev = e.target.previousSibling;
+                if (prev) prev.focus();
+            }
+        };
+
+        const handleClickOutside = (e) => {
+            if (!container.current.contains(e.target)) setOpen(false);
+        };
+
+        if (open) {
+            firstElement.current.focus();
+            document.addEventListener("keydown", handleEscape);
+            document.addEventListener("keydown", handleKeyDown);
+            document.addEventListener("click", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("keydown", handleEscape);
+            document.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, [open]);
+
+    let status = "";
+    if (isCorrect === true) {
+        status = styles.correct;
+    } else if (isCorrect === false) {
+        status = styles.incorrect;
+    }
 
     if (type === "checkbox" && typeof value === "boolean")
         return (
             <div
-                className={styles.inlineContainer}
-                onClick={(e) => onActionTrigger(e)}
-                style={{
-                    opacity: disabled ? "0.3" : "",
-                    cursor: disabled ? "not-allowed" : "",
-                }}
+                className={`${styles.inlineContainer} ${
+                    disabled && styles.disabled
+                }`}
+                onClick={type === "checkbox" && !disabled && onChange}
             >
                 {label && (
                     <Label
@@ -70,6 +124,7 @@ export function Input({
                         errorId={errorId}
                         htmlFor={inputId}
                         required={required}
+                        checkbox={true}
                     />
                 )}
 
@@ -122,8 +177,12 @@ export function Input({
                     </svg>
 
                     <input
+                        className={status}
                         type="checkbox"
                         id={inputId}
+                        pattern={pattern}
+                        min={min}
+                        max={max}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -164,6 +223,7 @@ export function Input({
             )}
 
             <div
+                ref={container}
                 className={styles.inputContainer}
                 style={{ pointerEvents: disabled ? "none" : "" }}
             >
@@ -177,8 +237,8 @@ export function Input({
                         aria-disabled={disabled}
                         aria-invalid={error ? "true" : "false"}
                         aria-errormessage={error ? errorId : ""}
+                        className={`thinScroller ${status}`}
                         required={required}
-                        disabled={disabled}
                         onChange={onChange}
                         onFocus={onFocus}
                         onBlur={onBlur}
@@ -188,11 +248,10 @@ export function Input({
                         onKeyDown={(e) => {
                             if (e.key === "Enter" && action) onActionTrigger(e);
                         }}
-                        style={{ outlineColor: outlineColor || "" }}
                     >
                         {choices.map((choice) => (
                             <option
-                                key={choice.key ?? choice.value}
+                                key={choice.key ?? choice.label}
                                 value={choice.value}
                             >
                                 {choice.label}
@@ -211,7 +270,7 @@ export function Input({
                         aria-disabled={disabled}
                         aria-invalid={error ? "true" : "false"}
                         aria-errormessage={error ? errorId : ""}
-                        className="thinScroller"
+                        className={`thinScroller ${status}`}
                         required={required}
                         onChange={onChange}
                         onFocus={onFocus}
@@ -229,6 +288,10 @@ export function Input({
                     <input
                         type="checkbox"
                         id={inputId}
+                        pattern={pattern}
+                        min={min}
+                        max={max}
+                        className={status}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -255,6 +318,10 @@ export function Input({
                 {!["select", "checkbox", "textarea"].includes(type) && (
                     <input
                         id={inputId}
+                        pattern={pattern}
+                        min={min}
+                        max={max}
+                        className={status}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -263,6 +330,7 @@ export function Input({
                         aria-invalid={error ? "true" : "false"}
                         aria-errormessage={error ? errorId : ""}
                         type={type || "text"}
+                        size={inline ? inputSize(String(value)) : undefined}
                         required={required}
                         onChange={onChange}
                         onFocus={onFocus}

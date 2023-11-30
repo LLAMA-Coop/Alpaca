@@ -12,6 +12,7 @@
     --background-primary: hsl(0, 0%, 100%);
     --background-secondary: hsl(0, 0%, 97%);
     --background-tertiary: hsl(0, 0%, 94%);
+    --background-4: hsl(0, 0%, 90%);
 
     --foreground-primary: hsl(240, 10%, 4%);
     --foreground-secondary: hsl(240, 6%, 10%);
@@ -44,6 +45,7 @@
         --background-primary: hsl(240, 4%, 5%);
         --background-secondary: hsl(240, 6%, 10%);
         --background-tertiary: hsl(240, 4%, 16%);
+        --background-4: hsl(240, 4%, 20%);
 
         --foreground-primary: hsl(0, 0%, 98%);
         --foreground-secondary: hsl(240, 2%, 80%);
@@ -69,6 +71,8 @@
     --accent-tertiary-outline: hsl(163, 94%, 24%, 0.55);
 
     --anchor-foreground: hsl(217, 91%, 60%);
+
+    --border-color: hsl(0, 0%, 20%);
 }
 
 [data-theme="light"] {
@@ -80,11 +84,13 @@
     --foreground-secondary: hsl(240, 6%, 10%);
     --foreground-tertiary: hsl(240, 4%, 16%);
 
-    --accent-primary-outline: var(--accent-primary-1);
-    --accent-secondary-outline: var(--accent-secondary-1);
-    --accent-tertiary-outline: var(--accent-tertiary-1);
+    --accent-primary-outline: hsl(224, 76%, 48%, 0.55);
+    --accent-secondary-outline: hsl(0, 74%, 42%, 0.55);
+    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.55);
 
     --anchor-foreground: hsl(226, 71%, 40%);
+
+    --border-color: hsl(0, 0%, 85%);
 }
 
 * {
@@ -108,7 +114,7 @@ body {
 body {
     display: flex;
     flex-direction: column;
-    padding-left: calc(100vw - 100%);
+    padding-left: calc(100dvw - 100%);
 }
 
 body > main {
@@ -188,6 +194,11 @@ a {
     color: var(--accent-foreground);
 }
 
+.button.transparent {
+    background-color: transparent;
+    color: var(--foreground-primary);
+}
+
 ul,
 ol {
     list-style: none;
@@ -261,7 +272,7 @@ input[type="date"] {
     border-radius: 6px;
     position: absolute;
     bottom: calc(100% + 8px);
-    border: 1px solid var(--background-tertiary);
+    border: 1px solid var(--border-color);
     background-color: var(--background-secondary);
 }
 
@@ -284,7 +295,7 @@ input[type="date"] {
 
 .menuPopup > ul > hr {
     border: 0;
-    border-top: 1px solid var(--background-tertiary);
+    border-top: 1px solid var(--border-color);
     margin: 4px 0;
 }
 
@@ -372,6 +383,14 @@ input[type="date"] {
 
 h4 {
     margin-bottom: 12px;
+}
+
+.listGrid {
+    width: 100%;
+    max-width: var(--max-width);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 500px));
+    grid-gap: 16px;
 }
 
 @media screen and (max-width: 1024px) {

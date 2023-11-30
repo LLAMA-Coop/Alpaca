@@ -40,7 +40,6 @@ const removeNotification = (state, notification) => {
     return newState;
 };
 
-//needs testing
 const updateResource = (state, storeName, newResource) => {
     if (!Object.values(stores).includes(storeName)) {
         throw Error(`We do not have a list called ${storeName}`);
@@ -65,6 +64,7 @@ export const stores = {
     source: "sourceStore",
     note: "noteStore",
     quiz: "quizStore",
+    course: "courseStore",
     group: "groupStore",
     user: "userStore",
 };
@@ -73,6 +73,7 @@ export const useStore = create((set) => ({
     sourceStore: [],
     noteStore: [],
     quizStore: [],
+    courseStore: [],
     groupStore: [],
     userStore: [],
     user: undefined,
@@ -139,11 +140,77 @@ export const useStore = create((set) => ({
 export const useDailyTrain = create()((set) => ({
     start: false,
     isPaused: false,
-    timeLimit: 1000 * 60 * 5,
+    settings: {
+        timeLimit: 60 * 15,
+        tags: [],
+        courses: [],
+    },
 
     setStart: (start) => set(() => ({ start })),
     setIsPaused: (isPaused) => set(() => ({ isPaused })),
     setTimeLimit: (timeLimit) => set(() => ({ timeLimit })),
+    setSettings: (newValues) =>
+        set((state) => ({
+            settings: {
+                ...state.settings,
+                ...newValues,
+            },
+        })),
+}));
+
+// Alerts Store
+
+export const useAlerts = create()((set) => ({
+    alerts: [],
+
+    addAlert: (alert) =>
+        set((state) => ({
+            alerts: [
+                ...state.alerts,
+                {
+                    id: makeUniqueId(),
+                    ...alert,
+                },
+            ],
+        })),
+
+    removeAlert: (id) =>
+        set((state) => ({
+            alerts: state.alerts.filter((alert) => alert.id !== id),
+        })),
+}));
+
+// Modals Store
+
+export const useModals = create()((set) => ({
+    modals: [],
+
+    addModal: (modal) =>
+        set((state) => ({
+            modals: [
+                ...state.modals,
+                {
+                    id: makeUniqueId(),
+                    ...modal,
+                },
+            ],
+        })),
+
+    removeModal: (id) => {
+        if (!id) {
+            return set((state) => {
+                let newModals = [...state.modals];
+                newModals.pop();
+                return {
+                    modals: newModals,
+                };
+            });
+        }
+
+        return set((state) => ({
+            modals: state.modals.filter((modal) => modal.id !== id),
+        }));
+    },
 }));
 
 // Alerts Store

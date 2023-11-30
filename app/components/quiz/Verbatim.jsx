@@ -1,14 +1,14 @@
 "use client";
 
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
-import { Card, Alert, Input, UserInput } from "@client";
-import { useEffect, useState } from "react";
-import { useModals } from "@/store/store";
+import { Input, Card, Alert, UserInput } from "../client";
+import { useStore, useModals } from "@/store/store";
+import { useState, useEffect } from "react";
 import styles from "./Blankable.module.css";
 
-export function Blankable({
+export function Verbatim({
     canClientCheck,
     quiz,
     handleWhenCorrect,
@@ -27,8 +27,20 @@ export function Blankable({
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 
+    const user = useStore((state) => state.user);
+    const userQuizzes = user ? user.quizzes : undefined;
+    let level = 0;
+
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+
+    useEffect(() => {
+        if (!quiz || !quiz._id || !userQuizzes) return;
+        const userQuiz = userQuizzes.find(
+            (q) => q._id.toString() === quiz._id.toString(),
+        );
+        if (userQuiz) level = userQuiz.level;
+    }, []);
 
     useEffect(() => {
         if (responseStatus === "empty") return;
@@ -41,8 +53,6 @@ export function Blankable({
             setFailures(failures + 1);
         }
     }, [incorrectIndexes]);
-
-    const texts = quiz.prompt.split(/<blank \/>/);
 
     function handleChange(index, value) {
         setResponseStatus("incomplete");
@@ -112,7 +122,8 @@ export function Blankable({
 
     return (
         <Card
-            title={"Fill in the blanks"}
+            title={"Verbatim"}
+            description={quiz.prompt}
             buttons={[
                 {
                     label,
@@ -129,41 +140,39 @@ export function Blankable({
                 message={requestStatus.message}
             />
 
-            {texts.map((text, index) => {
-                let isCorrect;
-                if (incorrectIndexes.includes(index)) {
-                    isCorrect = false;
-                } else if (responseStatus === "complete") {
-                    isCorrect = true;
-                }
+            <div>
+                {userResponse.map((word, index) => {
+                    let isCorrect;
+                    if (incorrectIndexes.includes(index)) {
+                        isCorrect = false;
+                    } else if (responseStatus === "complete") {
+                        isCorrect = true;
+                    }
 
-                return (
-                    <span key={index}>
-                        {text}
-                        {index < texts.length - 1 && (
-                            <Input
-                                id={`blank-${index}`}
-                                inline
-                                isCorrect={isCorrect}
-                                value={
-                                    isFlashcard && showAnswer
-                                        ? quiz.correctResponses[index]
-                                        : userResponse[index]
-                                }
-                                onChange={(e) => {
-                                    handleChange(index, e.target.value);
-                                }}
-                                outlineColor={
-                                    responseStatus === "complete" &&
-                                    (incorrectIndexes.includes(index)
-                                        ? "var(--accent-secondary-1)"
-                                        : "var(--accent-tertiary-1)")
-                                }
-                            />
-                        )}
-                    </span>
-                );
-            })}
+                    return (
+                        <Input
+                            key={`verbatim-${index}`}
+                            id={`verbatim-${index}`}
+                            inline
+                            isCorrect={isCorrect}
+                            value={
+                                isFlashcard && showAnswer
+                                    ? quiz.correctResponses[index]
+                                    : word
+                            }
+                            onChange={(e) => {
+                                handleChange(index, e.target.value);
+                            }}
+                            outlineColor={
+                                responseStatus === "complete" &&
+                                (incorrectIndexes.includes(index)
+                                    ? "var(--accent-secondary-1)"
+                                    : "var(--accent-tertiary-1)")
+                            }
+                        />
+                    );
+                })}
+            </div>
 
             {!responseCorrect &&
                 responseStatus === "complete" &&

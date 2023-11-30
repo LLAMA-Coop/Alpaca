@@ -47,10 +47,12 @@ export function Card({
                                         <header title={title}>
                                             {url ? (
                                                 url.startsWith("http") ? (
-                                                    <a href={url}>{title}</a>
+                                                    <a href={url}>
+                                                        {urlLabel ?? title}
+                                                    </a>
                                                 ) : (
                                                     <Link href={url}>
-                                                        {title}
+                                                        {urlLabel ?? title}
                                                     </Link>
                                                 )
                                             ) : (
@@ -99,7 +101,6 @@ export function Card({
                                     return (
                                         <button
                                             key={button.label}
-                                            className={button.color}
                                             onClick={button.onClick}
                                             style={{
                                                 backgroundColor: button.color,

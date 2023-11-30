@@ -2,13 +2,14 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+
 import { useState, useRef, useEffect } from "react";
+import { useAlerts, useStore } from "@/store/store";
 import { Input, Alert, Spinner } from "@client";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
-import { useStore } from "@/store/store";
 
-export function UserInput({ isRegistering }) {
+export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
     const [usernameError, setUsernameError] = useState("");
 
@@ -19,12 +20,11 @@ export function UserInput({ isRegistering }) {
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
 
     const [passwordFocus, setPasswordFocus] = useState(false);
 
     const setIsAuthenticated = useStore((state) => state.setIsAuthenticated);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     const passwordTooltip = useRef(null);
     const passwordInput = useRef(null);
@@ -127,7 +127,7 @@ export function UserInput({ isRegistering }) {
         }
 
         if (response.status === 201) {
-            router.push("/login");
+            if (!onSubmit) router.push("/login");
 
             setUsername("");
             setPassword("");
@@ -137,17 +137,16 @@ export function UserInput({ isRegistering }) {
             setConfirmPasswordError("");
             setPasswordFocus(false);
 
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Account created successfully",
             });
-            setShowAlert(true);
+            if (onSubmit) onSubmit();
         } else {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "Something went wrong",
             });
-            setShowAlert(true);
         }
     }
 
@@ -185,7 +184,7 @@ export function UserInput({ isRegistering }) {
 
         if (response.status === 200) {
             setIsAuthenticated(true);
-            router.push(`/users/${username}`);
+            if (!onSubmit) router.push(`/users/${username}`);
             router.refresh();
 
             setUsername("");
@@ -196,11 +195,11 @@ export function UserInput({ isRegistering }) {
             setConfirmPasswordError("");
             setPasswordFocus(false);
 
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Logged in successfully",
             });
-            setShowAlert(true);
+            if (onSubmit) onSubmit();
         } else {
             setUsernameError("Invalid username or password");
         }
@@ -208,13 +207,6 @@ export function UserInput({ isRegistering }) {
 
     return (
         <form className="formGrid">
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <Input
                 required={true}
                 onChange={(e) => {

@@ -9,6 +9,11 @@ import MAX from "@/lib/max";
 
 const NoteSchema = new Schema(
     {
+        title: {
+            type: String,
+            required: false,
+            maxLength: MAX.title
+        },
         text: {
             type: String,
             required: true,
@@ -21,6 +26,12 @@ const NoteSchema = new Schema(
                 minLength: 1,
                 maxLength: MAX.tag,
             },
+        ],
+        courses: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "course"
+            }
         ],
         sources: [
             {

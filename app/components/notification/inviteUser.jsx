@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useStore } from "@/store/store";
-import { Input, Alert } from "@client";
+import { useStore, useModals } from "@/store/store";
+import { Input, Alert, UserInput } from "@client";
 
 export function InviteUser({ groupId }) {
     const [userId, setUserId] = useState("");
@@ -15,6 +15,8 @@ export function InviteUser({ groupId }) {
     const availableUsers = publicUsers.filter(
         (x) => user?.associates.find((y) => y._id == x._id) === undefined,
     );
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
         setUserId(availableUsers[0]?._id);
@@ -48,6 +50,16 @@ export function InviteUser({ groupId }) {
             });
             setShowAlert(true);
             setUserId("");
+        } else if (response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again.",
+            });
+            setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,

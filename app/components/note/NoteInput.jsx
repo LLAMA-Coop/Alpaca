@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useStore } from "@/store/store";
+import { useStore, useModals } from "@/store/store";
 import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
 import {
@@ -14,14 +14,17 @@ import {
     PermissionsInput,
     DeletePopup,
     ListAdd,
+    UserInput,
 } from "@client";
 
 export function NoteInput({ note }) {
+    const [title, setTitle] = useState("");
     const [text, setText] = useState("");
     const [sources, setSources] = useState([]);
     const [textError, setTextError] = useState("");
     const [sourceError, setSourceError] = useState("");
 
+    const [courses, setCourses] = useState([]);
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
     const [permissions, setPermissions] = useState({});
@@ -31,18 +34,32 @@ export function NoteInput({ note }) {
     const [requestStatus, setRequestStatus] = useState({});
 
     const availableSources = useStore((state) => state.sourceStore);
+    const availableCourses = useStore((state) => state.courseStore);
     const user = useStore((state) => state.user);
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
+
     const canDelete = note && note.createdBy === user._id;
 
     useEffect(() => {
         if (!note) return;
-        setText(note.text);
-        setSources(
-            note.sources.map((srcId) =>
-                availableSources.find((x) => x._id === srcId),
-            ),
-        );
-        if (note.tags.length > 0) setTags([...note.tags]);
+        if (note.title) setTitle(note.title);
+        if (note.text) setText(note.text);
+        if (note.sources && note.sources.length > 0) {
+            setSources(
+                note.sources.map((srcId) =>
+                    availableSources.find((x) => x._id === srcId),
+                ),
+            );
+        }
+        if (note.courses && note.courses.length > 0) {
+            setCourses(
+                note.courses.map((courseId) =>
+                    availableCourses.find((x) => x._id === courseId),
+                ),
+            );
+        }
+        if (note.tags && note.tags.length > 0) setTags([...note.tags]);
         if (note.permissions) setPermissions(serializeOne(note.permissions));
     }, []);
 
@@ -69,12 +86,14 @@ export function NoteInput({ note }) {
         }
 
         const notePayload = {
+            title,
             text,
             sources: sources.map((src) => src._id),
+            courses: courses.map((course) => course._id),
             tags,
         };
         notePayload.permissions = permissions;
-        if (note) {
+        if (note && note._id) {
             notePayload._id = note._id;
         }
 
@@ -83,7 +102,7 @@ export function NoteInput({ note }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/note`,
             {
-                method: note ? "PUT" : "POST",
+                method: note && note._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -96,12 +115,10 @@ export function NoteInput({ note }) {
         if (response.status === 201) {
             setText("");
             setSourceError("");
-            // setSources([]);
-            setText("");
 
             setRequestStatus({
                 success: true,
-                message: "Note added succesfully.",
+                message: "Note added succesfully",
             });
             setShowAlert(true);
         } else if (response.status === 200) {
@@ -110,6 +127,16 @@ export function NoteInput({ note }) {
                 message: "Note edited succesfully.",
             });
             setShowAlert(true);
+        } else if (response.status === 401) {
+            setRequestStatus({
+                success: false,
+                message: "You have been signed out. Please sign in again.",
+            });
+            setShowAlert(true);
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
             setRequestStatus({
                 success: false,
@@ -126,6 +153,15 @@ export function NoteInput({ note }) {
                 setShow={setShowAlert}
                 success={requestStatus.success}
                 message={requestStatus.message}
+            />
+
+            <Input
+                onChange={(e) => {
+                    setTitle(e.target.value);
+                }}
+                value={title}
+                label={"Title"}
+                maxLength={MAX.title}
             />
 
             <Input
@@ -154,6 +190,18 @@ export function NoteInput({ note }) {
                     listChosen={sources}
                     listProperty={"title"}
                     listSetter={setSources}
+                />
+            </div>
+
+            <div>
+                <Label required={false} label="Courses" />
+
+                <ListAdd
+                    item="Add a course"
+                    listChoices={availableCourses}
+                    listChosen={courses}
+                    listProperty={"name"}
+                    listSetter={setCourses}
                 />
             </div>
 
