@@ -12,13 +12,17 @@ export default function TrainSettings({ tags, courses }) {
 
     const [selectedTags, setSelectedTags] = useState([]);
     const [selectedCourses, setSelectedCourses] = useState([]);
-    const [minutes, setMinutes] = useState(0);
-    const [seconds, setSeconds] = useState(0);
+    const [minutes, setMinutes] = useState("00");
+    const [seconds, setSeconds] = useState("00");
 
     useEffect(() => {
         let time = settings.timeLimit;
-        setMinutes(Math.floor(time / 60));
-        setSeconds(time % 60);
+        if(isNaN(time) || time < 0) time = 0;
+        if(time > 3600) time = 3600;
+        let minutes = String(Math.floor(time / 60)).padStart(2, "0");
+        let seconds = String(time % 60).padStart(2, "0");
+        setMinutes(minutes);
+        setSeconds(seconds);
     }, [settings]);
 
     const tagOptions = tags.map((t, index) => ({ tag: t, _id: index }));
@@ -28,19 +32,14 @@ export default function TrainSettings({ tags, courses }) {
     });
 
     function updateTime(denomination, value) {
+        let timeLimit;
         if (denomination === "minutes") {
-            setSettings({ timeLimit: value * 60 + seconds });
-            setMinutes(value);
+            timeLimit = value * 60 + Number(seconds)
         }
         if (denomination === "seconds") {
-            setSettings({ timeLimit: minutes * 60 + value });
-            if (value < 59) {
-                setSeconds(value);
-            } else {
-                setMinutes(minutes + Math.floor(value / 60));
-                setSeconds(value % 60);
-            }
+            timeLimit = Number(minutes) * 60 + value
         }
+        setSettings({ timeLimit });
     }
 
     function setSettingTags(tagsChosen) {
@@ -54,21 +53,12 @@ export default function TrainSettings({ tags, courses }) {
     }
 
     return (
-        <>
-            {/* <Input
-                type="number"
-                label={`Time Limit`}
-                value={settings.timeLimit}
-                onChange={(e) => {
-                    setSettings({ timeLimit: Number(e.target.value) });
-                }}
-            /> */}
+        <div>
             <Label label={"Time Limit"} />
             <Input
                 inline
                 label={"Minutes"}
                 type="number"
-                pattern="\d{2}"
                 min={0}
                 max={60}
                 value={minutes}
@@ -79,8 +69,7 @@ export default function TrainSettings({ tags, courses }) {
                 inline
                 label={"Seconds"}
                 type="number"
-                pattern="\d{2}"
-                min={0}
+                min={-10}
                 max={60}
                 value={seconds}
                 onChange={(e) => updateTime("seconds", Number(e.target.value))}
@@ -99,6 +88,6 @@ export default function TrainSettings({ tags, courses }) {
                 listProperty={"name"}
                 listSetter={setSettingCourses}
             />
-        </>
+        </div>
     );
 }
