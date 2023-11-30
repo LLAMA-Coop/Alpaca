@@ -7,6 +7,7 @@ import { useState, useRef, useEffect } from "react";
 import { useAlerts, useStore } from "@/store/store";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
+import { useModals } from "@/store/store";
 
 export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
@@ -21,6 +22,8 @@ export function UserInput({ isRegistering, onSubmit }) {
     const [loading, setLoading] = useState(false);
 
     const [passwordFocus, setPasswordFocus] = useState(false);
+
+    const addModal = useModals((state) => state.addModal);
 
     const setIsAuthenticated = useStore((state) => state.setIsAuthenticated);
     const addAlert = useAlerts((state) => state.addAlert);
@@ -91,6 +94,17 @@ export function UserInput({ isRegistering, onSubmit }) {
         ) {
             setPasswordError("Password is too weak");
             setPasswordFocus(true);
+            let weaknessesModal = (
+                <ul>
+                    {getWeaknesses().map((w, index) => (
+                        <li key={index}>{w}</li>
+                    ))}
+                </ul>
+            );
+            addModal({
+                title: "Please correct in password",
+                content: weaknessesModal
+            });
             return;
         }
 
