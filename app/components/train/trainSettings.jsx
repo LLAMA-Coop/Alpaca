@@ -2,7 +2,7 @@
 
 import { useDailyTrain, useStore } from "@/store/store";
 import { Input, Label } from "../client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ListAdd from "../form/ListAdd";
 
 export default function TrainSettings({ tags, courses }) {
@@ -14,6 +14,12 @@ export default function TrainSettings({ tags, courses }) {
     const [selectedCourses, setSelectedCourses] = useState([]);
     const [minutes, setMinutes] = useState(0);
     const [seconds, setSeconds] = useState(0);
+
+    useEffect(() => {
+        let time = settings.timeLimit;
+        setMinutes(Math.floor(time / 60));
+        setSeconds(time % 60);
+    }, [settings]);
 
     const tagOptions = tags.map((t, index) => ({ tag: t, _id: index }));
     const courseOptions = courses.map((c_id) => {
