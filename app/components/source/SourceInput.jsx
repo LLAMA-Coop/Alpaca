@@ -1,6 +1,6 @@
 "use client";
 
-import { useStore } from "@/store/store";
+import { useStore, useModals } from "@/store/store";
 import {
     Alert,
     Input,
