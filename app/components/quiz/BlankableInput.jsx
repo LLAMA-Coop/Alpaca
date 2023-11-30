@@ -182,6 +182,7 @@ export default function BlankableInput({
                         return (
                             <span key={index} data-word={x.word}>
                                 <input
+                                    autoCapitalize="none"
                                     type="checkbox"
                                     id={`${index}_${x.word}`}
                                     checked={x.isBlank}
