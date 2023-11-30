@@ -214,10 +214,7 @@ export function QuizInput({ quiz }) {
             correctResponses: responses,
             hints: hints,
             sources: sources.map((src) => src._id),
-            notes: notes.map((nt) => {
-                console.log(nt);
-                return nt ?? nt._id;
-            }),
+            notes: notes.map((nt) => nt ?? nt._id),
             courses: courses.map((course) => course._id),
             tags,
         };
