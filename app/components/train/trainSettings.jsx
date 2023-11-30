@@ -4,6 +4,7 @@ import { useDailyTrain, useStore } from "@/store/store";
 import { Input, Label } from "../client";
 import { useState, useEffect } from "react";
 import ListAdd from "../form/ListAdd";
+import styles from "./DailyTrain.module.css"
 
 export default function TrainSettings({ tags, courses }) {
     const settings = useDailyTrain((state) => state.settings);
@@ -17,8 +18,8 @@ export default function TrainSettings({ tags, courses }) {
 
     useEffect(() => {
         let time = settings.timeLimit;
-        if(isNaN(time) || time < 0) time = 0;
-        if(time > 3600) time = 3600;
+        if (isNaN(time) || time < 0) time = 0;
+        if (time > 3600) time = 3600;
         let minutes = String(Math.floor(time / 60)).padStart(2, "0");
         let seconds = String(time % 60).padStart(2, "0");
         setMinutes(minutes);
@@ -34,10 +35,10 @@ export default function TrainSettings({ tags, courses }) {
     function updateTime(denomination, value) {
         let timeLimit;
         if (denomination === "minutes") {
-            timeLimit = value * 60 + Number(seconds)
+            timeLimit = value * 60 + Number(seconds);
         }
         if (denomination === "seconds") {
-            timeLimit = Number(minutes) * 60 + value
+            timeLimit = Number(minutes) * 60 + value;
         }
         setSettings({ timeLimit });
     }
@@ -53,41 +54,54 @@ export default function TrainSettings({ tags, courses }) {
     }
 
     return (
-        <div>
-            <Label label={"Time Limit"} />
-            <Input
-                inline
-                label={"Minutes"}
-                type="number"
-                min={0}
-                max={60}
-                value={minutes}
-                onChange={(e) => updateTime("minutes", Number(e.target.value))}
-            />
-            :
-            <Input
-                inline
-                label={"Seconds"}
-                type="number"
-                min={-10}
-                max={60}
-                value={seconds}
-                onChange={(e) => updateTime("seconds", Number(e.target.value))}
-            />
-            <ListAdd
-                item="Filter by Tags"
-                listChosen={selectedTags}
-                listChoices={tagOptions}
-                listProperty={"tag"}
-                listSetter={setSettingTags}
-            />
-            <ListAdd
-                item="Filter by Course"
-                listChosen={selectedCourses}
-                listChoices={courseOptions}
-                listProperty={"name"}
-                listSetter={setSettingCourses}
-            />
+        <div className={styles.settings}>
+            <div>
+                <h3>Time Limit</h3>
+                <Input
+                    inline
+                    label={"Minutes"}
+                    type="number"
+                    min={0}
+                    max={60}
+                    value={minutes}
+                    onChange={(e) =>
+                        updateTime("minutes", Number(e.target.value))
+                    }
+                />
+                :
+                <Input
+                    inline
+                    label={"Seconds"}
+                    type="number"
+                    min={-10}
+                    max={60}
+                    value={seconds}
+                    onChange={(e) =>
+                        updateTime("seconds", Number(e.target.value))
+                    }
+                />
+            </div>
+
+            <div>
+                <h3>Filter by Tags</h3>
+                <ListAdd
+                    item="Select Tags"
+                    listChosen={selectedTags}
+                    listChoices={tagOptions}
+                    listProperty={"tag"}
+                    listSetter={setSettingTags}
+                />
+            </div>
+            <div>
+                <h3>Filter by Courses</h3>
+                <ListAdd
+                    item="Select Courses"
+                    listChosen={selectedCourses}
+                    listChoices={courseOptions}
+                    listProperty={"name"}
+                    listSetter={setSettingCourses}
+                />
+            </div>
         </div>
     );
 }
