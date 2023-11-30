@@ -48,3 +48,4 @@ export { Blankable } from "./Quiz/Blankable.jsx";
 export { BlankableInput } from "./Quiz/BlankableInput.jsx";
 export { UserStats } from "./Quiz/UserStats.jsx";
 export { QuizDisplay } from "./Quiz/QuizDisplay";
+export { TrainSettings } from "./DailyTrain/TrainSettings";

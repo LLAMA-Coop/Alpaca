@@ -4,7 +4,7 @@ import { useDailyTrain, useStore } from "@/store/store";
 import { Input, Label, ListAdd } from "@client";
 import { useState, useEffect } from "react";
 
-export default function TrainSettings({ tags, courses }) {
+export function TrainSettings({ tags, courses }) {
     const settings = useDailyTrain((state) => state.settings);
     const setSettings = useDailyTrain((state) => state.setSettings);
     const availableCourses = useStore((state) => state.courseStore);
