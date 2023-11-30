@@ -28,12 +28,15 @@ export function Label({ required, error, errorId, label, htmlFor, checkbox }) {
 export function Input({
     id,
     type,
+    pattern,
     description,
     autoComplete,
     choices,
     required,
     onChange,
     value,
+    min,
+    max,
     minLength,
     maxLength,
     isCorrect,
@@ -98,10 +101,10 @@ export function Input({
         };
     }, [open]);
 
-    let status = ""
-    if(isCorrect === true){
+    let status = "";
+    if (isCorrect === true) {
         status = styles.correct;
-    } else if(isCorrect === false){
+    } else if (isCorrect === false) {
         status = styles.incorrect;
     }
 
@@ -176,6 +179,9 @@ export function Input({
                         className={status}
                         type="checkbox"
                         id={inputId}
+                        pattern={pattern}
+                        min={min}
+                        max={max}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -281,6 +287,9 @@ export function Input({
                     <input
                         type="checkbox"
                         id={inputId}
+                        pattern={pattern}
+                        min={min}
+                        max={max}
                         className={status}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
@@ -308,6 +317,9 @@ export function Input({
                 {!["select", "checkbox", "textarea"].includes(type) && (
                     <input
                         id={inputId}
+                        pattern={pattern}
+                        min={min}
+                        max={max}
                         className={status}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
