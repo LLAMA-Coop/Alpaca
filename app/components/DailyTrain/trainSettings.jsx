@@ -1,9 +1,8 @@
 "use client";
 
 import { useDailyTrain, useStore } from "@/store/store";
-import { Input, Label } from "../client";
+import { Input, Label, ListAdd } from "@client";
 import { useState, useEffect } from "react";
-import ListAdd from "../form/ListAdd";
 
 export default function TrainSettings({ tags, courses }) {
     const settings = useDailyTrain((state) => state.settings);
