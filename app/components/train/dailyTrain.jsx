@@ -2,26 +2,23 @@
 
 import QuizDisplay from "@/app/components/quiz/QuizDisplay";
 import { useDailyTrain, useModals, useStore } from "@/store/store";
-import { UserStats } from "../quiz/UserStats";
 import styles from "./DailyTrain.module.css";
 import { useState, useEffect } from "react";
-import { Input } from "../client";
+import hasCommonItem from "@/lib/hasCommonItem";
+import TrainSettings from "./trainSettings";
 
 export default function DailyTrain({ quizzes }) {
     const [visibleSet, setVisibleSet] = useState(
         new Array(quizzes.length).fill(true),
     );
-    const [localTime, setLocalTime] = useState(0);
-
-    const user = useStore((state) => state.user);
-    const userQuizzes = user?.quizzes;
+    const [tags, setTags] = useState([]);
+    const [courses, setCourses] = useState([]);
 
     const setStart = useDailyTrain((state) => state.setStart);
     const start = useDailyTrain((state) => state.start);
     const isPaused = useDailyTrain((state) => state.isPaused);
     const setIsPaused = useDailyTrain((state) => state.setIsPaused);
     const settings = useDailyTrain((state) => state.settings);
-    const setSettings = useDailyTrain((state) => state.setSettings);
 
     const addModal = useModals((state) => state.addModal);
 
@@ -32,40 +29,31 @@ export default function DailyTrain({ quizzes }) {
     }
 
     useEffect(() => {
+        let presentTags = [];
+        let presentCourses = [];
+        quizzes.forEach((q) => {
+            q.tags.forEach((t) => {
+                if (!presentTags.includes(t)) {
+                    presentTags.push(t);
+                }
+            });
+            q.courses.forEach((c) => {
+                if (!presentCourses.includes(c)) {
+                    presentCourses.push(c);
+                }
+            });
+        });
+        setTags(presentTags);
+        setCourses(presentCourses);
+    }, []);
+
+    useEffect(() => {
         if (start) {
             document.documentElement.style.overflowY = "hidden";
         } else {
             document.documentElement.style.overflowY = "auto";
         }
     }, [start]);
-
-    const parameters = (
-        <>
-            <Input
-                type="text"
-                label={`Time Limit`}
-                value={settings.timeLimit}
-                onChange={(e) => {
-                    console.log(e.target.value);
-                    setSettings({ timeLimit: e.target.value * 1000 });
-                }}
-            />
-
-            {/* <Input
-                type="select"
-                label={`Tags Filter`}
-                value={settings.tags}
-                choices={settings.tags.map((tag) => ({ value: tag }))}
-                onChange={(e) =>
-                    setSettings({
-                        tags: [...e.target.selectedOptions].map(
-                            (option) => option.value,
-                        ),
-                    })
-                }
-            /> */}
-        </>
-    );
 
     return (
         <>
@@ -91,7 +79,7 @@ export default function DailyTrain({ quizzes }) {
                     onClick={() =>
                         addModal({
                             title: "Change Settings",
-                            content: parameters,
+                            content: <TrainSettings tags={tags} courses={courses} />,
                         })
                     }
                     className={styles.settingsButton}
@@ -116,30 +104,47 @@ export default function DailyTrain({ quizzes }) {
             {start && (
                 <div className={styles.popup}>
                     <ol className="listGrid">
-                        {quizzes.map((quiz, index) => {
-                            const quizInUser = userQuizzes?.find(
-                                (q) => q.quizId === quiz._id,
-                            );
-
-                            return (
-                                <li
-                                    key={quiz._id}
-                                    style={{
-                                        display: visibleSet[index]
-                                            ? "list-item"
-                                            : "none",
-                                    }}
-                                >
-                                    <QuizDisplay
-                                        quiz={quiz}
-                                        canClientCheck={false}
-                                        handleWhenCorrect={() =>
-                                            handleWhenCorrect(index)
-                                        }
-                                    />
-                                </li>
-                            );
-                        })}
+                        {quizzes
+                            .filter((quiz) => {
+                                if (
+                                    settings.tags.length === 0 &&
+                                    settings.courses.length === 0
+                                ) {
+                                    return true;
+                                }
+                                if (hasCommonItem(settings.tags, quiz.tags)) {
+                                    return true;
+                                }
+                                if (
+                                    hasCommonItem(
+                                        settings.courses,
+                                        quiz.courses,
+                                    )
+                                ) {
+                                    return true;
+                                }
+                                return false;
+                            })
+                            .map((quiz, index) => {
+                                return (
+                                    <li
+                                        key={quiz._id}
+                                        style={{
+                                            display: visibleSet[index]
+                                                ? "list-item"
+                                                : "none",
+                                        }}
+                                    >
+                                        <QuizDisplay
+                                            quiz={quiz}
+                                            canClientCheck={false}
+                                            handleWhenCorrect={() =>
+                                                handleWhenCorrect(index)
+                                            }
+                                        />
+                                    </li>
+                                );
+                            })}
                     </ol>
 
                     <button

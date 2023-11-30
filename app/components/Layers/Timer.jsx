@@ -5,15 +5,19 @@ import { useEffect, useState } from "react";
 import styles from "./Timer.module.css";
 
 export function Timer() {
-    const [milliseconds, setMilliseconds] = useState(1000*60*15);
+    const [seconds, setSeconds] = useState(60 * 15);
     const [danger, setDanger] = useState(false);
-    const dangerTrigger = 1000 * 30; // 30 seconds
+    const dangerTrigger = 30; // 30 seconds
 
     const start = useDailyTrain((state) => state.start);
     const setStart = useDailyTrain((state) => state.setStart);
     const isPaused = useDailyTrain((state) => state.isPaused);
     const setIsPaused = useDailyTrain((state) => state.setIsPaused);
-    const timeLimit = useDailyTrain((state) => state.timeLimit);
+    const settings = useDailyTrain((state) => state.settings);
+
+    useEffect(() => {
+        setSeconds(settings.timeLimit);
+    }, [settings])
 
     useEffect(() => {
         if (!start) {
@@ -21,13 +25,13 @@ export function Timer() {
             return;
         }
 
-        if (milliseconds === 0) {
-            setMilliseconds(timeLimit);
+        if (seconds === 0) {
+            setSeconds(settings.timeLimit);
         }
 
         const interval = setInterval(() => {
             if (isPaused) return;
-            setMilliseconds((prev) => prev - 1000);
+            setSeconds((prev) => prev - 1);
         }, 1000);
 
         return () => {
@@ -36,28 +40,30 @@ export function Timer() {
     }, [start, isPaused]);
 
     useEffect(() => {
-        if (milliseconds <= 0) {
-            setMilliseconds(0);
+        if (seconds <= 0) {
+            setSeconds(0);
             setStart(false);
             return;
         }
 
-        if (milliseconds <= dangerTrigger) {
+        if (seconds <= dangerTrigger) {
             setDanger(true);
         } else {
             setDanger(false);
         }
-    }, [milliseconds]);
+    }, [seconds]);
 
     if (!start) return null;
 
     return (
         <div className={styles.container}>
             <p
-                className={isPaused && styles.paused}
+                className={isPaused ? styles.paused : undefined}
                 style={{ color: danger ? "var(--accent-secondary-1)" : "" }}
             >
-                {isNaN(milliseconds) ? "00:00" : new Date(milliseconds).toISOString().substr(14, 5)}
+                {isNaN(seconds)
+                    ? "00:00"
+                    : new Date(seconds*1000).toISOString().substr(14, 5)}
             </p>
 
             <button
