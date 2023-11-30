@@ -23,14 +23,16 @@
     position: fixed;
     top: 0;
     left: 0;
+    width: 100vw;
     width: 100dvw;
+    height: 100vh;
     height: 100dvh;
     background-color: var(--background-primary);
     z-index: 10;
     display: flex;
     justify-content: center;
-    padding: 140px;
-    overflow: hidden scroll;
+    padding: 5rem 0.5rem;
+    overflow: auto;
 }
 
 .popup::-webkit-scrollbar {
@@ -38,7 +40,7 @@
 }
 
 .popup > ol {
-    overflow: hidden;
+    /* overflow: hidden; */
     height: fit-content;
 }
 
@@ -66,8 +68,11 @@
     position: fixed;
     top: 0;
     left: 0;
+    width: 100vw;
     width: 100dvw;
+    height: 100vh;
     height: 100dvh;
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     z-index: 11;
 }

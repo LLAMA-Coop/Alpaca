@@ -79,7 +79,9 @@ export default function DailyTrain({ quizzes }) {
                     onClick={() =>
                         addModal({
                             title: "Change Settings",
-                            content: <TrainSettings tags={tags} courses={courses} />,
+                            content: (
+                                <TrainSettings tags={tags} courses={courses} />
+                            ),
                         })
                     }
                     className={styles.settingsButton}
@@ -101,7 +103,7 @@ export default function DailyTrain({ quizzes }) {
                 </button>
             </div>
 
-            {start && (
+            {start && !isPaused && (
                 <div className={styles.popup}>
                     <ol className="listGrid">
                         {quizzes
@@ -168,23 +170,23 @@ export default function DailyTrain({ quizzes }) {
                             <path d="M6 6l12 12" />
                         </svg>
                     </button>
+                </div>
+            )}
 
-                    {isPaused && (
-                        <div className={styles.blurContainer}>
-                            <div>
-                                <p>Paused</p>
+            {start && isPaused && (
+                <div className={styles.blurContainer}>
+                    <div>
+                        <p>Paused</p>
 
-                                <button
-                                    className="button"
-                                    onClick={() => {
-                                        setIsPaused(false);
-                                    }}
-                                >
-                                    Resume
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                        <button
+                            className="button"
+                            onClick={() => {
+                                setIsPaused(false);
+                            }}
+                        >
+                            Resume
+                        </button>
+                    </div>
                 </div>
             )}
         </>
