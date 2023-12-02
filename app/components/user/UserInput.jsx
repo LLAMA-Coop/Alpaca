@@ -4,10 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { Input, Spinner } from "@components/client";
 import { useState, useRef, useEffect } from "react";
-import { useAlerts, useStore } from "@/store/store";
+import { useAlerts, useStore, useModals } from "@/store/store";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
-import { useModals } from "@/store/store";
 
 export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
@@ -23,10 +22,9 @@ export function UserInput({ isRegistering, onSubmit }) {
 
     const [passwordFocus, setPasswordFocus] = useState(false);
 
-    const addModal = useModals((state) => state.addModal);
-
     const setIsAuthenticated = useStore((state) => state.setIsAuthenticated);
     const addAlert = useAlerts((state) => state.addAlert);
+    const addModal = useModals((state) => state.addModal);
 
     const passwordTooltip = useRef(null);
     const passwordInput = useRef(null);

@@ -1,13 +1,13 @@
 "use client";
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Input, Card, Alert, UserInput } from "@components/client";
+import { Input, Card, UserInput } from "@components/client";
 import correctConfetti from "@/lib/correctConfetti";
 import stringCompare from "@/lib/stringCompare";
 import shuffleArray from "@/lib/shuffleArray";
 import { useState, useEffect } from "react";
 import makeUniqueId from "@/lib/uniqueId";
-import { useModals } from "@/store/store";
+import { useModals, useAlerts } from "@/store/store";
 
 export function ResponseCard({
     canClientCheck,
@@ -23,11 +23,9 @@ export function ResponseCard({
 
     const [showAnswer, setShowAnswer] = useState(false);
 
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
-
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         if (quiz.choices)
@@ -89,11 +87,10 @@ export function ResponseCard({
             );
 
             if (response.status === 401) {
-                setRequestStatus({
+                addAlert({
                     success: false,
                     message: "You have been signed out. Please sign in again.",
                 });
-                setShowAlert(true);
                 addModal({
                     title: "Sign back in",
                     content: <UserInput onSubmit={removeModal} />,
@@ -153,13 +150,6 @@ export function ResponseCard({
                 },
             ]}
         >
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <Input
                 type={type}
                 description="Your response to the prompt"

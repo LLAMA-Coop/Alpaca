@@ -25,11 +25,9 @@ export function ListAnswer({
 
     const [showAnswer, setShowAnswer] = useState(false);
 
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
-
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         if (responseStatus === "empty") return;
@@ -75,11 +73,10 @@ export function ListAnswer({
             );
 
             if (response.status === 401) {
-                setRequestStatus({
+                addAlert({
                     success: false,
                     message: "You have been signed out. Please sign in again.",
                 });
-                setShowAlert(true);
                 addModal({
                     title: "Sign back in",
                     content: <UserInput onSubmit={removeModal} />,
@@ -124,13 +121,6 @@ export function ListAnswer({
                 },
             ]}
         >
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <h4 id="prompt">{quiz.prompt}</h4>
             <ul>
                 {userResponse.map((ans, index) => {

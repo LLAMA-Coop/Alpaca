@@ -7,11 +7,10 @@ import {
     ListItem,
     InputPopup,
     Spinner,
-    Alert,
     UserInput,
 } from "@/app/components/client";
 import PermissionsInput from "../form/PermissionsInput";
-import { useStore, useModals } from "@/store/store";
+import { useStore, useModals, useAlerts } from "@/store/store";
 import { DeletePopup } from "../delete-popup/DeletePopup";
 import ListAdd from "../form/ListAdd";
 import { serializeOne } from "@/lib/db";
@@ -30,14 +29,13 @@ export function NoteInput({ note }) {
     const [permissions, setPermissions] = useState({});
 
     const [loading, setLoading] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
 
     const availableSources = useStore((state) => state.sourceStore);
     const availableCourses = useStore((state) => state.courseStore);
     const user = useStore((state) => state.user);
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     const canDelete = note && note.createdBy === user._id;
 
@@ -116,45 +114,34 @@ export function NoteInput({ note }) {
             setText("");
             setSourceError("");
 
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Note added succesfully",
             });
-            setShowAlert(true);
         } else if (response.status === 200) {
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Note edited succesfully.",
             });
-            setShowAlert(true);
         } else if (response.status === 401) {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "You have been signed out. Please sign in again.",
             });
-            setShowAlert(true);
             addModal({
                 title: "Sign back in",
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "Something went wrong.",
             });
-            setShowAlert(true);
         }
     }
 
     return (
         <div className="formGrid">
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <Input
                 onChange={(e) => {
                     setTitle(e.target.value);
