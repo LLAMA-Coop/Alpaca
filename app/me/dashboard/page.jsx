@@ -5,10 +5,12 @@ import { serializeOne } from "@/lib/db";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 // import { Source, Quiz, Note } from "@mneme_app/database-models";
-import { Source, Note, Quiz } from "@/app/api/models";
+import { Source, Note, Quiz, Course } from "@/app/api/models";
 import InviteUser from "@/app/components/notification/inviteUser";
 import Notifications from "@/app/components/notification/notifications";
+import { CourseDisplay } from "@/app/components/course/CourseDisplay";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function DashboardPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
@@ -19,9 +21,25 @@ export default async function DashboardPage() {
     const quizzes = await Quiz.find({ contributors: user.id });
     const notes = await Note.find({ contributors: user.id });
 
+    const courses = await Course.find();
+
     return (
         <main className={styles.main}>
             <h2>Dashboard</h2>
+
+            <section>
+                <h3>Courses</h3>
+
+                <ul>
+                    {courses.map((c) => (
+                        <li key={c._id}>
+                            <Link href={`/courses/${c._id}`}>
+                                <CourseDisplay course={c} />
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </section>
 
             <section>
                 <h3>Your Profile</h3>
