@@ -3,10 +3,10 @@
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
-import { Card, Input, Alert, UserInput } from "../client";
+import { Card, Input, UserInput } from "../client";
 import { useEffect, useState } from "react";
 import styles from "./Blankable.module.css";
-import { useModals } from "@/store/store";
+import { useModals, useAlerts } from "@/store/store";
 
 export function ListAnswer({
     canClientCheck,
