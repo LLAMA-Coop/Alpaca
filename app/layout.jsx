@@ -1,35 +1,15 @@
-import { Header, Footer } from "@components/server";
-import DatabaseConnectError from "./components/error/database-connect";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import connectDB from "./api/db";
-// import { Source, Note, Quiz, Group, User } from "@mneme_app/database-models";
-import {
-    Source,
-    Note,
-    Quiz,
-    Group,
-    User,
-    Notification,
-} from "@/app/api/models";
-import Course from "./api/models/Course";
-import { FillStore } from "./components/fillStore";
-import { serialize, serializeOne } from "@/lib/db";
-import { Source, Note, Quiz, Group, User, Notification } from "@models";
+import { Source, Note, Quiz, Group, User, Notification, Course } from "@models";
 import { useUser, queryReadableResources } from "@/lib/auth";
+import { FillStore, Timer, Alerts, Modals } from "@client";
 import { Header, Footer, DBConnectError } from "@server";
 import { serialize, serializeOne } from "@/lib/db";
 import { metadatas } from "@/lib/metadatas";
-import { FillStore, Timer } from "@client";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import connectDB from "./api/db";
 import "./globals.css";
-import { Alerts } from "./components/Layers/Alerts";
-import { Modals } from "./components/Modals/Modals";
 
 const connection = await connectDB();
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {

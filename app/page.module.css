@@ -1,3 +1,9 @@
+.main.centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .main h2 {
     font-size: 42px;
     text-align: center;
@@ -9,6 +15,7 @@
     max-width: var(--max-width);
     margin: 0 auto;
     padding: var(--padding);
+    width: 100%;
 }
 
 .main > .paragraph {
@@ -32,6 +39,11 @@
 .main > .authContainer > a {
     display: inline-flex;
     margin-top: 24px;
+}
+
+.main > .authContainer > div {
+    margin-top: 24px;
+    font-size: 14px;
 }
 
 .main > section > h3 {

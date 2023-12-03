@@ -212,25 +212,3 @@ export const useModals = create()((set) => ({
         }));
     },
 }));
-
-// Alerts Store
-
-export const useAlerts = create()((set) => ({
-    alerts: [],
-
-    addAlert: (alert) =>
-        set((state) => ({
-            alerts: [
-                ...state.alerts,
-                {
-                    ...alert,
-                    id: makeUniqueId(),
-                },
-            ],
-        })),
-
-    removeAlert: (id) =>
-        set((state) => ({
-            alerts: state.alerts.filter((alert) => alert.id !== id),
-        })),
-}));

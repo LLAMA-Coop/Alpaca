@@ -30,22 +30,24 @@ export { Profile } from "./Profile/Profile";
 
 export { GroupInput } from "./Group/GroupInput";
 
-export { DailyTrain } from "./DailyTrain/DailyTrain.jsx";
-
-export { DeletePopup } from "./DeletePopup/DeletePopup.jsx";
-
-export { ThemePicker } from "./Footer/ThemePicker.jsx";
-
-export { Timer } from "./Layers/Timer.jsx";
-export { Alerts } from "./Layers/Alerts.jsx";
-export { InviteUser } from "./Notification/InviteUser.jsx";
-export { Notification } from "./Notification/Notification.jsx";
-export { Notifications } from "./Notification/Notifications.jsx";
-
-export { FillStore } from "./Websocket/FillStore.jsx";
-
-export { Blankable } from "./Quiz/Blankable.jsx";
-export { BlankableInput } from "./Quiz/BlankableInput.jsx";
-export { UserStats } from "./Quiz/UserStats.jsx";
-export { QuizDisplay } from "./Quiz/QuizDisplay";
+export { DailyTrain } from "./DailyTrain/DailyTrain";
 export { TrainSettings } from "./DailyTrain/TrainSettings";
+
+export { DeletePopup } from "./DeletePopup/DeletePopup";
+
+export { ThemePicker } from "./Footer/ThemePicker";
+
+export { Timer } from "./Layers/Timer";
+export { Alerts } from "./Layers/Alerts";
+export { Modals } from "./Modals/Modals";
+
+export { InviteUser } from "./Notification/InviteUser";
+export { Notification } from "./Notification/Notification";
+export { Notifications } from "./Notification/Notifications";
+
+export { FillStore } from "./Websocket/FillStore";
+
+export { Blankable } from "./Quiz/Blankable";
+export { BlankableInput } from "./Quiz/BlankableInput";
+export { UserStats } from "./Quiz/UserStats";
+export { QuizDisplay } from "./Quiz/QuizDisplay";

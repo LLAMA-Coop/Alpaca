@@ -17,7 +17,7 @@ export async function Header() {
                 <Link href="/">Mneme</Link>
             </h1>
 
-            <DynamicNav user={user} />
+            <DynamicNav />
             <RightContainer user={user} />
         </header>
     );
