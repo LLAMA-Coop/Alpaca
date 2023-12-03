@@ -30,8 +30,8 @@ export { Profile } from "./Profile/Profile";
 
 export { GroupInput } from "./Group/GroupInput";
 
-export { DailyTrain } from "./DailyTrain/DailyTrain";
-export { TrainSettings } from "./DailyTrain/TrainSettings";
+export { DailyTrain } from "./Train/DailyTrain";
+export { TrainSettings } from "./Train/TrainSettings";
 
 export { DeletePopup } from "./DeletePopup/DeletePopup";
 
@@ -42,7 +42,6 @@ export { Alerts } from "./Layers/Alerts";
 export { Modals } from "./Modals/Modals";
 
 export { InviteUser } from "./Notification/InviteUser";
-export { Notification } from "./Notification/Notification";
 export { Notifications } from "./Notification/Notifications";
 
 export { FillStore } from "./Websocket/FillStore";
@@ -51,3 +50,4 @@ export { Blankable } from "./Quiz/Blankable";
 export { BlankableInput } from "./Quiz/BlankableInput";
 export { UserStats } from "./Quiz/UserStats";
 export { QuizDisplay } from "./Quiz/QuizDisplay";
+export { CourseDisplay } from "./Course/CourseDisplay";

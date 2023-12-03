@@ -2,7 +2,7 @@
 
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { useState, useEffect } from "react";
-import { Input, Alert, UserInput } from "@client";
+import { Input, UserInput } from "@client";
 
 export function InviteUser({ groupId }) {
     const [userId, setUserId] = useState("");
