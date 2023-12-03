@@ -3,8 +3,8 @@
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import correctConfetti from "@/lib/correctConfetti";
-import { Input, Card, Alert, UserInput } from "../client";
-import { useStore, useModals } from "@/store/store";
+import { Input, Card, UserInput } from "../client";
+import { useStore, useModals, useAlerts } from "@/store/store";
 import { useState, useEffect } from "react";
 import styles from "./Blankable.module.css";
 
@@ -24,15 +24,13 @@ export function Verbatim({
 
     const [showAnswer, setShowAnswer] = useState(false);
 
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
-
     const user = useStore((state) => state.user);
     const userQuizzes = user ? user.quizzes : undefined;
     let level = 0;
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         if (!quiz || !quiz._id || !userQuizzes) return;
@@ -82,11 +80,10 @@ export function Verbatim({
             );
 
             if (response.status === 401) {
-                setRequestStatus({
+                addAlert({
                     success: false,
                     message: "You have been signed out. Please sign in again.",
                 });
-                setShowAlert(true);
                 addModal({
                     title: "Sign back in",
                     content: <UserInput onSubmit={removeModal} />,
@@ -133,13 +130,6 @@ export function Verbatim({
                 },
             ]}
         >
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <div>
                 {userResponse.map((word, index) => {
                     let isCorrect;

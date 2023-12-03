@@ -3,7 +3,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef, useEffect } from "react";
-import { useAlerts, useStore } from "@/store/store";
+import { useAlerts, useStore, useModals } from "@/store/store";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
 import { Input, Spinner } from "@client";
@@ -24,6 +24,7 @@ export function UserInput({ isRegistering, onSubmit }) {
 
     const setIsAuthenticated = useStore((state) => state.setIsAuthenticated);
     const addAlert = useAlerts((state) => state.addAlert);
+    const addModal = useModals((state) => state.addModal);
 
     const passwordTooltip = useRef(null);
     const passwordInput = useRef(null);
@@ -91,6 +92,17 @@ export function UserInput({ isRegistering, onSubmit }) {
         ) {
             setPasswordError("Password is too weak");
             setPasswordFocus(true);
+            let weaknessesModal = (
+                <ul>
+                    {getWeaknesses().map((w, index) => (
+                        <li key={index}>{w}</li>
+                    ))}
+                </ul>
+            );
+            addModal({
+                title: "Please correct in password",
+                content: weaknessesModal
+            });
             return;
         }
 

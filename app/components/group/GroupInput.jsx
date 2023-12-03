@@ -1,12 +1,12 @@
 "use client";
 
-import { Label, Input, Spinner, Alert, UserInput } from "@client";
+import { Label, Input, Spinner, UserInput } from "@client";
+import { useModals, useAlerts } from "@/store/store";
 import { useState, useRef, useEffect } from "react";
 import filetypeinfo from "magic-bytes.js";
 import styles from "./Group.module.css";
 import Image from "next/image";
 import MAX from "@/lib/max";
-import { useModals } from "@/store/store";
 
 export function GroupInput({ group }) {
     const [name, setName] = useState("");
@@ -19,11 +19,10 @@ export function GroupInput({ group }) {
     const [iconError, setIconError] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         if (!group) return;
@@ -80,39 +79,29 @@ export function GroupInput({ group }) {
             setIcon(null);
             setIconError("");
 
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Group created successfully.",
             });
-            setShowAlert(true);
         } else if (response.status === 401) {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "You have been signed out. Please sign in again.",
             });
-            setShowAlert(true);
             addModal({
                 title: "Sign back in",
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "Something went wrong.",
             });
-            setShowAlert(true);
         }
     }
 
     return (
         <div className="formGrid">
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <Input
                 value={name}
                 required={true}

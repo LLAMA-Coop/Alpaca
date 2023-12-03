@@ -1,13 +1,12 @@
 "use client";
 
+import { useStore, useModals, useAlerts } from "@/store/store";
 import { buildPermissions } from "@/lib/permissions";
 import { useState, useEffect } from "react";
-import { useStore, useModals } from "@/store/store";
 import { serializeOne } from "@/lib/db";
 import htmlDate from "@/lib/htmlDate";
 import MAX from "@/lib/max";
 import {
-    Alert,
     Input,
     Label,
     ListItem,
@@ -42,8 +41,6 @@ export function SourceInput({ source }) {
     const [newTag, setNewTag] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
     const [permissions, setPermissions] = useState({});
 
     const urlRegex = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i;
@@ -56,6 +53,7 @@ export function SourceInput({ source }) {
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         if (!source) {
@@ -165,12 +163,12 @@ export function SourceInput({ source }) {
         setLoading(false);
 
         if (response.status === 200) {
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Source updated successfully",
             });
         } else if (response.status === 201) {
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Source added successfully",
             });
@@ -187,23 +185,20 @@ export function SourceInput({ source }) {
             setLastAccessedError("");
             setPublishDateError("");
         } else if (response.status === 401) {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "You have been signed out. Please sign in again.",
             });
-            setShowAlert(true);
             addModal({
                 title: "Sign back in",
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "Failed to add source",
             });
         }
-
-        setShowAlert(true);
     }
 
     const mediumChoices = [
@@ -216,13 +211,6 @@ export function SourceInput({ source }) {
 
     return (
         <div className="formGrid">
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <Input
                 label={"Title"}
                 value={title}

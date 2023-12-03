@@ -2,16 +2,17 @@
     position: fixed;
     top: 0;
     left: 0;
+    width: 100vw;
     width: 100dvw;
+    height: 100vh;
     height: 100dvh;
+    z-index: 5;
 }
 
 .wrapper {
+    height: 100%;
+    width: 100%;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100dvw;
-    height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,7 +20,9 @@
 
 .modal {
     min-width: 480px;
+    max-width: min(calc(100vw - 32px), 600px);
     max-width: min(calc(100dvw - 32px), 600px);
+    max-height: calc(100vh - 32px);
     max-height: calc(100dvh - 32px);
     padding: 16px;
     background-color: var(--background-secondary);

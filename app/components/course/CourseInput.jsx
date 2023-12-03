@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useState, useAlerts } from "react";
 import { useStore, useModals } from "@/store/store";
-import { useEffect, useState } from "react";
 import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
 import {
@@ -9,7 +9,6 @@ import {
     InputPopup,
     Label,
     Spinner,
-    Alert,
     UserInput,
     PermissionsInput,
     DeletePopup,
@@ -27,14 +26,13 @@ export function CourseInput({ course }) {
     const [prerequisites, setPrerequisites] = useState([]);
 
     const [loading, setLoading] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
 
     const availableCourses = useStore((state) => state.courseStore);
     const user = useStore((state) => state.user);
     const canDelete = course && user && course.createdBy === user._id;
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         if (!course) return;
@@ -78,10 +76,13 @@ export function CourseInput({ course }) {
             name,
             description,
             parentCourses: parentCourses.map((cat) => cat._id),
-            prerequisites: prerequisites.map((cat) => cat._id),
+            prerequisites: prerequisites.map((cat) => ({
+                requiredAverageLevel: 1,
+                course: cat._id,
+            })),
         };
         catPayload.permissions = permissions;
-        if (course) {
+        if (course && course._id) {
             // this will change to implement PATCH in /[id]/route.js
             catPayload._id = course._id;
         }
@@ -91,7 +92,7 @@ export function CourseInput({ course }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/course`,
             {
-                method: course ? "PUT" : "POST",
+                method: course && course._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -105,45 +106,34 @@ export function CourseInput({ course }) {
             setName("");
             setDescription("");
 
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Course added successfully",
             });
-            setShowAlert(true);
         } else if (response.status === 200) {
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Course edited successfully",
             });
-            setShowAlert(true);
         } else if (response.status === 401) {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "You have been signed out. Please sign in again.",
             });
-            setShowAlert(true);
             addModal({
                 title: "Sign back in",
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "Something went wrong",
             });
-            setShowAlert(true);
         }
     }
 
     return (
         <div className="formGrid">
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <Input
                 required={true}
                 onChange={(e) => {
@@ -198,7 +188,7 @@ export function CourseInput({ course }) {
                 <InputPopup type="course" />
             </div>
 
-            {(!course || course.createdBy === user._id) && (
+            {(!course || !user || course.createdBy === user._id) && (
                 <PermissionsInput
                     permissions={course ? course.permissions : {}}
                     setter={setPermissions}

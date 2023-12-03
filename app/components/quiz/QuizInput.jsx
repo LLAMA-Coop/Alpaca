@@ -1,9 +1,9 @@
 "use client";
 
+import { useStore, useModals, useAlerts } from "@/store/store";
 import { DeletePopup } from "../DeletePopup/DeletePopup";
 import { buildPermissions } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
-import { useStore, useModals } from "@/store/store";
 import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
 import {
@@ -12,7 +12,6 @@ import {
     ListItem,
     InputPopup,
     Spinner,
-    Alert,
     PermissionsInput,
     ListAdd,
     BlankableInput,
@@ -53,8 +52,6 @@ export function QuizInput({ quiz }) {
     const [isNoteSelectOpen, setIsNoteSelectOpen] = useState(false);
 
     const [loading, setLoading] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
 
     const availableSources = useStore((state) => state.sourceStore);
     const availableNotes = useStore((state) => state.noteStore);
@@ -65,6 +62,7 @@ export function QuizInput({ quiz }) {
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         if (!quiz) return;
@@ -260,33 +258,29 @@ export function QuizInput({ quiz }) {
             setSourcesError("");
             setNotesError("");
 
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Quiz created successfully",
             });
-            setShowAlert(true);
         } else if (response.status === 200) {
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Quiz updated successfully",
             });
-            setShowAlert(true);
         } else if (response.status === 401) {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "You have been signed out. Please sign in again.",
             });
-            setShowAlert(true);
             addModal({
                 title: "Sign back in",
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: `Failed to create quiz`,
             });
-            setShowAlert(true);
         }
     }
 
@@ -324,13 +318,6 @@ export function QuizInput({ quiz }) {
 
     return (
         <form className="formGrid">
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <Input
                 type={"select"}
                 label="Type"

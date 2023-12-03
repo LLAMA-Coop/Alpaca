@@ -48,7 +48,9 @@
     position: fixed;
     top: 0;
     left: 0;
+    min-height: 100vh;
     min-height: 100dvh;
+    min-width: 100vw;
     min-width: 100dvw;
     background-color: var(--background-primary);
     z-index: 100;

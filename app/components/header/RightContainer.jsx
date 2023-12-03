@@ -46,7 +46,7 @@ export function RightContainer({ user }) {
                             viewBox="0 0 24 24"
                             width="24"
                             height="24"
-                            stroke-width="2"
+                            strokeWidth="2"
                             stroke="currentColor"
                             strokeLinecap="round"
                             strokeLinejoin="round"

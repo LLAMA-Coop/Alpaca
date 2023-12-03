@@ -18,6 +18,10 @@
     width: 100%;
 }
 
+.profile > section div, .main > section p {
+    margin: 0 0 1rem 1rem;
+}
+
 .main > .paragraph {
     max-width: var(--max-width);
     margin: 0 auto;

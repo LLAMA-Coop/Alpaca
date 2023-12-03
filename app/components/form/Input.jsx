@@ -182,6 +182,7 @@ export function Input({
                         pattern={pattern}
                         min={min}
                         max={max}
+                        autoCapitalize="none"
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -262,6 +263,7 @@ export function Input({
                 {type === "textarea" && (
                     <textarea
                         id={inputId}
+                        autoCapitalize="sentences"
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -290,6 +292,7 @@ export function Input({
                         pattern={pattern}
                         min={min}
                         max={max}
+                        autoCapitalize="none"
                         className={status}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
@@ -320,6 +323,7 @@ export function Input({
                         pattern={pattern}
                         min={min}
                         max={max}
+                        autoCapitalize="none"
                         className={status}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}

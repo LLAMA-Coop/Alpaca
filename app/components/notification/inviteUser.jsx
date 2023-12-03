@@ -1,14 +1,11 @@
 "use client";
 
+import { useStore, useModals, useAlerts } from "@/store/store";
 import { useState, useEffect } from "react";
-import { useStore, useModals } from "@/store/store";
 import { Input, Alert, UserInput } from "@client";
 
 export function InviteUser({ groupId }) {
     const [userId, setUserId] = useState("");
-
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
 
     const user = useStore((state) => state.user);
     const publicUsers = useStore((state) => state.userStore);
@@ -17,6 +14,7 @@ export function InviteUser({ groupId }) {
     );
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         setUserId(availableUsers[0]?._id);
@@ -44,40 +42,30 @@ export function InviteUser({ groupId }) {
         );
 
         if (request.status === 200) {
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: `You succeeded in the task "${action}"`,
             });
-            setShowAlert(true);
             setUserId("");
         } else if (response.status === 401) {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "You have been signed out. Please sign in again.",
             });
-            setShowAlert(true);
             addModal({
                 title: "Sign back in",
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: `Could not complete task "${action}"`,
             });
-            setShowAlert(true);
         }
     }
 
     return (
         <>
-            <Alert
-                timeAlive={5000}
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
             <Input
                 type="select"
                 label="Select from Public Users"

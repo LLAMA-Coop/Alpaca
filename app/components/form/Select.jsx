@@ -47,6 +47,7 @@ export function Select({
             >
                 {listChoices &&
                     listChoices.map((choice, index) => {
+                        if(!choice) return;
                         const isChosen =
                             listChosen.find((x) => {
                                 if (!x) return false;

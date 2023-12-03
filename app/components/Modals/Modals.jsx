@@ -18,7 +18,7 @@ export function Modals() {
     if (modals.length === 0) return null;
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} data-find="modals">
             {modals.map((modal, index) => (
                 <Modal
                     key={modal.id}
@@ -48,7 +48,6 @@ export function Modal({ modal, index, length }) {
             className={styles.wrapper}
             onClick={() => close()}
             style={{
-                zIndex: 1000 + index,
                 backgroundColor: index === 0 ? "rgba(0, 0, 0, 0.5)" : "",
                 animation:
                     index === 0
