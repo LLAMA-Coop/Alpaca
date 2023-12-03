@@ -5,13 +5,28 @@ import { UserInput } from "../client";
 import { useAlerts, useModals } from "@/store/store";
 
 export function DeletePopup({ resourceType, resourceId }) {
-    const [showPopup, setShowPopup] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
 
-    const handleDelete = async () => {
+    function askDelete() {
+        addModal({
+            title: "Are you sure you want to delete?",
+            content: (
+                <div>
+                    <h4>
+                        Are you sure you want to delete this {resourceType}?
+                    </h4>
+                    <button onClick={handleDelete} className="button red">
+                        Delete
+                    </button>
+                </div>
+            ),
+        });
+    }
+
+    async function handleDelete() {
         const response = await fetch(
             `${
                 process.env.NEXT_PUBLIC_BASEPATH ?? ""
@@ -48,41 +63,20 @@ export function DeletePopup({ resourceType, resourceId }) {
                 message: "Something went wrong.",
             });
         }
-    };
+    }
 
     return (
         <>
             {isDeleted && <h4>This {resourceType} is now deleted</h4>}
 
-            {!showPopup && !isDeleted && (
+            {!isDeleted && (
                 <button
                     type="button"
-                    onClick={() => {
-                        setShowPopup(true);
-                    }}
+                    onClick={askDelete}
                     className="button red"
                 >
                     Delete
                 </button>
-            )}
-
-            {showPopup && !isDeleted && (
-                <div>
-                    <h4>
-                        Are you sure you want to delete this {resourceType}?
-                    </h4>
-                    <button onClick={handleDelete} className="button red">
-                        Delete
-                    </button>
-                    <button
-                        onClick={() => {
-                            setShowPopup(false);
-                        }}
-                        className="button green"
-                    >
-                        Cancel
-                    </button>
-                </div>
             )}
         </>
     );
