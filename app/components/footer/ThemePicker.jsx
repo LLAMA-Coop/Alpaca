@@ -35,17 +35,29 @@ export function ThemePicker() {
     const paletteRef = useRef(null);
 
     useEffect(() => {
-        const handleClickOutside = (e) => {
+        function handleClickOutside(e) {
             if (themeRef.current && !themeRef.current.contains(e.target)) {
                 setShowThemes(false);
             }
             if (paletteRef.current && !paletteRef.current.contains(e.target)) {
                 setShowPalettes(false);
             }
-        };
+        }
+
+        function handleKeyDown(e) {
+            if (e.key === "Escape") {
+                setShowThemes(false);
+                setShowPalettes(false);
+            }
+        }
 
         document.addEventListener("click", handleClickOutside);
-        return () => document.removeEventListener("click", handleClickOutside);
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+            document.removeEventListener("keydown", handleKeyDown);
+        };
     }, [showThemes, showPalettes]);
 
     useEffect(() => {

@@ -83,6 +83,7 @@ export function TrainSettings({ tags, courses }) {
 
             <div>
                 <h3>Filter by Tags</h3>
+
                 <ListAdd
                     item="Select Tags"
                     listChosen={selectedTags}
@@ -91,8 +92,10 @@ export function TrainSettings({ tags, courses }) {
                     listSetter={setSettingTags}
                 />
             </div>
+
             <div>
                 <h3>Filter by Courses</h3>
+
                 <ListAdd
                     item="Select Courses"
                     listChosen={selectedCourses}

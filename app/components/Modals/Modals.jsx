@@ -68,7 +68,6 @@ export function Modal({ modal, index, length }) {
                         closing || index < length - 1
                             ? `${styles.fadeOut}, ${styles.popOut}`
                             : "",
-                    animationDuration: index < length - 1 ? "1s" : "",
                 }}
             >
                 <header>
@@ -94,7 +93,7 @@ export function Modal({ modal, index, length }) {
                 <div className={styles.content}>
                     {modal.content}
 
-                    <button
+                    {/* <button
                         onClick={() =>
                             addModal({
                                 title: "Add a new modal",
@@ -103,9 +102,9 @@ export function Modal({ modal, index, length }) {
                         }
                     >
                         Add other modal
-                    </button>
+                    </button> */}
 
-                    {index > 0 && (
+                    {/* {index > 0 && (
                         <button
                             onClick={() => {
                                 removeModal(modal.id);
@@ -113,7 +112,7 @@ export function Modal({ modal, index, length }) {
                         >
                             Remove this modal
                         </button>
-                    )}
+                    )} */}
                 </div>
 
                 <footer>
@@ -124,7 +123,13 @@ export function Modal({ modal, index, length }) {
                         Close
                     </button>
 
-                    <button onClick={() => {}} className="button">
+                    <button
+                        className="button"
+                        onClick={() => {
+                            if (modal.onSave) modal.onSave();
+                            close();
+                        }}
+                    >
                         Save
                     </button>
                 </footer>

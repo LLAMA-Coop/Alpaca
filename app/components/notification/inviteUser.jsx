@@ -44,7 +44,7 @@ export function InviteUser({ groupId }) {
         if (request.status === 200) {
             addAlert({
                 success: true,
-                message: `You succeeded in the task "${action}"`,
+                message: `Successfully invited user`,
             });
             setUserId("");
         } else if (response.status === 401) {
