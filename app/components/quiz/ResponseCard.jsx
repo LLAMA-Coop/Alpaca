@@ -1,13 +1,13 @@
 "use client";
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Input, Card, UserInput } from "@components/client";
+import { useModals, useAlerts } from "@/store/store";
 import correctConfetti from "@/lib/correctConfetti";
+import { Input, Card, UserInput } from "@client";
 import stringCompare from "@/lib/stringCompare";
 import shuffleArray from "@/lib/shuffleArray";
 import { useState, useEffect } from "react";
 import makeUniqueId from "@/lib/uniqueId";
-import { useModals, useAlerts } from "@/store/store";
 
 export function ResponseCard({
     canClientCheck,

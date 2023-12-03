@@ -2,8 +2,8 @@
 
 import styles from "./RightContainer.module.css";
 import { usePathname } from "next/navigation";
-import { Profile } from "@components/client";
 import { useState, useEffect } from "react";
+import { Profile } from "@client";
 import { links } from "@/lib/nav";
 import Link from "next/link";
 

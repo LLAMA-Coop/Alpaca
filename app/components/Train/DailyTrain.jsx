@@ -1,13 +1,12 @@
 "use client";
 
-import QuizDisplay from "@/app/components/quiz/QuizDisplay";
-import { useDailyTrain, useModals, useStore } from "@/store/store";
+import { useDailyTrain, useModals } from "@/store/store";
+import { QuizDisplay, TrainSettings } from "@client";
+import hasCommonItem from "@/lib/hasCommonItem";
 import styles from "./DailyTrain.module.css";
 import { useState, useEffect } from "react";
-import hasCommonItem from "@/lib/hasCommonItem";
-import TrainSettings from "./trainSettings";
 
-export default function DailyTrain({ quizzes }) {
+export function DailyTrain({ quizzes }) {
     const [visibleSet, setVisibleSet] = useState(
         new Array(quizzes.length).fill(true),
     );

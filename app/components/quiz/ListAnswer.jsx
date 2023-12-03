@@ -1,12 +1,11 @@
 "use client";
 
-import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import correctConfetti from "@/lib/correctConfetti";
-import { Card, Input, UserInput } from "../client";
-import { useEffect, useState } from "react";
-import styles from "./Blankable.module.css";
+import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { useModals, useAlerts } from "@/store/store";
+import correctConfetti from "@/lib/correctConfetti";
+import { Card, Input, UserInput } from "@client";
+import { useEffect, useState } from "react";
 
 export function ListAnswer({
     canClientCheck,
@@ -176,9 +175,7 @@ export function ListAnswer({
                 quiz.hints.length > 0 &&
                 failures > 2 && (
                     <div data-type="hints">
-                        <p>
-                            You're having some trouble. Here are some hints:
-                        </p>
+                        <p>You're having some trouble. Here are some hints:</p>
 
                         <ul>
                             {quiz.hints.map((hint, index) => {

@@ -1,10 +1,12 @@
 "use client";
+
 import { useStore, useModals, useAlerts } from "@/store/store";
-import Notification from "./notification";
-import { UserInput } from "../client";
+import { Notification, UserInput } from "@client";
 import { useState } from "react";
 
-export default function Notifications() {
+export function Notifications() {
+    const [showAlert, setShowAlert] = useState(false);
+    const [requestStatus, setRequestStatus] = useState({});
 
     const notifications = useStore((state) => state.notifications);
     const removeNotification = useStore((state) => state.removeNotification);
@@ -46,11 +48,11 @@ export default function Notifications() {
                 message: `You succeeded in the task "${action}"`,
             });
             removeNotification(notification);
-        } else if(response.status === 401) {
+        } else if (response.status === 401) {
             addAlert({
                 success: false,
-                message: "You have been signed out. Please sign in again."
-            })
+                message: "You have been signed out. Please sign in again.",
+            });
             addModal({
                 title: "Sign back in",
                 content: <UserInput onSubmit={removeModal} />,

@@ -1,13 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useStore, useModals, useAlerts } from "@/store/store";
-import { DeletePopup } from "../delete-popup/DeletePopup";
-import MAX from "@/lib/max";
+import { useEffect, useState } from "react";
 import { serializeOne } from "@/lib/db";
-import { Input, InputPopup, Label, Spinner, UserInput } from "../client";
-import ListAdd from "../form/ListAdd";
-import PermissionsInput from "../form/PermissionsInput";
+import MAX from "@/lib/max";
+import {
+    Input,
+    InputPopup,
+    Label,
+    Spinner,
+    UserInput,
+    PermissionsInput,
+    DeletePopup,
+    ListAdd,
+} from "@client";
 
 export function CourseInput({ course }) {
     const [name, setName] = useState("");

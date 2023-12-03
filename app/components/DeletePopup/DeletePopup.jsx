@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { UserInput } from "../client";
 import { useAlerts, useModals } from "@/store/store";
+import { UserInput } from "@client";
+import { useState } from "react";
 
 export function DeletePopup({ resourceType, resourceId }) {
     const [isDeleted, setIsDeleted] = useState(false);

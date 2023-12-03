@@ -22,7 +22,7 @@
     min-width: 480px;
     max-width: min(calc(100vw - 32px), 600px);
     max-width: min(calc(100dvw - 32px), 600px);
-    max-height: calc(100vh - 32px);;
+    max-height: calc(100vh - 32px);
     max-height: calc(100dvh - 32px);
     padding: 16px;
     background-color: var(--background-secondary);

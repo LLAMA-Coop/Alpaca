@@ -1,8 +1,8 @@
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
-import { useUser } from "@/lib/auth";
-import { cookies } from "next/headers";
 import { serializeOne } from "@/lib/db";
+import { cookies } from "next/headers";
+import { useUser } from "@/lib/auth";
 
 export default async function UserPage({ params: { username } }) {
     const user = await useUser({ token: cookies().get("token")?.value });
@@ -11,7 +11,9 @@ export default async function UserPage({ params: { username } }) {
     if (user.username === username) return redirect("/me/dashboard");
 
     const profile = serializeOne(await useUser({ username }));
-    const canView = profile && profile.isPublic || profile.associates.includes(user._id.toString());
+    const canView =
+        (profile && profile.isPublic) ||
+        profile.associates.includes(user._id.toString());
 
     return (
         <main className={styles.main}>

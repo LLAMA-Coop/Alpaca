@@ -2,11 +2,11 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { Input, Spinner } from "@components/client";
 import { useState, useRef, useEffect } from "react";
 import { useAlerts, useStore, useModals } from "@/store/store";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
+import { Input, Spinner } from "@client";
 
 export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");

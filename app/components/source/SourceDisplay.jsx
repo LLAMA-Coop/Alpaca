@@ -1,6 +1,6 @@
-import { ListItem, Card } from "@components/client";
 import styles from "./SourceDisplay.module.css";
-import { Source, User } from "@/app/api/models";
+import { ListItem, Card } from "@client";
+import { Source, User } from "@models";
 
 export async function SourceDisplay({ source }) {
     const user = await User.findById(source.createdBy);
@@ -65,7 +65,7 @@ export async function SourceDisplay({ source }) {
                     <p>No Courses Listed</p>
                 )}
             </div>
-            
+
             <p>Added by: {user?.username ?? "Unknown"}</p>
         </Card>
     );

@@ -1,4 +1,5 @@
 "use client";
+
 import { useStore, stores } from "@/store/store";
 import { useEffect } from "react";
 
@@ -29,16 +30,21 @@ export function FillStore({
             console.log(record);
 
             if (!record.ns) return;
+
             const operation = record.operationType;
             const collection = record.ns.coll;
             const resource = record.fullDocument;
+
             let storeName;
+
             if (collection === "sources") {
                 storeName = stores.source;
             }
+
             if (collection === "notes") {
                 storeName = stores.note;
             }
+
             if (collection === "quizzes") {
                 storeName = stores.quiz;
             }
@@ -46,6 +52,7 @@ export function FillStore({
             if (operation === "insert") {
                 addResources(storeName, resource);
             }
+
             if (operation === "update") {
                 updateResource(storeName, resource);
             }

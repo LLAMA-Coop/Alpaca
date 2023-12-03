@@ -1,13 +1,12 @@
-import { SourceDisplay } from "@components/server";
-import { InputPopup, SourceInput } from "@components/client";
+import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
+import { serialize, serializeOne } from "@/lib/db";
+import { InputPopup, SourceInput } from "@client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
-import { serialize, serializeOne } from "@/lib/db";
-import Link from "next/link";
-import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
+import { SourceDisplay } from "@server";
 import { cookies } from "next/headers";
-// import { Source, User } from "@mneme_app/database-models";
-import { Source, User } from "@/app/api/models";
+import { Source, User } from "@models";
+import Link from "next/link";
 
 export default async function SourcesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });

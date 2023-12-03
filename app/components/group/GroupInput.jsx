@@ -1,17 +1,12 @@
 "use client";
 
-import {
-    Label,
-    Input,
-    Spinner,
-    UserInput,
-} from "@/app/components/client";
-import filetypeinfo from "magic-bytes.js";
+import { Label, Input, Spinner, UserInput } from "@client";
+import { useModals, useAlerts } from "@/store/store";
 import { useState, useRef, useEffect } from "react";
+import filetypeinfo from "magic-bytes.js";
 import styles from "./Group.module.css";
 import Image from "next/image";
 import MAX from "@/lib/max";
-import { useModals, useAlerts } from "@/store/store";
 
 export function GroupInput({ group }) {
     const [name, setName] = useState("");

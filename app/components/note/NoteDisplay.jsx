@@ -1,11 +1,12 @@
 import styles from "./NoteDisplay.module.css";
-import { Card, ListItem } from "@components/client";
-// import { Source, User } from "@mneme_app/database-models";
-import { Note, User } from "@/app/api/models";
+import { Card, ListItem } from "@client";
+import { Note, User } from "@models";
 
 export async function NoteDisplay({ note }) {
     const user = await User.findById(note.createdBy);
-    const dbNote = await Note.findById(note._id).populate("sources").populate("courses");
+    const dbNote = await Note.findById(note._id)
+        .populate("sources")
+        .populate("courses");
 
     return (
         <Card title={note.title} description={`${note.text}`}>

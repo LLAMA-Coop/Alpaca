@@ -1,17 +1,11 @@
-import { UserCard } from "@components/server";
+import { QuizDisplay, NoteDisplay, SourceDisplay, UserCard } from "@server";
+import { Source, Note, Quiz, Group } from "@models";
+import { serialize, serializeOne } from "@/lib/db";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
-import { serialize, serializeOne } from "@/lib/db";
-import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-// import { Group, Quiz, Note, Source } from "@mneme_app/database-models";
-import { Source, Note, Quiz, Group } from "@/app/api/models";
-import {
-    QuizDisplay,
-    NoteDisplay,
-    SourceDisplay,
-} from "@/app/components/server";
-import InviteUser from "@/app/components/notification/inviteUser";
+import { InviteUser } from "@client";
+import { useUser } from "@/lib/auth";
 
 export default async function GroupPage({ params }) {
     const groupId = params.groupId;

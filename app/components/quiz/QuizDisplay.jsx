@@ -1,7 +1,6 @@
 "use client";
 
-import { ResponseCard, ListAnswer } from "@/app/components/client";
-import { Blankable } from "./Blankable";
+import { ResponseCard, ListAnswer, Blankable } from "@client";
 import { Verbatim } from "./Verbatim";
 import { memo } from "react";
 
@@ -15,7 +14,7 @@ export function QuizDisplay({
     canClientCheck,
     quiz,
     handleWhenCorrect = () => {},
-    isFlashcard = false
+    isFlashcard = false,
 }) {
     if (!quiz) {
         quiz = sampleQuiz;
@@ -62,7 +61,7 @@ export function QuizDisplay({
         );
     }
 
-    if(quiz.type === "verbatim"){
+    if (quiz.type === "verbatim") {
         return (
             <Verbatim
                 quiz={quiz}
@@ -70,7 +69,7 @@ export function QuizDisplay({
                 handleWhenCorrect={handleWhenCorrect}
                 isFlashcard={isFlashcard}
             />
-        )
+        );
     }
 }
 

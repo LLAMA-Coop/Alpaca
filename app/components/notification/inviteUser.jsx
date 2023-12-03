@@ -1,10 +1,10 @@
 "use client";
 
-import { Input, UserInput } from "../client";
-import { useState, useEffect } from "react";
 import { useStore, useModals, useAlerts } from "@/store/store";
+import { useState, useEffect } from "react";
+import { Input, UserInput } from "@client";
 
-export default function InviteUser({ groupId }) {
+export function InviteUser({ groupId }) {
     const [userId, setUserId] = useState("");
 
     const user = useStore((state) => state.user);
@@ -14,7 +14,7 @@ export default function InviteUser({ groupId }) {
     );
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
-    const addAlert = useAlerts(state => state.addAlert)
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         setUserId(availableUsers[0]?._id);
@@ -44,7 +44,7 @@ export default function InviteUser({ groupId }) {
         if (request.status === 200) {
             addAlert({
                 success: true,
-                message: `You succeeded in the task "${action}"`,
+                message: `Successfully invited user`,
             });
             setUserId("");
         } else if (response.status === 401) {

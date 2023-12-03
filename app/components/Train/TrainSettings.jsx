@@ -1,12 +1,11 @@
 "use client";
 
 import { useDailyTrain, useStore } from "@/store/store";
-import { Input, Label } from "../client";
+import styles from "./DailyTrain.module.css";
 import { useState, useEffect } from "react";
-import ListAdd from "../form/ListAdd";
-import styles from "./DailyTrain.module.css"
+import { Input, ListAdd } from "@client";
 
-export default function TrainSettings({ tags, courses }) {
+export function TrainSettings({ tags, courses }) {
     const settings = useDailyTrain((state) => state.settings);
     const setSettings = useDailyTrain((state) => state.setSettings);
     const availableCourses = useStore((state) => state.courseStore);
@@ -84,6 +83,7 @@ export default function TrainSettings({ tags, courses }) {
 
             <div>
                 <h3>Filter by Tags</h3>
+
                 <ListAdd
                     item="Select Tags"
                     listChosen={selectedTags}
@@ -92,8 +92,10 @@ export default function TrainSettings({ tags, courses }) {
                     listSetter={setSettingTags}
                 />
             </div>
+
             <div>
                 <h3>Filter by Courses</h3>
+
                 <ListAdd
                     item="Select Courses"
                     listChosen={selectedCourses}

@@ -1,12 +1,12 @@
 "use client";
 
-import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import correctConfetti from "@/lib/correctConfetti";
-import { useEffect, useState } from "react";
-import { Card, Input, UserInput } from "../client";
+import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { useModals, useAlerts } from "@/store/store";
-import styles from "./Blankable.module.css"
+import correctConfetti from "@/lib/correctConfetti";
+import { Card, Input, UserInput } from "@client";
+import { useEffect, useState } from "react";
+import styles from "./Blankable.module.css";
 
 export function Blankable({
     canClientCheck,
@@ -120,12 +120,12 @@ export function Blankable({
             ]}
         >
             {texts.map((text, index) => {
-                    let isCorrect;
-                    if (incorrectIndexes.includes(index)) {
-                        isCorrect = false;
-                    } else if (responseStatus === "complete") {
-                        isCorrect = true;
-                    }
+                let isCorrect;
+                if (incorrectIndexes.includes(index)) {
+                    isCorrect = false;
+                } else if (responseStatus === "complete") {
+                    isCorrect = true;
+                }
 
                 return (
                     <span key={index}>

@@ -1,11 +1,8 @@
-import {disconnect, connect} from "mongoose";
+import { disconnect, connect } from "mongoose";
 
 export default async function connectDB() {
     try {
-        await connect(process.env.DATABASE_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        await connect(process.env.DATABASE_URL);
         console.log("Connected to DB");
     } catch (e) {
         console.error(

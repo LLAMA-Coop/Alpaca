@@ -1,34 +1,31 @@
-import { Header, Footer } from "@components/server";
-import DatabaseConnectError from "./components/error/database-connect";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import connectDB from "./api/db";
-// import { Source, Note, Quiz, Group, User } from "@mneme_app/database-models";
-import {
-    Source,
-    Note,
-    Quiz,
-    Group,
-    User,
-    Notification,
-} from "@/app/api/models";
-import Course from "./api/models/Course";
-import { FillStore } from "./components/fillStore";
-import { serialize, serializeOne } from "@/lib/db";
+import { Source, Note, Quiz, Group, User, Notification, Course } from "@models";
 import { useUser, queryReadableResources } from "@/lib/auth";
+import { FillStore, Timer, Alerts, Modals } from "@client";
+import { Header, Footer, DBConnectError } from "@server";
+import { serialize, serializeOne } from "@/lib/db";
+import { metadatas } from "@/lib/metadatas";
+import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
-import { Timer } from "./components/Layers/Timer";
-import { Alerts } from "./components/Layers/Alerts";
-import { Modals } from "./components/Modals/Modals";
+import connectDB from "./api/db";
+import "./globals.css";
 
 const connection = await connectDB();
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-    title: "Mneme",
-    description:
-        "Quizzes you can customize, information traces back to its source",
+    metadataBase: new URL(metadatas.layout.url),
+    title: metadatas.layout.title,
+    description: metadatas.layout.description,
+    keywords: metadatas.layout.keywords.join(", "),
+    openGraph: {
+        title: metadatas.layout.title,
+        description: metadatas.layout.description,
+        url: metadatas.layout.url,
+        type: "website",
+        siteName: metadatas.layout.title,
+        locale: "en_US",
+        images: metadatas.layout.images,
+    },
 };
 
 export default async function RootLayout({ children }) {
@@ -37,7 +34,7 @@ export default async function RootLayout({ children }) {
             <html lang="en">
                 <body className={inter.className}>
                     <Header />
-                    <DatabaseConnectError />
+                    <DBConnectError />
                     <Footer />
                 </body>
             </html>

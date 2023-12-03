@@ -1,21 +1,21 @@
 "use client";
 
 import { useStore, useModals, useAlerts } from "@/store/store";
+import { buildPermissions } from "@/lib/permissions";
+import { useState, useEffect } from "react";
+import { serializeOne } from "@/lib/db";
+import htmlDate from "@/lib/htmlDate";
+import MAX from "@/lib/max";
 import {
     Input,
     Label,
     ListItem,
     Spinner,
+    DeletePopup,
+    PermissionsInput,
+    ListAdd,
     UserInput,
-} from "@components/client";
-import ListAdd from "../form/ListAdd";
-import { useState, useEffect } from "react";
-import PermissionsInput from "../form/PermissionsInput";
-import { DeletePopup } from "../delete-popup/DeletePopup";
-import { serializeOne } from "@/lib/db";
-import htmlDate from "@/lib/htmlDate";
-import MAX from "@/lib/max";
-import { buildPermissions } from "@/lib/permissions";
+} from "@client";
 
 export function SourceInput({ source }) {
     const [title, setTitle] = useState("");

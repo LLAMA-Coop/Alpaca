@@ -1,14 +1,11 @@
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
-import { cookies } from "next/headers";
-import { QuizInput, InputPopup } from "@components/client";
-import { UserStats } from "../components/quiz/UserStats";
+import { QuizInput, InputPopup, UserStats, QuizDisplay } from "@client";
 import { serialize, serializeOne } from "@/lib/db";
-import { QuizDisplay } from "@components/server";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { Quiz, User } from "@models";
 import Link from "next/link";
-// import { Group, User, Source, Quiz, Note } from "@mneme_app/database-models";
-import { Quiz, User } from "@/app/api/models";
 
 export default async function QuizzesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });

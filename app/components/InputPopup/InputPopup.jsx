@@ -1,9 +1,9 @@
 "use client";
 
-import { SourceInput, NoteInput, QuizInput } from "@components/client";
+import { SourceInput, NoteInput, QuizInput } from "@client";
 import { useEffect, useRef, useState } from "react";
 import styles from "./InputPopup.module.css";
-import { CourseInput } from "../course/CourseInput";
+import { CourseInput } from "../Course/CourseInput";
 
 export function InputPopup({ type, resource }) {
     const [showPopup, setShowPopup] = useState(false);
