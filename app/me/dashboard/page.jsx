@@ -16,6 +16,7 @@ export default async function DashboardPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
     if (!user) return redirect("/login");
     user.populate("associates");
+    user.populate("groups");
 
     const sources = await Source.find({ contributors: user.id });
     const quizzes = await Quiz.find({ contributors: user.id });
@@ -26,20 +27,6 @@ export default async function DashboardPage() {
     return (
         <main className={styles.main}>
             <h2>Dashboard</h2>
-
-            <section>
-                <h3>Courses</h3>
-
-                <ul>
-                    {courses.map((c) => (
-                        <li key={c._id}>
-                            <Link href={`/courses/${c._id}`}>
-                                <CourseDisplay course={c} />
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </section>
 
             <section>
                 <h3>Your Profile</h3>
@@ -58,57 +45,77 @@ export default async function DashboardPage() {
                         )}
                     </p>
                 </div>
-            </section>
 
-            <section>
-                <h3>Your Notifications</h3>
+                <div>
+                    <h4>Your Notifications</h4>
 
-                <Notifications />
-            </section>
+                    <Notifications />
+                </div>
 
-            <section>
-                <h3>Your Contributions</h3>
+                <div className={`${styles.profile} paragraph`}>
+                    <h4>Your Contributions</h4>
 
-                <h4>Quiz Questions</h4>
-                {quizzes.length > 0 ? (
-                    <div className="paragraph">
+                    <h5>Quiz Questions</h5>
+                    {quizzes.length > 0 ? (
                         <p>
                             You have {quizzes.length} quiz questions to which
                             you have contributed.
                         </p>
-                    </div>
-                ) : (
-                    <div className="paragraph">
-                        <p>No quiz questions</p>
-                    </div>
-                )}
+                    ) : (
+                        <div className="paragraph">
+                            <p>No quiz questions</p>
+                        </div>
+                    )}
 
-                <h4>Notes</h4>
-                {notes.length > 0 ? (
-                    <div className="paragraph">
+                    <h5>Notes</h5>
+                    {notes.length > 0 ? (
                         <p>
                             You have {notes.length} notes to which you have
                             contributed.
                         </p>
-                    </div>
-                ) : (
-                    <div className="paragraph">
+                    ) : (
                         <p>No notes</p>
-                    </div>
-                )}
+                    )}
 
-                <h4>Sources</h4>
-                {sources.length > 0 ? (
-                    <div className="paragraph">
+                    <h5>Sources</h5>
+                    {sources.length > 0 ? (
                         <p>
                             You have {sources.length} sources to which you have
                             contributed.
                         </p>
-                    </div>
-                ) : (
-                    <div className="paragraph">
+                    ) : (
                         <p>No sources</p>
-                    </div>
+                    )}
+                </div>
+            </section>
+
+            <section>
+                <h3>Courses</h3>
+
+                <ul>
+                    {courses.map((c) => (
+                        <li key={c._id}>
+                            <Link href={`/courses/${c._id}`}>
+                                <CourseDisplay course={c} />
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </section>
+
+            <section>
+                <h3>Your Groups</h3>
+                {user.groups.length > 0 && (
+                    <ol>
+                        {user.groups.map((group) => {
+                            return (
+                                <li key={group._id}>
+                                    <h4>{group.name}</h4>
+                                    <p>{group.description}</p>
+                                </li>
+                            );
+                        })}
+                    </ol>
                 )}
             </section>
 
