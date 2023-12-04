@@ -40,7 +40,6 @@ const removeNotification = (state, notification) => {
     return newState;
 };
 
-//needs testing
 const updateResource = (state, storeName, newResource) => {
     if (!Object.values(stores).includes(storeName)) {
         throw Error(`We do not have a list called ${storeName}`);
@@ -65,6 +64,7 @@ export const stores = {
     source: "sourceStore",
     note: "noteStore",
     quiz: "quizStore",
+    course: "courseStore",
     group: "groupStore",
     user: "userStore",
 };
@@ -73,6 +73,7 @@ export const useStore = create((set) => ({
     sourceStore: [],
     noteStore: [],
     quizStore: [],
+    courseStore: [],
     groupStore: [],
     userStore: [],
     user: undefined,
@@ -140,18 +141,18 @@ export const useDailyTrain = create()((set) => ({
     start: false,
     isPaused: false,
     settings: {
-        timeLimit: 1000 * 60 * 5,
+        timeLimit: 60 * 15,
         tags: [],
-        categories: [],
+        courses: [],
     },
 
     setStart: (start) => set(() => ({ start })),
     setIsPaused: (isPaused) => set(() => ({ isPaused })),
     setTimeLimit: (timeLimit) => set(() => ({ timeLimit })),
     setSettings: (newValues) =>
-        set(() => ({
+        set((state) => ({
             settings: {
-                ...settings,
+                ...state.settings,
                 ...newValues,
             },
         })),
@@ -195,8 +196,19 @@ export const useModals = create()((set) => ({
             ],
         })),
 
-    removeModal: (id) =>
-        set((state) => ({
+    removeModal: (id) => {
+        if (!id) {
+            return set((state) => {
+                let newModals = [...state.modals];
+                newModals.pop();
+                return {
+                    modals: newModals,
+                };
+            });
+        }
+
+        return set((state) => ({
             modals: state.modals.filter((modal) => modal.id !== id),
-        })),
+        }));
+    },
 }));

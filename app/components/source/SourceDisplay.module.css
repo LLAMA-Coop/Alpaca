@@ -2,12 +2,14 @@
     background-color: var(--background-primary);
     padding: 10px;
     border-radius: 4px;
+    margin: 5px 0;
 }
 
 .tags {
     background-color: var(--background-secondary);
     padding: 10px;
     border-radius: 4px;
+    margin: 5px 0;
 }
 
 .authors > h5,

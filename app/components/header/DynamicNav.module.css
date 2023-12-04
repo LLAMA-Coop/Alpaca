@@ -24,6 +24,8 @@
     padding: 7px 14px;
     user-select: none;
     color: var(--foreground-secondary);
+    transition: color 0.1s ease-in-out;
+    font-size: 14px;
 }
 
 .nav > ul > li > a:hover {

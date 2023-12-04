@@ -1,13 +1,14 @@
-import styles from "./notification.module.css";
-import { Card } from "../client";
+import styles from "./Notification.module.css";
+import { Card } from "@client";
 
-export default function Notification({ notification, handleAction }) {
+export function Notification({ notification, handleAction }) {
     let type;
     if (notification.senderUser) {
         type = "associate";
     } else if (notification.senderGroup) {
         type = "group";
     }
+
     return (
         <Card>
             <h5 className={styles.subject}>{notification.subject}</h5>

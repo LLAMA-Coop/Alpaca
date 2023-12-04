@@ -5,7 +5,7 @@ import styles from "./Card.module.css";
 import { useState } from "react";
 import Link from "next/link";
 
-export const Card = ({
+export function Card({
     title,
     subtitle,
     description,
@@ -15,7 +15,7 @@ export const Card = ({
     buttons,
     children,
     border,
-}) => {
+}) {
     const [isFocused, setIsFocused] = useState(false);
 
     return (
@@ -47,10 +47,12 @@ export const Card = ({
                                         <header title={title}>
                                             {url ? (
                                                 url.startsWith("http") ? (
-                                                    <a href={url}>{title}</a>
+                                                    <a href={url}>
+                                                        {urlLabel ?? title}
+                                                    </a>
                                                 ) : (
                                                     <Link href={url}>
-                                                        {title}
+                                                        {urlLabel ?? title}
                                                     </Link>
                                                 )
                                             ) : (
@@ -99,7 +101,6 @@ export const Card = ({
                                     return (
                                         <button
                                             key={button.label}
-                                            className={button.color}
                                             onClick={button.onClick}
                                             style={{
                                                 backgroundColor: button.color,
@@ -121,4 +122,4 @@ export const Card = ({
             </div>
         </div>
     );
-};
+}

@@ -2,7 +2,7 @@ import MAX from "@/lib/max";
 import PermissionSchema from "./PermissionSchema";
 import { model, models, Schema } from "mongoose";
 
-const CategorySchema = new Schema(
+const CourseSchema = new Schema(
     {
         name: {
             type: String,
@@ -16,17 +16,17 @@ const CategorySchema = new Schema(
             minLength: 1,
             maxLength: MAX.description,
         },
-        subcategoryOf: [
+        parentCourses: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "category",
+                ref: "course",
             },
         ],
         prerequisites: [
             {
-                category: {
+                course: {
                     type: Schema.Types.ObjectId,
-                    ref: "category",
+                    ref: "course",
                 },
                 requiredAverageLevel: {
                     type: Number,
@@ -50,8 +50,8 @@ const CategorySchema = new Schema(
     },
 );
 
-CategorySchema.set("toJSON", {
+CourseSchema.set("toJSON", {
     virtuals: true,
 });
 
-export default models?.category || model("category", CategorySchema);
+export default models?.course || model("course", CourseSchema);

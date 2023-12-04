@@ -2,9 +2,10 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState, useRef } from "react";
 import makeUniqueId from "@/lib/uniqueId";
 import styles from "./Input.module.css";
-import { useEffect, useRef, useState } from "react";
+import inputSize from "@/lib/inputSize";
 
 export function Label({ required, error, errorId, label, htmlFor, checkbox }) {
     return (
@@ -27,14 +28,18 @@ export function Label({ required, error, errorId, label, htmlFor, checkbox }) {
 export function Input({
     id,
     type,
+    pattern,
     description,
     autoComplete,
     choices,
     required,
     onChange,
     value,
+    min,
+    max,
     minLength,
     maxLength,
+    isCorrect,
     error,
     label,
     onFocus,
@@ -54,8 +59,8 @@ export function Input({
     const firstElement = useRef(null);
 
     useEffect(() => {
-        if (!id || !label) return;
-        setInputId(`${id ?? label.split("").join("_")}-${makeUniqueId()}`);
+        if (!id && !label) return;
+        setInputId(`${id ?? label.split(" ").join("_")}-${makeUniqueId()}`);
         setErrorId(`${inputId}-error`);
     }, []);
 
@@ -95,6 +100,13 @@ export function Input({
             document.removeEventListener("click", handleClickOutside);
         };
     }, [open]);
+
+    let status = "";
+    if (isCorrect === true) {
+        status = styles.correct;
+    } else if (isCorrect === false) {
+        status = styles.incorrect;
+    }
 
     if (type === "checkbox" && typeof value === "boolean")
         return (
@@ -164,8 +176,13 @@ export function Input({
                     </svg>
 
                     <input
+                        className={status}
                         type="checkbox"
                         id={inputId}
+                        pattern={pattern}
+                        min={min}
+                        max={max}
+                        autoCapitalize="none"
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -211,92 +228,7 @@ export function Input({
                 style={{ pointerEvents: disabled ? "none" : "" }}
             >
                 {type === "select" && choices && (
-                    <>
-                        <div
-                            tabIndex={0}
-                            role="button"
-                            aria-haspopup="listbox"
-                            aria-labelledby={inputId}
-                            aria-expanded={open ? "true" : "false"}
-                            className={styles.select}
-                            onClick={() => setOpen(!open)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") setOpen(!open);
-                            }}
-                        >
-                            {
-                                choices.find((choice) => choice.value === value)
-                                    ?.label
-                            }
-
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                strokeWidth="2"
-                                fill="transparent"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                {open ? (
-                                    <path d="M6 15l6 -6l6 6" />
-                                ) : (
-                                    <path d="M6 9l6 6l6 -6" />
-                                )}
-                            </svg>
-                        </div>
-
-                        <ul
-                            role="listbox"
-                            aria-disabled={disabled}
-                            aria-activedescendant={value}
-                            aria-invalid={error ? "true" : "false"}
-                            aria-errormessage={error ? errorId : ""}
-                            className={styles.dropdown}
-                            style={{ display: open ? "block" : "none" }}
-                        >
-                            {choices.map((choice, index) => (
-                                <li
-                                    ref={index === 0 ? firstElement : null}
-                                    role="option"
-                                    aria-selected={
-                                        choice.value === value ? "true" : ""
-                                    }
-                                    tabIndex={0}
-                                    key={choice.value}
-                                    onClick={() => {
-                                        onChange({
-                                            target: {
-                                                value: choice.value,
-                                            },
-                                        });
-                                        setOpen(false);
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            onChange({
-                                                target: {
-                                                    value: choice.value,
-                                                },
-                                            });
-                                            setOpen(false);
-                                        }
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.target.focus();
-                                    }}
-                                >
-                                    {choice.label}
-                                </li>
-                            ))}
-                        </ul>
-                    </>
-                )}
-
-                {type === "textarea" && (
-                    <textarea
+                    <select
                         id={inputId}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
@@ -305,7 +237,41 @@ export function Input({
                         aria-disabled={disabled}
                         aria-invalid={error ? "true" : "false"}
                         aria-errormessage={error ? errorId : ""}
-                        className="thinScroller"
+                        className={`thinScroller ${status}`}
+                        required={required}
+                        onChange={onChange}
+                        onFocus={onFocus}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        minLength={minLength}
+                        maxLength={maxLength}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && action) onActionTrigger(e);
+                        }}
+                    >
+                        {choices.map((choice) => (
+                            <option
+                                key={choice.key ?? choice.label}
+                                value={choice.value}
+                            >
+                                {choice.label}
+                            </option>
+                        ))}
+                    </select>
+                )}
+
+                {type === "textarea" && (
+                    <textarea
+                        id={inputId}
+                        autoCapitalize="sentences"
+                        autoFocus={autoFocus ? true : false}
+                        autoComplete={autoComplete || "off"}
+                        aria-describedby={description}
+                        aria-required={error ? error : ""}
+                        aria-disabled={disabled}
+                        aria-invalid={error ? "true" : "false"}
+                        aria-errormessage={error ? errorId : ""}
+                        className={`thinScroller ${status}`}
                         required={required}
                         onChange={onChange}
                         onFocus={onFocus}
@@ -323,6 +289,11 @@ export function Input({
                     <input
                         type="checkbox"
                         id={inputId}
+                        pattern={pattern}
+                        min={min}
+                        max={max}
+                        autoCapitalize="none"
+                        className={status}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -349,6 +320,11 @@ export function Input({
                 {!["select", "checkbox", "textarea"].includes(type) && (
                     <input
                         id={inputId}
+                        pattern={pattern}
+                        min={min}
+                        max={max}
+                        autoCapitalize="none"
+                        className={status}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -357,6 +333,7 @@ export function Input({
                         aria-invalid={error ? "true" : "false"}
                         aria-errormessage={error ? errorId : ""}
                         type={type || "text"}
+                        size={inline ? inputSize(String(value)) : undefined}
                         required={required}
                         onChange={onChange}
                         onFocus={onFocus}

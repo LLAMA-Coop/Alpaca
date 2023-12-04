@@ -18,17 +18,23 @@ export function Modals() {
     if (modals.length === 0) return null;
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} data-find="modals">
             {modals.map((modal, index) => (
-                <Modal key={modal.id} modal={modal} index={index} />
+                <Modal
+                    key={modal.id}
+                    modal={modal}
+                    index={index}
+                    length={modals.length}
+                />
             ))}
         </div>
     );
 }
 
-export function Modal({ modal, index }) {
+export function Modal({ modal, index, length }) {
     const [closing, setClosing] = useState(false);
     const removeModal = useModals((state) => state.removeModal);
+    const addModal = useModals((state) => state.addModal);
 
     function close() {
         setClosing(true);
@@ -42,7 +48,6 @@ export function Modal({ modal, index }) {
             className={styles.wrapper}
             onClick={() => close()}
             style={{
-                zIndex: 1000 + index,
                 backgroundColor: index === 0 ? "rgba(0, 0, 0, 0.5)" : "",
                 animation:
                     index === 0
@@ -59,9 +64,10 @@ export function Modal({ modal, index }) {
                 className={styles.modal}
                 onClick={(e) => e.stopPropagation()}
                 style={{
-                    animationName: closing
-                        ? `${styles.fadeOut}, ${styles.popOut}`
-                        : "",
+                    animationName:
+                        closing || index < length - 1
+                            ? `${styles.fadeOut}, ${styles.popOut}`
+                            : "",
                 }}
             >
                 <header>
@@ -84,7 +90,30 @@ export function Modal({ modal, index }) {
                     </button>
                 </header>
 
-                <div className={styles.content}>{modal.content}</div>
+                <div className={styles.content}>
+                    {modal.content}
+
+                    {/* <button
+                        onClick={() =>
+                            addModal({
+                                title: "Add a new modal",
+                                content: "This is the content of the modal",
+                            })
+                        }
+                    >
+                        Add other modal
+                    </button> */}
+
+                    {/* {index > 0 && (
+                        <button
+                            onClick={() => {
+                                removeModal(modal.id);
+                            }}
+                        >
+                            Remove this modal
+                        </button>
+                    )} */}
+                </div>
 
                 <footer>
                     <button
@@ -94,7 +123,13 @@ export function Modal({ modal, index }) {
                         Close
                     </button>
 
-                    <button onClick={() => {}} className="button">
+                    <button
+                        className="button"
+                        onClick={() => {
+                            if (modal.onSave) modal.onSave();
+                            close();
+                        }}
+                    >
                         Save
                     </button>
                 </footer>

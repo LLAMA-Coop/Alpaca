@@ -47,11 +47,21 @@ export function Select({
             >
                 {listChoices &&
                     listChoices.map((choice, index) => {
+                        if(!choice) return;
                         const isChosen =
                             listChosen.find((x) => {
                                 if (!x) return false;
                                 return x._id === choice._id;
                             }) != undefined;
+
+                        let prop;
+                        if (Array.isArray(listProperty)) {
+                            prop = listProperty.find((p) => choice[p]);
+                            if (!prop) prop = "_id";
+                        } else {
+                            prop = listProperty;
+                        }
+
                         return (
                             <div
                                 key={choice._id}
@@ -68,9 +78,7 @@ export function Select({
                                     }
                                 }}
                             >
-                                <span title={choice[listProperty]}>
-                                    {choice[listProperty]}
-                                </span>
+                                <span title={choice[prop]}>{choice[prop]}</span>
 
                                 <div
                                     role="checkbox"

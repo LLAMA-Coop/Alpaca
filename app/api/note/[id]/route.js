@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { Note } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 
-export async function DELETE(req) {
+export async function DELETE(req, { params }) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
 
@@ -13,13 +13,13 @@ export async function DELETE(req) {
             return unauthorized;
         }
 
-        const _id = req.nextUrl.pathname.split("/")[3];
+        const { id } = params;
 
-        const note = await Note.findById(_id);
+        const note = await Note.findById(id);
         if (!note) {
             return NextResponse.json(
                 {
-                    message: `The note ${_id} could not be found to delete`,
+                    message: `The note ${id} could not be found to delete`,
                 },
                 { status: 404 },
             );
@@ -28,19 +28,19 @@ export async function DELETE(req) {
         if (note.createdBy.toString() !== user._id.toString()) {
             return NextResponse.json(
                 {
-                    message: `User ${user._id} is not authorized to delete note ${_id}. Only the creator ${note.createdBy} is permitted`,
+                    message: `User ${user._id} is not authorized to delete note ${id}. Only the creator ${note.createdBy} is permitted`,
                 },
                 { status: 403 },
             );
         }
 
-        const deletion = await Note.deleteOne({ _id });
+        const deletion = await Note.deleteOne({ _id: id });
         console.log(deletion);
         if (deletion.deletedCount === 0) {
-            console.error(`Unable to delete note ${_id}\nError: ${error}`);
+            console.error(`Unable to delete note ${id}`);
             return NextResponse.json(
                 {
-                    message: `Unable to delete note ${_id}`,
+                    message: `Unable to delete note ${id}`,
                 },
                 { status: 500 },
             );

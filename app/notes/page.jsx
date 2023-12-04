@@ -1,12 +1,11 @@
-import { NoteDisplay } from "@components/server";
-import { NoteInput, InputPopup } from "@components/client";
-import styles from "@/app/page.module.css";
-import { serialize, serializeOne } from "@/lib/db";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
-import { cookies } from "next/headers";
-// import { Source, Note, User } from "@mneme_app/database-models";
-import { Note, User } from "@/app/api/models";
+import { serialize, serializeOne } from "@/lib/db";
+import { NoteInput, InputPopup } from "@client";
+import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { NoteDisplay } from "@server";
+import { Note, User } from "@models";
 import Link from "next/link";
 
 export default async function NotesPage({ searchParams }) {

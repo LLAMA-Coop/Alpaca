@@ -1,8 +1,8 @@
 "use client";
 
-import { ListItem, Select } from "@/app/components/client";
+import { ListItem, Select } from "@client";
 
-export default function ListAdd({
+export function ListAdd({
     item,
     listChoices,
     listChosen,
@@ -36,11 +36,20 @@ export default function ListAdd({
             {listChosen.length > 0 &&
                 listChosen.map((choice) => {
                     if (!choice) return;
+
+                    let prop;
+                    if (Array.isArray(listProperty)) {
+                        prop = listProperty.find((p) => choice[p]);
+                        if (!prop) prop = "_id";
+                    } else {
+                        prop = listProperty;
+                    }
+
                     return (
                         <ListItem
                             key={choice._id}
                             link={choice.url ? choice.url : undefined}
-                            item={choice[listProperty]}
+                            item={choice[prop]}
                             action={() => {
                                 listSetter(
                                     listChosen.filter(

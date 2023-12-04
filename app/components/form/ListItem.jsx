@@ -3,7 +3,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useRef, useEffect } from "react";
 import styles from "./ListItem.module.css";
-import Link from "next/link";
 import {
     faAdd,
     faSubtract,

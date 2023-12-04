@@ -1,7 +1,11 @@
-import { ListItem, Card } from "@components/client";
 import styles from "./SourceDisplay.module.css";
+import { ListItem, Card } from "@client";
+import { Source, User } from "@models";
 
-export function SourceDisplay({ source }) {
+export async function SourceDisplay({ source }) {
+    const user = await User.findById(source.createdBy);
+    const dbSource = await Source.findById(source._id).populate("courses");
+
     return (
         <Card
             title={source.title}
@@ -46,6 +50,23 @@ export function SourceDisplay({ source }) {
                     <p>No tags for source</p>
                 )}
             </div>
+
+            <div className={styles.tags}>
+                <h5>This note belongs to the following courses</h5>
+                {dbSource.courses && dbSource.courses.length > 0 ? (
+                    <ul>
+                        {dbSource.courses.map((course) => {
+                            return (
+                                <ListItem key={course._id} item={course.name} />
+                            );
+                        })}
+                    </ul>
+                ) : (
+                    <p>No Courses Listed</p>
+                )}
+            </div>
+
+            <p>Added by: {user?.username ?? "Unknown"}</p>
         </Card>
     );
 }

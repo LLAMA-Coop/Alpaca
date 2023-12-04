@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import styles from "./QuizInput.module.css";
-import { Input } from "../client";
+import { Input } from "@client";
 import MAX from "@/lib/max";
 
-export default function BlankableInput({
+export function BlankableInput({
     prompt,
     setPrompt,
     promptError,
@@ -182,6 +182,7 @@ export default function BlankableInput({
                         return (
                             <span key={index} data-word={x.word}>
                                 <input
+                                    autoCapitalize="none"
                                     type="checkbox"
                                     id={`${index}_${x.word}`}
                                     checked={x.isBlank}

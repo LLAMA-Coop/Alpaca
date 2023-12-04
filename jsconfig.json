@@ -21,7 +21,9 @@
         "paths": {
             "@/*": ["./*"],
             "@components/*": ["./app/components/*"],
-            "@models/*": ["./app/api/models/*"]
+            "@server": ["./app/components/server.js"],
+            "@client": ["./app/components/client.js"],
+            "@models": ["./app/api/models/index.js"]
         }
     },
     "exclude": ["node_modules"]

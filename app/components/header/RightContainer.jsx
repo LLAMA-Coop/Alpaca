@@ -2,8 +2,8 @@
 
 import styles from "./RightContainer.module.css";
 import { usePathname } from "next/navigation";
-import { Profile } from "@components/client";
 import { useState, useEffect } from "react";
+import { Profile } from "@client";
 import { links } from "@/lib/nav";
 import Link from "next/link";
 
@@ -46,7 +46,7 @@ export function RightContainer({ user }) {
                             viewBox="0 0 24 24"
                             width="24"
                             height="24"
-                            stroke-width="2"
+                            strokeWidth="2"
                             stroke="currentColor"
                             strokeLinecap="round"
                             strokeLinejoin="round"

@@ -1,14 +1,21 @@
 "use client";
 
-import { useStore } from "@/store/store";
-import { Alert, Input, Label, ListItem, Spinner } from "@components/client";
+import { useStore, useModals, useAlerts } from "@/store/store";
+import { buildPermissions } from "@/lib/permissions";
 import { useState, useEffect } from "react";
-import PermissionsInput from "../form/PermissionsInput";
-import { DeletePopup } from "../delete-popup/DeletePopup";
 import { serializeOne } from "@/lib/db";
 import htmlDate from "@/lib/htmlDate";
 import MAX from "@/lib/max";
-import { buildPermissions } from "@/lib/permissions";
+import {
+    Input,
+    Label,
+    ListItem,
+    Spinner,
+    DeletePopup,
+    PermissionsInput,
+    ListAdd,
+    UserInput,
+} from "@client";
 
 export function SourceInput({ source }) {
     const [title, setTitle] = useState("");
@@ -29,12 +36,11 @@ export function SourceInput({ source }) {
     const [authors, setAuthors] = useState([]);
     const [newAuthor, setNewAuthor] = useState("");
 
+    const [courses, setCourses] = useState([]);
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
     const [permissions, setPermissions] = useState({});
 
     const urlRegex = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i;
@@ -42,7 +48,12 @@ export function SourceInput({ source }) {
     const publishRegex = /^\d{4}-\d{2}-\d{2}$/;
 
     const user = useStore((state) => state.user);
+    const availableCourses = useStore((state) => state.courseStore);
     const canDelete = source && source.createdBy === user._id;
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         if (!source) {
@@ -50,15 +61,21 @@ export function SourceInput({ source }) {
             return;
         }
 
-        console.log(source, user);
-
-        setTitle(source.title);
-        if (source.authors.length > 0) setAuthors([...source.authors]);
-        if (source.tags?.length > 0) setTags([...source.tags]);
+        if (source.title) setTitle(source.title);
+        if (source.authors && source.authors.length > 0)
+            setAuthors([...source.authors]);
+        if (source.tags && source.tags.length > 0) setTags([...source.tags]);
         if (source.medium) setMedium(source.medium);
         if (source.url) setUrl(source.url);
         if (source.publishedAt) setPublishDate(htmlDate(source.publishedAt));
         if (source.lastAccessed) setLastAccessed(htmlDate(source.lastAccessed));
+        if (source.courses && source.courses.length > 0) {
+            setCourses(
+                source.courses.map((courseId) =>
+                    availableCourses.find((x) => x._id === courseId),
+                ),
+            );
+        }
         if (source.permissions)
             setPermissions(serializeOne(source.permissions));
     }, []);
@@ -122,10 +139,11 @@ export function SourceInput({ source }) {
             publishDate: formatDate(publishDate),
             lastAccessed: formatDate(lastAccessed),
             authors,
+            courses: courses.map((course) => course._id),
             tags,
         };
         sourcePayload.permissions = buildPermissions(permissions);
-        if (source) {
+        if (source && source._id) {
             sourcePayload._id = source._id;
         }
 
@@ -134,7 +152,7 @@ export function SourceInput({ source }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/source`,
             {
-                method: source ? "PUT" : "POST",
+                method: source && source._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -145,12 +163,12 @@ export function SourceInput({ source }) {
         setLoading(false);
 
         if (response.status === 200) {
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Source updated successfully",
             });
         } else if (response.status === 201) {
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: "Source added successfully",
             });
@@ -166,14 +184,21 @@ export function SourceInput({ source }) {
             setUrlError("");
             setLastAccessedError("");
             setPublishDateError("");
+        } else if (response.status === 401) {
+            addAlert({
+                success: false,
+                message: "You have been signed out. Please sign in again.",
+            });
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: "Failed to add source",
             });
         }
-
-        setShowAlert(true);
     }
 
     const mediumChoices = [
@@ -186,13 +211,6 @@ export function SourceInput({ source }) {
 
     return (
         <div className="formGrid">
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             <Input
                 label={"Title"}
                 value={title}
@@ -293,6 +311,18 @@ export function SourceInput({ source }) {
                         ))}
                     </ul>
                 </div>
+            </div>
+
+            <div>
+                <Label required={false} label="Courses" />
+
+                <ListAdd
+                    item="Add a course"
+                    listChoices={availableCourses}
+                    listChosen={courses}
+                    listProperty={"name"}
+                    listSetter={setCourses}
+                />
             </div>
 
             <div>

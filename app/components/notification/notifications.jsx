@@ -1,19 +1,20 @@
 "use client";
-import { useStore } from "@/store/store";
-import Notification from "./notification";
-import { Alert } from "../client";
+
+import { useStore, useModals, useAlerts } from "@/store/store";
+import { Notification, UserInput } from "@client";
 import { useState } from "react";
 
-export default function Notifications() {
+export function Notifications() {
     const [showAlert, setShowAlert] = useState(false);
     const [requestStatus, setRequestStatus] = useState({});
 
     const notifications = useStore((state) => state.notifications);
     const removeNotification = useStore((state) => state.removeNotification);
-    console.log(notifications);
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     async function handleAction(action, notification) {
-        console.log(action, notification);
         if (action === "ignore") {
             removeNotification(notification);
             return;
@@ -42,30 +43,30 @@ export default function Notifications() {
         );
 
         if (response.status === 200) {
-            setRequestStatus({
+            addAlert({
                 success: true,
                 message: `You succeeded in the task "${action}"`,
             });
-            setShowAlert(true);
             removeNotification(notification);
+        } else if (response.status === 401) {
+            addAlert({
+                success: false,
+                message: "You have been signed out. Please sign in again.",
+            });
+            addModal({
+                title: "Sign back in",
+                content: <UserInput onSubmit={removeModal} />,
+            });
         } else {
-            setRequestStatus({
+            addAlert({
                 success: false,
                 message: `Could not complete task "${action}"`,
             });
-            setShowAlert(true);
         }
     }
 
     return (
         <div>
-            <Alert
-                timeAlive={5000}
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
             {notifications.length > 0 && (
                 <ol>
                     {notifications.map((n) => {

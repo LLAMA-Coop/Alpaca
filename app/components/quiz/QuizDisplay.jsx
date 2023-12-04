@@ -1,7 +1,7 @@
 "use client";
 
-import { ResponseCard, ListAnswer } from "@/app/components/client";
-import { Blankable } from "./Blankable";
+import { ResponseCard, ListAnswer, Blankable } from "@client";
+import { Verbatim } from "./Verbatim";
 import { memo } from "react";
 
 const sampleQuiz = {
@@ -14,6 +14,7 @@ export function QuizDisplay({
     canClientCheck,
     quiz,
     handleWhenCorrect = () => {},
+    isFlashcard = false,
 }) {
     if (!quiz) {
         quiz = sampleQuiz;
@@ -25,6 +26,7 @@ export function QuizDisplay({
                 canClientCheck={canClientCheck}
                 quiz={quiz}
                 handleWhenCorrect={handleWhenCorrect}
+                isFlashcard={isFlashcard}
             />
         );
     }
@@ -43,6 +45,7 @@ export function QuizDisplay({
                     quiz.type === "ordered-list-answer"
                 }
                 handleWhenCorrect={handleWhenCorrect}
+                isFlashcard={isFlashcard}
             />
         );
     }
@@ -53,6 +56,18 @@ export function QuizDisplay({
                 quiz={quiz}
                 canClientCheck={canClientCheck}
                 handleWhenCorrect={handleWhenCorrect}
+                isFlashcard={isFlashcard}
+            />
+        );
+    }
+
+    if (quiz.type === "verbatim") {
+        return (
+            <Verbatim
+                quiz={quiz}
+                canClientCheck={canClientCheck}
+                handleWhenCorrect={handleWhenCorrect}
+                isFlashcard={isFlashcard}
             />
         );
     }

@@ -1,10 +1,10 @@
-import styles from "@/app/page.module.css";
-import DailyTrain from "../components/train/dailyTrain";
 import { useUser, queryReadableResources } from "@/lib/auth";
-import { cookies } from "next/headers";
-import { Quiz, User } from "../api/models";
-import { serialize } from "@/lib/db";
 import shuffleArray from "@/lib/shuffleArray";
+import styles from "@/app/page.module.css";
+import { cookies } from "next/headers";
+import { Quiz, User } from "@models";
+import { serialize } from "@/lib/db";
+import { DailyTrain } from "@client";
 
 export default async function DailyPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });

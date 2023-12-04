@@ -1,13 +1,19 @@
 "use client";
 
-import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import { useModals, useAlerts } from "@/store/store";
 import correctConfetti from "@/lib/correctConfetti";
+import { Card, Input, UserInput } from "@client";
 import { useEffect, useState } from "react";
-import { Card, Alert } from "../client";
-import { Input } from "../client";
+import styles from "./Blankable.module.css";
 
-export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
+export function Blankable({
+    canClientCheck,
+    quiz,
+    handleWhenCorrect,
+    isFlashcard,
+}) {
     const [userResponse, setUserResponse] = useState(
         [...Array(quiz.correctResponses.length)].map(() => ""),
     );
@@ -16,8 +22,11 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
     const [failures, setFailures] = useState(0);
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
 
-    const [showAlert, setShowAlert] = useState(false);
-    const [requestStatus, setRequestStatus] = useState({});
+    const [showAnswer, setShowAnswer] = useState(false);
+
+    const addModal = useModals((state) => state.addModal);
+    const removeModal = useModals((state) => state.removeModal);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         if (responseStatus === "empty") return;
@@ -61,12 +70,14 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
             );
 
             if (response.status === 401) {
-                setRequestStatus({
+                addAlert({
                     success: false,
-                    message: "Please log in and try again",
+                    message: "You have been signed out. Please sign in again.",
                 });
-                setShowAlert(true);
-                return;
+                addModal({
+                    title: "Sign back in",
+                    content: <UserInput onSubmit={removeModal} />,
+                });
             }
 
             const resJson = await response.json();
@@ -77,122 +88,58 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
         }
     }
 
-    function inputSize(string) {
-        if (string.length < 5) return 5;
-        return string.length + 1;
+    function handleShowAnswer() {
+        if (!isFlashcard) return;
+        setShowAnswer((prev) => !prev);
     }
 
-    const renderPromptWithBlanks = () => {
-        const words = quiz.prompt.split(/\b(\w+)\b/g);
-
-        let i = 0;
-
-        return words.map((word, index) => {
-            const isBlankable = quiz.correctResponses
-                .map((answer) => answer.split("_")[1])
-                .includes(word);
-
-            if (isBlankable) {
-                const blankIndex = i;
-                i++;
-
-                return (
-                    <Input
-                        inline
-                        key={index}
-                        type={"text"}
-                        description=""
-                        choices={quiz.correctResponses.map(
-                            (ans) => ans.split("_")[1],
-                        )}
-                        value={answers[blankIndex] ?? ""}
-                        onChange={(e) =>
-                            handleInput(blankIndex, e.target.value)
-                        }
-                        outlineColor={
-                            hasAnswered &&
-                            (incorrectIndexes.includes(blankIndex)
-                                ? "var(--accent-secondary-1)"
-                                : "var(--accent-tertiary-1)")
-                        }
-                    />
-                );
-            }
-
-            return <span key={index}>{word}</span>;
-        });
-    };
+    let label, color, icon;
+    if (isFlashcard) {
+        label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
+        color = showAnswer ? "var(--accent-tertiary-1)" : undefined;
+    } else if (responseStatus === "complete") {
+        label = incorrectIndexes.length ? "Incorrect" : "Correct";
+        color = incorrectIndexes.length
+            ? "var(--accent-secondary-1)"
+            : "var(--accent-tertiary-1)";
+        icon = incorrectIndexes.length ? faXmark : faCheck;
+    } else {
+        label = "Check Answer";
+    }
 
     return (
         <Card
             title={"Fill in the blanks"}
             buttons={[
                 {
-                    label:
-                        responseStatus === "complete"
-                            ? responseCorrect
-                                ? "Correct"
-                                : "Incorrect"
-                            : "Check Answer",
-                    icon:
-                        responseStatus === "complete"
-                            ? responseCorrect
-                                ? faCheck
-                                : faXmark
-                            : undefined,
-                    color:
-                        responseStatus === "complete"
-                            ? responseCorrect
-                                ? "green"
-                                : "red"
-                            : undefined,
-                    label:
-                        responseStatus === "complete"
-                            ? incorrectIndexes.length
-                                ? "Incorrect"
-                                : "Correct"
-                            : "Check Answer",
-                    icon:
-                        responseStatus === "complete"
-                            ? incorrectIndexes.length
-                                ? faXmark
-                                : faCheck
-                            : undefined,
-                    color:
-                        responseStatus === "complete"
-                            ? incorrectIndexes.length
-                                ? "var(--accent-secondary-1)"
-                                : "var(--accent-tertiary-1)"
-                            : undefined,
-                    onClick: handleCheckAnswer,
+                    label,
+                    icon,
+                    color,
+                    onClick: isFlashcard ? handleShowAnswer : handleCheckAnswer,
                 },
             ]}
-            border={
-                responseStatus === "complete" &&
-                (incorrectIndexes.length
-                    ? "var(--accent-tertiary-1)"
-                    : "var(--accent-secondary-1)")
-            }
         >
-            <Alert
-                show={showAlert}
-                setShow={setShowAlert}
-                success={requestStatus.success}
-                message={requestStatus.message}
-            />
-
             {texts.map((text, index) => {
+                let isCorrect;
+                if (incorrectIndexes.includes(index)) {
+                    isCorrect = false;
+                } else if (responseStatus === "complete") {
+                    isCorrect = true;
+                }
+
                 return (
                     <span key={index}>
                         {text}
                         {index < texts.length - 1 && (
                             <Input
+                                id={`blank-${index}`}
                                 inline
-                                size={inputSize(String(userResponse[index]))}
-                                choices={quiz.correctResponses.map(
-                                    (ans) => ans.split("_")[1],
-                                )}
-                                value={userResponse[index]}
+                                isCorrect={isCorrect}
+                                value={
+                                    isFlashcard && showAnswer
+                                        ? quiz.correctResponses[index]
+                                        : userResponse[index]
+                                }
                                 onChange={(e) => {
                                     handleChange(index, e.target.value);
                                 }}
@@ -210,12 +157,14 @@ export function Blankable({ canClientCheck, quiz, handleWhenCorrect }) {
 
             {!responseCorrect &&
                 responseStatus === "complete" &&
+                quiz.hints &&
+                quiz.hints.length > 0 &&
                 failures > 2 && (
                     <div data-type="hints">
                         <p>You're having some trouble. Here are some hints:</p>
                         <ul>
-                            {quiz.correctResponses.map((ans, index) => {
-                                return <li key={index}>{ans}</li>;
+                            {quiz.hints.map((hint, index) => {
+                                return <li key={`hint_${index}`}>{hint}</li>;
                             })}
                         </ul>
                     </div>
