@@ -9,8 +9,6 @@ export async function CourseDisplay({ course }) {
         .populate("parentCourses")
         .populate("prerequisites.course");
 
-    console.log(dbCourse)
-
     return (
         <Card title={`${dbCourse.name}`} description={`${dbCourse.description}`}>
             <div className={styles.tags}>

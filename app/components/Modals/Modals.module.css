@@ -16,6 +16,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-y: scroll;
 }
 
 .modal {
@@ -32,7 +33,7 @@
     animation:
         fadeIn 0.25s ease-in-out,
         popIn 0.25s ease-in-out;
-    overflow: hidden scroll;
+    overflow-y: scroll;
 }
 
 .modal::-webkit-scrollbar {
