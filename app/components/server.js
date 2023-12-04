@@ -1,12 +1,12 @@
-export { DynamicNav } from "./Header0/DynamicNav";
-export { Header } from "./Header0/Header";
-export { Footer } from "./Footer0/Footer";
+export { DynamicNav } from "./Header/DynamicNav";
+export { Header } from "./Header/Header";
+export { Footer } from "./Footer/Footer";
 
-export { NoteDisplay } from "./Note0/NoteDisplay";
-export { SourceDisplay } from "./Source0/SourceDisplay";
+export { NoteDisplay } from "./Note/NoteDisplay";
+export { SourceDisplay } from "./Source/SourceDisplay";
 
-export { UserCard } from "./User0/UserCard";
+export { UserCard } from "./User/UserCard";
 
-export { DBConnectError } from "./Errors0/DBConnectError";
+export { DBConnectError } from "./Errors/DBConnectError";
 
-export { Notification } from "./Notification0/Notification";
+export { Notification } from "./Notification/Notification";

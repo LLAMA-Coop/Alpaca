@@ -2,7 +2,7 @@ import { Course } from "@/app/api/models";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { canRead } from "@/lib/auth";
-import { CourseDisplay } from "@/app/components/Course0/CourseDisplay";
+import { CourseDisplay } from "@/app/components/Course/CourseDisplay";
 import { useUser } from "@/lib/auth";
 
 export default async function CoursePage({ params }) {

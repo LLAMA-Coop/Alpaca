@@ -1,7 +1,7 @@
 "use client";
 
 import { useStore, useModals, useAlerts } from "@/store/store";
-import { DeletePopup } from "../DeletePopup0/DeletePopup";
+import { DeletePopup } from "../DeletePopup/DeletePopup";
 import { buildPermissions } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
 import { serializeOne } from "@/lib/db";
