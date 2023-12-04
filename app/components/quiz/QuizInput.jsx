@@ -435,9 +435,6 @@ export function QuizInput({ quiz }) {
                                 key={index}
                                 item={
                                     res
-                                    // type === "fill-in-the-blank"
-                                    //     ? res.match(/_([a-zA-Z]+)/)[1]
-                                    //     : res
                                 }
                                 actionType={"delete"}
                                 action={() =>
