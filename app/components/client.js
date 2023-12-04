@@ -41,8 +41,8 @@ export { Timer } from "./Layers/Timer";
 export { Alerts } from "./Layers/Alerts";
 export { Modals } from "./Modals/Modals";
 
-export { InviteUser } from "./Notification/InviteUser";
-export { Notifications } from "./Notification/Notifications";
+export { InviteUser } from "./Notification/inviteUser";
+export { Notifications } from "./Notification/notifications";
 
 export { FillStore } from "./Websocket/FillStore";
 

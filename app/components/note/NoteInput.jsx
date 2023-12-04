@@ -37,7 +37,7 @@ export function NoteInput({ note }) {
     const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
 
-    const canDelete = note && note.createdBy === user._id;
+    const canDelete = note && user && note.createdBy === user._id;
 
     useEffect(() => {
         if (!note) return;
