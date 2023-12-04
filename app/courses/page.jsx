@@ -1,9 +1,9 @@
-import { CourseInput } from "../components/Course/CourseInput";
+import { CourseInput } from "../components/Course0/CourseInput";
 import { canEdit, useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import styles from "@/app/page.module.css";
 import Course from "../api/models/Course";
-import { CourseDisplay } from "../components/Course/CourseDisplay";
+import { CourseDisplay } from "../components/Course0/CourseDisplay";
 import { InputPopup } from "../components/client";
 import { serializeOne } from "@/lib/db";
 

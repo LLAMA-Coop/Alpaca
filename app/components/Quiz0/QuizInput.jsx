@@ -1,7 +1,7 @@
 "use client";
 
 import { useStore, useModals, useAlerts } from "@/store/store";
-import { DeletePopup } from "../DeletePopup/DeletePopup";
+import { DeletePopup } from "../DeletePopup0/DeletePopup";
 import { buildPermissions } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
 import { serializeOne } from "@/lib/db";
@@ -433,9 +433,7 @@ export function QuizInput({ quiz }) {
                         {responses.map((res, index) => (
                             <ListItem
                                 key={index}
-                                item={
-                                    res
-                                }
+                                item={res}
                                 actionType={"delete"}
                                 action={() =>
                                     setResponses((prev) =>

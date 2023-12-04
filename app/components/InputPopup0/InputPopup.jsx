@@ -3,7 +3,7 @@
 import { SourceInput, NoteInput, QuizInput } from "@client";
 import { useEffect, useRef, useState } from "react";
 import styles from "./InputPopup.module.css";
-import { CourseInput } from "../Course/CourseInput";
+import { CourseInput } from "../Course0/CourseInput";
 
 export function InputPopup({ type, resource }) {
     const [showPopup, setShowPopup] = useState(false);
