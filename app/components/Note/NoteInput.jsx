@@ -225,7 +225,7 @@ export function NoteInput({ note }) {
                 />
             </div>
 
-            {(!note || note.createdBy === user._id) && (
+            {(!note || (user && note.createdBy === user._id)) && (
                 <PermissionsInput
                     permissions={note ? note.permissions : {}}
                     setter={setPermissions}
