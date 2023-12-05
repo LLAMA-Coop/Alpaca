@@ -4,13 +4,13 @@ import { FillStore, Timer, Alerts, Modals } from "@client";
 import { Header, Footer, DBConnectError } from "@server";
 import { serialize, serializeOne } from "@/lib/db";
 import { metadatas } from "@/lib/metadatas";
-// import { Sofia_Sans } from "next/font/google";
+import { Sofia_Sans } from "next/font/google";
 import { cookies } from "next/headers";
 import connectDB from "./api/db";
 import "./globals.css";
 
 const connection = await connectDB();
-// const sofiaSans = Sofia_Sans({ subsets: ["latin"] });
+const sofiaSans = Sofia_Sans({ subsets: ["latin"] });
 
 export const metadata = {
     metadataBase: new URL(metadatas.layout.url),
@@ -32,7 +32,7 @@ export default async function RootLayout({ children }) {
     if (connection === false) {
         return (
             <html lang="en">
-                <body>
+                <body className={sofiaSans.className}>
                     <Header />
                     <DBConnectError />
                     <Footer />
@@ -94,7 +94,7 @@ export default async function RootLayout({ children }) {
                 webSocketURL={process.env.WS_URL}
             />
 
-            <body>
+            <body className={sofiaSans.className}>
                 <Header />
                 {children}
                 <Footer />
