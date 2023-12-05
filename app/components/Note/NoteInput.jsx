@@ -151,19 +151,6 @@ export function NoteInput({ note }) {
                 maxLength={MAX.title}
             />
 
-            <Input
-                type="textarea"
-                required={true}
-                onChange={(e) => {
-                    setText(e.target.value);
-                    setTextError("");
-                }}
-                value={text}
-                error={textError}
-                label={"Text"}
-                maxLength={MAX.noteText}
-            />
-
             <div>
                 <Label
                     required={true}
@@ -178,32 +165,11 @@ export function NoteInput({ note }) {
                     listProperty={"title"}
                     listSetter={setSources}
                 />
+
+                <InputPopup type="source" />
             </div>
 
             <div>
-                <Label required={false} label="Courses" />
-
-                <ListAdd
-                    item="Add a course"
-                    listChoices={availableCourses}
-                    listChosen={courses}
-                    listProperty={"name"}
-                    listSetter={setCourses}
-                />
-            </div>
-
-            <div>
-                <Input
-                    label={"Add Tag"}
-                    value={newTag}
-                    maxLength={MAX.tag}
-                    description="A word or phrase that could be used to search for this note"
-                    autoComplete="off"
-                    onChange={(e) => setNewTag(e.target.value)}
-                    action="Add tag"
-                    onActionTrigger={handleAddTag}
-                />
-
                 <div style={{ marginTop: "24px" }}>
                     <Label label="Tags" />
 
@@ -222,9 +188,42 @@ export function NoteInput({ note }) {
                         ))}
                     </ul>
                 </div>
+                <Input
+                    label={"Add Tag"}
+                    value={newTag}
+                    maxLength={MAX.tag}
+                    description="A word or phrase that could be used to search for this note"
+                    autoComplete="off"
+                    onChange={(e) => setNewTag(e.target.value)}
+                    action="Add tag"
+                    onActionTrigger={handleAddTag}
+                />
             </div>
 
-            <InputPopup type="source" />
+            <Input
+                type="textarea"
+                required={true}
+                onChange={(e) => {
+                    setText(e.target.value);
+                    setTextError("");
+                }}
+                value={text}
+                error={textError}
+                label={"Text"}
+                maxLength={MAX.noteText}
+            />
+
+            <div>
+                <Label required={false} label="Courses" />
+
+                <ListAdd
+                    item="Add to course"
+                    listChoices={availableCourses}
+                    listChosen={courses}
+                    listProperty={"name"}
+                    listSetter={setCourses}
+                />
+            </div>
 
             {(!note || note.createdBy === user._id) && (
                 <PermissionsInput
