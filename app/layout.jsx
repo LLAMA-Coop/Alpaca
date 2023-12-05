@@ -94,7 +94,7 @@ export default async function RootLayout({ children }) {
                 webSocketURL={process.env.WS_URL}
             />
 
-            <body className={sofiaSans.className}>
+            <body>
                 <Header />
                 {children}
                 <Footer />
