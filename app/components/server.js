@@ -9,4 +9,4 @@ export { UserCard } from "./User/UserCard";
 
 export { DBConnectError } from "./Errors/DBConnectError";
 
-export { Notification } from "./Notification/Notification";
+export { Notification } from "./Notification/notification";
