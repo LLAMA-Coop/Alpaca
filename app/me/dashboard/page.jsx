@@ -1,4 +1,5 @@
-import { InviteUser, Notifications, CourseDisplay } from "@client";
+import { InviteUser, Notifications } from "@client";
+import { CourseDisplay } from "@/app/components/Course/CourseDisplay";
 import { Source, Note, Quiz, Course } from "@models";
 import { redirect } from "next/navigation";
 import styles from "@/app/page.module.css";
