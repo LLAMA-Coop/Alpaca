@@ -43,6 +43,7 @@ export { Modals } from "./Modals/Modals";
 
 export { InviteUser } from "./Notification/inviteUser";
 export { Notifications } from "./Notification/notifications";
+export { Notification } from "./Notification/notification";
 
 export { FillStore } from "./Websocket/FillStore";
 

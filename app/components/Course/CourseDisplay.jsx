@@ -1,7 +1,7 @@
 import Course from "@/app/api/models/Course";
 import { User } from "@/app/api/models";
 import { Card, ListItem } from "../client";
-import styles from "../note/NoteDisplay.module.css";
+import styles from "../Note/NoteDisplay.module.css";
 
 export async function CourseDisplay({ course }) {
     const user = await User.findById(course.createdBy);
