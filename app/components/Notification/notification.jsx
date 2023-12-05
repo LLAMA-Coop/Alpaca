@@ -1,4 +1,4 @@
-import styles from "./Notification.module.css";
+import styles from "./notification.module.css";
 import { Card } from "@client";
 
 export function Notification({ notification, handleAction }) {
