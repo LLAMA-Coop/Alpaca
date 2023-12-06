@@ -1,4 +1,5 @@
-import { QuizDisplay, NoteDisplay, SourceDisplay, UserCard } from "@server";
+import { NoteDisplay, SourceDisplay, UserCard } from "@server";
+import { QuizDisplay } from "@client";
 import { Source, Note, Quiz, Group } from "@models";
 import { serialize, serializeOne } from "@/lib/db";
 import styles from "@/app/page.module.css";
