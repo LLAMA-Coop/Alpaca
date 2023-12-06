@@ -213,18 +213,6 @@ export function NoteInput({ note }) {
                 />
             </div>
 
-            <div className={styles.courses}>
-                <Label required={false} label="Courses" />
-
-                <ListAdd
-                    item="Add to a course"
-                    listChoices={availableCourses}
-                    listChosen={courses}
-                    listProperty={"name"}
-                    listSetter={setCourses}
-                />
-            </div>
-
             <Input
                 type="textarea"
                 required={true}
@@ -238,18 +226,32 @@ export function NoteInput({ note }) {
                 maxLength={MAX.noteText}
             />
 
-            <PermissionsDisplay
-                permissions={permissions}
-                setter={setPermissions}
-            />
+            <div className={styles.courses}>
+                <Label required={false} label="Courses" />
 
-            {(!note || (user && note.createdBy === user._id)) && (
-                <PermissionsInput
-                    permissions={note ? note.permissions : {}}
-                    setter={setPermissions}
-                    disable={!note || (user && note.createdBy === user._id)}
+                <ListAdd
+                    item="Add to a course"
+                    listChoices={availableCourses}
+                    listChosen={courses}
+                    listProperty={"name"}
+                    listSetter={setCourses}
                 />
-            )}
+            </div>
+
+            <div className={styles.permissions}>
+                <PermissionsDisplay
+                    permissions={permissions}
+                    setter={setPermissions}
+                />
+
+                {(!note || (user && note.createdBy === user._id)) && (
+                    <PermissionsInput
+                        permissions={note ? note.permissions : {}}
+                        setter={setPermissions}
+                        disable={!note || (user && note.createdBy === user._id)}
+                    />
+                )}
+            </div>
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Note"}

@@ -5,8 +5,8 @@
 }
 
 .form > div:first-child,
-.form > div:nth-child(5),
-.form > :nth-child(6) {
+.form > div:nth-child(4),
+.form > :nth-child(7) {
     flex-basis: 100%;
 }
 
@@ -14,23 +14,23 @@
     flex-basis: 50%;
 }
 
-.tags {
-    flex-basis: calc(33% - 5px);
+.tags, .permissions {
+    flex-basis: calc(50% - 5px);
     background-color: var(--background-secondary);
     padding: 10px;
     border-radius: 4px;
     margin: 5px 0;
-    max-width: 33%;
+    max-width: 50%;
 }
 
 .sources,
 .courses {
-    flex-basis: calc(33% - 5px);
+    flex-basis: calc(50% - 5px);
     background-color: var(--background-tertiary);
     padding: 10px;
     border-radius: 4px;
     margin: 5px 0;
-    max-width: 33%;
+    max-width: 50%;
 }
 
 .sourceLink {
@@ -48,13 +48,4 @@
 
 .sourceLink:hover {
     background-color: var(--background-primary);
-}
-
-@media screen and (max-width: 767px) {
-    .tags {
-        grid-column: 1 / 2;
-    }
-    .sources {
-        grid-column: 1 / 2;
-    }
 }
