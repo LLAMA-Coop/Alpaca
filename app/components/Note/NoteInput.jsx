@@ -45,16 +45,31 @@ export function NoteInput({ note }) {
         if (note.text) setText(note.text);
         if (note.sources && note.sources.length > 0) {
             setSources(
-                note.sources.map((srcId) =>
-                    availableSources.find((x) => x._id === srcId),
-                ),
+                note.sources.map((srcId, index) => {
+                    const source = availableSources.find(
+                        (x) => x._id === srcId,
+                    );
+                    if (!source)
+                        return {
+                            id: index,
+                            title: "unavailable",
+                        };
+                    return source;
+                }),
             );
         }
         if (note.courses && note.courses.length > 0) {
             setCourses(
-                note.courses.map((courseId) =>
-                    availableCourses.find((x) => x._id === courseId),
-                ),
+                note.courses.map((courseId, index) => {
+                    const course = availableCourses.find(
+                        (x) => x._id === courseId,
+                    );
+                    if (!course)
+                        return {
+                            id: index,
+                            name: "unavailable",
+                        };
+                }),
             );
         }
         if (note.tags && note.tags.length > 0) setTags([...note.tags]);
@@ -152,11 +167,7 @@ export function NoteInput({ note }) {
             />
 
             <div>
-                <Label
-                    required={true}
-                    error={sourceError}
-                    label="Current Sources"
-                />
+                <Label required={true} error={sourceError} label="Sources" />
 
                 <ListAdd
                     item="Add a source"
