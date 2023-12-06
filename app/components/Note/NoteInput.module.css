@@ -1,0 +1,60 @@
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.form > div:first-child,
+.form > div:nth-child(5),
+.form > :nth-child(6) {
+    flex-basis: 100%;
+}
+
+.form > button {
+    flex-basis: 50%;
+}
+
+.tags {
+    flex-basis: calc(33% - 5px);
+    background-color: var(--background-secondary);
+    padding: 10px;
+    border-radius: 4px;
+    margin: 5px 0;
+    max-width: 33%;
+}
+
+.sources,
+.courses {
+    flex-basis: calc(33% - 5px);
+    background-color: var(--background-tertiary);
+    padding: 10px;
+    border-radius: 4px;
+    margin: 5px 0;
+    max-width: 33%;
+}
+
+.sourceLink {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 4px;
+    padding: 4px 8px;
+    height: 48px;
+    margin-top: 6px;
+    color: var(--foreground-primary);
+    background-color: var(--background-secondary);
+    text-transform: capitalize;
+}
+
+.sourceLink:hover {
+    background-color: var(--background-primary);
+}
+
+@media screen and (max-width: 767px) {
+    .tags {
+        grid-column: 1 / 2;
+    }
+    .sources {
+        grid-column: 1 / 2;
+    }
+}

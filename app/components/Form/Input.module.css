@@ -227,3 +227,7 @@
 .inputContainer .correct {
     border: 1px solid green;
 }
+
+.container textarea {
+    height: 200px;
+}

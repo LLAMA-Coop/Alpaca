@@ -296,6 +296,10 @@ input[type="date"] {
     flex-wrap: wrap;
 }
 
+.chipList > li {
+    max-width: 100%;
+}
+
 .buttonContainer {
     display: flex;
     gap: 16px;

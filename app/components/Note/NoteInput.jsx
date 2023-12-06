@@ -4,6 +4,7 @@ import { useStore, useModals, useAlerts } from "@/store/store";
 import { useEffect, useState } from "react";
 import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
+import styles from "./NoteInput.module.css";
 import {
     Label,
     Input,
@@ -156,7 +157,7 @@ export function NoteInput({ note }) {
     }
 
     return (
-        <div className="formGrid">
+        <div className={styles.form}>
             <Input
                 onChange={(e) => {
                     setTitle(e.target.value);
@@ -166,7 +167,7 @@ export function NoteInput({ note }) {
                 maxLength={MAX.title}
             />
 
-            <div>
+            <div className={styles.sources}>
                 <Label required={true} error={sourceError} label="Sources" />
 
                 <ListAdd
@@ -180,8 +181,8 @@ export function NoteInput({ note }) {
                 <InputPopup type="source" />
             </div>
 
-            <div>
-                <div style={{ marginTop: "24px" }}>
+            <div className={styles.tags}>
+                <div>
                     <Label label="Tags" />
 
                     <ul className="chipList">
@@ -211,6 +212,18 @@ export function NoteInput({ note }) {
                 />
             </div>
 
+<div className={styles.courses}>
+    <Label required={false} label="Courses" />
+
+    <ListAdd
+        item="Add to a course"
+        listChoices={availableCourses}
+        listChosen={courses}
+        listProperty={"name"}
+        listSetter={setCourses}
+    />
+</div>
+
             <Input
                 type="textarea"
                 required={true}
@@ -224,24 +237,11 @@ export function NoteInput({ note }) {
                 maxLength={MAX.noteText}
             />
 
-            <div>
-                <Label required={false} label="Courses" />
-
-                <ListAdd
-                    item="Add to course"
-                    listChoices={availableCourses}
-                    listChosen={courses}
-                    listProperty={"name"}
-                    listSetter={setCourses}
-                />
-            </div>
-
-            {(!note || (user && note.createdBy === user._id)) && (
-                <PermissionsInput
+            <PermissionsInput
                     permissions={note ? note.permissions : {}}
                     setter={setPermissions}
+                    disable={(!note || (user && note.createdBy === user._id))}
                 />
-            )}
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Note"}
