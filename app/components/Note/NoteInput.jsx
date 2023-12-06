@@ -16,6 +16,7 @@ import {
     ListAdd,
     UserInput,
 } from "@client";
+import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 
 export function NoteInput({ note }) {
     const [title, setTitle] = useState("");
@@ -102,8 +103,8 @@ export function NoteInput({ note }) {
         const notePayload = {
             title,
             text,
-            sources: sources.map((src) => src._id),
-            courses: courses.map((course) => course._id),
+            sources: sources.filter((s) => s).map((src) => src._id),
+            courses: courses.filter((c) => c).map((course) => course._id),
             tags,
         };
         notePayload.permissions = permissions;
@@ -212,17 +213,17 @@ export function NoteInput({ note }) {
                 />
             </div>
 
-<div className={styles.courses}>
-    <Label required={false} label="Courses" />
+            <div className={styles.courses}>
+                <Label required={false} label="Courses" />
 
-    <ListAdd
-        item="Add to a course"
-        listChoices={availableCourses}
-        listChosen={courses}
-        listProperty={"name"}
-        listSetter={setCourses}
-    />
-</div>
+                <ListAdd
+                    item="Add to a course"
+                    listChoices={availableCourses}
+                    listChosen={courses}
+                    listProperty={"name"}
+                    listSetter={setCourses}
+                />
+            </div>
 
             <Input
                 type="textarea"
@@ -237,11 +238,18 @@ export function NoteInput({ note }) {
                 maxLength={MAX.noteText}
             />
 
-            <PermissionsInput
+            <PermissionsDisplay
+                permissions={permissions}
+                setter={setPermissions}
+            />
+
+            {(!note || (user && note.createdBy === user._id)) && (
+                <PermissionsInput
                     permissions={note ? note.permissions : {}}
                     setter={setPermissions}
-                    disable={(!note || (user && note.createdBy === user._id))}
+                    disable={!note || (user && note.createdBy === user._id)}
                 />
+            )}
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Note"}
