@@ -2,11 +2,10 @@
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import { correctConfetti } from "@/lib/correctConfetti";
 import { useModals, useAlerts } from "@/store/store";
-import correctConfetti from "@/lib/correctConfetti";
 import { Card, Input, UserInput } from "@client";
 import { useEffect, useState } from "react";
-import styles from "./Blankable.module.css";
 
 export function Blankable({
     canClientCheck,

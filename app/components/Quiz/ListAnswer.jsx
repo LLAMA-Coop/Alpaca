@@ -2,8 +2,8 @@
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import { correctConfetti } from "@/lib/correctConfetti";
 import { useModals, useAlerts } from "@/store/store";
-import correctConfetti from "@/lib/correctConfetti";
 import { Card, Input, UserInput } from "@client";
 import { useEffect, useState } from "react";
 
@@ -111,6 +111,7 @@ export function ListAnswer({
 
     return (
         <Card
+            title={quiz.prompt}
             buttons={[
                 {
                     label,
@@ -120,8 +121,7 @@ export function ListAnswer({
                 },
             ]}
         >
-            <h4 id="prompt">{quiz.prompt}</h4>
-            <ul>
+            <ul className="flexColumn">
                 {userResponse.map((ans, index) => {
                     let isCorrect = "";
                     if (incorrectIndexes.includes(index)) {
@@ -169,6 +169,7 @@ export function ListAnswer({
             {responseCorrect && responseStatus === "complete" && (
                 <div>Correct!</div>
             )}
+
             {!responseCorrect &&
                 responseStatus === "complete" &&
                 quiz.hints &&

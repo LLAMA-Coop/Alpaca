@@ -7,12 +7,12 @@
 .container.inline {
     display: inline-flex;
     width: fit-content;
-    margin: 0 5px;
+    margin: 0 5px 5px;
 }
 
-.container.inline:first-child {
+/* .container.inline:first-child {
     margin-left: 0;
-}
+} */
 
 .inlineContainer {
     display: flex;
@@ -42,7 +42,7 @@
 .inputContainer > .select {
     width: 100%;
     height: 40px;
-    border: none;
+    border: 1px solid transparent;
     border-radius: 4px;
     padding: 10px;
     font-size: 16px;
@@ -50,6 +50,13 @@
     color: var(--foreground-primary);
     outline-color: var(--accent-primary-outline);
     transition: outline 0.1s ease-in-out;
+}
+
+.inputContainer > input:focus-visible,
+.inputContainer > select:focus-visible,
+.inputContainer > textarea:focus-visible,
+.inputContainer > .select:focus-visible {
+    border: 1px solid transparent !important;
 }
 
 .select {
@@ -65,10 +72,9 @@
 .inline .inputContainer > textarea {
     padding: 0 5px;
     height: 24px;
-    outline-width: 3px;
-    font-family: 'Courier New', monospace;
-    font-size: 1.2rem;
-    font-weight: bolder;
+    /* font-family: "Courier New", monospace; */
+    /* font-size: 1.2rem; */
+    /* font-weight: bolder; */
 }
 
 .inputContainer > textarea {
