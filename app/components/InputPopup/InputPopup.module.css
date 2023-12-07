@@ -27,7 +27,6 @@
     position: relative;
     background-color: var(--background-tertiary);
     animation: popIn 0.225s ease-in-out;
-    /* overflow-x: hidden; */
     overflow-y: scroll;
 }
 
@@ -62,10 +61,10 @@
     color: var(--foreground-primary);
 }
 
-.popup > div > div,
+/* .popup > div > div,
 .popup > div > form {
     grid-template-columns: 1fr;
-}
+} */
 
 @keyframes popIn {
     from {

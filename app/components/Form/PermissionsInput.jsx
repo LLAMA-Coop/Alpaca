@@ -90,10 +90,7 @@ export function PermissionsInput({ permissions, setter }) {
                 type="checkbox"
                 label="Allow All Users to Edit?"
                 value={allWrite}
-                onChange={() => {
-                    if (!allWrite) setAllRead(true);
-                    setAllWrite((prev) => !prev);
-                }}
+                onChange={() => setAllWrite(!allWrite)}
             />
 
             <Input

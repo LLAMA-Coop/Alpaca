@@ -4,6 +4,7 @@ import { useStore, useModals, useAlerts } from "@/store/store";
 import { useEffect, useState } from "react";
 import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
+import styles from "./NoteInput.module.css";
 import {
     Label,
     Input,
@@ -15,6 +16,7 @@ import {
     ListAdd,
     UserInput,
 } from "@client";
+import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 
 export function NoteInput({ note }) {
     const [title, setTitle] = useState("");
@@ -45,16 +47,31 @@ export function NoteInput({ note }) {
         if (note.text) setText(note.text);
         if (note.sources && note.sources.length > 0) {
             setSources(
-                note.sources.map((srcId) =>
-                    availableSources.find((x) => x._id === srcId),
-                ),
+                note.sources.map((srcId, index) => {
+                    const source = availableSources.find(
+                        (x) => x._id === srcId,
+                    );
+                    if (!source)
+                        return {
+                            id: index,
+                            title: "unavailable",
+                        };
+                    return source;
+                }),
             );
         }
         if (note.courses && note.courses.length > 0) {
             setCourses(
-                note.courses.map((courseId) =>
-                    availableCourses.find((x) => x._id === courseId),
-                ),
+                note.courses.map((courseId, index) => {
+                    const course = availableCourses.find(
+                        (x) => x._id === courseId,
+                    );
+                    if (!course)
+                        return {
+                            id: index,
+                            name: "unavailable",
+                        };
+                }),
             );
         }
         if (note.tags && note.tags.length > 0) setTags([...note.tags]);
@@ -86,8 +103,8 @@ export function NoteInput({ note }) {
         const notePayload = {
             title,
             text,
-            sources: sources.map((src) => src._id),
-            courses: courses.map((course) => course._id),
+            sources: sources.filter((s) => s).map((src) => src._id),
+            courses: courses.filter((c) => c).map((course) => course._id),
             tags,
         };
         notePayload.permissions = permissions;
@@ -141,7 +158,7 @@ export function NoteInput({ note }) {
     }
 
     return (
-        <div className="formGrid">
+        <div className={styles.form}>
             <Input
                 onChange={(e) => {
                     setTitle(e.target.value);
@@ -151,12 +168,8 @@ export function NoteInput({ note }) {
                 maxLength={MAX.title}
             />
 
-            <div>
-                <Label
-                    required={true}
-                    error={sourceError}
-                    label="Current Sources"
-                />
+            <div className={styles.sources}>
+                <Label required={true} error={sourceError} label="Sources" />
 
                 <ListAdd
                     item="Add a source"
@@ -169,8 +182,8 @@ export function NoteInput({ note }) {
                 <InputPopup type="source" />
             </div>
 
-            <div>
-                <div style={{ marginTop: "24px" }}>
+            <div className={styles.tags}>
+                <div>
                     <Label label="Tags" />
 
                     <ul className="chipList">
@@ -213,11 +226,11 @@ export function NoteInput({ note }) {
                 maxLength={MAX.noteText}
             />
 
-            <div>
+            <div className={styles.courses}>
                 <Label required={false} label="Courses" />
 
                 <ListAdd
-                    item="Add to course"
+                    item="Add to a course"
                     listChoices={availableCourses}
                     listChosen={courses}
                     listProperty={"name"}
@@ -225,12 +238,20 @@ export function NoteInput({ note }) {
                 />
             </div>
 
-            {(!note || (user && note.createdBy === user._id)) && (
-                <PermissionsInput
-                    permissions={note ? note.permissions : {}}
+            <div className={styles.permissions}>
+                <PermissionsDisplay
+                    permissions={permissions}
                     setter={setPermissions}
                 />
-            )}
+
+                {(!note || (user && note.createdBy === user._id)) && (
+                    <PermissionsInput
+                        permissions={note ? note.permissions : {}}
+                        setter={setPermissions}
+                        disable={!note || (user && note.createdBy === user._id)}
+                    />
+                )}
+            </div>
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Note"}

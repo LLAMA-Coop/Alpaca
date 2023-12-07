@@ -42,7 +42,10 @@ export default async function RootLayout({ children }) {
     }
     const user = await useUser({ token: cookies().get("token")?.value });
     if (user) {
-        await user.populate("associates");
+        await user.populate({
+            path: "associates",
+            select: "username displayName",
+        });
         await user.populate("groups");
     }
 
