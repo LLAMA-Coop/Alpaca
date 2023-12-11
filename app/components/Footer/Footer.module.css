@@ -69,7 +69,8 @@
     color: var(--foreground-tertiary);
 }
 
-.socials > a:hover {
+.socials > a:hover,
+.socials > a:focus-visible {
     color: var(--foreground-primary);
     background-color: var(--background-secondary);
 }

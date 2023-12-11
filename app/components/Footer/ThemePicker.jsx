@@ -235,7 +235,7 @@ export function ThemePicker() {
                             height="16"
                             viewBox="0 0 24 24"
                             strokeWidth="1.5"
-                            stroke="var(--foreground-primary)"
+                            stroke="currentColor"
                             fill="none"
                             strokeLinecap="round"
                             strokeLinejoin="round"

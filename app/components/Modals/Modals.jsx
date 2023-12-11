@@ -2,7 +2,7 @@
 
 import { useModals } from "@/store/store";
 import styles from "./Modals.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function Modals() {
     const modals = useModals((state) => state.modals);
@@ -35,6 +35,30 @@ export function Modal({ modal, index, length }) {
     const [closing, setClosing] = useState(false);
     const removeModal = useModals((state) => state.removeModal);
     const addModal = useModals((state) => state.addModal);
+    const closeButton = useRef(null);
+    const saveButton = useRef(null);
+
+    useEffect(() => {
+        const active = document.activeElement;
+        if (active) active.blur();
+
+        function handleKeyDown(e) {
+            if (e.key === "Tab") {
+                if (e.shiftKey) {
+                    if (document.activeElement === closeButton.current) {
+                        e.preventDefault();
+                        saveButton.current.focus();
+                    }
+                } else if (!document.activeElement) {
+                    e.preventDefault();
+                    closeButton.current.focus();
+                }
+            }
+        }
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
     function close() {
         setClosing(true);
@@ -58,8 +82,6 @@ export function Modal({ modal, index, length }) {
             }}
         >
             <div
-                tabIndex="0"
-                ref={(el) => el && el.focus()}
                 aria-modal="true"
                 className={styles.modal}
                 onClick={(e) => e.stopPropagation()}
@@ -73,7 +95,7 @@ export function Modal({ modal, index, length }) {
                 <header>
                     <h2>{modal.title || "Modal Title"}</h2>
 
-                    <button onClick={() => close()}>
+                    <button ref={closeButton} onClick={() => close()}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -124,10 +146,17 @@ export function Modal({ modal, index, length }) {
                     </button>
 
                     <button
+                        ref={saveButton}
                         className="button"
                         onClick={() => {
                             if (modal.onSave) modal.onSave();
                             close();
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Tab" && !e.shiftKey) {
+                                e.preventDefault();
+                                closeButton.current.focus();
+                            }
                         }}
                     >
                         Save

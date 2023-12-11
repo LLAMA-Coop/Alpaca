@@ -1,9 +1,9 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAlerts, useStore, useModals } from "@/store/store";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef, useEffect } from "react";
-import { useAlerts, useStore, useModals } from "@/store/store";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
 import { Input, Spinner } from "@client";
@@ -101,7 +101,7 @@ export function UserInput({ isRegistering, onSubmit }) {
             );
             addModal({
                 title: "Please correct in password",
-                content: weaknessesModal
+                content: weaknessesModal,
             });
             return;
         }

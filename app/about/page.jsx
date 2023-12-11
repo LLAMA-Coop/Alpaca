@@ -3,7 +3,9 @@ import styles from "@/app/page.module.css";
 export default function About() {
     return (
         <main className={styles.main}>
-            <h2>About Mneme</h2>
+            <div className={styles.titleBlock}>
+                <h2>About Mneme</h2>
+            </div>
 
             <section className="paragraph">
                 <p>

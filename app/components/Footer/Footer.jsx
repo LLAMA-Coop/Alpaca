@@ -3,7 +3,7 @@ import { ThemePicker } from "@client";
 
 export function Footer() {
     return (
-        <div className={styles.container}>
+        <footer className={styles.container}>
             <div>
                 <div className={styles.icon}>
                     <div>
@@ -44,6 +44,6 @@ export function Footer() {
                     </a>
                 </div>
             </div>
-        </div>
+        </footer>
     );
 }

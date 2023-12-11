@@ -21,11 +21,13 @@
     user-select: none;
     border: 1px solid transparent;
     background-color: transparent;
-    color: var(--foreground-primary);
+    color: var(--foreground-secondary);
 }
 
-.themeContainer > div > button:hover {
+.themeContainer > div > button:hover,
+.themeContainer > div > button:focus-visible {
     background-color: var(--background-secondary);
+    color: var(--foreground-primary);
 }
 
 .themeContainer > div > button > div {

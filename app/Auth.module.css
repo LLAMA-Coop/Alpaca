@@ -1,0 +1,36 @@
+.main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 550px;
+    padding: var(--padding);
+}
+
+.container > h2 {
+    font-size: 34px;
+    margin-bottom: 24px;
+}
+
+.container form {
+    padding-top: 24px;
+    grid-template-columns: 1fr;
+}
+
+.container form > :last-child {
+    margin-top: 24px;
+}
+
+.container > div {
+    margin-top: 24px;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.container > div > a {
+    border-radius: 3px;
+}
