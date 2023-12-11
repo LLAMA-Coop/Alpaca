@@ -75,6 +75,7 @@ export function Profile({ user }) {
                     username={user.username}
                     outline={showMenu}
                 />
+
                 {notifications.length > 0 && <sub>{notifications.length}</sub>}
             </div>
 

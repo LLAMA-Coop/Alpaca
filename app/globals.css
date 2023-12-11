@@ -1,13 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap");
-
 :root {
-    --max-width: 1280px;
+    --max-width: 1200px;
     --padding: 120px 40px;
-    --gradient-angle: 360deg;
 
-    --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-        "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
-        "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+    --font-heading: "Inter", sans-serif;
+    --font-body: "Inter", sans-serif;
+    --font-mono: Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace;
 
     --background-primary: hsl(0, 0%, 100%);
     --background-secondary: hsl(0, 0%, 97%);
@@ -40,28 +37,11 @@
     --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
 }
 
-/* @media screen and (prefers-color-scheme: dark) {
-    :root {
-        --background-primary: hsl(240, 4%, 5%);
-        --background-secondary: hsl(240, 6%, 10%);
-        --background-tertiary: hsl(240, 4%, 16%);
-        --background-4: hsl(240, 4%, 20%);
-
-        --foreground-primary: hsl(0, 0%, 98%);
-        --foreground-secondary: hsl(240, 2%, 80%);
-        --foreground-tertiary: hsl(0, 0%, 65%);
-    }
-
-    html {
-        color-scheme: dark;
-    }
-} */
-
 @media screen and (prefers-color-scheme: dark) {
     :root {
         --background-primary: #020614;
-        --background-secondary: #0F172A;
-        --background-tertiary: #1E293B;
+        --background-secondary: #0f172a;
+        --background-tertiary: #1e293b;
         --background-4: hsl(240, 4%, 20%);
 
         --foreground-primary: hsl(0, 0%, 98%);
@@ -74,36 +54,18 @@
     }
 }
 
-/* [data-theme="dark"] {
-    --background-primary: hsl(240, 4%, 5%);
-    --background-secondary: hsl(240, 6%, 10%);
-    --background-tertiary: hsl(240, 4%, 16%);
-
-    --foreground-primary: hsl(0, 0%, 98%);
-    --foreground-secondary: hsl(240, 2%, 80%);
-    --foreground-tertiary: hsl(0, 0%, 65%);
-
-    --accent-primary-outline: hsl(224, 76%, 48%, 0.55);
-    --accent-secondary-outline: hsl(0, 74%, 42%, 0.55);
-    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.55);
-
-    --anchor-foreground: hsl(217, 91%, 60%);
-
-    --border-color: hsl(0, 0%, 20%);
-} */
-
 [data-theme="dark"] {
     --background-primary: #020617;
-    --background-secondary: #0F172A;
-    --background-tertiary: #1E293B;
+    --background-secondary: #0f172a;
+    --background-tertiary: #1e293b;
 
     --foreground-primary: hsl(0, 0%, 98%);
     --foreground-secondary: hsl(240, 2%, 80%);
     --foreground-tertiary: hsl(0, 0%, 65%);
 
-    --accent-primary-outline: #10B77F;
-    --accent-secondary-outline: #38DBF8;
-    --accent-tertiary-outline: #818CF8;
+    --accent-primary-outline: #10b77f;
+    --accent-secondary-outline: #38dbf8;
+    --accent-tertiary-outline: #818cf8;
 
     --anchor-foreground: hsl(217, 91%, 60%);
 
@@ -150,10 +112,6 @@ body {
     display: flex;
     flex-direction: column;
     padding-left: calc(100dvw - 100%);
-}
-
-body > main {
-    flex: 1;
 }
 
 a {
@@ -240,7 +198,7 @@ ol {
 }
 
 *:focus-visible {
-    outline: 4px solid var(--accent-primary-outline);
+    outline: 3px solid var(--accent-primary-outline);
 }
 
 *.offset:focus-visible,
@@ -430,6 +388,12 @@ h4 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 500px));
     grid-gap: 16px;
+}
+
+.flexColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 @media screen and (max-width: 1024px) {

@@ -1,12 +1,11 @@
 "use client";
 
-import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import correctConfetti from "@/lib/correctConfetti";
-import { Input, Card, UserInput } from "../client";
+import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { useStore, useModals, useAlerts } from "@/store/store";
+import { correctConfetti } from "@/lib/correctConfetti";
+import { Input, Card, UserInput } from "../client";
 import { useState, useEffect } from "react";
-import styles from "./Blankable.module.css";
 
 export function Verbatim({
     canClientCheck,

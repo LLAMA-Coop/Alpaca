@@ -1,8 +1,8 @@
 "use client";
 
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { correctConfetti } from "@/lib/correctConfetti";
 import { useModals, useAlerts } from "@/store/store";
-import correctConfetti from "@/lib/correctConfetti";
 import { Input, Card, UserInput } from "@client";
 import stringCompare from "@/lib/stringCompare";
 import shuffleArray from "@/lib/shuffleArray";
