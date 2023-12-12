@@ -13,13 +13,13 @@ export async function DELETE(req, { params }) {
             return unauthorized;
         }
 
-        const { id } = params;
+        const { _id } = params;
 
-        const source = await Source.findById(id);
+        const source = await Source.findById(_id);
         if (!source) {
             return NextResponse.json(
                 {
-                    message: `The source ${id} could not be found to delete`,
+                    message: `The source ${_id} could not be found to delete`,
                 },
                 { status: 404 },
             );
@@ -28,19 +28,18 @@ export async function DELETE(req, { params }) {
         if (source.createdBy.toString() !== user._id.toString()) {
             return NextResponse.json(
                 {
-                    message: `User ${user._id} is not authorized to delete source ${id}. Only the creator ${source.createdBy} is permitted`,
+                    message: `User ${user._id} is not authorized to delete source ${_id}. Only the creator ${source.createdBy} is permitted`,
                 },
                 { status: 403 },
             );
         }
 
-        const deletion = await Source.deleteOne({ _id: id });
-        console.log(deletion);
+        const deletion = await Source.deleteOne({ _id });
         if (deletion.deletedCount === 0) {
-            console.error(`Unable to delete source ${id}`);
+            console.error(`Unable to delete source ${_id}`);
             return NextResponse.json(
                 {
-                    message: `Unable to delete source ${id}`,
+                    message: `Unable to delete source ${_id}`,
                 },
                 { status: 500 },
             );

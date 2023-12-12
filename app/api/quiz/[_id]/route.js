@@ -11,14 +11,14 @@ export async function POST(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const { id } = params;
+        const { _id } = params;
         const { userResponse } = await req.json();
 
-        const quiz = await Quiz.findById(id);
+        const quiz = await Quiz.findById(_id);
         if (!quiz) {
             return NextResponse.json(
                 {
-                    message: `Quiz with id ${id} could not be found`,
+                    message: `Quiz with id ${_id} could not be found`,
                 },
                 { status: 404 },
             );
@@ -45,9 +45,6 @@ export async function POST(req, { params }) {
             incorrectIndexes = whichIndexesIncorrect(
                 userResponse,
                 quiz.correctResponses,
-                // quiz.type === "fill-in-the-blank"
-                //     ? quiz.correctResponses.map((x) => x.split("_")[1])
-                //     : quiz.correctResponses,
                 quiz.type !== "unordered-list-answer",
             );
             isCorrect = incorrectIndexes.length === 0;
@@ -58,7 +55,6 @@ export async function POST(req, { params }) {
         );
         let canProgressLevel = false;
         if (!quizInUser) {
-            console.log("new quiz question");
             canProgressLevel = true;
             quizInUser = {
                 quizId: quiz.id,
@@ -67,7 +63,6 @@ export async function POST(req, { params }) {
             };
             user.quizzes.push(quizInUser);
         } else {
-            console.log("old quiz question", quizInUser.hiddenUntil);
             canProgressLevel = Date.now() > quizInUser.hiddenUntil.getTime();
         }
         if (isCorrect && canProgressLevel) {
@@ -105,13 +100,13 @@ export async function DELETE(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const { id } = params;
+        const { _id } = params;
 
-        const quiz = await Quiz.findById(id);
+        const quiz = await Quiz.findById(_id);
         if (!quiz) {
             return NextResponse.json(
                 {
-                    message: `Quiz with id ${id} could not be found`,
+                    message: `Quiz with id ${_id} could not be found`,
                 },
                 { status: 404 },
             );
@@ -120,20 +115,20 @@ export async function DELETE(req, { params }) {
         if (quiz.createdBy.toString() !== user._id.toString()) {
             return NextResponse.json(
                 {
-                    message: `User ${user._id} is not authorized to delete quiz with id ${id}. Only the creator ${quiz.createdBy} is permitted`,
+                    message: `User ${user._id} is not authorized to delete quiz with id ${_id}. Only the creator ${quiz.createdBy} is permitted`,
                 },
                 { status: 403 },
             );
         }
 
-        const deletion = await Quiz.deleteOne({ id });
+        const deletion = await Quiz.deleteOne({ _id });
         if (deletion.deletedCount === 0) {
             console.error(
-                `Unable to delete quiz with id ${id}`,
+                `Unable to delete quiz with id ${_id}`,
             );
             return NextResponse.json(
                 {
-                    message: `Unable to delete quiz with id ${id}`,
+                    message: `Unable to delete quiz with id ${_id}`,
                 },
                 { status: 500 },
             );
