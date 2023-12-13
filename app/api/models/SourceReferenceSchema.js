@@ -12,7 +12,7 @@ const SourceReferenceSchema = new Schema({
         type: String,
         default: "page",
         enum: {
-            values: ["page", "id reference", "section"],
+            values: ["page", "id reference", "section", "timestamp"],
             message: "Invalid location identifier for a source reference",
         },
     },
