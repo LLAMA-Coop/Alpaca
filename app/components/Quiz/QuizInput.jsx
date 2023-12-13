@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./QuizInput.module.css";
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { DeletePopup } from "../DeletePopup/DeletePopup";
 import { buildPermissions } from "@/lib/permissions";
@@ -17,6 +18,7 @@ import {
     BlankableInput,
     UserInput,
 } from "@client";
+import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 
 export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
@@ -77,11 +79,18 @@ export function QuizInput({ quiz }) {
         if (quiz.hints) {
             setHints([...quiz.hints]);
         }
-        if (quiz.sources) {
+        if (quiz.sources && !quiz.sourceReferences) {
             setSources(
-                quiz.sources.map((srcId) =>
-                    availableSources.find((x) => x._id === srcId),
-                ),
+                quiz.sources.map((srcId) => {
+                    let source = availableSources.find((x) => x._id === srcId);
+                    if (!source) {
+                        source = {
+                            title: "unavailable",
+                            _id: srcId,
+                            locationTypeDefault: "page",
+                        };
+                    }
+                }),
             );
         }
         if (quiz.notes) {
@@ -317,7 +326,7 @@ export function QuizInput({ quiz }) {
     }
 
     return (
-        <form className="formGrid">
+        <form className={styles.form}>
             <Input
                 type={"select"}
                 label="Type"
@@ -357,7 +366,7 @@ export function QuizInput({ quiz }) {
             )}
 
             {type === "multiple-choice" && (
-                <div>
+                <div className={styles.multipleChoice}>
                     <Input
                         label="Add new choice"
                         description={"Add a new choice. Press enter to add"}
@@ -398,91 +407,97 @@ export function QuizInput({ quiz }) {
                 </div>
             )}
 
-            <div>
-                <Input
-                    type={type === "verbatim" ? "textarea" : "text"}
-                    choices={choices.map((x) => ({ label: x, value: x }))}
-                    label="Add new answer"
-                    description={"Add a new answer. Press enter to add"}
-                    value={newResponse}
-                    maxLength={
-                        type !== "verbatim" ? MAX.response : MAX.description
-                    }
-                    required={responses.length === 0}
-                    onSubmit={handleAddResponse}
-                    error={responsesError}
-                    onChange={(e) => {
-                        setNewResponse(e.target.value);
-                        if (type === "multiple-choice") {
-                            setNewChoice(e.target.value);
+            {type !== "fill-in-the-blank" && (
+                <div className={styles.answer}>
+                    <Input
+                        type={type === "verbatim" ? "textarea" : "text"}
+                        choices={choices.map((x) => ({ label: x, value: x }))}
+                        label="Add new answer"
+                        description={"Add a new answer. Press enter to add"}
+                        value={newResponse}
+                        maxLength={
+                            type !== "verbatim" ? MAX.response : MAX.description
                         }
-                    }}
-                    action={type !== "multiple-choice" && "Add new answer"}
-                    onActionTrigger={(e) => {
-                        handleAddResponse(e);
-                        if (type === "multiple-choice") {
-                            handleAddChoice(e);
-                        }
-                    }}
-                />
+                        required={responses.length === 0}
+                        onSubmit={handleAddResponse}
+                        error={responsesError}
+                        onChange={(e) => {
+                            setNewResponse(e.target.value);
+                            if (type === "multiple-choice") {
+                                setNewChoice(e.target.value);
+                            }
+                        }}
+                        action={type !== "multiple-choice" && "Add new answer"}
+                        onActionTrigger={(e) => {
+                            handleAddResponse(e);
+                            if (type === "multiple-choice") {
+                                handleAddChoice(e);
+                            }
+                        }}
+                    />
 
-                <div style={{ marginTop: "24px" }}>
-                    <Label label="Answers" />
+                    <div style={{ marginTop: "24px" }}>
+                        <Label label="Answers" />
 
-                    <ol className="chipList">
-                        {responses.map((res, index) => (
-                            <ListItem
-                                key={index}
-                                item={res}
-                                actionType={"delete"}
-                                action={() =>
-                                    setResponses((prev) =>
-                                        prev.filter((x) => x !== res),
-                                    )
-                                }
-                            />
-                        ))}
+                        <ol className="chipList">
+                            {responses.map((res, index) => (
+                                <ListItem
+                                    key={index}
+                                    item={res}
+                                    actionType={"delete"}
+                                    action={() =>
+                                        setResponses((prev) =>
+                                            prev.filter((x) => x !== res),
+                                        )
+                                    }
+                                />
+                            ))}
 
-                        {responses.length === 0 && (
-                            <ListItem item={"No answers added yet"} />
-                        )}
-                    </ol>
+                            {responses.length === 0 && (
+                                <ListItem item={"No answers added yet"} />
+                            )}
+                        </ol>
+                    </div>
+                </div>
+            )}
+
+            <div className={styles.links}>
+                <div className={styles.sources}>
+                    <Label
+                        required={true}
+                        error={sourcesError}
+                        label="Related Sources"
+                    />
+
+                    <ListAdd
+                        item="Add a source"
+                        listChoices={availableSources}
+                        listChosen={sources}
+                        listProperty={"title"}
+                        listSetter={setSources}
+                    />
+                    <InputPopup type="source" />
+                </div>
+
+                <div className={styles.notes}>
+                    <Label
+                        required={true}
+                        error={notesError}
+                        label="Related Notes"
+                    />
+
+                    <ListAdd
+                        item="Add a note"
+                        listChoices={availableNotes}
+                        listChosen={notes}
+                        listProperty={["title", "text"]}
+                        listSetter={setNotes}
+                    />
+                    <InputPopup type="note" />
                 </div>
             </div>
 
-            <div>
-                <Label
-                    required={true}
-                    error={sourcesError}
-                    label="Related Sources"
-                />
-
-                <ListAdd
-                    item="Add a source"
-                    listChoices={availableSources}
-                    listChosen={sources}
-                    listProperty={"title"}
-                    listSetter={setSources}
-                />
-            </div>
-
-            <div>
-                <Label
-                    required={true}
-                    error={notesError}
-                    label="Related Notes"
-                />
-
-                <ListAdd
-                    item="Add a note"
-                    listChoices={availableNotes}
-                    listChosen={notes}
-                    listProperty={["title", "text"]}
-                    listSetter={setNotes}
-                />
-            </div>
-
-            <div>
+            <div className={styles.courses}>
                 <Label required={false} label="Courses" />
 
                 <ListAdd
@@ -494,84 +509,92 @@ export function QuizInput({ quiz }) {
                 />
             </div>
 
-            <div>
-                <Input
-                    label={"Add Hint"}
-                    value={newHint}
-                    maxLength={MAX.response}
-                    description="A hint that may help the user remember the correct answer"
-                    onChange={(e) => setNewHint(e.target.value)}
-                    action="Add hint"
-                    onActionTrigger={handleAddHint}
-                />
-
-                <div style={{ marginTop: "24px" }}>
-                    <Label label="Hints" />
-
-                    <ul className="chipList">
-                        {hints.length === 0 && (
-                            <ListItem item="No hints added" />
-                        )}
-
-                        {hints.map((hint) => (
-                            <ListItem
-                                key={hint}
-                                item={hint}
-                                action={() => {
-                                    setHints(hints.filter((h) => h !== hint));
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                    </ul>
-                </div>
+            <div className={styles.permissions}>
+                <PermissionsDisplay permissions={permissions} />
             </div>
 
-            <div>
-                <Input
-                    label={"Add Tag"}
-                    value={newTag}
-                    maxLength={MAX.tag}
-                    description="A word or phrase that could be used to search for this note"
-                    autoComplete="off"
-                    onChange={(e) => setNewTag(e.target.value)}
-                    action="Add tag"
-                    onActionTrigger={handleAddTag}
-                />
+            <div className={styles.advanced}>
+                    <h4>Advanced</h4>
+                <div className={styles.hints}>
+                    <Input
+                        label={"Add Hint"}
+                        value={newHint}
+                        maxLength={MAX.response}
+                        description="A hint that may help the user remember the correct answer"
+                        onChange={(e) => setNewHint(e.target.value)}
+                        action="Add hint"
+                        onActionTrigger={handleAddHint}
+                    />
 
-                <div style={{ marginTop: "24px" }}>
-                    <Label label="Tags" />
+                    <div style={{ marginTop: "24px" }}>
+                        <Label label="Hints" />
 
-                    <ul className="chipList">
-                        {tags.length === 0 && <ListItem item="No tags added" />}
+                        <ul className="chipList">
+                            {hints.length === 0 && (
+                                <ListItem item="No hints added" />
+                            )}
 
-                        {tags.map((tag) => (
-                            <ListItem
-                                key={tag}
-                                item={tag}
-                                action={() => {
-                                    setTags(tags.filter((t) => t !== tag));
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                    </ul>
+                            {hints.map((hint) => (
+                                <ListItem
+                                    key={hint}
+                                    item={hint}
+                                    action={() => {
+                                        setHints(
+                                            hints.filter((h) => h !== hint),
+                                        );
+                                    }}
+                                    actionType={"delete"}
+                                />
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+
+                <div className={styles.tags}>
+                    <Input
+                        label={"Add Tag"}
+                        value={newTag}
+                        maxLength={MAX.tag}
+                        description="A word or phrase that could be used to search for this note"
+                        autoComplete="off"
+                        onChange={(e) => setNewTag(e.target.value)}
+                        action="Add tag"
+                        onActionTrigger={handleAddTag}
+                    />
+
+                    <div style={{ marginTop: "24px" }}>
+                        <Label label="Tags" />
+
+                        <ul className="chipList">
+                            {tags.length === 0 && (
+                                <ListItem item="No tags added" />
+                            )}
+
+                            {tags.map((tag) => (
+                                <ListItem
+                                    key={tag}
+                                    item={tag}
+                                    action={() => {
+                                        setTags(tags.filter((t) => t !== tag));
+                                    }}
+                                    actionType={"delete"}
+                                />
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             </div>
-
-            {(!quiz || (user && quiz.createdBy === user._id)) && (
+            {/* {(!quiz || (user && quiz.createdBy === user._id)) && (
                 <PermissionsInput
                     permissions={quiz ? quiz.permissions : {}}
                     setter={setPermissions}
                 />
-            )}
+            )} */}
 
-            <div className="buttonContainer">
-                <InputPopup type="source" />
-                <InputPopup type="note" />
-            </div>
-
-            <button onClick={handleSubmit} className="button submit">
+            <button
+                onClick={handleSubmit}
+                className={`button submit ${styles.submit}`}
+            >
                 {loading ? <Spinner /> : "Submit Quiz"}
             </button>
 

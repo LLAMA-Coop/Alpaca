@@ -1,4 +1,39 @@
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.form > div:first-child,
+.form > div:nth-child(2) {
+    flex-basis: 100%;
+}
+
+.courses, .permissions {
+    flex-basis: 50%;
+}
+
+.answer, .multipleChoice, .links, .advanced,  .submit {
+    flex-basis: 100%;
+}
+
+.links, .advanced {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.advanced > h4 {
+    flex-basis: 100%;
+    text-align: center;
+}
+
+.sources, .notes, .hints, .tags {
+    width: 50%;
+}
+
 .blankBank {
+    flex-basis: 100%;
     background-color: var(--background-secondary);
     border: 1px solid var(--background-tertiary);
     color: var(--foreground-tertiary);
