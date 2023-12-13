@@ -35,10 +35,11 @@ export function SourceInput({ source }) {
 
     const [authors, setAuthors] = useState([]);
     const [newAuthor, setNewAuthor] = useState("");
-
     const [courses, setCourses] = useState([]);
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
+
+    const [locationTypeDefault, setLocationTypeDefault] = useState("page");
 
     const [loading, setLoading] = useState(false);
     const [permissions, setPermissions] = useState({});
@@ -75,6 +76,9 @@ export function SourceInput({ source }) {
                     availableCourses.find((x) => x._id === courseId),
                 ),
             );
+        }
+        if (source.locationTypeDefault) {
+            setLocationTypeDefault(source.locationTypeDefault);
         }
         if (source.permissions)
             setPermissions(serializeOne(source.permissions));
@@ -141,6 +145,7 @@ export function SourceInput({ source }) {
             authors,
             courses: courses.map((course) => course._id),
             tags,
+            locationTypeDefault,
         };
         sourcePayload.permissions = buildPermissions(permissions);
         if (source && source._id) {
@@ -355,6 +360,34 @@ export function SourceInput({ source }) {
                         ))}
                     </ul>
                 </div>
+            </div>
+
+            <div>
+                <Input
+                    type={"select"}
+                    label={"Location Type Default"}
+                    choices={[
+                        { label: "Page", value: "page" },
+                        {
+                            label: "ID Reference on Website",
+                            value: "id reference",
+                        },
+                        {
+                            label: "Section Header in Document",
+                            value: "section",
+                        },
+                        {
+                            label: "Timestamp",
+                            value: "timestamp",
+                        },
+                    ]}
+                    description={
+                        "When you cite this source, what would you use to identify a specific location in this source, such as a page number for a book, id tag in a webpage, or a section heading in a document?"
+                    }
+                    required={false}
+                    value={locationTypeDefault}
+                    onChange={(e) => setLocationTypeDefault(e.target.value)}
+                />
             </div>
 
             {(!source || source.createdBy === user._id) && (

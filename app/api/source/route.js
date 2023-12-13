@@ -39,6 +39,7 @@ export async function POST(req) {
             authors,
             courses,
             tags,
+            locationTypeDefault,
             permissions,
         } = await req.json();
 
@@ -69,6 +70,7 @@ export async function POST(req) {
             authors: authors,
             courses: courses ?? [],
             tags,
+            locationTypeDefault,
             createdBy: user._id,
             contributors: [user._id],
         });
@@ -108,6 +110,7 @@ export async function PUT(req) {
             authors,
             courses,
             tags,
+            locationTypeDefault,
             permissions,
         } = await req.json();
 
@@ -148,7 +151,7 @@ export async function PUT(req) {
         if (authors) {
             source.authors = [...authors];
         }
-        if(courses){
+        if (courses) {
             courses.forEach((courseId_req) => {
                 if (
                     !source.courses.find(
@@ -162,7 +165,13 @@ export async function PUT(req) {
         if (tags) {
             source.tags = [...tags];
         }
-        if (permissions && source.createdBy.toString() === user._id.toString()) {
+        if (locationTypeDefault) {
+            source.locationTypeDefault = locationTypeDefault;
+        }
+        if (
+            permissions &&
+            source.createdBy.toString() === user._id.toString()
+        ) {
             source.permissions = serializeOne(permissions);
         }
         source.updateBy = user._id;
