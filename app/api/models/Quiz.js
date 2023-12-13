@@ -1,6 +1,7 @@
 import { model, models, Schema } from "mongoose";
 import PermissionSchema from "./PermissionSchema";
 import MAX from "@/lib/max";
+import SourceReferenceSchema from "./SourceReferenceSchema";
 
 const QuizSchema = new Schema(
     {
@@ -82,6 +83,11 @@ const QuizSchema = new Schema(
                 type: Schema.Types.ObjectId,
                 ref: "source",
             },
+        ],
+        sourceReferences: [
+            {
+                type: SourceReferenceSchema
+            }
         ],
         notes: [
             {

@@ -57,6 +57,18 @@ const SourceSchema = new Schema(
             type: Date,
         },
         permissions: PermissionSchema,
+        locationTypeDefault: {
+            type: String,
+            default: "page",
+            enum: {
+                values: [
+                    "page",
+                    "id reference",
+                    "section"
+                ],
+                message: "Invalid location identifier for a source reference"
+            }
+        }
     },
     {
         timestamps: true,
