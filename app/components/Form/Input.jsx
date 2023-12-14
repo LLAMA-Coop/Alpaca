@@ -317,7 +317,56 @@ export function Input({
                     />
                 )}
 
-                {!["select", "checkbox", "textarea"].includes(type) && (
+                {type === "datalist" && (
+                    <input
+                        id={inputId}
+                        list={`${inputId}_list`}
+                        autoFocus={autoFocus ? true : false}
+                        autoComplete={autoComplete || "off"}
+                        aria-describedby={description}
+                        aria-required={error ? error : ""}
+                        aria-disabled={disabled}
+                        aria-invalid={error ? "true" : "false"}
+                        aria-errormessage={error ? errorId : ""}
+                        className={`thinScroller ${status}`}
+                        required={required}
+                        onChange={onChange}
+                        onFocus={onFocus}
+                        onBlur={onBlur}
+                        value={value || ""}
+                        minLength={minLength}
+                        maxLength={maxLength}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && action) onActionTrigger(e);
+                        }}
+                    />
+                )}
+
+                {type === "datalist" && (
+                    <datalist id={`${inputId}_list`}>
+                        {choices.map((choice, index) => {
+                            let key, label, value;
+                            if (typeof choice === "string") {
+                                key = choice + index;
+                                label = choice;
+                                value = choice;
+                            } else {
+                                key = choice.key ?? choice.label;
+                                label = choice.label;
+                                value = choice.value;
+                            }
+                            return (
+                                <option key={key} value={value}>
+                                    {label}
+                                </option>
+                            );
+                        })}
+                    </datalist>
+                )}
+
+                {!["select", "checkbox", "textarea", "datalist"].includes(
+                    type,
+                ) && (
                     <input
                         id={inputId}
                         pattern={pattern}
