@@ -1,17 +1,6 @@
 import makeUniqueId from "@/lib/uniqueId";
 import { create } from "zustand";
 
-const addToTagStore = (state, ...tags) => {
-    const newStore = [...state.tagStore];
-    tags.forEach((t) => {
-        console.log(newStore, t);
-        if (!newStore.includes(t)) {
-            newStore.push(t);
-        }
-    });
-    return newStore;
-};
-
 const addResources = (state, storeName, ...resources) => {
     if (!Object.values(stores).includes(storeName)) {
         throw Error(`We do not have a list called ${storeName}`);
@@ -35,6 +24,18 @@ const addResources = (state, storeName, ...resources) => {
     });
     const newState = {};
     newState[storeName] = newStore;
+    newState.tagStore = tagStore;
+    return newState;
+};
+
+const addTags = (state, ...tags) => {
+    const tagStore = [...state.tagStore];
+    tags.forEach((t) => {
+        if (!tagStore.includes(t)) {
+            tagStore.push(t);
+        }
+    });
+    const newState = {};
     newState.tagStore = tagStore;
     return newState;
 };
@@ -151,6 +152,14 @@ export const useStore = create((set) => ({
             return set((state) =>
                 updateResource(state, storeName, newResource),
             );
+        } catch (e) {
+            console.error(e);
+        }
+    },
+
+    addTags: (...tags) => {
+        try {
+            return set((state) => addTags(state, ...tags));
         } catch (e) {
             console.error(e);
         }

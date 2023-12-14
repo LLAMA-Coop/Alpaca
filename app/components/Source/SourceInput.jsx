@@ -50,6 +50,8 @@ export function SourceInput({ source }) {
 
     const user = useStore((state) => state.user);
     const availableCourses = useStore((state) => state.courseStore);
+    const availableTags = useStore((state) => state.tagStore);
+    const addTags = useStore(state => state.addTags);
     const canDelete = source && source.createdBy === user._id;
 
     const addModal = useModals((state) => state.addModal);
