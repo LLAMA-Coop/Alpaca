@@ -58,6 +58,8 @@ export function QuizInput({ quiz }) {
     const availableSources = useStore((state) => state.sourceStore);
     const availableNotes = useStore((state) => state.noteStore);
     const availableCourses = useStore((state) => state.courseStore);
+    const availableTags = useStore((state) => state.tagStore);
+    const addTags = useStore((state) => state.addTags);
 
     const user = useStore((state) => state.user);
     const canDelete = quiz && user && quiz.createdBy === user._id;
@@ -177,6 +179,9 @@ export function QuizInput({ quiz }) {
         e.preventDefault();
         if (!newTag || tags.includes(newTag)) return;
         setTags([...tags, newTag]);
+        if (!availableTags.includes(newTag)) {
+            addTags(newTag);
+        }
         setNewTag("");
     }
 
@@ -514,7 +519,7 @@ export function QuizInput({ quiz }) {
             </div>
 
             <div className={styles.advanced}>
-                    <h4>Advanced</h4>
+                <h4>Advanced</h4>
                 <div className={styles.hints}>
                     <Input
                         label={"Add Hint"}
@@ -552,6 +557,8 @@ export function QuizInput({ quiz }) {
 
                 <div className={styles.tags}>
                     <Input
+                        type="datalist"
+                        choices={availableTags}
                         label={"Add Tag"}
                         value={newTag}
                         maxLength={MAX.tag}

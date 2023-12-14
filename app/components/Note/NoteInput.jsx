@@ -34,6 +34,8 @@ export function NoteInput({ note }) {
 
     const availableSources = useStore((state) => state.sourceStore);
     const availableCourses = useStore((state) => state.courseStore);
+    const availableTags = useStore((state) => state.tagStore);
+    const addTags = useStore((state) => state.addTags);
     const user = useStore((state) => state.user);
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
@@ -82,6 +84,9 @@ export function NoteInput({ note }) {
         e.preventDefault();
         if (!newTag || tags.includes(newTag)) return;
         setTags([...tags, newTag]);
+        if (!availableTags.includes(newTag)) {
+            addTags(newTag);
+        }
         setNewTag("");
     }
 
@@ -202,6 +207,8 @@ export function NoteInput({ note }) {
                     </ul>
                 </div>
                 <Input
+                    type="datalist"
+                    choices={availableTags}
                     label={"Add Tag"}
                     value={newTag}
                     maxLength={MAX.tag}

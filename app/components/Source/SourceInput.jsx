@@ -51,7 +51,7 @@ export function SourceInput({ source }) {
     const user = useStore((state) => state.user);
     const availableCourses = useStore((state) => state.courseStore);
     const availableTags = useStore((state) => state.tagStore);
-    const addTags = useStore(state => state.addTags);
+    const addTags = useStore((state) => state.addTags);
     const canDelete = source && source.createdBy === user._id;
 
     const addModal = useModals((state) => state.addModal);
@@ -97,6 +97,9 @@ export function SourceInput({ source }) {
         e.preventDefault();
         if (!newTag || tags.includes(newTag)) return;
         setTags([...tags, newTag]);
+        if (!availableTags.includes(newTag)) {
+            addTags(newTag);
+        }
         setNewTag("");
     }
 
@@ -333,17 +336,6 @@ export function SourceInput({ source }) {
             </div>
 
             <div>
-                <Input
-                    label={"Add Tag"}
-                    value={newTag}
-                    maxLength={MAX.tag}
-                    description="A word or phrase that could be used to search for this source"
-                    autoComplete="off"
-                    onChange={(e) => setNewTag(e.target.value)}
-                    action="Add tag"
-                    onActionTrigger={handleAddTag}
-                />
-
                 <div style={{ marginTop: "24px" }}>
                     <Label label="Tags" />
 
@@ -362,6 +354,18 @@ export function SourceInput({ source }) {
                         ))}
                     </ul>
                 </div>
+                <Input
+                    type="datalist"
+                    choices={availableTags}
+                    label={"Add Tag"}
+                    value={newTag}
+                    maxLength={MAX.tag}
+                    description="A word or phrase that could be used to search for this source"
+                    autoComplete="off"
+                    onChange={(e) => setNewTag(e.target.value)}
+                    action="Add tag"
+                    onActionTrigger={handleAddTag}
+                />
             </div>
 
             <div>
