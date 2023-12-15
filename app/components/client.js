@@ -39,7 +39,7 @@ export { ThemePicker } from "./Footer/ThemePicker";
 
 export { Timer } from "./Layers/Timer";
 export { Alerts } from "./Layers/Alerts";
-export { Modals } from "./Modals/Modals";
+export { Modals } from "./Layers/Modals";
 
 export { InviteUser } from "./Notification/inviteUser";
 export { Notifications } from "./Notification/notifications";

@@ -53,6 +53,8 @@ export function Modal({ modal, index, length }) {
                     e.preventDefault();
                     closeButton.current.focus();
                 }
+            } else if (e.key === "Escape") {
+                close();
             }
         }
 

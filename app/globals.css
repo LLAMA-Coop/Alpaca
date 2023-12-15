@@ -42,7 +42,7 @@
         --background-primary: #020614;
         --background-secondary: #0f172a;
         --background-tertiary: #1e293b;
-        --background-4: hsl(240, 4%, 20%);
+        --background-4: #334155;
 
         --foreground-primary: hsl(0, 0%, 98%);
         --foreground-secondary: hsl(240, 2%, 80%);
@@ -55,39 +55,41 @@
 }
 
 [data-theme="dark"] {
-    --background-primary: #020617;
-    --background-secondary: #0f172a;
-    --background-tertiary: #1e293b;
+    --background-primary: hsl(229, 84%, 5%);
+    --background-secondary: hsl(222, 47%, 11%);
+    --background-tertiary: hsl(217, 33%, 17%);
+    --background-4: hsl(215, 25%, 27%);
 
     --foreground-primary: hsl(0, 0%, 98%);
     --foreground-secondary: hsl(240, 2%, 80%);
     --foreground-tertiary: hsl(0, 0%, 65%);
 
-    --accent-primary-outline: #10b77f;
-    --accent-secondary-outline: #38dbf8;
-    --accent-tertiary-outline: #818cf8;
+    --accent-primary-outline: hsl(160, 84%, 39%);
+    --accent-secondary-outline: hsl(189, 93%, 60%);
+    --accent-tertiary-outline: hsl(234, 89%, 74%);
 
     --anchor-foreground: hsl(217, 91%, 60%);
 
-    --border-color: hsl(0, 0%, 20%);
+    --border-color: hsl(227, 15%, 18%);
 }
 
 [data-theme="light"] {
     --background-primary: hsl(0, 0%, 100%);
     --background-secondary: hsl(0, 0%, 97%);
     --background-tertiary: hsl(0, 0%, 94%);
+    --background-4: hsl(0, 0%, 90%);
 
     --foreground-primary: hsl(240, 10%, 4%);
     --foreground-secondary: hsl(240, 6%, 10%);
     --foreground-tertiary: hsl(240, 4%, 16%);
 
-    --accent-primary-outline: hsl(224, 76%, 48%, 0.55);
-    --accent-secondary-outline: hsl(0, 74%, 42%, 0.55);
-    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.55);
+    --accent-primary-outline: hsl(160, 84%, 39%, 0.5);
+    --accent-secondary-outline: hsl(189, 93%, 60%, 0.5);
+    --accent-tertiary-outline: hsl(234, 89%, 74%, 0.5);
 
     --anchor-foreground: hsl(226, 71%, 40%);
 
-    --border-color: hsl(0, 0%, 85%);
+    --border-color: hsl(227, 15%, 18%);
 }
 
 * {
@@ -271,6 +273,7 @@ input[type="date"] {
     bottom: calc(100% + 8px);
     border: 1px solid var(--border-color);
     background-color: var(--background-secondary);
+    z-index: 100;
 }
 
 .menuPopup.fit {

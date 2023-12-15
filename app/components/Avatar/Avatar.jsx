@@ -19,6 +19,7 @@ export function Avatar({ src, username, size = 40, outline }) {
                     alt={`Avatar for ${username}`}
                     width={size}
                     height={size}
+                    src={src}
                 />
             ) : (
                 <div>{letter}</div>

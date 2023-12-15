@@ -22,7 +22,9 @@ export default async function DashboardPage() {
 
     return (
         <main className={styles.main}>
-            <h2>Dashboard</h2>
+            <div className={styles.titleBlock}>
+                <h2>Dashboard</h2>
+            </div>
 
             <section>
                 <h3>Your Profile</h3>

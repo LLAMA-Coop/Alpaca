@@ -74,6 +74,7 @@ export function Profile({ user }) {
                     src={user.avatar}
                     username={user.username}
                     outline={showMenu}
+                    size={44}
                 />
 
                 {notifications.length > 0 && <sub>{notifications.length}</sub>}
