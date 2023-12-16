@@ -10,7 +10,7 @@ export function Avatar({ src, username, size = 40, outline }) {
             style={{
                 width: size,
                 height: size,
-                fontSize: size / 2,
+                fontSize: "16px",
                 outline: outline ? "" : "0px solid transparent",
             }}
         >

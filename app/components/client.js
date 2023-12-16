@@ -51,3 +51,5 @@ export { Blankable } from "./Quiz/Blankable";
 export { BlankableInput } from "./Quiz/BlankableInput";
 export { UserStats } from "./Quiz/UserStats";
 export { QuizDisplay } from "./Quiz/QuizDisplay";
+
+export { Menu } from "./Menu/Menu";

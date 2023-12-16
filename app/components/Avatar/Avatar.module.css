@@ -9,6 +9,6 @@
     background-color: var(--background-tertiary);
 }
 
-.container:active {
+.container:focus-visible {
     outline: 2px solid var(--accent-primary-1);
 }

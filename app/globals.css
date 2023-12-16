@@ -138,7 +138,11 @@ a {
     user-select: none;
     color: var(--accent-foreground);
     background-color: var(--accent-primary-1);
-    transition: background-color 0.1s ease-in-out;
+    transition:
+        background-color 0.1s ease-in-out,
+        color 0.1s ease-in-out,
+        box-shadow 0.1s ease-in-out,
+        outline-width 0.1s ease-in-out;
 }
 
 .button:not(.submit) {
@@ -200,7 +204,7 @@ ol {
 }
 
 *:focus-visible {
-    outline: 3px solid var(--accent-primary-outline);
+    outline: 2px solid var(--accent-primary-outline);
 }
 
 *.offset:focus-visible,
@@ -263,83 +267,6 @@ input[type="date"] {
 .buttonContainer {
     display: flex;
     gap: 16px;
-}
-
-.menuPopup {
-    width: 100%;
-    padding: 4px 0;
-    border-radius: 6px;
-    position: absolute;
-    bottom: calc(100% + 8px);
-    border: 1px solid var(--border-color);
-    background-color: var(--background-secondary);
-    z-index: 100;
-}
-
-.menuPopup.fit {
-    width: fit-content;
-}
-
-.menuPopup.medium {
-    width: 175px;
-}
-
-.menuPopup.down {
-    top: calc(100% + 8px);
-    bottom: auto;
-}
-
-.menuPopup.left {
-    right: 0;
-}
-
-.menuPopup > ul > hr {
-    border: 0;
-    border-top: 1px solid var(--border-color);
-    margin: 4px 0;
-}
-
-.menuPopup > ul > li {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    line-height: 20px;
-    padding: 6px 12px;
-    user-select: none;
-    cursor: pointer;
-    transition: all 0.01s ease-in-out;
-}
-
-.menuPopup > ul > li.icon {
-    padding-left: 36px;
-}
-
-.menuPopup > ul > li.danger {
-    color: var(--accent-secondary-1);
-}
-
-.menuPopup > ul > li:hover,
-.menuPopup > ul > li:focus-visible {
-    background-color: var(--background-tertiary);
-    outline: none;
-}
-
-.menuPopup > ul > li:active {
-    opacity: 0.8;
-}
-
-.menuPopup > ul > li > div {
-    position: absolute;
-    top: 50%;
-    left: 12px;
-    transform: translateY(-50%);
-    width: 14px;
-    height: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .paragraph.center {

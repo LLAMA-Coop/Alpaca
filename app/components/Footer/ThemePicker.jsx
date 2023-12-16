@@ -5,6 +5,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState, useRef } from "react";
 import { palettes } from "@/app/data/palettes";
 import styles from "./ThemePicker.module.css";
+import { Menu } from "@client";
 
 const paletteAttributes = [
     "--accent-primary-1",
@@ -185,31 +186,17 @@ export function ThemePicker() {
                     </div>
                 </button>
 
-                {showThemes && (
-                    <div className="menuPopup">
-                        <ul>
-                            {lightModes.map((mode, index) => (
-                                <li
-                                    key={index}
-                                    tabIndex={0}
-                                    role="radio"
-                                    aria-label={mode}
-                                    aria-selected={activeTheme === index}
-                                    aria-current={activeTheme === index}
-                                    aria-setsize={lightModes.length}
-                                    aria-posinset={index + 1}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") setTheme(index);
-                                    }}
-                                    onClick={() => setTheme(index)}
-                                >
-                                    {mode}
-                                    {activeTheme === index ? activeIcon : null}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
+                <Menu
+                    show={showThemes}
+                    setShow={setShowThemes}
+                    items={lightModes.map((mode) => ({
+                        name: mode,
+                        onClick: () => setTheme(lightModes.indexOf(mode)),
+                    }))}
+                    active={activeTheme}
+                    activeIcon={activeIcon}
+                    keepOpen={true}
+                />
             </div>
 
             <div ref={paletteRef}>
@@ -249,35 +236,17 @@ export function ThemePicker() {
                     </div>
                 </button>
 
-                {showPalettes && (
-                    <div className="menuPopup">
-                        <ul>
-                            {palettes.map((palette, index) => (
-                                <li
-                                    key={index}
-                                    tabIndex={0}
-                                    role="radio"
-                                    aria-label={palette.name}
-                                    aria-selected={activePalette === index}
-                                    aria-current={activePalette === index}
-                                    aria-setsize={palettes.length}
-                                    aria-posinset={index + 1}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            setPalette(index);
-                                        }
-                                    }}
-                                    onClick={() => setPalette(index)}
-                                >
-                                    {palette.name}
-                                    {activePalette === index
-                                        ? activeIcon
-                                        : null}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
+                <Menu
+                    show={showPalettes}
+                    setShow={setShowPalettes}
+                    items={palettes.map((palette) => ({
+                        name: palette.name,
+                        onClick: () => setPalette(palettes.indexOf(palette)),
+                    }))}
+                    active={activePalette}
+                    activeIcon={activeIcon}
+                    keepOpen={true}
+                />
             </div>
         </div>
     );

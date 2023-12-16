@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./dash.module.css";
+import styles from "./Dash.module.css";
 import { useState } from "react";
 import { Avatar } from "@client";
 
@@ -65,6 +65,7 @@ export function Dashboard({ user, courses, groups, associates, more }) {
                     <ul className={styles.tabList}>
                         {tabs.map((tab, index) => (
                             <li
+                                tabIndex={0}
                                 className={
                                     currentTab === index ? styles.active : ""
                                 }
@@ -72,6 +73,15 @@ export function Dashboard({ user, courses, groups, associates, more }) {
                                 onClick={() => {
                                     setCurrentTab(index);
                                     localStorage.setItem("currentTab", index);
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        setCurrentTab(index);
+                                        localStorage.setItem(
+                                            "currentTab",
+                                            index,
+                                        );
+                                    }
                                 }}
                             >
                                 <div>
@@ -179,27 +189,93 @@ export function Dashboard({ user, courses, groups, associates, more }) {
                     </header>
 
                     <main>
-                        <ul>
-                            {Array(42)
-                                .fill()
-                                .map((_, index) => (
-                                    <div key={index} className={styles.card}>
-                                        <h2>Card Title</h2>
-                                        <p>
-                                            Lorem ipsum dolor sit amet
-                                            consectetur adipisicing elit.
-                                            Quisquam, quod.
-                                            <br />
-                                            <br />
-                                            Lorem ipsum dolor sit amet
-                                            consectetur adipisicing elit.
-                                            Quisquam, quod.
-                                        </p>
-                                    </div>
-                                ))}
-                        </ul>
+                        {currentTab === 1 &&
+                            (!courses.length ? (
+                                <div className={styles.empty}>
+                                    <p>
+                                        You haven't enrolled in any courses yet.
+                                    </p>
+                                </div>
+                            ) : (
+                                <ul>
+                                    {courses.map((course, index) => (
+                                        <div
+                                            key={index}
+                                            className={styles.card}
+                                        >
+                                            <h2>{course.name}</h2>
 
-                        {!more && (
+                                            <p>
+                                                {course.description ||
+                                                    "No description provided."}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </ul>
+                            ))}
+
+                        {currentTab === 2 &&
+                            (!groups.length ? (
+                                <div className={styles.empty}>
+                                    <p>You haven't created any groups yet.</p>
+                                </div>
+                            ) : (
+                                <ul>
+                                    {groups.map((group, index) => (
+                                        <div
+                                            key={index}
+                                            className={styles.card}
+                                        >
+                                            <h2>{group.name}</h2>
+
+                                            <p>
+                                                {group.description ||
+                                                    "No description provided."}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </ul>
+                            ))}
+
+                        {currentTab === 3 &&
+                            (!associates.length ? (
+                                <div className={styles.empty}>
+                                    <p>You haven't added any associates yet.</p>
+
+                                    <div className={styles.input}>
+                                        <label htmlFor="">
+                                            Add Associate by Username or ID
+                                        </label>
+
+                                        <div>
+                                            <input
+                                                type="text"
+                                                placeholder="Username or ID"
+                                            />
+
+                                            <button>Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <ul>
+                                    {associates.map((associate, index) => (
+                                        <div
+                                            key={index}
+                                            className={styles.card}
+                                        >
+                                            <h2>{associate.username}</h2>
+
+                                            <p>
+                                                {associate.bio ||
+                                                    "No bio provided."}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </ul>
+                            ))}
+
+                        {more && (
                             <div>
                                 <button>
                                     <svg
