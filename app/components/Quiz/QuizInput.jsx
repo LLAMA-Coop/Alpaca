@@ -81,7 +81,7 @@ export function QuizInput({ quiz }) {
         if (quiz.hints) {
             setHints([...quiz.hints]);
         }
-        if (quiz.sources && !quiz.sourceReferences) {
+        if (quiz.sources && !quiz.sourceReferences.length) {
             setSources(
                 quiz.sources.map((srcId) => {
                     let source = availableSources.find((x) => x._id === srcId);
@@ -92,6 +92,7 @@ export function QuizInput({ quiz }) {
                             locationTypeDefault: "page",
                         };
                     }
+                    return source;
                 }),
             );
         }
