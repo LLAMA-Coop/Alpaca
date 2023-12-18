@@ -481,8 +481,10 @@ export function QuizInput({ quiz }) {
                         listChosen={sources}
                         listProperty={"title"}
                         listSetter={setSources}
+                        createNew={<InputPopup type="source" />}
+                        type="datalist"
+                        messageIfNone="No sources added"
                     />
-                    <InputPopup type="source" />
                 </div>
 
                 <div className={styles.notes}>
@@ -498,8 +500,10 @@ export function QuizInput({ quiz }) {
                         listChosen={notes}
                         listProperty={["title", "text"]}
                         listSetter={setNotes}
+                        createNew={<InputPopup type="note" />}
+                        type="datalist"
+                        messageIfNone="No notes added"
                     />
-                    <InputPopup type="note" />
                 </div>
             </div>
 
@@ -512,6 +516,8 @@ export function QuizInput({ quiz }) {
                     listChosen={courses}
                     listProperty={"name"}
                     listSetter={setCourses}
+                    type="datalist"
+                    messageIfNone="Not added to any course"
                 />
             </div>
 
@@ -522,6 +528,25 @@ export function QuizInput({ quiz }) {
             <div className={styles.advanced}>
                 <h4>Advanced</h4>
                 <div className={styles.hints}>
+                    <Label label="Hints" />
+
+                    <ul className="chipList">
+                        {hints.length === 0 && (
+                            <ListItem item="No hints added" />
+                        )}
+
+                        {hints.map((hint) => (
+                            <ListItem
+                                key={hint}
+                                item={hint}
+                                action={() => {
+                                    setHints(hints.filter((h) => h !== hint));
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul>
+
                     <Input
                         label={"Add Hint"}
                         value={newHint}
@@ -531,32 +556,26 @@ export function QuizInput({ quiz }) {
                         action="Add hint"
                         onActionTrigger={handleAddHint}
                     />
-
-                    <div style={{ marginTop: "24px" }}>
-                        <Label label="Hints" />
-
-                        <ul className="chipList">
-                            {hints.length === 0 && (
-                                <ListItem item="No hints added" />
-                            )}
-
-                            {hints.map((hint) => (
-                                <ListItem
-                                    key={hint}
-                                    item={hint}
-                                    action={() => {
-                                        setHints(
-                                            hints.filter((h) => h !== hint),
-                                        );
-                                    }}
-                                    actionType={"delete"}
-                                />
-                            ))}
-                        </ul>
-                    </div>
                 </div>
 
                 <div className={styles.tags}>
+                    <Label label="Tags" />
+
+                    <ul className="chipList">
+                        {tags.length === 0 && <ListItem item="No tags added" />}
+
+                        {tags.map((tag) => (
+                            <ListItem
+                                key={tag}
+                                item={tag}
+                                action={() => {
+                                    setTags(tags.filter((t) => t !== tag));
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul>
+
                     <Input
                         type="datalist"
                         choices={availableTags}
@@ -569,27 +588,6 @@ export function QuizInput({ quiz }) {
                         action="Add tag"
                         onActionTrigger={handleAddTag}
                     />
-
-                    <div style={{ marginTop: "24px" }}>
-                        <Label label="Tags" />
-
-                        <ul className="chipList">
-                            {tags.length === 0 && (
-                                <ListItem item="No tags added" />
-                            )}
-
-                            {tags.map((tag) => (
-                                <ListItem
-                                    key={tag}
-                                    item={tag}
-                                    action={() => {
-                                        setTags(tags.filter((t) => t !== tag));
-                                    }}
-                                    actionType={"delete"}
-                                />
-                            ))}
-                        </ul>
-                    </div>
                 </div>
             </div>
             {/* {(!quiz || (user && quiz.createdBy === user._id)) && (

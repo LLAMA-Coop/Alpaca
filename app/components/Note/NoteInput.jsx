@@ -182,9 +182,10 @@ export function NoteInput({ note }) {
                     listChosen={sources}
                     listProperty={"title"}
                     listSetter={setSources}
+                    createNew={<InputPopup type="source" />}
+                    type="datalist"
+                    messageIfNone="No sources added"
                 />
-
-                <InputPopup type="source" />
             </div>
 
             <div className={styles.tags}>
@@ -235,13 +236,15 @@ export function NoteInput({ note }) {
 
             <div className={styles.courses}>
                 <Label required={false} label="Courses" />
-
+                
                 <ListAdd
                     item="Add to a course"
                     listChoices={availableCourses}
                     listChosen={courses}
                     listProperty={"name"}
                     listSetter={setCourses}
+                    type="datalist"
+                    messageIfNone="No courses added"
                 />
             </div>
 
