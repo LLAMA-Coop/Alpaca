@@ -234,7 +234,7 @@ export function QuizInput({ quiz }) {
             correctResponses: responses,
             hints: hints,
             sources: sources.map((src) => src._id),
-            notes: notes.map((nt) => nt ?? nt._id),
+            notes: notes.map((nt) => nt._id),
             courses: courses.map((course) => course._id),
             tags,
         };
@@ -518,7 +518,7 @@ export function QuizInput({ quiz }) {
                 <Label required={false} label="Courses" />
 
                 <ListAdd
-                    item="Add a course"
+                    item="Add to a course"
                     listChoices={availableCourses}
                     listChosen={courses}
                     listProperty={"name"}
@@ -532,12 +532,15 @@ export function QuizInput({ quiz }) {
                 <PermissionsDisplay permissions={permissions} />
                 
                 {(!quiz || (user && quiz.createdBy === user._id)) && (
-                <PermissionsInput
-                    permissions={quiz ? quiz.permissions : {}}
-                    setter={setPermissions}
-                />
+                    <InputPopup type="permissions" resource={permissions} setter={setPermissions} />
             )}
             </div>
+
+            
+            {/* <PermissionsInput
+                    permissions={quiz ? quiz.permissions : {}}
+                    setter={setPermissions}
+                /> */}
 
             <div className={styles.advanced}>
                 <h4>Advanced</h4>

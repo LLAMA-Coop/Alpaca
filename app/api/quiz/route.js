@@ -14,7 +14,7 @@ const allowedType = [
     "unordered-list-answer",
     "ordered-list-answer",
     "fill-in-the-blank",
-    "verbatim"
+    "verbatim",
 ];
 
 export async function GET(req) {
@@ -203,7 +203,6 @@ export async function PUT(req) {
         if (sources) {
             console.log("In quiz PUT route, adding sources", sources);
             sources.forEach((sourceId_req, index) => {
-                console.log(index, sourceId_req);
                 if (
                     !quiz.sources.find(
                         (srcId) => srcId.toString() == sourceId_req,
@@ -217,7 +216,8 @@ export async function PUT(req) {
             notes.forEach((noteId_req) => {
                 if (
                     !quiz.notes.find(
-                        (noteId) => noteId._id.toString() == noteId_req,
+                        (noteId) =>
+                            noteId.toString() === noteId_req,
                     )
                 ) {
                     quiz.notes.push(new Types.ObjectId(noteId_req));
