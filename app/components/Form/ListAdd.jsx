@@ -45,10 +45,10 @@ export function ListAdd({
         };
 
         document.addEventListener("mousedown", handleClickOutside);
-        window.addEventListener("focusout", handleBlur);
+        selectRef.current.addEventListener("focusout", handleBlur);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
-            window.removeEventListener("focusout", handleBlur);
+            selectRef.current.removeEventListener("focusout", handleBlur);
         };
     }, [showSelect]);
 
