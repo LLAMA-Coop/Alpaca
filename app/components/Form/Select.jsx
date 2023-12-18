@@ -10,8 +10,10 @@ export function Select({
     listChoices,
     listProperty,
     listSetter,
+    createNew,
     disabled,
     setSelectState,
+    onBlur
 }) {
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -45,9 +47,11 @@ export function Select({
                 aria-multiselectable="true"
                 aria-orientation="vertical"
             >
+                {createNew != undefined && createNew}
+                
                 {listChoices &&
                     listChoices.map((choice, index) => {
-                        if(!choice) return;
+                        if (!choice) return;
                         const isChosen =
                             listChosen.find((x) => {
                                 if (!x) return false;

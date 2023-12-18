@@ -1,7 +1,6 @@
 .picker {
     position: absolute;
-    bottom: calc(100% + 8px);
-    left: 0;
+    left: 1rem;
     width: 220px;
     border-radius: 4px;
     z-index: 1;
