@@ -166,9 +166,10 @@ export function CourseInput({ course }) {
                     listChosen={parentCourses}
                     listProperty={"name"}
                     listSetter={setParentCourses}
+                    createNew={<InputPopup type="course" />}
+                    type="datalist"
+                    messageIfNone="No parent course"
                 />
-
-                <InputPopup type="course" />
             </div>
 
             <div>
@@ -183,9 +184,10 @@ export function CourseInput({ course }) {
                     listChosen={prerequisites}
                     listProperty={"name"}
                     listSetter={setPrerequisites}
+                    createNew={<InputPopup type="course" />}
+                    type="datalist"
+                    messageIfNone="No prerequisites"
                 />
-
-                <InputPopup type="course" />
             </div>
 
             {(!course || !user || course.createdBy === user._id) && (

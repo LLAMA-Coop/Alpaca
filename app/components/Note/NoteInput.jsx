@@ -236,7 +236,7 @@ export function NoteInput({ note }) {
 
             <div className={styles.courses}>
                 <Label required={false} label="Courses" />
-                
+
                 <ListAdd
                     item="Add to a course"
                     listChoices={availableCourses}
@@ -244,7 +244,7 @@ export function NoteInput({ note }) {
                     listProperty={"name"}
                     listSetter={setCourses}
                     type="datalist"
-                    messageIfNone="No courses added"
+                    messageIfNone="Not added to any course"
                 />
             </div>
 

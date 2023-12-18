@@ -332,28 +332,29 @@ export function SourceInput({ source }) {
                     listChosen={courses}
                     listProperty={"name"}
                     listSetter={setCourses}
+                    type="datalist"
+                    messageIfNone="Not added to any course"
                 />
             </div>
 
             <div>
-                <div style={{ marginTop: "24px" }}>
-                    <Label label="Tags" />
+                <Label label="Tags" />
 
-                    <ul className="chipList">
-                        {tags.length === 0 && <ListItem item="No tags added" />}
+                <ul className="chipList">
+                    {tags.length === 0 && <ListItem item="No tags added" />}
 
-                        {tags.map((tag, index) => (
-                            <ListItem
-                                key={`${tag}_${index}`}
-                                item={tag}
-                                action={() => {
-                                    setTags(tags.filter((t) => t !== tag));
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                    </ul>
-                </div>
+                    {tags.map((tag, index) => (
+                        <ListItem
+                            key={`${tag}_${index}`}
+                            item={tag}
+                            action={() => {
+                                setTags(tags.filter((t) => t !== tag));
+                            }}
+                            actionType={"delete"}
+                        />
+                    ))}
+                </ul>
+
                 <Input
                     type="datalist"
                     choices={availableTags}
