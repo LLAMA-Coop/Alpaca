@@ -49,7 +49,7 @@ export function ListAdd({
         selectRef.current.addEventListener("focusout", handleBlur);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
-            selectRef.current.removeEventListener("focusout", handleBlur);
+            if(selectRef && selectRef.current) selectRef.current.removeEventListener("focusout", handleBlur);
         };
     }, [showSelect]);
 
