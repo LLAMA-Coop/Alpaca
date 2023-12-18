@@ -530,6 +530,13 @@ export function QuizInput({ quiz }) {
 
             <div className={styles.permissions}>
                 <PermissionsDisplay permissions={permissions} />
+                
+                {(!quiz || (user && quiz.createdBy === user._id)) && (
+                <PermissionsInput
+                    permissions={quiz ? quiz.permissions : {}}
+                    setter={setPermissions}
+                />
+            )}
             </div>
 
             <div className={styles.advanced}>
@@ -597,12 +604,6 @@ export function QuizInput({ quiz }) {
                     />
                 </div>
             </div>
-            {/* {(!quiz || (user && quiz.createdBy === user._id)) && (
-                <PermissionsInput
-                    permissions={quiz ? quiz.permissions : {}}
-                    setter={setPermissions}
-                />
-            )} */}
 
             <button
                 onClick={handleSubmit}
