@@ -21,10 +21,18 @@ export function ListAdd({
 
     useEffect(() => {
         if (!listChoices || !listChoices.length) return;
+        
         setFilteredChoices(
             listChoices.filter((choice) => {
+                let prop;
+                if (Array.isArray(listProperty)) {
+                    prop = listProperty.find((p) => choice[p]);
+                    if (!prop) prop = "_id";
+                } else {
+                    prop = listProperty;
+                }
                 const pattern = new RegExp(filter, "i");
-                return pattern.test(choice[listProperty]);
+                return pattern.test(choice[prop]);
             }),
         );
     }, [filter, listChoices]);
