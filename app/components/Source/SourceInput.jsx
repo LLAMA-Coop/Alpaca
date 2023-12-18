@@ -113,7 +113,7 @@ export function SourceInput({ source }) {
             setTitleError("Title must be less than 100 characters");
         }
 
-        if (!urlRegex.test(url)) {
+        if (medium === "website" && !urlRegex.test(url)) {
             setUrlError("Invalid URL");
         }
 
@@ -327,7 +327,7 @@ export function SourceInput({ source }) {
                 <Label required={false} label="Courses" />
 
                 <ListAdd
-                    item="Add a course"
+                    item="Add to a course"
                     listChoices={availableCourses}
                     listChosen={courses}
                     listProperty={"name"}
