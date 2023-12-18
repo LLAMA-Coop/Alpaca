@@ -81,21 +81,6 @@ export function QuizInput({ quiz }) {
         if (quiz.hints) {
             setHints([...quiz.hints]);
         }
-        if (quiz.sources && !(quiz.sourceReferences && quiz.sourceReferences.length)) {
-            setSources(
-                quiz.sources.map((srcId) => {
-                    let source = availableSources.find((x) => x._id === srcId);
-                    if (!source) {
-                        source = {
-                            title: "unavailable",
-                            _id: srcId,
-                            locationTypeDefault: "page",
-                        };
-                    }
-                    return source;
-                }),
-            );
-        }
         if (quiz.notes) {
             setNotes(
                 quiz.notes.map((noteId) =>
@@ -115,6 +100,28 @@ export function QuizInput({ quiz }) {
             setPermissions(serializeOne(quiz.permissions));
         }
     }, []);
+
+    useEffect(() => {
+        if (!quiz) return;
+        if (
+            quiz.sources &&
+            !(quiz.sourceReferences && quiz.sourceReferences.length)
+        ) {
+            setSources(
+                quiz.sources.map((srcId) => {
+                    let source = availableSources.find((x) => x._id === srcId);
+                    if (!source) {
+                        source = {
+                            title: "unavailable",
+                            _id: srcId,
+                            locationTypeDefault: "page",
+                        };
+                    }
+                    return source;
+                }),
+            );
+        }
+    }, [availableSources]);
 
     const addSourceRef = useRef(null);
     useEffect(() => {
