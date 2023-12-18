@@ -104,7 +104,6 @@ export function PermissionsInput({ permissions, setter }) {
             <div>
                 <Label label="Associates with Permission to Edit" />
 
-                {/* Need to add a disable */}
                 <ListAdd
                     item="Associate"
                     listChoices={user?.associates}
@@ -112,6 +111,8 @@ export function PermissionsInput({ permissions, setter }) {
                     listProperty={"username"}
                     listSetter={setUsersWrite}
                     disabled={allWrite}
+                    type="datalist"
+                    messageIfNone="No associate to edit"
                 />
             </div>
 
@@ -126,6 +127,8 @@ export function PermissionsInput({ permissions, setter }) {
                     listProperty={"username"}
                     listSetter={setUsersRead}
                     disabled={allRead || allWrite}
+                    type="datalist"
+                    messageIfNone="No associate to read"
                 />
             </div>
 
@@ -140,6 +143,8 @@ export function PermissionsInput({ permissions, setter }) {
                     listProperty={"name"}
                     listSetter={setGroupsWrite}
                     disabled={allWrite}
+                    type="datalist"
+                    messageIfNone="No group to edit"
                 />
             </div>
             <div>
@@ -153,6 +158,8 @@ export function PermissionsInput({ permissions, setter }) {
                     listProperty={"name"}
                     listSetter={setGroupsRead}
                     disabled={allRead || allWrite}
+                    type="datalist"
+                    messageIfNone="No group to read"
                 />
             </div>
         </details>
