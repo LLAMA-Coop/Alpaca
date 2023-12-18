@@ -1,4 +1,4 @@
-# Mneme: Elevate Your Learning Game 🚀
+# Mneme: Elevate Your Learning Game🚀
 
 Welcome to **Mneme**, where learning meets innovation! 📚
 
