@@ -81,7 +81,7 @@ export function QuizInput({ quiz }) {
         if (quiz.hints) {
             setHints([...quiz.hints]);
         }
-        if (quiz.sources && !quiz.sourceReferences.length) {
+        if (quiz.sources && !(quiz.sourceReferences && quiz.sourceReferences.length)) {
             setSources(
                 quiz.sources.map((srcId) => {
                     let source = availableSources.find((x) => x._id === srcId);
