@@ -12,6 +12,7 @@ export function ListAdd({
     createNew,
     type,
     disabled,
+    messageIfNone
 }) {
     const [filter, setFilter] = useState("");
     const [filteredChoices, setFilteredChoices] = useState(listChoices);
@@ -62,6 +63,8 @@ export function ListAdd({
                         cursor: disabled ? "not-allowed" : "",
                     }}
                 >
+                    {messageIfNone && listChosen.length === 0 && <ListItem item={messageIfNone} />}
+
                     {listChosen.length > 0 &&
                         listChosen.map((choice) => {
                             if (!choice) return;
