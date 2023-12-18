@@ -342,9 +342,9 @@ export function SourceInput({ source }) {
                     <ul className="chipList">
                         {tags.length === 0 && <ListItem item="No tags added" />}
 
-                        {tags.map((tag) => (
+                        {tags.map((tag, index) => (
                             <ListItem
-                                key={tag}
+                                key={`${tag}_${index}`}
                                 item={tag}
                                 action={() => {
                                     setTags(tags.filter((t) => t !== tag));
