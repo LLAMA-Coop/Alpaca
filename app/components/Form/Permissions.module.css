@@ -1,0 +1,22 @@
+.permissions > div {
+    margin: 1rem 0;
+}
+
+.permissions h4 {
+    text-align: center;
+}
+
+.permissions h5 {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.permissions li {
+    margin: 4px;
+    padding: 4px;
+    background-color: var(--background-tertiary);
+}
+
+.permissions li > * {
+    margin: 2px;
+}

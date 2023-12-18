@@ -1,0 +1,36 @@
+.themeContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.themeContainer > div {
+    position: relative;
+}
+
+.themeContainer > div > button {
+    width: 224px;
+    height: 32px;
+    padding: 0 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    border: 1px solid transparent;
+    background-color: transparent;
+    color: var(--foreground-secondary);
+}
+
+.themeContainer > div > button:hover,
+.themeContainer > div > button:focus-visible {
+    background-color: var(--background-secondary);
+    color: var(--foreground-primary);
+}
+
+.themeContainer > div > button > div {
+    display: flex;
+    gap: 8px;
+}

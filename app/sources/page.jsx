@@ -42,21 +42,20 @@ export default async function SourcesPage({ searchParams }) {
 
     return (
         <main className={styles.main}>
-            <h2>Sources</h2>
+            <div className={styles.titleBlock}>
+                <h2>Sources</h2>
 
-            <section className="paragraph">
                 <p>
-                    A source is a record of a resource, such as a book, website,
+                    A source is a record of a resource such as a book, website,
                     or video tutorial, that you can cite for your notes or quiz
-                    questions. <br />
+                    questions.
+                    <br />
                     {user
-                        ? `These are the sources that are publicly viewable and
-                        viewable specifically by you.`
-                        : `You are only viewing the publicly available sources. Log
-                        in or register then log in to see sources available to
-                        you and create your own sources.`}
+                        ? `These are the sources that are publicly viewable, as well as the ones you made.`
+                        : `You are only viewing the publicly available sources.
+                           Log in to see sources available to you and create your own sources.`}
                 </p>
-            </section>
+            </div>
 
             {sources.length > 0 && (
                 <section>

@@ -6,6 +6,7 @@ const addResources = (state, storeName, ...resources) => {
         throw Error(`We do not have a list called ${storeName}`);
     }
     const newStore = [...state[storeName]];
+    const tagStore = [...state.tagStore];
     resources.forEach((resource) => {
         const alreadyStored = newStore.find((x) => x._id === resource._id);
         if (!alreadyStored && resource._id) {
@@ -13,9 +14,29 @@ const addResources = (state, storeName, ...resources) => {
         } else if (!resource._id) {
             console.error("Missing _id property", resource);
         }
+        if (resource.tags && resource.tags.length) {
+            resource.tags.forEach((t) => {
+                if (!tagStore.includes(t)) {
+                    tagStore.push(t);
+                }
+            });
+        }
     });
     const newState = {};
     newState[storeName] = newStore;
+    newState.tagStore = tagStore;
+    return newState;
+};
+
+const addTags = (state, ...tags) => {
+    const tagStore = [...state.tagStore];
+    tags.forEach((t) => {
+        if (!tagStore.includes(t)) {
+            tagStore.push(t);
+        }
+    });
+    const newState = {};
+    newState.tagStore = tagStore;
     return newState;
 };
 
@@ -79,6 +100,8 @@ export const useStore = create((set) => ({
     user: undefined,
     notifications: [],
 
+    tagStore: [],
+
     setUser: (user) => {
         return set(() => ({
             user: {
@@ -129,6 +152,14 @@ export const useStore = create((set) => ({
             return set((state) =>
                 updateResource(state, storeName, newResource),
             );
+        } catch (e) {
+            console.error(e);
+        }
+    },
+
+    addTags: (...tags) => {
+        try {
+            return set((state) => addTags(state, ...tags));
         } catch (e) {
             console.error(e);
         }

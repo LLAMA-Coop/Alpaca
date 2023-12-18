@@ -1,0 +1,51 @@
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.form > div:first-child,
+.form > div:nth-child(4),
+.form > :nth-child(7) {
+    flex-basis: 100%;
+}
+
+.form > button {
+    flex-basis: 50%;
+}
+
+.tags, .permissions {
+    flex-basis: calc(50% - 5px);
+    background-color: var(--background-secondary);
+    padding: 10px;
+    border-radius: 4px;
+    margin: 5px 0;
+    max-width: 50%;
+}
+
+.sources,
+.courses {
+    flex-basis: calc(50% - 5px);
+    background-color: var(--background-tertiary);
+    padding: 10px;
+    border-radius: 4px;
+    margin: 5px 0;
+    max-width: 50%;
+}
+
+.sourceLink {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 4px;
+    padding: 4px 8px;
+    height: 48px;
+    margin-top: 6px;
+    color: var(--foreground-primary);
+    background-color: var(--background-secondary);
+    text-transform: capitalize;
+}
+
+.sourceLink:hover {
+    background-color: var(--background-primary);
+}

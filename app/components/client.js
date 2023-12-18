@@ -39,10 +39,11 @@ export { ThemePicker } from "./Footer/ThemePicker";
 
 export { Timer } from "./Layers/Timer";
 export { Alerts } from "./Layers/Alerts";
-export { Modals } from "./Modals/Modals";
+export { Modals } from "./Layers/Modals";
 
-export { InviteUser } from "./Notification/InviteUser";
-export { Notifications } from "./Notification/Notifications";
+export { InviteUser } from "./Notification/inviteUser";
+export { Notifications } from "./Notification/notifications";
+export { Notification } from "./Notification/notification";
 
 export { FillStore } from "./Websocket/FillStore";
 
@@ -50,4 +51,5 @@ export { Blankable } from "./Quiz/Blankable";
 export { BlankableInput } from "./Quiz/BlankableInput";
 export { UserStats } from "./Quiz/UserStats";
 export { QuizDisplay } from "./Quiz/QuizDisplay";
-export { CourseDisplay } from "./Course/CourseDisplay";
+
+export { Menu } from "./Menu/Menu";

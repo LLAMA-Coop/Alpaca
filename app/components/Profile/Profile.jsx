@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { protectedPaths } from "@/app/data/paths";
 import styles from "./Profile.module.css";
 import { useStore } from "@/store/store";
-import { Avatar } from "@client";
+import { Avatar, Menu } from "@client";
 
 export function Profile({ user }) {
     const [showMenu, setShowMenu] = useState(false);
@@ -74,77 +74,77 @@ export function Profile({ user }) {
                     src={user.avatar}
                     username={user.username}
                     outline={showMenu}
+                    size={44}
                 />
-                {notifications.length > 0 && <sub>{notifications.length}</sub>}
+
+                {!!notifications.length && (
+                    <sub
+                        tabIndex={0}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            router.push("/me/dashboard-v2");
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.stopPropagation();
+                                router.push("/me/dashboard-v2");
+                            }
+                        }}
+                    >
+                        {notifications.length}
+                    </sub>
+                )}
             </div>
 
-            {showMenu && (
-                <div ref={menu} className="menuPopup down left medium">
-                    <ul>
-                        <li
-                            tabIndex={0}
-                            className="icon"
-                            onClick={() => {
-                                router.push("/me/dashboard");
-                                setShowMenu(false);
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    router.push("/me/dashboard");
-                                    setShowMenu(false);
-                                }
-                            }}
-                        >
-                            <div>
-                                <FontAwesomeIcon icon={faUser} />
-                            </div>
-                            Profile
-                        </li>
-
-                        <li
-                            tabIndex={0}
-                            className="icon"
-                            onClick={() => {
-                                router.push("/me/settings");
-                                setShowMenu(false);
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    router.push("/me/settings");
-                                    setShowMenu(false);
-                                }
-                            }}
-                        >
-                            <div>
-                                <FontAwesomeIcon icon={faCog} />
-                            </div>
-                            Settings
-                        </li>
-
-                        <hr />
-
-                        <li
-                            tabIndex={0}
-                            className="danger icon"
-                            onClick={() => {
-                                logout();
-                                setShowMenu(false);
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    logout();
-                                    setShowMenu(false);
-                                }
-                            }}
-                        >
-                            <div>
-                                <FontAwesomeIcon icon={faSignOut} />
-                            </div>
-                            Logout
-                        </li>
-                    </ul>
-                </div>
-            )}
+            <Menu
+                show={showMenu}
+                setShow={setShowMenu}
+                down
+                left
+                medium
+                items={[
+                    {
+                        name: "Dashboard",
+                        icon: (
+                            <g>
+                                <path d="M4 4h6v8h-6z" />
+                                <path d="M4 16h6v4h-6z" />
+                                <path d="M14 12h6v8h-6z" />
+                                <path d="M14 4h6v4h-6z" />
+                            </g>
+                        ),
+                        onClick: () => router.push("/me/dashboard"),
+                    },
+                    {
+                        name: "Settings",
+                        icon: (
+                            <g>
+                                <path
+                                    d="M14.647 4.081a.724 .724 0 0 0 1.08 .448c2.439 -1.485 5.23 1.305 3.745 3.744a.724 .724 0 0 0 .447 1.08c2.775 .673 2.775 4.62 0 5.294a.724 .724 0 0 0 -.448 1.08c1.485 2.439 -1.305 5.23 -3.744 3.745a.724 .724 0 0 0 -1.08 .447c-.673 2.775 -4.62 2.775 -5.294 0a.724 .724 0 0 0 -1.08 -.448c-2.439 1.485 -5.23 -1.305 -3.745 -3.744a.724 .724 0 0 0 -.447 -1.08c-2.775 -.673 -2.775 -4.62 0 -5.294a.724 .724 0 0 0 .448 -1.08c-1.485 -2.439 1.305 -5.23 3.744 -3.745a.722 .722 0 0 0 1.08 -.447c.673 -2.775 4.62 -2.775 5.294 0zm-2.647 4.919a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z"
+                                    strokeWidth="0"
+                                    fill="currentColor"
+                                />
+                            </g>
+                        ),
+                        onClick: () => router.push("/me/settings"),
+                    },
+                    {
+                        name: "hr",
+                    },
+                    {
+                        name: "Logout",
+                        danger: true,
+                        icon: (
+                            <g>
+                                <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                                <path d="M9 12h12l-3 -3" />
+                                <path d="M18 15l3 -3" />
+                            </g>
+                        ),
+                        onClick: logout,
+                    },
+                ]}
+            />
         </div>
     );
 }

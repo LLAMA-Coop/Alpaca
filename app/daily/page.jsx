@@ -28,7 +28,14 @@ export default async function DailyPage({ searchParams }) {
 
     return (
         <main className={styles.main}>
-            <h2>Daily Train</h2>
+            <div className={styles.titleBlock}>
+                <h2>Daily Train</h2>
+
+                <p>
+                    Daily Training is a spaced repetition system that helps you
+                    remember information from your notes and sources.
+                </p>
+            </div>
 
             <section className="paragraph">
                 <p>

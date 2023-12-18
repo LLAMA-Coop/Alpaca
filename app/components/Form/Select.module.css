@@ -1,0 +1,85 @@
+.picker {
+    position: absolute;
+    left: 1rem;
+    width: 220px;
+    border-radius: 4px;
+    z-index: 1;
+    padding: 4px 0;
+    display: flex;
+    flex-direction: column;
+    max-height: 250px;
+    overflow: hidden auto;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-tertiary);
+    box-shadow: var(--boxshadow-dark);
+}
+
+.picker::-webkit-scrollbar-thumb {
+    border-color: var(--background-secondary);
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 6px 12px;
+    justify-content: space-between;
+    color: var(--foreground-primary);
+    cursor: pointer;
+}
+
+.item:hover {
+    background-color: var(--background-tertiary);
+}
+
+.item:active {
+    opacity: 0.8;
+}
+
+.item:focus-visible {
+    outline: none;
+    background-color: var(--background-tertiary);
+}
+
+.item.disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.item > span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item > .checkbox {
+    min-width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--foreground-primary);
+    background-color: var(--background-tertiary);
+}
+
+.item:hover > .checkbox,
+.item:focus-visible > .checkbox {
+    background-color: var(--background-secondary);
+}
+
+.item > .checkbox > svg {
+    width: 12px;
+    height: 12px;
+}
+
+[data-theme="light"] .picker {
+    background-color: var(--background-primary);
+    border: 1px solid var(--foreground-tertiary);
+}
+
+[data-theme="light"] .checkbox {
+    border: 1px solid var(--foreground-tertiary);
+}

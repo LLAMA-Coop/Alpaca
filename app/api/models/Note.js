@@ -5,6 +5,7 @@ import PermissionSchema from "./PermissionSchema";
 // Captions will be required in those cases
 
 import MAX from "@/lib/max";
+import SourceReferenceSchema from "./SourceReferenceSchema";
 // Don't forget to validate at least one source ID
 
 const NoteSchema = new Schema(
@@ -38,6 +39,11 @@ const NoteSchema = new Schema(
                 type: Schema.Types.ObjectId,
                 ref: "source",
             },
+        ],
+        sourceReferences: [
+            {
+                type: SourceReferenceSchema
+            }
         ],
         contributors: [
             {

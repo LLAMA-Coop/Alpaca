@@ -1,4 +1,4 @@
-import styles from "@/app/page.module.css";
+import styles from "@/app/Auth.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -15,9 +15,9 @@ export default async function LoginPage() {
     if (user) return redirect(`/me/dashboard`);
 
     return (
-        <main className={styles.main + " " + styles.centered}>
-            <section className={styles.authContainer}>
-                <h3>Log in to Mneme</h3>
+        <main className={styles.main}>
+            <section className={styles.container}>
+                <h2>Log in to Mneme</h2>
                 <UserInput isRegistering={false} />
 
                 <div>

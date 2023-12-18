@@ -22,7 +22,19 @@ export default async function GroupPage() {
 
     return (
         <main className={styles.main}>
-            <h2>Groups</h2>
+            <div className={styles.titleBlock}>
+                <h2>Groups</h2>
+
+                <p>
+                    A group is a collection of users who can share resources,
+                    notes and quizzes with each other.
+                    <br />
+                    {user
+                        ? `These are the groups that are publicly viewable, as well as the ones you are in.`
+                        : `You are only viewing the publicly available groups.
+                            Log in to see groups available to you and create your own groups.`}
+                </p>
+            </div>
 
             <section>
                 <h3>Discover Groups</h3>

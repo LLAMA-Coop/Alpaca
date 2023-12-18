@@ -46,20 +46,19 @@ export default async function QuizzesPage({ searchParams }) {
 
     return (
         <main className={styles.main}>
-            <h2>Quiz Cards</h2>
+            <div className={styles.titleBlock}>
+                <h2>Quiz Cards</h2>
 
-            <section className="paragraph">
                 <p>
                     A quiz is a question that challenges your understanding and
-                    recall of information from a source or note. <br />
+                    recall of information from a source or note.
+                    <br />
                     {user
-                        ? `These are the quizzes that are publicly viewable and
-                            viewable specifically by you.`
+                        ? `These are the quizzes that are publicly viewable, as well as the ones you made.`
                         : `You are only viewing the publicly available quizzes.
-                            Log in or register then log in to see quizzes
-                            available to you and create your own quizzes.`}
+                           Log in to see quizzes available to you and create your own quizzes.`}
                 </p>
-            </section>
+            </div>
 
             {quizzes.length > 0 && (
                 <section>
