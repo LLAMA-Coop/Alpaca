@@ -27,7 +27,7 @@ export function Select({
     }, []);
 
     const clickEvent = (choice) => {
-        if (!listChosen.find((x) => x._id === choice._id)) {
+        if (!listChosen.find((x) => x ? x._id === choice._id : false)) {
             listSetter([...listChosen, choice]);
         } else {
             listSetter(listChosen.filter((x) => x._id !== choice._id));

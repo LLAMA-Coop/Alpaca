@@ -97,6 +97,7 @@ export function QuizInput({ quiz }) {
         }
         if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
+            console.log(quiz.permissions)
             setPermissions(serializeOne(quiz.permissions));
         }
     }, []);
@@ -244,9 +245,9 @@ export function QuizInput({ quiz }) {
 
         quizPayload.permissions = buildPermissions(permissions);
 
-        setLoading(true);
+        console.log(permissions, quizPayload.permissions)
 
-        console.log(quizPayload);
+        setLoading(true);
 
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,

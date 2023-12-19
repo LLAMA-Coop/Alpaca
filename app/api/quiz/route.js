@@ -201,7 +201,6 @@ export async function PUT(req) {
         }
 
         if (sources) {
-            console.log("In quiz PUT route, adding sources", sources);
             sources.forEach((sourceId_req, index) => {
                 if (
                     !quiz.sources.find(
@@ -244,6 +243,7 @@ export async function PUT(req) {
         if (permissions && quiz.createdBy.toString() === user._id.toString()) {
             quiz.permissions = serializeOne(permissions);
         }
+        console.log(quiz.permissions);
 
         if (!quiz.contributors.includes(user._id)) {
             quiz.contributors.push(user._id);
