@@ -537,12 +537,6 @@ export function QuizInput({ quiz }) {
             )}
             </div>
 
-            
-            {/* <PermissionsInput
-                    permissions={quiz ? quiz.permissions : {}}
-                    setter={setPermissions}
-                /> */}
-
             <div className={styles.advanced}>
                 <h4>Advanced</h4>
                 <div className={styles.hints}>

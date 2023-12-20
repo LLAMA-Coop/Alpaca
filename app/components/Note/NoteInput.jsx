@@ -11,7 +11,6 @@ import {
     ListItem,
     InputPopup,
     Spinner,
-    PermissionsInput,
     DeletePopup,
     ListAdd,
     UserInput,
@@ -92,16 +91,25 @@ export function NoteInput({ note }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        let errors = "Please correct the following:";
 
         if (text.length === 0) {
-            setTextError("Text cannot be empty");
+            let error = "Text cannot be empty"
+            setTextError(error);
+            errors += "\n" + error;
         }
 
         if (sources.length === 0) {
-            setSourceError("You must add at least one source");
+            let error = "You must add at least one source"
+            setSourceError(error);
+            errors += "\n" + error;
         }
 
         if (text.length === 0 || sources.length === 0) {
+            addAlert({
+                success: false,
+                message: errors,
+            })
             return;
         }
 
@@ -255,11 +263,7 @@ export function NoteInput({ note }) {
                 />
 
                 {(!note || (user && note.createdBy === user._id)) && (
-                    <PermissionsInput
-                        permissions={note ? note.permissions : {}}
-                        setter={setPermissions}
-                        disable={!note || (user && note.createdBy === user._id)}
-                    />
+                    <InputPopup type="permissions" resource={permissions} setter={setPermissions} />
                 )}
             </div>
 
