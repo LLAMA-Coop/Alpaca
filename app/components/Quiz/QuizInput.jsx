@@ -97,7 +97,7 @@ export function QuizInput({ quiz }) {
         }
         if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
-            console.log(quiz.permissions)
+            console.log(quiz.permissions);
             setPermissions(serializeOne(quiz.permissions));
         }
     }, []);
@@ -196,35 +196,48 @@ export function QuizInput({ quiz }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-
+        if (loading) return;
+        let errors = "Please correct the following:";
         let cannotSend = false;
+
+        function addErrorMessage(message, setter, doNotSend = true) {
+            if (Array.isArray(setter)) {
+                setter.forEach((s) => s(message));
+            } else {
+                setter(message);
+            }
+            errors += "\n" + message;
+            cannotSend = doNotSend;
+        }
+
         if (!types.find((x) => x.value === type)) {
-            setTypeError("Invalid type selected");
-            cannotSend = true;
+            addErrorMessage("Invalid type selected", setTypeError);
         }
 
         if (prompt === "") {
-            setPromptError("Prompt cannot be empty");
-            cannotSend = true;
+            addErrorMessage("Prompt cannot be empty", setPromptError);
         }
 
         if (responses.length === 0) {
-            setResponsesError("Need at least one answer");
-            cannotSend = true;
+            addErrorMessage("Need at least one answer", setResponsesError);
         }
 
         if (sources.length === 0 && notes.length === 0) {
-            setSourcesError("Need one note or source");
-            setNotesError("Need one note or source");
-            cannotSend = true;
+            addErrorMessage("Need one note or source", [
+                setSourcesError,
+                setNotesError,
+            ]);
         }
 
         if (type === "multiple-choice" && choices.length === 0) {
-            setChoicesError("Need at least one choice");
-            cannotSend = true;
+            addErrorMessage("Need at least one choice", setChoicesError);
         }
 
         if (cannotSend) {
+            addAlert({
+                success: false,
+                message: errors,
+            });
             return;
         }
 
@@ -245,7 +258,7 @@ export function QuizInput({ quiz }) {
 
         quizPayload.permissions = buildPermissions(permissions);
 
-        console.log(permissions, quizPayload.permissions)
+        console.log(permissions, quizPayload.permissions);
 
         setLoading(true);
 
@@ -531,10 +544,14 @@ export function QuizInput({ quiz }) {
 
             <div className={styles.permissions}>
                 <PermissionsDisplay permissions={permissions} />
-                
+
                 {(!quiz || (user && quiz.createdBy === user._id)) && (
-                    <InputPopup type="permissions" resource={permissions} setter={setPermissions} />
-            )}
+                    <InputPopup
+                        type="permissions"
+                        resource={permissions}
+                        setter={setPermissions}
+                    />
+                )}
             </div>
 
             <div className={styles.advanced}>

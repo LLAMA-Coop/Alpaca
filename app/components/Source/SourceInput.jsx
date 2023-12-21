@@ -106,32 +106,38 @@ export function SourceInput({ source }) {
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
+        let errors = "Please correct the following:";
+        let cannotSend = false;
+
+        function addErrorMessage(message, setter, doNotSend = true) {
+            setter(message);
+            errors += "\n" + message;
+            cannotSend = doNotSend;
+        }
 
         if (!title) {
-            setTitleError("Title is required");
+            addErrorMessage("Title is required", setTitleError);
         } else if (title.length > 100) {
-            setTitleError("Title must be less than 100 characters");
+            addErrorMessage(`Title must be ${MAX.title} characters or fewer`, setTitleError)
         }
 
         if (medium === "website" && !urlRegex.test(url)) {
-            setUrlError("Invalid URL");
+            addErrorMessage("Invalid URL", setUrlError)
         }
 
         if (!accessedRegex.test(lastAccessed)) {
-            setLastAccessedError("Invalid Date");
+            addErrorMessage("Invalid Date", setLastAccessedError)
         }
 
         if (publishDate && !publishRegex.test(publishDate)) {
-            setPublishDateError("Invalid Date");
+            addErrorMessage("Invalid Date", setPublishDateError)
         }
 
-        if (
-            !title ||
-            title.length > 100 ||
-            !urlRegex.test(url) ||
-            !accessedRegex.test(lastAccessed) ||
-            (publishDate && !publishRegex.test(publishDate))
-        ) {
+        if (cannotSend) {
+            addAlert({
+                success: false,
+                message: errors
+            })
             return;
         }
 

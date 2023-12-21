@@ -91,18 +91,20 @@ export function NoteInput({ note }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        if(loading) return;
         let errors = "Please correct the following:";
 
+        function addErrorMessage(message, setter) {
+            setter(message);
+            errors += "\n" + message;
+        }
+
         if (text.length === 0) {
-            let error = "Text cannot be empty"
-            setTextError(error);
-            errors += "\n" + error;
+            addErrorMessage("Text cannot be empty", setTextError);
         }
 
         if (sources.length === 0) {
-            let error = "You must add at least one source"
-            setSourceError(error);
-            errors += "\n" + error;
+            addErrorMessage("You must add at least one source", setSourceError)
         }
 
         if (text.length === 0 || sources.length === 0) {
