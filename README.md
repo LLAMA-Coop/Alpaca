@@ -29,11 +29,21 @@ Ready to dive in? Setting up Mneme from the Git repository is a breeze:
    ```bash
    npm install
    ```
+   If you want to update Node (we recommend using Node version 18.18.2 or higher) :
+   
+   Check your current Node version:
+   ```bash
+   node -v 
+   ```
+   If Node version is not 18.18.2 or higher, update your Node using :
+   ```bash
+   npm install -g n   
+   ```
 
-3. **Configure Your Environment**:
+4. **Configure Your Environment**:
    Open the `mneme/sample.env` file and follow the instructions to create your personalized `.env` file. Don't forget to include the URL to your MongoDB database.
 
-4. **Fire Up the Development Server**:
+5. **Fire Up the Development Server**:
    ```bash
    npm run dev
    ```
