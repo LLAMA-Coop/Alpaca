@@ -24,6 +24,7 @@ export function ListAdd({
 
         setFilteredChoices(
             listChoices.filter((choice) => {
+                if(!choice) return false;
                 let prop;
                 if (Array.isArray(listProperty)) {
                     prop = listProperty.find((p) => choice[p]);
