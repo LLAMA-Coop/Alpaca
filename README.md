@@ -71,7 +71,7 @@ Are you ready to be part of something big? We're thrilled to have developers lik
 2. **Clone Your Fork**:
    Clone your forked repository to your local machine using:
    ```bash
-   git clone https://github.com/YourUsername/mnemefeast.git
+   git clone https://github.com/YourUsername/Mneme/app.git
    # Add the link to your forked repository
    ```
 
