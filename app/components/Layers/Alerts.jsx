@@ -61,7 +61,7 @@ export function Alert({ alert }) {
                 <FontAwesomeIcon icon={alert.success ? faCheck : faClose} />
             </div>
 
-            <div>{alert.message}</div>
+            <div style={{ whiteSpace: "pre-wrap" }}>{alert.message}</div>
         </div>
     );
 }

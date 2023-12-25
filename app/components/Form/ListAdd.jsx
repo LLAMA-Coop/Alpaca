@@ -12,7 +12,7 @@ export function ListAdd({
     createNew,
     type,
     disabled,
-    messageIfNone
+    messageIfNone,
 }) {
     const [filter, setFilter] = useState("");
     const [filteredChoices, setFilteredChoices] = useState(listChoices);
@@ -21,10 +21,19 @@ export function ListAdd({
 
     useEffect(() => {
         if (!listChoices || !listChoices.length) return;
+
         setFilteredChoices(
             listChoices.filter((choice) => {
+                if(!choice) return false;
+                let prop;
+                if (Array.isArray(listProperty)) {
+                    prop = listProperty.find((p) => choice[p]);
+                    if (!prop) prop = "_id";
+                } else {
+                    prop = listProperty;
+                }
                 const pattern = new RegExp(filter, "i");
-                return pattern.test(choice[listProperty]);
+                return pattern.test(choice[prop]);
             }),
         );
     }, [filter, listChoices]);
@@ -49,7 +58,8 @@ export function ListAdd({
         selectRef.current.addEventListener("focusout", handleBlur);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
-            if(selectRef && selectRef.current) selectRef.current.removeEventListener("focusout", handleBlur);
+            if (selectRef && selectRef.current)
+                selectRef.current.removeEventListener("focusout", handleBlur);
         };
     }, [showSelect]);
 
@@ -63,11 +73,16 @@ export function ListAdd({
                         cursor: disabled ? "not-allowed" : "",
                     }}
                 >
-                    {messageIfNone && listChosen.length === 0 && <ListItem item={messageIfNone} />}
+                    {messageIfNone && listChosen.length === 0 && (
+                        <ListItem item={messageIfNone} />
+                    )}
 
                     {listChosen.length > 0 &&
                         listChosen.map((choice) => {
-                            if (!choice) return;
+                            if (!choice) return <ListItem
+                                key={choice}
+                                item="Unavailable"
+                            />;
 
                             let prop;
                             if (Array.isArray(listProperty)) {
@@ -109,7 +124,8 @@ export function ListAdd({
                     }}
                     action="Add Tag"
                     onFocus={() => setShowSelect(true)}
-                    onActionTrigger={() => {
+                    onActionTrigger={(e) => {
+                        e.preventDefault();
                         if (
                             filteredChoices.length === 1 &&
                             !listChosen.includes(filteredChoices[0])
@@ -159,7 +175,10 @@ export function ListAdd({
 
             {listChosen.length > 0 &&
                 listChosen.map((choice) => {
-                    if (!choice) return;
+                    if (!choice) return <ListItem
+                        key={choice}
+                        item="Unavailable"
+                    />;
 
                     let prop;
                     if (Array.isArray(listProperty)) {

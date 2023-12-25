@@ -1,11 +1,11 @@
 "use client";
 
-import { SourceInput, NoteInput, QuizInput } from "@client";
+import { SourceInput, NoteInput, QuizInput, PermissionsInput } from "@client";
 import { useEffect, useRef, useState } from "react";
 import styles from "./InputPopup.module.css";
 import { CourseInput } from "../Course/CourseInput";
 
-export function InputPopup({ type, resource }) {
+export function InputPopup({ type, resource, setter }) {
     const [showPopup, setShowPopup] = useState(false);
     const [animateOut, setAnimateOut] = useState(false);
     const popup = useRef(null);
@@ -34,6 +34,7 @@ export function InputPopup({ type, resource }) {
         source: resource ? "Edit source" : "Create new source",
         note: resource ? "Edit note" : "Create new note",
         course: resource ? "Edit course" : "Create new course",
+        permissions: "Edit permissions"
     };
 
     return (
@@ -116,6 +117,14 @@ export function InputPopup({ type, resource }) {
                                 <CourseInput course={resource} />
                             ) : (
                                 <CourseInput />
+                            ))}
+
+                        {type === "permissions" &&
+                            setter &&
+                            (resource ? (
+                                <PermissionsInput permissions={resource} setter={setter} />
+                            ) : (
+                                <PermissionsInput setter={setter} />
                             ))}
                     </div>
                 </div>
