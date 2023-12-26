@@ -7,6 +7,7 @@ import { buildPermissions } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
 import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
+import SubmitErrors from "@/lib/SubmitErrors";
 import {
     Input,
     Label,
@@ -197,47 +198,38 @@ export function QuizInput({ quiz }) {
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
-        let errors = "Please correct the following:";
-        let cannotSend = false;
-
-        function addErrorMessage(message, setter, doNotSend = true) {
-            if (Array.isArray(setter)) {
-                setter.forEach((s) => s(message));
-            } else {
-                setter(message);
-            }
-            errors += "\n" + message;
-            cannotSend = doNotSend;
-        }
+        const submitErrors = new SubmitErrors();
 
         if (!types.find((x) => x.value === type)) {
-            addErrorMessage("Invalid type selected", setTypeError);
+            submitErrors.addMessage("Invalid type selected", setTypeError)
         }
 
         if (prompt === "") {
-            addErrorMessage("Prompt cannot be empty", setPromptError);
+            submitErrors.addMessage("Prompt cannot be empty", setPromptError);
         }
 
         if (responses.length === 0) {
-            addErrorMessage("Need at least one answer", setResponsesError);
+            submitErrors.addMessage("Need at least one answer", setResponsesError);
         }
 
         if (sources.length === 0 && notes.length === 0) {
-            addErrorMessage("Need one note or source", [
+            submitErrors.addMessage("Need one note or source", [
                 setSourcesError,
                 setNotesError,
             ]);
         }
 
         if (type === "multiple-choice" && choices.length === 0) {
-            addErrorMessage("Need at least one choice", setChoicesError);
+            submitErrors.addMessage("Need at least one choice", setChoicesError);
         }
 
-        if (cannotSend) {
+        if (submitErrors.errors.length > 0) {
             addAlert({
                 success: false,
-                message: errors,
+                message: submitErrors.displayErrors(),
             });
+        }
+        if(submitErrors.cannotSend){
             return;
         }
 

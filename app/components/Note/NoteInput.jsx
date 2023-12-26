@@ -4,6 +4,7 @@ import { useStore, useModals, useAlerts } from "@/store/store";
 import { useEffect, useState } from "react";
 import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
+import SubmitErrors from "@/lib/SubmitErrors";
 import styles from "./NoteInput.module.css";
 import {
     Label,
@@ -91,27 +92,27 @@ export function NoteInput({ note }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        if(loading) return;
-        let errors = "Please correct the following:";
-
-        function addErrorMessage(message, setter) {
-            setter(message);
-            errors += "\n" + message;
-        }
+        if (loading) return;
+        const submitErrors = new SubmitErrors();
 
         if (text.length === 0) {
-            addErrorMessage("Text cannot be empty", setTextError);
+            submitErrors.addMessage("Text cannot be empty", setTextError);
         }
 
         if (sources.length === 0) {
-            addErrorMessage("You must add at least one source", setSourceError)
+            submitErrors.addMessage(
+                "You must add at least one source",
+                setSourceError,
+            );
         }
 
-        if (text.length === 0 || sources.length === 0) {
+        if (submitErrors.errors.length > 0) {
             addAlert({
                 success: false,
-                message: errors,
-            })
+                message: submitErrors.displayErrors(),
+            });
+        }
+        if (submitErrors.cannotSend) {
             return;
         }
 
@@ -265,7 +266,11 @@ export function NoteInput({ note }) {
                 />
 
                 {(!note || (user && note.createdBy === user._id)) && (
-                    <InputPopup type="permissions" resource={permissions} setter={setPermissions} />
+                    <InputPopup
+                        type="permissions"
+                        resource={permissions}
+                        setter={setPermissions}
+                    />
                 )}
             </div>
 

@@ -7,6 +7,7 @@ import filetypeinfo from "magic-bytes.js";
 import styles from "./Group.module.css";
 import Image from "next/image";
 import MAX from "@/lib/max";
+import SubmitErrors from "@/lib/SubmitErrors";
 
 export function GroupInput({ group }) {
     const [name, setName] = useState("");
@@ -34,18 +35,34 @@ export function GroupInput({ group }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        if (loading) return;
+        const submitErrors = new SubmitErrors();
 
-        if (name.length < 1 || name.length > 100) {
-            return setNameError("Name must be between 1 and 100 characters.");
+        if (name.length < 1 || name.length > MAX.name) {
+            submitErrors.addMessage(
+                `Name must be between 1 and ${MAX.name} characters.`,
+                setNameError,
+            );
         }
 
         if (
             description.length > 0 &&
             (description.length < 2 || description.length > 512)
         ) {
-            return setDescriptionError(
+            submitErrors.addMessage(
                 "Description must be between 2 and 512 characters.",
+                setDescriptionError,
             );
+        }
+
+        if (submitErrors.errors.length > 0) {
+            addAlert({
+                success: false,
+                message: submitErrors.displayErrors(),
+            });
+        }
+        if (submitErrors.cannotSend) {
+            return;
         }
 
         setLoading(true);

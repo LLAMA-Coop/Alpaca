@@ -7,6 +7,8 @@ import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
 import { buildPermissions } from "@/lib/permissions";
 import { serializeOne } from "@/lib/db";
+import SubmitErrors from "@/lib/SubmitErrors";
+import MAX from "@/lib/max";
 
 export async function GET(req) {
     try {
@@ -43,23 +45,45 @@ export async function POST(req) {
             permissions,
         } = await req.json();
 
-        if (!(title && medium && url)) {
+        const submitErrors = new SubmitErrors();
+
+        if (!title) {
+            submitErrors.addError("Missing title");
+        }
+        if (!medium) {
+            submitErrors.addError("Missing medium");
+        }
+        if (medium === "website" && !url) {
+            submitErrors.addError("A website requires a URL");
+        }
+        // if (!(title && medium && url)) {
+        //     return NextResponse.json(
+        //         { message: "Missing required information" },
+        //         { status: 400 },
+        //     );
+        // }
+
+        // Not going to work. Need a running error list.
+        authors.forEach((author) => {
+            if (typeof author !== "string" || author.length > MAX.name) {
+                submitErrors.addError(
+                    `The following author is not valid:\n  ${author.toString()}`,
+                );
+                // return NextResponse.json(
+                //     {
+                //         message: "Invalid author name",
+                //     },
+                //     { status: 400 },
+                // );
+            }
+        });
+
+        if (submitErrors.cannotSend) {
             return NextResponse.json(
-                { message: "Missing required information" },
+                { message: submitErrors.displayErrors() },
                 { status: 400 },
             );
         }
-
-        authors.forEach((author) => {
-            if (typeof author !== "string" || author.length > 100) {
-                return NextResponse.json(
-                    {
-                        message: "Invalid author name",
-                    },
-                    { status: 400 },
-                );
-            }
-        });
 
         const source = new Source({
             title: title,

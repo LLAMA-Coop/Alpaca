@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { serializeOne } from "@/lib/db";
 import htmlDate from "@/lib/htmlDate";
 import MAX from "@/lib/max";
+import SubmitErrors from "@/lib/SubmitErrors";
 import {
     Input,
     Label,
@@ -106,38 +107,36 @@ export function SourceInput({ source }) {
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
-        let errors = "Please correct the following:";
-        let cannotSend = false;
-
-        function addErrorMessage(message, setter, doNotSend = true) {
-            setter(message);
-            errors += "\n" + message;
-            cannotSend = doNotSend;
-        }
+        const submitErrors = new SubmitErrors();
 
         if (!title) {
-            addErrorMessage("Title is required", setTitleError);
-        } else if (title.length > 100) {
-            addErrorMessage(`Title must be ${MAX.title} characters or fewer`, setTitleError)
+            submitErrors.addMessage("Title is required", setTitleError);
+        } else if (title.length > MAX.title) {
+            submitErrors.addMessage(
+                `Title must be ${MAX.title} characters or fewer`,
+                setTitleError,
+            );
         }
 
         if (medium === "website" && !urlRegex.test(url)) {
-            addErrorMessage("Invalid URL", setUrlError)
+            submitErrors.addMessage("Invalid URL", setUrlError);
         }
 
         if (!accessedRegex.test(lastAccessed)) {
-            addErrorMessage("Invalid Date", setLastAccessedError)
+            submitErrors.addMessage("Invalid Date", setLastAccessedError);
         }
 
         if (publishDate && !publishRegex.test(publishDate)) {
-            addErrorMessage("Invalid Date", setPublishDateError)
+            submitErrors.addMessage("Invalid Date", setPublishDateError);
         }
 
-        if (cannotSend) {
+        if (submitErrors.errors.length > 0) {
             addAlert({
                 success: false,
-                message: errors
-            })
+                message: submitErrors.displayErrors(),
+            });
+        }
+        if (submitErrors.cannotSend) {
             return;
         }
 
@@ -210,9 +209,10 @@ export function SourceInput({ source }) {
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
+            const json = await response.json();
             addAlert({
                 success: false,
-                message: "Failed to add source",
+                message: json.message,
             });
         }
     }

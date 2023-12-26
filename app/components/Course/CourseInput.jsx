@@ -4,6 +4,7 @@ import { useStore, useModals, useAlerts } from "@/store/store";
 import { useEffect, useState } from "react";
 import { serializeOne } from "@/lib/db";
 import MAX from "@/lib/max";
+import SubmitErrors from "@/lib/SubmitErrors";
 import {
     Input,
     InputPopup,
@@ -57,18 +58,28 @@ export function CourseInput({ course }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        if (loading) return;
+        const submitErrors = new SubmitErrors();
 
         if (name.length === 0) {
-            setNameError(
+            submitErrors.addMessage(
                 `Course name must be between 1 and ${MAX.name} characters`,
+                setNameError,
             );
         }
         if (description.length === 0) {
-            setDescriptionError(
+            submitErrors.addMessage(
                 `Course description must be between 1 and ${MAX.description} characters`,
+                setDescriptionError,
             );
         }
-        if (name.length === 0 || description.length === 0) {
+        if (submitErrors.errors.length > 0) {
+            addAlert({
+                success: false,
+                message: submitErrors.displayErrors(),
+            });
+        }
+        if (submitErrors.cannotSend) {
             return;
         }
 
