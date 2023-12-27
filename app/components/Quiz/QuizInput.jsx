@@ -98,7 +98,6 @@ export function QuizInput({ quiz }) {
         }
         if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
-            console.log(quiz.permissions);
             setPermissions(serializeOne(quiz.permissions));
         }
     }, []);
@@ -250,8 +249,6 @@ export function QuizInput({ quiz }) {
 
         quizPayload.permissions = buildPermissions(permissions);
 
-        console.log(permissions, quizPayload.permissions);
-
         setLoading(true);
 
         const response = await fetch(
@@ -305,9 +302,10 @@ export function QuizInput({ quiz }) {
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
+            const json = await response.json();
             addAlert({
                 success: false,
-                message: `Failed to create quiz`,
+                message: json.message,
             });
         }
     }

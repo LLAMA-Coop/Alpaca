@@ -85,7 +85,12 @@ export function GroupInput({ group }) {
         setLoading(false);
 
         if (response.status === 400) {
-            setNameError("Name already taken.");
+            const json = await response.json();
+            if(json.sameName) setNameError("Name already taken.");
+            addAlert({
+                success: false,
+                message: json.message,
+            });
         } else if (response.status === 201) {
             setName("");
             setNameError("");
@@ -110,9 +115,10 @@ export function GroupInput({ group }) {
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
+            const json = await response.json();
             addAlert({
                 success: false,
-                message: "Something went wrong.",
+                message: json.message,
             });
         }
     }

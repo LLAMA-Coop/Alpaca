@@ -166,9 +166,10 @@ export function NoteInput({ note }) {
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
+            const json = await response.json();
             addAlert({
                 success: false,
-                message: "Something went wrong.",
+                message: json.message,
             });
         }
     }

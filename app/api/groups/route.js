@@ -20,20 +20,20 @@ export async function POST(req) {
         const { name, description, icon } = await req.json();
 
         if(!name) {
-            submitErrors("Missing name")
+            submitErrors.addError("Missing name")
         } else if (name?.length < 2 || name?.length > MAX.name) {
             submitErrors.addError(
                 `The following group name is not 2 to ${MAX.name} characters in length:\n ${name}`,
             );
         }
-        const sameGroup = await Group.findOne({ name });
+        const sameName = await Group.findOne({ name });
 
-        if (sameGroup) {
-            submitErrors(`The group name ${name} already exists`);
+        if (sameName) {
+            submitErrors.addError(`The group name ${name} already exists`);
         }
 
         if (description && description.length > MAX.description) {
-            submitErrors(
+            submitErrors.addError(
                 `The following description exceeds the maximum permitted, which is ${MAX.description}: \n ${description}`,
             );
         }
@@ -42,6 +42,7 @@ export async function POST(req) {
             return NextResponse.json(
                 {
                     message: submitErrors.displayErrors(),
+                    nameTaken: sameName != null
                 },
                 { status: 400 },
             );
