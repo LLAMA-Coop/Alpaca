@@ -6,6 +6,8 @@ import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { buildPermissions } from "@/lib/permissions";
 import { Types } from "mongoose";
 import { serializeOne } from "@/lib/db";
+import MAX from "@/lib/max";
+import SubmitErrors from "@/lib/SubmitErrors";
 
 export async function GET(req) {
     try {
@@ -29,12 +31,32 @@ export async function POST(req) {
             return unauthorized;
         }
 
+        const submitErrors = new SubmitErrors();
+
         const { name, description, parentCourses, prerequisites, permissions } =
             await req.json();
 
-        if (!name || !description) {
+        if (!name) {
+            submitErrors.addError("Missing name");
+        } else if (name.length > MAX.name) {
+            submitErrors.addError(
+                `The following name is longer than the maximum permitted, which is ${MAX.name} characters:\n ${name}`,
+            );
+        }
+
+        if (!description) {
+            submitErrors.addError("Missing description");
+        } else if (description.length > MAX.description) {
+            submitErrors.addError(
+                `The following description is longer than the maximum permitted, which is ${MAX.description} characters:\n ${description}`,
+            );
+        }
+
+        if (submitErrors.cannotSend) {
             return NextResponse.json(
-                { message: "Missing required information" },
+                {
+                    message: submitErrors.displayErrors(),
+                },
                 { status: 400 },
             );
         }

@@ -7,6 +7,8 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
 import { serializeOne } from "@/lib/db";
 import { buildPermissions } from "@/lib/permissions";
+import MAX from "@/lib/max";
+import SubmitErrors from "@/lib/SubmitErrors";
 
 export async function GET(req) {
     try {
@@ -39,20 +41,45 @@ export async function POST(req) {
         const { title, text, sources, courses, tags, permissions } =
             await req.json();
 
+        const submitErrors = new SubmitErrors();
+
         if (!text) {
-            return NextResponse.json(
-                {
-                    message: "No text was added to this note",
-                },
-                { status: 400 },
+            submitErrors.addError("Missing text");
+        } else if (text.length > MAX.noteText) {
+            submitErrors.addError(
+                `The following text is longer than the maximum permitted, which is ${MAX.noteText} characters:\n ${text}`,
+            );
+        }
+
+        if (title && title.length > MAX.title) {
+            submitErrors.addError(
+                `The following title is longer than the maximum permitted, which is ${MAX.title} characters:\n ${title}`,
             );
         }
 
         if (sources.length < 1) {
+            submitErrors.addError(
+                "At least one source is required to create a note",
+            );
+        }
+
+        tags.forEach((tag) => {
+            if (typeof tag !== "string") {
+                submitErrors.addError(
+                    `The following tag is not valid:\n ${tag.toString()}`,
+                );
+                return;
+            }
+            if (tag.length > MAX.tag) {
+                submitErrors.addError(
+                    `The following tag is longer than the maximum permitted, which is ${MAX.tag} characters: \n ${tag}`,
+                );
+            }
+        });
+
+        if (submitErrors.cannotSend) {
             return NextResponse.json(
-                {
-                    message: "At least one source is required to create a note",
-                },
+                { message: submitErrors.displayErrors() },
                 { status: 400 },
             );
         }

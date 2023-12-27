@@ -49,32 +49,43 @@ export async function POST(req) {
 
         if (!title) {
             submitErrors.addError("Missing title");
+        } else if (title.length > MAX.title) {
+            submitErrors.addError(
+                `The following title is longer than the maximum permitted, which is ${MAX.title} characters:\n ${title}`,
+            );
         }
+
         if (!medium) {
             submitErrors.addError("Missing medium");
-        }
-        if (medium === "website" && !url) {
+        } else if (medium === "website" && !url) {
             submitErrors.addError("A website requires a URL");
         }
-        // if (!(title && medium && url)) {
-        //     return NextResponse.json(
-        //         { message: "Missing required information" },
-        //         { status: 400 },
-        //     );
-        // }
 
-        // Not going to work. Need a running error list.
         authors.forEach((author) => {
-            if (typeof author !== "string" || author.length > MAX.name) {
+            if (typeof author !== "string") {
                 submitErrors.addError(
                     `The following author is not valid:\n  ${author.toString()}`,
                 );
-                // return NextResponse.json(
-                //     {
-                //         message: "Invalid author name",
-                //     },
-                //     { status: 400 },
-                // );
+                return;
+            }
+            if (author.length > MAX.name) {
+                submitErrors.addError(
+                    `The following author name is longer than the maximum permitted, which is ${MAX.name} characters: \n ${author}`,
+                );
+            }
+        });
+
+        tags.forEach((tag) => {
+            if (typeof tag !== "string") {
+                submitErrors.addError(
+                    `The following tag is not valid:\n ${tag.toString()}`,
+                );
+                return;
+            }
+            if (tag.length > MAX.tag) {
+                submitErrors.addError(
+                    `The following tag is longer than the maximum permitted, which is ${MAX.tag} characters: \n ${tag}`,
+                );
             }
         });
 
