@@ -73,7 +73,7 @@ export function Alert({ alert }) {
                 </svg>
             </div>
 
-            <div>{alert.message}</div>
+            <div style={{ whiteSpace: "pre-wrap" }}>{alert.message}</div>
         </div>
     );
 }

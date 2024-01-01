@@ -3,6 +3,7 @@
 import { Label, Input, Spinner, UserInput } from "@client";
 import { useModals, useAlerts } from "@/store/store";
 import { useState, useRef, useEffect } from "react";
+import SubmitErrors from "@/lib/SubmitErrors";
 import filetypeinfo from "magic-bytes.js";
 import styles from "./Group.module.css";
 import { MAX } from "@/lib/constants";
@@ -34,18 +35,34 @@ export function GroupInput({ group }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        if (loading) return;
+        const submitErrors = new SubmitErrors();
 
-        if (name.length < 1 || name.length > 100) {
-            return setNameError("Name must be between 1 and 100 characters.");
+        if (name.length < 1 || name.length > MAX.name) {
+            submitErrors.addMessage(
+                `Name must be between 1 and ${MAX.name} characters.`,
+                setNameError,
+            );
         }
 
         if (
             description.length > 0 &&
             (description.length < 2 || description.length > 512)
         ) {
-            return setDescriptionError(
+            submitErrors.addMessage(
                 "Description must be between 2 and 512 characters.",
+                setDescriptionError,
             );
+        }
+
+        if (submitErrors.errors.length > 0) {
+            addAlert({
+                success: false,
+                message: submitErrors.displayErrors(),
+            });
+        }
+        if (submitErrors.cannotSend) {
+            return;
         }
 
         setLoading(true);
@@ -68,7 +85,12 @@ export function GroupInput({ group }) {
         setLoading(false);
 
         if (response.status === 400) {
-            setNameError("Name already taken.");
+            const json = await response.json();
+            if (json.sameName) setNameError("Name already taken.");
+            addAlert({
+                success: false,
+                message: json.message,
+            });
         } else if (response.status === 201) {
             setName("");
             setNameError("");
@@ -93,9 +115,10 @@ export function GroupInput({ group }) {
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
+            const json = await response.json();
             addAlert({
                 success: false,
-                message: "Something went wrong.",
+                message: json.message,
             });
         }
     }

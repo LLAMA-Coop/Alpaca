@@ -2,6 +2,7 @@
 
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { buildPermissions } from "@/lib/permissions";
+import SubmitErrors from "@/lib/SubmitErrors";
 import { useState, useEffect } from "react";
 import { serializeOne } from "@/lib/db";
 import htmlDate from "@/lib/htmlDate";
@@ -106,32 +107,36 @@ export function SourceInput({ source }) {
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
+        const submitErrors = new SubmitErrors();
 
         if (!title) {
-            setTitleError("Title is required");
-        } else if (title.length > 100) {
-            setTitleError("Title must be less than 100 characters");
+            submitErrors.addMessage("Title is required", setTitleError);
+        } else if (title.length > MAX.title) {
+            submitErrors.addMessage(
+                `Title must be ${MAX.title} characters or fewer`,
+                setTitleError,
+            );
         }
 
-        if (!urlRegex.test(url)) {
-            setUrlError("Invalid URL");
+        if (medium === "website" && !urlRegex.test(url)) {
+            submitErrors.addMessage("Invalid URL", setUrlError);
         }
 
         if (!accessedRegex.test(lastAccessed)) {
-            setLastAccessedError("Invalid Date");
+            submitErrors.addMessage("Invalid Date", setLastAccessedError);
         }
 
         if (publishDate && !publishRegex.test(publishDate)) {
-            setPublishDateError("Invalid Date");
+            submitErrors.addMessage("Invalid Date", setPublishDateError);
         }
 
-        if (
-            !title ||
-            title.length > 100 ||
-            !urlRegex.test(url) ||
-            !accessedRegex.test(lastAccessed) ||
-            (publishDate && !publishRegex.test(publishDate))
-        ) {
+        if (submitErrors.errors.length > 0) {
+            addAlert({
+                success: false,
+                message: submitErrors.displayErrors(),
+            });
+        }
+        if (submitErrors.cannotSend) {
             return;
         }
 
@@ -204,9 +209,10 @@ export function SourceInput({ source }) {
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
+            const json = await response.json();
             addAlert({
                 success: false,
-                message: "Failed to add source",
+                message: json.message,
             });
         }
     }
@@ -327,33 +333,34 @@ export function SourceInput({ source }) {
                 <Label required={false} label="Courses" />
 
                 <ListAdd
-                    item="Add a course"
+                    item="Add to a course"
                     listChoices={availableCourses}
                     listChosen={courses}
                     listProperty={"name"}
                     listSetter={setCourses}
+                    type="datalist"
+                    messageIfNone="Not added to any course"
                 />
             </div>
 
             <div>
-                <div style={{ marginTop: "24px" }}>
-                    <Label label="Tags" />
+                <Label label="Tags" />
 
-                    <ul className="chipList">
-                        {tags.length === 0 && <ListItem item="No tags added" />}
+                <ul className="chipList">
+                    {tags.length === 0 && <ListItem item="No tags added" />}
 
-                        {tags.map((tag) => (
-                            <ListItem
-                                key={tag}
-                                item={tag}
-                                action={() => {
-                                    setTags(tags.filter((t) => t !== tag));
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                    </ul>
-                </div>
+                    {tags.map((tag, index) => (
+                        <ListItem
+                            key={`${tag}_${index}`}
+                            item={tag}
+                            action={() => {
+                                setTags(tags.filter((t) => t !== tag));
+                            }}
+                            actionType={"delete"}
+                        />
+                    ))}
+                </ul>
+
                 <Input
                     type="datalist"
                     choices={availableTags}

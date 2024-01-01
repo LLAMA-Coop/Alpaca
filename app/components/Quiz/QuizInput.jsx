@@ -1,12 +1,14 @@
 "use client";
 
+import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { DeletePopup } from "../DeletePopup/DeletePopup";
 import { buildPermissions } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
+import SubmitErrors from "@/lib/SubmitErrors";
 import styles from "./QuizInput.module.css";
 import { serializeOne } from "@/lib/db";
-import { MAX } from "@/lib/constants";
+import { MAX } from "@/lib/max";
 import {
     Input,
     Label,
@@ -18,7 +20,6 @@ import {
     BlankableInput,
     UserInput,
 } from "@client";
-import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 
 export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
@@ -79,20 +80,6 @@ export function QuizInput({ quiz }) {
         if (quiz.hints) {
             setHints([...quiz.hints]);
         }
-        if (quiz.sources && !quiz.sourceReferences) {
-            setSources(
-                quiz.sources.map((srcId) => {
-                    let source = availableSources.find((x) => x._id === srcId);
-                    if (!source) {
-                        source = {
-                            title: "unavailable",
-                            _id: srcId,
-                            locationTypeDefault: "page",
-                        };
-                    }
-                }),
-            );
-        }
         if (quiz.notes) {
             setNotes(
                 quiz.notes.map((noteId) =>
@@ -112,6 +99,28 @@ export function QuizInput({ quiz }) {
             setPermissions(serializeOne(quiz.permissions));
         }
     }, []);
+
+    useEffect(() => {
+        if (!quiz) return;
+        if (
+            quiz.sources &&
+            !(quiz.sourceReferences && quiz.sourceReferences.length)
+        ) {
+            setSources(
+                quiz.sources.map((srcId) => {
+                    let source = availableSources.find((x) => x._id === srcId);
+                    if (!source) {
+                        source = {
+                            title: "unavailable",
+                            _id: srcId,
+                            locationTypeDefault: "page",
+                        };
+                    }
+                    return source;
+                }),
+            );
+        }
+    }, [availableSources]);
 
     const addSourceRef = useRef(null);
     useEffect(() => {
@@ -185,35 +194,45 @@ export function QuizInput({ quiz }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        if (loading) return;
+        const submitErrors = new SubmitErrors();
 
-        let cannotSend = false;
         if (!types.find((x) => x.value === type)) {
-            setTypeError("Invalid type selected");
-            cannotSend = true;
+            submitErrors.addMessage("Invalid type selected", setTypeError);
         }
 
         if (prompt === "") {
-            setPromptError("Prompt cannot be empty");
-            cannotSend = true;
+            submitErrors.addMessage("Prompt cannot be empty", setPromptError);
         }
 
         if (responses.length === 0) {
-            setResponsesError("Need at least one answer");
-            cannotSend = true;
+            submitErrors.addMessage(
+                "Need at least one answer",
+                setResponsesError,
+            );
         }
 
         if (sources.length === 0 && notes.length === 0) {
-            setSourcesError("Need one note or source");
-            setNotesError("Need one note or source");
-            cannotSend = true;
+            submitErrors.addMessage("Need one note or source", [
+                setSourcesError,
+                setNotesError,
+            ]);
         }
 
         if (type === "multiple-choice" && choices.length === 0) {
-            setChoicesError("Need at least one choice");
-            cannotSend = true;
+            submitErrors.addMessage(
+                "Need at least one choice",
+                setChoicesError,
+            );
         }
 
-        if (cannotSend) {
+        if (submitErrors.errors.length > 0) {
+            addAlert({
+                success: false,
+                message: submitErrors.displayErrors(),
+            });
+        }
+        if (submitErrors.cannotSend) {
             return;
         }
 
@@ -224,7 +243,7 @@ export function QuizInput({ quiz }) {
             correctResponses: responses,
             hints: hints,
             sources: sources.map((src) => src._id),
-            notes: notes.map((nt) => nt ?? nt._id),
+            notes: notes.map((nt) => nt._id),
             courses: courses.map((course) => course._id),
             tags,
         };
@@ -235,8 +254,6 @@ export function QuizInput({ quiz }) {
         quizPayload.permissions = buildPermissions(permissions);
 
         setLoading(true);
-
-        console.log(quizPayload);
 
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,
@@ -289,9 +306,10 @@ export function QuizInput({ quiz }) {
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
+            const json = await response.json();
             addAlert({
                 success: false,
-                message: `Failed to create quiz`,
+                message: json.message,
             });
         }
     }
@@ -478,8 +496,10 @@ export function QuizInput({ quiz }) {
                         listChosen={sources}
                         listProperty={"title"}
                         listSetter={setSources}
+                        createNew={<InputPopup type="source" />}
+                        type="datalist"
+                        messageIfNone="No sources added"
                     />
-                    <InputPopup type="source" />
                 </div>
 
                 <div className={styles.notes}>
@@ -495,8 +515,10 @@ export function QuizInput({ quiz }) {
                         listChosen={notes}
                         listProperty={["title", "text"]}
                         listSetter={setNotes}
+                        createNew={<InputPopup type="note" />}
+                        type="datalist"
+                        messageIfNone="No notes added"
                     />
-                    <InputPopup type="note" />
                 </div>
             </div>
 
@@ -504,21 +526,50 @@ export function QuizInput({ quiz }) {
                 <Label required={false} label="Courses" />
 
                 <ListAdd
-                    item="Add a course"
+                    item="Add to a course"
                     listChoices={availableCourses}
                     listChosen={courses}
                     listProperty={"name"}
                     listSetter={setCourses}
+                    type="datalist"
+                    messageIfNone="Not added to any course"
                 />
             </div>
 
             <div className={styles.permissions}>
                 <PermissionsDisplay permissions={permissions} />
+
+                {(!quiz || (user && quiz.createdBy === user._id)) && (
+                    <InputPopup
+                        type="permissions"
+                        resource={permissions}
+                        setter={setPermissions}
+                    />
+                )}
             </div>
 
             <div className={styles.advanced}>
                 <h4>Advanced</h4>
                 <div className={styles.hints}>
+                    <Label label="Hints" />
+
+                    <ul className="chipList">
+                        {hints.length === 0 && (
+                            <ListItem item="No hints added" />
+                        )}
+
+                        {hints.map((hint) => (
+                            <ListItem
+                                key={hint}
+                                item={hint}
+                                action={() => {
+                                    setHints(hints.filter((h) => h !== hint));
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul>
+
                     <Input
                         label={"Add Hint"}
                         value={newHint}
@@ -528,32 +579,26 @@ export function QuizInput({ quiz }) {
                         action="Add hint"
                         onActionTrigger={handleAddHint}
                     />
-
-                    <div style={{ marginTop: "24px" }}>
-                        <Label label="Hints" />
-
-                        <ul className="chipList">
-                            {hints.length === 0 && (
-                                <ListItem item="No hints added" />
-                            )}
-
-                            {hints.map((hint) => (
-                                <ListItem
-                                    key={hint}
-                                    item={hint}
-                                    action={() => {
-                                        setHints(
-                                            hints.filter((h) => h !== hint),
-                                        );
-                                    }}
-                                    actionType={"delete"}
-                                />
-                            ))}
-                        </ul>
-                    </div>
                 </div>
 
                 <div className={styles.tags}>
+                    {/* <Label label="Tags" />
+
+                    <ul className="chipList">
+                        {tags.length === 0 && <ListItem item="No tags added" />}
+
+                        {tags.map((tag) => (
+                            <ListItem
+                                key={tag}
+                                item={tag}
+                                action={() => {
+                                    setTags(tags.filter((t) => t !== tag));
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul> */}
+
                     <Input
                         type="datalist"
                         // choices={availableTags}
@@ -568,7 +613,7 @@ export function QuizInput({ quiz }) {
                         // onActionTrigger={handleAddTag}
                     />
 
-                    <div style={{ marginTop: "24px" }}>
+                    {/* <div style={{ marginTop: "24px" }}>
                         <Label label="Tags" />
 
                         <ul className="chipList">
@@ -587,15 +632,9 @@ export function QuizInput({ quiz }) {
                                 />
                             ))}
                         </ul>
-                    </div>
+                    </div> */}
                 </div>
             </div>
-            {/* {(!quiz || (user && quiz.createdBy === user._id)) && (
-                <PermissionsInput
-                    permissions={quiz ? quiz.permissions : {}}
-                    setter={setPermissions}
-                />
-            )} */}
 
             <button
                 onClick={handleSubmit}

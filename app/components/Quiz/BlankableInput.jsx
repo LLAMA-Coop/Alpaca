@@ -115,8 +115,6 @@ export function BlankableInput({
             }
         });
 
-        console.log(promptArray);
-
         setPromptWords(promptArray);
         setResponses(promptArray.filter((x) => x.isBlank).map((x) => x.word));
         setPrompt(
@@ -149,14 +147,7 @@ export function BlankableInput({
             } else {
                 promptArray.push(x.textContent);
             }
-            // let word = x.getAttribute("data-word");
-            // if (word) {
-            //     promptArray.push(word);
-            //     return;
-            // }
-            // promptArray.push(x.textContent);
         });
-        console.log(promptArray);
         setPrompt(promptArray.join(""));
         setPromptWords(words);
         setResponses(responseArray);

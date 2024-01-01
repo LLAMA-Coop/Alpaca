@@ -7,6 +7,8 @@ import { serializeOne } from "@/lib/db";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
 import { buildPermissions } from "@/lib/permissions";
+import MAX from "@/lib/max";
+import SubmitErrors from "@/lib/SubmitErrors";
 
 const allowedType = [
     "prompt-response",
@@ -14,7 +16,7 @@ const allowedType = [
     "unordered-list-answer",
     "ordered-list-answer",
     "fill-in-the-blank",
-    "verbatim"
+    "verbatim",
 ];
 
 export async function GET(req) {
@@ -50,64 +52,99 @@ export async function POST(req) {
             permissions,
         } = await req.json();
 
+        const submitErrors = new SubmitErrors();
+
         if (!allowedType.includes(type)) {
-            return NextResponse.json(
-                {
-                    message: "Invalid type submitted",
-                },
-                { status: 400 },
-            );
+            submitErrors.addError(`The following type is not valid:\n ${type}`);
         }
 
         if (!prompt) {
-            return NextResponse.json(
-                {
-                    message: "Prompt is required",
-                },
-                { status: 400 },
+            submitErrors("Missing prompt");
+        } else if (prompt.length > MAX.prompt) {
+            submitErrors.addError(
+                `The following prompt is longer than the maximum permitted, which is ${MAX.prompt} characters:\n ${prompt}`,
             );
         }
 
-        if (!correctResponses) {
-            return NextResponse.json(
-                {
-                    message: "Correct responses are required",
-                },
-                { status: 400 },
-            );
+        if (!correctResponses?.length) {
+            submitErrors("Correct responses are required");
+        } else {
+            correctResponses.forEach((response) => {
+                if (response.length > MAX.response) {
+                    if (
+                        typeof response !== "string" &&
+                        Array.isArray(response)
+                    ) {
+                        submitErrors.addError(
+                            `The following correct response is not valid:\n ${response.toString()}`,
+                        );
+                        return;
+                    }
+                    if (response.length > MAX.response) {
+                        submitErrors(
+                            `The following correct response is longer than the maximum permitted, which is ${MAX.response} characters: \n ${response}`,
+                        );
+                    }
+                }
+            });
         }
 
         if (type === "multiple-choice" && !choices?.length) {
-            return NextResponse.json(
-                {
-                    message:
-                        "Choices are required for multiple choice questions",
-                },
-                { status: 400 },
-            );
+            submitErrors("Choices are required for multiple choice questions");
+        } else if (choices?.length) {
+            choices.forEach((choice) => {
+                if (typeof choice !== "string") {
+                    submitErrors.addError(
+                        `The following choice is not valid:\n ${choice.toString()}`,
+                    );
+                    return;
+                }
+                if (choice.length > MAX.response) {
+                    submitErrors(
+                        `The following choice is longer than the maximum permitted, which is ${MAX.response} characters: \n ${choice}`,
+                    );
+                }
+            });
         }
 
         if (notes?.length === 0 && sources?.length === 0) {
-            return NextResponse.json(
-                {
-                    message: "Need at least one note or source",
-                },
-                { status: 400 },
-            );
+            submitErrors("Need at least one note or source");
         }
 
-        let responses = correctResponses;
-        if (type === "fill-in-the-blank") {
-            // Each string looks like this: "x_word", with x being the index of the blank
-            // We want to sort the words by the index of the blank, but also just keep the word
+        tags.forEach((tag) => {
+            if (typeof tag !== "string") {
+                submitErrors.addError(
+                    `The following tag is not valid:\n ${tag.toString()}`,
+                );
+                return;
+            }
+            if (tag.length > MAX.tag) {
+                submitErrors.addError(
+                    `The following tag is longer than the maximum permitted, which is ${MAX.tag} characters: \n ${tag}`,
+                );
+            }
+        });
 
-            responses = responses
-                .sort((a, b) => {
-                    const a_index = parseInt(a.split("_")[0]);
-                    const b_index = parseInt(b.split("_")[0]);
-                    return a_index - b_index;
-                })
-                .map((x) => x.split("_")[1]);
+        if (hints)
+            hints.forEach((hint) => {
+                if (typeof hint !== "string") {
+                    submitErrors.addError(
+                        `The following tag is not valid:\n ${tag.toString()}`,
+                    );
+                    return;
+                }
+                if (hint.length > MAX.response) {
+                    submitErrors.addError(
+                        `The following hint is longer than the maximum permitted, which is ${MAX.response} characters: \n ${hint}`,
+                    );
+                }
+            });
+
+        if (submitErrors.cannotSend) {
+            return NextResponse.json(
+                { message: submitErrors.displayErrors() },
+                { status: 400 },
+            );
         }
 
         const quiz = new Quiz({
@@ -201,9 +238,7 @@ export async function PUT(req) {
         }
 
         if (sources) {
-            console.log("In quiz PUT route, adding sources", sources);
             sources.forEach((sourceId_req, index) => {
-                console.log(index, sourceId_req);
                 if (
                     !quiz.sources.find(
                         (srcId) => srcId.toString() == sourceId_req,
@@ -217,7 +252,7 @@ export async function PUT(req) {
             notes.forEach((noteId_req) => {
                 if (
                     !quiz.notes.find(
-                        (noteId) => noteId._id.toString() == noteId_req,
+                        (noteId) => noteId.toString() === noteId_req,
                     )
                 ) {
                     quiz.notes.push(new Types.ObjectId(noteId_req));
@@ -244,6 +279,7 @@ export async function PUT(req) {
         if (permissions && quiz.createdBy.toString() === user._id.toString()) {
             quiz.permissions = serializeOne(permissions);
         }
+        console.log(quiz.permissions);
 
         if (!quiz.contributors.includes(user._id)) {
             quiz.contributors.push(user._id);

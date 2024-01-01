@@ -1,4 +1,4 @@
-# Mneme: Elevate Your Learning Game 🚀
+# Mneme: Elevate Your Learning Game🚀
 
 Welcome to **Mneme**, where learning meets innovation! 📚
 
@@ -29,11 +29,21 @@ Ready to dive in? Setting up Mneme from the Git repository is a breeze:
    ```bash
    npm install
    ```
+   If you want to update Node (we recommend using Node version 18.18.2 or higher) :
+   
+   Check your current Node version:
+   ```bash
+   node -v 
+   ```
+   If Node version is not 18.18.2 or higher, update your Node using :
+   ```bash
+   npm install -g n   
+   ```
 
-3. **Configure Your Environment**:
+4. **Configure Your Environment**:
    Open the `mneme/sample.env` file and follow the instructions to create your personalized `.env` file. Don't forget to include the URL to your MongoDB database.
 
-4. **Fire Up the Development Server**:
+5. **Fire Up the Development Server**:
    ```bash
    npm run dev
    ```
@@ -71,7 +81,7 @@ Are you ready to be part of something big? We're thrilled to have developers lik
 2. **Clone Your Fork**:
    Clone your forked repository to your local machine using:
    ```bash
-   git clone https://github.com/YourUsername/mnemefeast.git
+   git clone https://github.com/YourUsername/Mneme/app.git
    # Add the link to your forked repository
    ```
 

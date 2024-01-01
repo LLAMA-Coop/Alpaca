@@ -1,22 +1,22 @@
 "use client";
 
+import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 import { useStore, useModals, useAlerts } from "@/store/store";
+import SubmitErrors from "@/lib/SubmitErrors";
+import styles from "./NoteInput.module.css";
 import { useEffect, useState } from "react";
 import { serializeOne } from "@/lib/db";
 import { MAX } from "@/lib/constants";
-import styles from "./NoteInput.module.css";
 import {
     Label,
     Input,
     ListItem,
     InputPopup,
     Spinner,
-    PermissionsInput,
     DeletePopup,
     ListAdd,
     UserInput,
 } from "@client";
-import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 
 export function NoteInput({ note }) {
     const [title, setTitle] = useState("");
@@ -92,16 +92,27 @@ export function NoteInput({ note }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        if (loading) return;
+        const submitErrors = new SubmitErrors();
 
         if (text.length === 0) {
-            setTextError("Text cannot be empty");
+            submitErrors.addMessage("Text cannot be empty", setTextError);
         }
 
         if (sources.length === 0) {
-            setSourceError("You must add at least one source");
+            submitErrors.addMessage(
+                "You must add at least one source",
+                setSourceError,
+            );
         }
 
-        if (text.length === 0 || sources.length === 0) {
+        if (submitErrors.errors.length > 0) {
+            addAlert({
+                success: false,
+                message: submitErrors.displayErrors(),
+            });
+        }
+        if (submitErrors.cannotSend) {
             return;
         }
 
@@ -155,9 +166,10 @@ export function NoteInput({ note }) {
                 content: <UserInput onSubmit={removeModal} />,
             });
         } else {
+            const json = await response.json();
             addAlert({
                 success: false,
-                message: "Something went wrong.",
+                message: json.message,
             });
         }
     }
@@ -182,9 +194,10 @@ export function NoteInput({ note }) {
                     listChosen={sources}
                     listProperty={"title"}
                     listSetter={setSources}
+                    createNew={<InputPopup type="source" />}
+                    type="datalist"
+                    messageIfNone="No sources added"
                 />
-
-                <InputPopup type="source" />
             </div>
 
             <div className={styles.tags}>
@@ -242,6 +255,8 @@ export function NoteInput({ note }) {
                     listChosen={courses}
                     listProperty={"name"}
                     listSetter={setCourses}
+                    type="datalist"
+                    messageIfNone="Not added to any course"
                 />
             </div>
 
@@ -252,10 +267,10 @@ export function NoteInput({ note }) {
                 />
 
                 {(!note || (user && note.createdBy === user._id)) && (
-                    <PermissionsInput
-                        permissions={note ? note.permissions : {}}
+                    <InputPopup
+                        type="permissions"
+                        resource={permissions}
                         setter={setPermissions}
-                        disable={!note || (user && note.createdBy === user._id)}
                     />
                 )}
             </div>

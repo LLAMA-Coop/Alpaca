@@ -5,6 +5,8 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 // import { Group } from "@mneme_app/database-models";
 // import User from "@mneme_app/database-models";
 import { User, Group } from "@/app/api/models";
+import SubmitErrors from "@/lib/SubmitErrors";
+import MAX from "@/lib/max";
 
 export async function POST(req) {
     try {
@@ -13,22 +15,34 @@ export async function POST(req) {
             return unauthorized;
         }
 
+        const submitErrors = new SubmitErrors();
+
         const { name, description, icon } = await req.json();
 
-        if (name?.length < 2 || name?.length > 100) {
-            return NextResponse.json(
-                {
-                    message: "Name must be between 2 and 100 characters",
-                },
-                { status: 400 },
+        if(!name) {
+            submitErrors.addError("Missing name")
+        } else if (name?.length < 2 || name?.length > MAX.name) {
+            submitErrors.addError(
+                `The following group name is not 2 to ${MAX.name} characters in length:\n ${name}`,
             );
         }
-        const sameGroup = await Group.findOne({ name: name });
+        const sameName = await Group.findOne({ name });
 
-        if (sameGroup) {
+        if (sameName) {
+            submitErrors.addError(`The group name ${name} already exists`);
+        }
+
+        if (description && description.length > MAX.description) {
+            submitErrors.addError(
+                `The following description exceeds the maximum permitted, which is ${MAX.description}: \n ${description}`,
+            );
+        }
+
+        if (submitErrors.cannotSend) {
             return NextResponse.json(
                 {
-                    message: "Group with this name already exists",
+                    message: submitErrors.displayErrors(),
+                    nameTaken: sameName != null
                 },
                 { status: 400 },
             );

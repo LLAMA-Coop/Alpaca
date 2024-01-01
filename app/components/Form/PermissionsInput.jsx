@@ -2,7 +2,7 @@
 
 import { Input, Label, ListAdd } from "@client";
 import { useState, useEffect } from "react";
-import { useStore } from "@/store/store";
+import { useStore, useModals } from "@/store/store";
 
 export function PermissionsInput({ permissions, setter }) {
     const [allWrite, setAllWrite] = useState(
@@ -18,6 +18,7 @@ export function PermissionsInput({ permissions, setter }) {
 
     const user = useStore((state) => state.user);
     const availableGroups = useStore((state) => state.groupStore);
+    const addModal = useModals((state) => state.addModal);
 
     useEffect(() => {
         if (!permissions) return;
@@ -83,9 +84,7 @@ export function PermissionsInput({ permissions, setter }) {
     }, [allWrite, allRead, usersWrite, usersRead, groupsWrite, groupsRead]);
 
     return (
-        <details className="formGrid">
-            <summary>Edit Permissions</summary>
-
+        <div className="formGrid">
             <Input
                 type="checkbox"
                 label="Allow All Users to Edit?"
@@ -104,7 +103,6 @@ export function PermissionsInput({ permissions, setter }) {
             <div>
                 <Label label="Associates with Permission to Edit" />
 
-                {/* Need to add a disable */}
                 <ListAdd
                     item="Associate"
                     listChoices={user?.associates}
@@ -112,13 +110,14 @@ export function PermissionsInput({ permissions, setter }) {
                     listProperty={"username"}
                     listSetter={setUsersWrite}
                     disabled={allWrite}
+                    type="datalist"
+                    messageIfNone="No associate to edit"
                 />
             </div>
 
             <div>
                 <Label label="Associates with Permission to View" />
 
-                {/* Need to add a disable */}
                 <ListAdd
                     item="Associate"
                     listChoices={user?.associates}
@@ -126,13 +125,14 @@ export function PermissionsInput({ permissions, setter }) {
                     listProperty={"username"}
                     listSetter={setUsersRead}
                     disabled={allRead || allWrite}
+                    type="datalist"
+                    messageIfNone="No associate to read"
                 />
             </div>
 
             <div>
                 <Label label="Groups with Permission to Edit" />
 
-                {/* Need to add a disable */}
                 <ListAdd
                     item="Group"
                     listChoices={availableGroups}
@@ -140,12 +140,13 @@ export function PermissionsInput({ permissions, setter }) {
                     listProperty={"name"}
                     listSetter={setGroupsWrite}
                     disabled={allWrite}
+                    type="datalist"
+                    messageIfNone="No group to edit"
                 />
             </div>
             <div>
                 <Label label="Groups with Permission to View" />
 
-                {/* Need to add a disable */}
                 <ListAdd
                     item="Group"
                     listChoices={availableGroups}
@@ -153,8 +154,10 @@ export function PermissionsInput({ permissions, setter }) {
                     listProperty={"name"}
                     listSetter={setGroupsRead}
                     disabled={allRead || allWrite}
+                    type="datalist"
+                    messageIfNone="No group to read"
                 />
             </div>
-        </details>
+        </div>
     );
 }

@@ -7,6 +7,8 @@ import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
 import { buildPermissions } from "@/lib/permissions";
 import { serializeOne } from "@/lib/db";
+import SubmitErrors from "@/lib/SubmitErrors";
+import MAX from "@/lib/max";
 
 export async function GET(req) {
     try {
@@ -41,23 +43,56 @@ export async function POST(req) {
             permissions,
         } = await req.json();
 
-        if (!(title && medium && url)) {
-            return NextResponse.json(
-                { message: "Missing required information" },
-                { status: 400 },
+        const submitErrors = new SubmitErrors();
+
+        if (!title) {
+            submitErrors.addError("Missing title");
+        } else if (title.length > MAX.title) {
+            submitErrors.addError(
+                `The following title is longer than the maximum permitted, which is ${MAX.title} characters:\n ${title}`,
             );
         }
 
+        if (!medium) {
+            submitErrors.addError("Missing medium");
+        } else if (medium === "website" && !url) {
+            submitErrors.addError("A website requires a URL");
+        }
+
         authors.forEach((author) => {
-            if (typeof author !== "string" || author.length > 100) {
-                return NextResponse.json(
-                    {
-                        message: "Invalid author name",
-                    },
-                    { status: 400 },
+            if (typeof author !== "string") {
+                submitErrors.addError(
+                    `The following author is not valid:\n  ${author.toString()}`,
+                );
+                return;
+            }
+            if (author.length > MAX.name) {
+                submitErrors.addError(
+                    `The following author name is longer than the maximum permitted, which is ${MAX.name} characters: \n ${author}`,
                 );
             }
         });
+
+        tags.forEach((tag) => {
+            if (typeof tag !== "string") {
+                submitErrors.addError(
+                    `The following tag is not valid:\n ${tag.toString()}`,
+                );
+                return;
+            }
+            if (tag.length > MAX.tag) {
+                submitErrors.addError(
+                    `The following tag is longer than the maximum permitted, which is ${MAX.tag} characters: \n ${tag}`,
+                );
+            }
+        });
+
+        if (submitErrors.cannotSend) {
+            return NextResponse.json(
+                { message: submitErrors.displayErrors() },
+                { status: 400 },
+            );
+        }
 
         const source = new Source({
             title: title,
