@@ -62,11 +62,32 @@
     margin-bottom: 16px;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+}
+
+.main > section > h1 > button {
+    display: inline-flex;
+    background-color: transparent;
+    border: none;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    margin-left: 8px;
+    color: var(--foreground-secondary);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.main > section > h1 > button:hover {
+    background-color: var(--background-secondary);
+    color: var(--foreground-primary);
 }
 
 .content {
-    display: grid;
-    grid-template-columns: 1fr 250px;
+    display: flex;
+    gap: 32px;
 }
 
 .content > div {
@@ -77,7 +98,17 @@
 }
 
 .content > div:first-child {
-    padding-right: 32px;
+    flex: 1;
+}
+
+.content > div:last-child {
+    width: 250px;
+    padding: 40px 32px 40px 0;
+}
+
+.content > div > .buttons {
+    display: flex;
+    gap: 12px;
 }
 
 .avatar {
@@ -124,9 +155,48 @@
     gap: 4px;
     cursor: pointer;
     font-weight: 600;
+    transition:
+        background-color 0.1s ease-in-out,
+        color 0.1s ease-in-out;
+}
+
+.avatar > div > button:nth-of-type(2) {
+    right: 0;
+    top: 0;
+    bottom: auto;
+    padding: 6px;
 }
 
 .avatar > div > button:hover {
     background-color: var(--background-secondary);
     color: var(--foreground-primary);
+}
+
+@media screen and (max-width: 1024px) {
+    .content {
+        flex-direction: column-reverse;
+    }
+
+    .content > div:last-child {
+        padding: 32px 0 0 0;
+    }
+
+    .avatar {
+        justify-content: flex-start;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .main {
+        display: block;
+    }
+
+    .tabList {
+        padding-right: 0;
+        margin-bottom: 80px;
+    }
+
+    .main > section {
+        padding-left: 0;
+    }
 }

@@ -1,7 +1,7 @@
-import { NoteDisplay, SourceDisplay, UserCard } from "@server";
-import { QuizDisplay } from "@client";
-import { Source, Note, Quiz, Group } from "@models";
+import { Source, Note, Quiz, Group, User } from "@models";
+import { NoteDisplay, SourceDisplay } from "@server";
 import { serialize, serializeOne } from "@/lib/db";
+import { QuizDisplay, UserCard } from "@client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
@@ -10,7 +10,6 @@ import { useUser } from "@/lib/auth";
 
 export default async function GroupPage({ params }) {
     const groupId = params.groupId;
-    console.log(groupId);
 
     const group = serializeOne(await Group.findById(groupId).populate("users"));
     if (!group) return redirect("/groups");
@@ -29,18 +28,23 @@ export default async function GroupPage({ params }) {
         ],
     };
 
+    const publicUsers = serialize(
+        await User.find({
+            isPublic: true,
+            _id: { $ne: user.id, $nin: group.users.map((u) => u._id) },
+        }),
+    );
+
     const quizzes = serialize(await Quiz.find(permissionsQuery));
     const notes = serialize(await Note.find(permissionsQuery));
     const sources = serialize(await Source.find(permissionsQuery));
 
     return (
         <main className={styles.main}>
-            <section>
+            <div className={styles.titleBlock}>
                 <h2>{group.name}</h2>
-                <div className="paragraph center">
-                    <p title="Group description">{group.description}</p>
-                </div>
-            </section>
+                <p title="Group description">{group.description}</p>
+            </div>
 
             <section>
                 <h3>Members</h3>
@@ -57,27 +61,28 @@ export default async function GroupPage({ params }) {
                 <div>
                     {group.users.length > 0 && (
                         <ol className={styles.listGrid}>
-                            {group.users.map((user) => {
-                                return (
-                                    <li key={user._id}>
-                                        <UserCard
-                                            user={user}
-                                            isOwner={user._id === group.owner}
-                                            isAdmin={group.admins.includes(
-                                                user._id,
-                                            )}
-                                        />
-                                    </li>
-                                );
-                            })}
+                            {group.users.map((user) => (
+                                <li key={user.id}>
+                                    <UserCard
+                                        user={user}
+                                        isOwner={user._id === group.owner}
+                                        isAdmin={group.admins.includes(
+                                            user._id,
+                                        )}
+                                    />
+                                </li>
+                            ))}
                         </ol>
                     )}
                 </div>
 
                 {user &&
-                    (user._id === group.owner ||
-                        group.admins.includes(user._id)) && (
-                        <InviteUser groupId={groupId} />
+                    (user.id === group.owner ||
+                        group.admins.includes(user.id)) && (
+                        <InviteUser
+                            publicUsers={publicUsers}
+                            groupId={groupId}
+                        />
                     )}
             </section>
 

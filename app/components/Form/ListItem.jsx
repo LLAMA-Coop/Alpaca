@@ -58,9 +58,21 @@ export function ListItem({ item, action, actionType, link, select, disabled }) {
                         if (e.key === "Escape") setShowSelect(false);
                     }}
                 >
-                    <FontAwesomeIcon
-                        icon={actionType === "add" ? faAdd : faSubtract}
-                    />
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        height="24"
+                    >
+                        {actionType === "add" ? (
+                            <g>
+                                <path d="M12 5l0 14" />
+                                <path d="M5 12l14 0" />
+                            </g>
+                        ) : (
+                            <path d="M5 12l14 0" />
+                        )}
+                    </svg>
                 </button>
             )}
 
@@ -72,7 +84,16 @@ export function ListItem({ item, action, actionType, link, select, disabled }) {
                     }`}
                     title={label}
                 >
-                    <FontAwesomeIcon icon={faArrowRight} />
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        height="24"
+                    >
+                        <path d="M5 12l14 0" />
+                        <path d="M15 16l4 -4" />
+                        <path d="M15 8l4 4" />
+                    </svg>
                 </button>
             )}
 

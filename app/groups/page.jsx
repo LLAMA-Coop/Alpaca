@@ -5,11 +5,13 @@ import { useUser } from "@/lib/auth";
 import { Group } from "@models";
 
 export default async function GroupPage() {
+    const user = await useUser({ token: cookies().get("token")?.value });
+
     const groups = await Group.find({
         isPublic: true,
+        ...(user ? { _id: { $nin: user.groups } } : {}),
     });
 
-    const user = await useUser({ token: cookies().get("token")?.value });
     const yourGroups = user
         ? await Group.find({
               $or: [
@@ -58,32 +60,36 @@ export default async function GroupPage() {
                 )}
             </section>
 
-            <section>
-                <h3>Your Groups</h3>
+            {user && (
+                <section>
+                    <h3>Your Groups</h3>
 
-                {yourGroups.length > 0 ? (
-                    <ol className={styles.listGrid}>
-                        {yourGroups.map((group) => (
-                            <li key={group.id}>
-                                <Card
-                                    title={group.name}
-                                    description={group.description}
-                                    url={`/groups/${group.id}`}
-                                />
-                            </li>
-                        ))}
-                    </ol>
-                ) : (
-                    <div className="paragraph">
-                        <p>You are not listed in any groups yet.</p>
-                    </div>
-                )}
-            </section>
+                    {yourGroups.length > 0 ? (
+                        <ol className={styles.listGrid}>
+                            {yourGroups.map((group) => (
+                                <li key={group.id}>
+                                    <Card
+                                        title={group.name}
+                                        description={group.description}
+                                        url={`/groups/${group.id}`}
+                                    />
+                                </li>
+                            ))}
+                        </ol>
+                    ) : (
+                        <div className="paragraph">
+                            <p>You are not listed in any groups yet.</p>
+                        </div>
+                    )}
+                </section>
+            )}
 
-            <section>
-                <h3>Create Group</h3>
-                <GroupInput />
-            </section>
+            {user && (
+                <section>
+                    <h3>Create Group</h3>
+                    <GroupInput />
+                </section>
+            )}
         </main>
     );
 }

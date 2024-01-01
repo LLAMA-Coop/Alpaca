@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./QuizInput.module.css";
 import { Input } from "@client";
-import MAX from "@/lib/max";
+import { MAX } from "@/lib/constants";
 
 export function BlankableInput({
     prompt,

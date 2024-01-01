@@ -1,0 +1,135 @@
+.container {
+    max-width: 100%;
+    width: 100%;
+    margin-bottom: 40px;
+    background-color: var(--background-secondary);
+}
+
+.container > h3 {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 1000px;
+    color: var(--foreground-primary);
+    background-color: var(--accent-secondary-1);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-left: 8px;
+    user-select: none;
+}
+
+.container > ul {
+    padding: 2px;
+    margin: -2px;
+    display: flex;
+    gap: 16px;
+    overflow: visible;
+}
+
+.notification {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-right: 12px;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 6px;
+    background-color: var(--background-primary);
+    max-width: 360px;
+}
+
+.notification > header > h3 {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.notification > header > p {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--foreground-tertiary);
+    white-space: nowrap;
+}
+
+.notification > .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notification > .actions > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 6px;
+    border-radius: 50%;
+    background-color: var(--accent-tertiary-1);
+    color: var(--foreground-primary);
+    font-size: 13px;
+    font-weight: 500;
+    border: 0px;
+    cursor: pointer;
+    transition: background-color 0.1s ease-in-out;
+}
+
+.notification > .actions > button:hover,
+.notification > .actions > button:focus-visible {
+    background-color: var(--accent-tertiary-2);
+}
+
+.notification > .actions > button:active {
+    background-color: var(--accent-tertiary-3);
+}
+
+.notification > .actions > button:last-child {
+    background-color: var(--background-tertiary);
+    color: var(--foreground-tertiary);
+}
+
+.notification > .actions > button:last-child:hover,
+.notification > .actions > button:last-child:focus-visible {
+    background-color: var(--background-4);
+}
+
+.notification > .actions > button:last-child:active {
+    background-color: var(--background-3);
+}
+
+.notification > button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--background-tertiary);
+    border: 0px;
+    cursor: pointer;
+    transition:
+        background-color 0.1s ease-in-out,
+        color 0.1s ease-in-out;
+}
+
+.notification > button:hover,
+.notification > button:focus-visible {
+    color: var(--accent-secondary-1);
+}

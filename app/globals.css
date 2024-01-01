@@ -113,13 +113,33 @@ body {
 body {
     display: flex;
     flex-direction: column;
-    padding-left: calc(100dvw - 100%);
+    /* padding-left: calc(100dvw - 100%); */
 }
 
 a {
     color: var(--anchor-foreground);
     text-decoration: none;
     font-weight: 500;
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    border-radius: 1000px;
+    border: 6px var(--background-secondary) solid;
+    background-color: var(--background-tertiary);
+    background-clip: padding-box;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 1000px;
+    border: 6px var(--background-tertiary) solid;
+    border-color: transparent;
+    background-color: var(--background-primary);
+    background-clip: padding-box;
 }
 
 .button {
@@ -141,8 +161,7 @@ a {
     transition:
         background-color 0.1s ease-in-out,
         color 0.1s ease-in-out,
-        box-shadow 0.1s ease-in-out,
-        outline-width 0.1s ease-in-out;
+        box-shadow 0.1s ease-in-out;
 }
 
 .button:not(.submit) {
@@ -204,12 +223,12 @@ ol {
 }
 
 *:focus-visible {
-    outline: 2px solid var(--accent-primary-outline);
+    outline: 3px solid var(--accent-primary-outline);
 }
 
 *.offset:focus-visible,
 .button:focus-visible {
-    outline-offset: 1px;
+    outline-offset: 2px;
 }
 
 ::-webkit-calendar-picker-indicator:focus-visible {
@@ -316,14 +335,42 @@ h4 {
     width: 100%;
     max-width: var(--max-width);
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 500px));
-    grid-gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    grid-gap: 24px;
+}
+
+.listGrid > li {
+    width: fit-content;
 }
 
 .flexColumn {
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+svg:not(.base),
+path:not(.base) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+svg.fill,
+path.fill {
+    fill: currentColor;
+}
+
+svg.noStroke,
+path.noStroke {
+    stroke: none;
+}
+
+svg.stroke0,
+path.stroke0 {
+    stroke-width: 0;
 }
 
 @media screen and (max-width: 1024px) {

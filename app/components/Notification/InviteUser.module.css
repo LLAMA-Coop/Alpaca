@@ -1,0 +1,11 @@
+.form {
+    margin-top: 40px;
+}
+
+.form > div {
+    margin-bottom: 24px;
+}
+
+.form p {
+    margin-top: 12px;
+}

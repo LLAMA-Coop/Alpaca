@@ -1,7 +1,3 @@
-import {model, models, Schema} from 'mongoose';
+import { Schema } from "mongoose";
 
-const ErrorSchema = new Schema(
-    {
-        
-    }
-)
+const ErrorSchema = new Schema({});

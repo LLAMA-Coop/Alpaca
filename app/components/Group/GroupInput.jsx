@@ -5,8 +5,8 @@ import { useModals, useAlerts } from "@/store/store";
 import { useState, useRef, useEffect } from "react";
 import filetypeinfo from "magic-bytes.js";
 import styles from "./Group.module.css";
+import { MAX } from "@/lib/constants";
 import Image from "next/image";
-import MAX from "@/lib/max";
 
 export function GroupInput({ group }) {
     const [name, setName] = useState("");

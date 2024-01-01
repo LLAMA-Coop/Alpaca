@@ -5,12 +5,20 @@
 }
 
 .container > div {
-    background-color: var(--background-primary);
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 28px 24px;
+    padding: 24px 24px 80px 24px;
+}
+
+.flex {
     display: flex;
     justify-content: space-between;
+}
+
+.container > div > p {
+    font-size: 14px;
+    color: var(--foreground-tertiary);
+    margin-top: 60px;
 }
 
 .icon {
@@ -62,7 +70,7 @@
     width: 32px;
     height: 32px;
     padding: 8px;
-    border-radius: 6px;
+    border-radius: 4px;
     display: flex;
     justify-content: center;
     align-items: center;

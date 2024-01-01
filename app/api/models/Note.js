@@ -1,38 +1,37 @@
-import { model, models, Schema } from "mongoose";
+import SourceReferenceSchema from "./SourceReferenceSchema";
 import PermissionSchema from "./PermissionSchema";
+import { model, models, Schema } from "mongoose";
+import { MIN, MAX } from "@/lib/constants";
 
 // Should add option to link to videos/images instead of text
 // Captions will be required in those cases
-
-import MAX from "@/lib/max";
-import SourceReferenceSchema from "./SourceReferenceSchema";
-// Don't forget to validate at least one source ID
 
 const NoteSchema = new Schema(
     {
         title: {
             type: String,
             required: false,
-            maxLength: MAX.title
+            minLength: MIN.noteTitle,
+            maxLength: MAX.noteTitle,
         },
         text: {
             type: String,
             required: true,
-            minLength: 1,
+            minLength: MIN.noteText,
             maxLength: MAX.noteText,
         },
         tags: [
             {
                 type: String,
-                minLength: 1,
+                minLength: MIN.tag,
                 maxLength: MAX.tag,
             },
         ],
         courses: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "course"
-            }
+                ref: "course",
+            },
         ],
         sources: [
             {
@@ -42,8 +41,8 @@ const NoteSchema = new Schema(
         ],
         sourceReferences: [
             {
-                type: SourceReferenceSchema
-            }
+                type: SourceReferenceSchema,
+            },
         ],
         contributors: [
             {
@@ -62,6 +61,10 @@ const NoteSchema = new Schema(
         timestamps: true,
     },
 );
+
+NoteSchema.virtual("id").get(function () {
+    return this._id.toHexString();
+});
 
 NoteSchema.set("toJSON", {
     virtuals: true,

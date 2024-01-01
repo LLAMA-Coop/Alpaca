@@ -1,8 +1,10 @@
 "use client";
 
+import { useAlerts, useModals, useStore } from "@/store/store";
+import { Avatar, Notifications, UserCard } from "@client";
 import styles from "./Dash.module.css";
 import { useState } from "react";
-import { Avatar } from "@client";
+import Link from "next/link";
 
 const tabs = [
     {
@@ -53,10 +55,59 @@ const tabs = [
     },
 ];
 
-export function Dashboard({ user, courses, groups, associates, more }) {
+const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
+
+export function Dashboard({ more = false }) {
+    const user = useStore((state) => state.user);
+    const notes = useStore((state) => state.notes);
+    const sources = useStore((state) => state.sources);
+    const quizzes = useStore((state) => state.quizzes);
+    const courses = useStore((state) => state.courses);
+    const groups = useStore((state) => state.groups);
+    const associates = useStore((state) => state.associates);
+    const notifications = useStore((state) => state.notifications);
+    const removeNotif = useStore((state) => state.removeNotification);
+    const addAlert = useAlerts((state) => state.addAlert);
+    const addModal = useModals((state) => state.addModal);
+    const removeAssociate = useStore((state) => state.removeAssociate);
+    const addAssociate = useStore((state) => state.addAssociate);
+
+    const groupsCreated = groups.filter((group) => group.owner === user.id);
+    const groupsJoined = groups.filter((group) => group.owner !== user.id);
+
+    const [associate, setAssociate] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
     const [currentTab, setCurrentTab] = useState(
         parseInt(localStorage?.getItem("currentTab") || 0),
     );
+
+    async function requestAssociate() {
+        if (isLoading || associate.length === 0) return;
+        setIsLoading(true);
+
+        const response = await fetch(`${basePath}/api/associates`, {
+            method: "POST",
+            body: JSON.stringify({ input: associate }),
+        }).then((res) => res.json());
+
+        if (response.success) {
+            setAssociate("");
+
+            if (response.associate) {
+                addAssociate(response.associate);
+            }
+        }
+
+        addAlert({
+            success: response.success,
+            message: response.message,
+        });
+
+        setIsLoading(false);
+    }
+
+    if (!user) return null;
 
     return (
         <main className={styles.main}>
@@ -65,11 +116,11 @@ export function Dashboard({ user, courses, groups, associates, more }) {
                     <ul className={styles.tabList}>
                         {tabs.map((tab, index) => (
                             <li
+                                key={tab.name}
                                 tabIndex={0}
                                 className={
                                     currentTab === index ? styles.active : ""
                                 }
-                                key={tab}
                                 onClick={() => {
                                     setCurrentTab(index);
                                     localStorage.setItem("currentTab", index);
@@ -90,11 +141,6 @@ export function Dashboard({ user, courses, groups, associates, more }) {
                                         width="24"
                                         height="24"
                                         viewBox="0 0 24 24"
-                                        strokeWidth="2"
-                                        stroke="currentColor"
-                                        fill="none"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
                                     >
                                         {tab.icon}
                                     </svg>
@@ -123,93 +169,171 @@ export function Dashboard({ user, courses, groups, associates, more }) {
 
                             {currentTab === 0 && <span>XP 2783</span>}
                             {currentTab === 0 && <span>V</span>}
+
+                            {currentTab !== 0 && (
+                                <Link
+                                    className={styles.browseLink}
+                                    title={`Browse ${tabs[currentTab].name}`}
+                                    href={`/${tabs[
+                                        currentTab
+                                    ].name.toLowerCase()}`}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        width="20"
+                                        height="20"
+                                    >
+                                        <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" />
+                                        <path d="M11 13l9 -9" />
+                                        <path d="M15 4h5v5" />
+                                    </svg>
+                                </Link>
+                            )}
                         </h1>
 
                         <div className={styles.chips}>
                             {currentTab === 0 ? (
                                 <>
                                     <div>
+                                        <p>Sources</p>
+                                        <p>{sources.length}</p>
+                                    </div>
+
+                                    <div>
                                         <p>Quizzes</p>
-                                        <p>{user.quizzes?.length || 0}</p>
+                                        <p>{quizzes.length}</p>
                                     </div>
 
                                     <div>
                                         <p>Notes</p>
-                                        <p>{user.notes?.length || 0}</p>
+                                        <p>{notes.length}</p>
                                     </div>
 
                                     <div>
                                         <p>Associates</p>
-                                        <p>{associates.length || 0}</p>
+                                        <p>{associates.length}</p>
                                     </div>
 
                                     <div>
                                         <p>Groups</p>
-                                        <p>{groups.length || 0}</p>
+                                        <p>{groups.length}</p>
                                     </div>
                                 </>
                             ) : currentTab === 1 ? (
                                 <>
                                     <div>
                                         <p>Enrolled</p>
-                                        <p>{courses.length || 0}</p>
+                                        <p>{courses.length}</p>
                                     </div>
 
                                     <div>
                                         <p>Completed</p>
-                                        <p>{courses.length || 0}</p>
+                                        <p>{courses.length}</p>
                                     </div>
                                 </>
                             ) : currentTab === 2 ? (
                                 <>
                                     <div>
                                         <p>Created</p>
-                                        <p>{groups.length || 0}</p>
+                                        <p>{groupsCreated.length}</p>
                                     </div>
 
                                     <div>
                                         <p>Joined</p>
-                                        <p>{groups.length || 0}</p>
+                                        <p>{groupsJoined.length}</p>
                                     </div>
                                 </>
                             ) : (
-                                <>
-                                    <div>
-                                        <p> Associates </p>
-                                        <p>{associates.length || 0}</p>
-                                    </div>
-
-                                    <div>
-                                        <p>Online</p>
-                                        <p>{associates.length || 0}</p>
-                                    </div>
-                                </>
+                                <div>
+                                    <p> Associates </p>
+                                    <p>{associates.length}</p>
+                                </div>
                             )}
                         </div>
                     </header>
 
-                    <main>
+                    <main className="scrollbar">
+                        {currentTab === 0 && (
+                            <div className={styles.userContent}>
+                                <Notifications />
+
+                                <div>
+                                    <h3>Pickup where you left</h3>
+
+                                    <ul className={styles.gridList}>
+                                        {Array(5)
+                                            .fill()
+                                            .map((_, index) => (
+                                                <div
+                                                    key={"Course_" + index}
+                                                    className={styles.card}
+                                                >
+                                                    <h3>Course Name</h3>
+
+                                                    <p>
+                                                        Lorem ipsum dolor sit
+                                                        amet consectetur
+                                                        adipisicing elit.
+                                                        Quisquam, quos!
+                                                    </p>
+                                                </div>
+                                            ))}
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3>Attempt quizzes to earn XP</h3>
+
+                                    <ul className={styles.gridList}>
+                                        {Array(7)
+                                            .fill()
+                                            .map((_, index) => (
+                                                <div
+                                                    key={"Quiz_" + index}
+                                                    className={styles.card}
+                                                >
+                                                    <h3>Quizz</h3>
+
+                                                    <p>
+                                                        Lorem ipsum dolor sit
+                                                        amet consectetur
+                                                        adipisicing elit.
+                                                        Quisquam, quos!
+                                                    </p>
+                                                </div>
+                                            ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+
                         {currentTab === 1 &&
                             (!courses.length ? (
                                 <div className={styles.empty}>
                                     <p>
                                         You haven't enrolled in any courses yet.
                                     </p>
+
+                                    <Link className="button" href="/courses">
+                                        Explore Courses
+                                    </Link>
                                 </div>
                             ) : (
-                                <ul>
-                                    {courses.map((course, index) => (
-                                        <div
-                                            key={index}
+                                <ul className={styles.gridList}>
+                                    {courses.map((course) => (
+                                        <Link
+                                            key={course.id}
                                             className={styles.card}
+                                            href={`/courses/${course.id}`}
                                         >
-                                            <h2>{course.name}</h2>
+                                            <h3>{course.name}</h3>
 
                                             <p>
                                                 {course.description ||
                                                     "No description provided."}
                                             </p>
-                                        </div>
+                                        </Link>
                                     ))}
                                 </ul>
                             ))}
@@ -218,23 +342,69 @@ export function Dashboard({ user, courses, groups, associates, more }) {
                             (!groups.length ? (
                                 <div className={styles.empty}>
                                     <p>You haven't created any groups yet.</p>
+
+                                    <Link className="button" href="/groups">
+                                        Explore Groups
+                                    </Link>
                                 </div>
                             ) : (
-                                <ul>
-                                    {groups.map((group, index) => (
-                                        <div
-                                            key={index}
-                                            className={styles.card}
-                                        >
-                                            <h2>{group.name}</h2>
+                                <div className={styles.userContent}>
+                                    {groupsCreated.length > 0 && (
+                                        <div>
+                                            <h3>
+                                                Groups you created
+                                                <span className={styles.chip}>
+                                                    {groupsCreated.length}
+                                                </span>
+                                            </h3>
 
-                                            <p>
-                                                {group.description ||
-                                                    "No description provided."}
-                                            </p>
+                                            <ul className={styles.gridList}>
+                                                {groupsCreated.map((group) => (
+                                                    <Link
+                                                        key={group.id}
+                                                        className={styles.card}
+                                                        href={`/groups/${group.id}`}
+                                                    >
+                                                        <h3>{group.name}</h3>
+
+                                                        <p>
+                                                            {group.description ||
+                                                                "No description provided."}
+                                                        </p>
+                                                    </Link>
+                                                ))}
+                                            </ul>
                                         </div>
-                                    ))}
-                                </ul>
+                                    )}
+
+                                    {groupsJoined.length > 0 && (
+                                        <div>
+                                            <h3>
+                                                Groups you joined
+                                                <span className={styles.chip}>
+                                                    {groupsJoined.length}
+                                                </span>
+                                            </h3>
+
+                                            <ul className={styles.gridList}>
+                                                {groupsJoined.map((group) => (
+                                                    <Link
+                                                        key={group.id}
+                                                        className={styles.card}
+                                                        href={`/groups/${group.id}`}
+                                                    >
+                                                        <h3>{group.name}</h3>
+
+                                                        <p>
+                                                            {group.description ||
+                                                                "No description provided."}
+                                                        </p>
+                                                    </Link>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
                             ))}
 
                         {currentTab === 3 &&
@@ -251,43 +421,85 @@ export function Dashboard({ user, courses, groups, associates, more }) {
                                             <input
                                                 type="text"
                                                 placeholder="Username or ID"
+                                                value={associate}
+                                                onChange={(e) =>
+                                                    setAssociate(e.target.value)
+                                                }
+                                                onKeyDown={(e) => {
+                                                    if (
+                                                        e.key === "Enter" &&
+                                                        !isLoading
+                                                    ) {
+                                                        requestAssociate();
+                                                    }
+                                                }}
                                             />
 
-                                            <button>Add</button>
+                                            <button
+                                                onClick={() =>
+                                                    requestAssociate()
+                                                }
+                                                disabled={isLoading}
+                                            >
+                                                Add
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             ) : (
-                                <ul>
-                                    {associates.map((associate, index) => (
-                                        <div
-                                            key={index}
-                                            className={styles.card}
-                                        >
-                                            <h2>{associate.username}</h2>
+                                <>
+                                    <div className={styles.input}>
+                                        <label htmlFor="">
+                                            Add Associate by Username or ID
+                                        </label>
 
-                                            <p>
-                                                {associate.bio ||
-                                                    "No bio provided."}
-                                            </p>
+                                        <div>
+                                            <input
+                                                type="text"
+                                                placeholder="Username or ID"
+                                                value={associate}
+                                                onChange={(e) =>
+                                                    setAssociate(e.target.value)
+                                                }
+                                                onKeyDown={(e) => {
+                                                    if (
+                                                        e.key === "Enter" &&
+                                                        !isLoading
+                                                    ) {
+                                                        requestAssociate();
+                                                    }
+                                                }}
+                                            />
+
+                                            <button
+                                                onClick={() =>
+                                                    requestAssociate()
+                                                }
+                                                disabled={isLoading}
+                                            >
+                                                Add
+                                            </button>
                                         </div>
-                                    ))}
-                                </ul>
+                                    </div>
+
+                                    <ul>
+                                        {associates.map((user) => (
+                                            <li key={user.id}>
+                                                <UserCard user={user} />
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
                             ))}
 
                         {more && (
                             <div>
-                                <button>
+                                <button className={styles.dashButton}>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="24"
                                         height="24"
                                         viewBox="0 0 24 24"
-                                        strokeWidth="2"
-                                        stroke="currentColor"
-                                        fill="none"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
                                     >
                                         <path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5" />
                                     </svg>
@@ -302,3 +514,17 @@ export function Dashboard({ user, courses, groups, associates, more }) {
         </main>
     );
 }
+
+// addModal({
+//     title: "Remove Associate",
+//     content: `Are you sure you want to remove ${associate.username} as an associate?`,
+//     onSave: () => {
+//         tryRemoveAssociate(
+//             associate.id,
+//         );
+//     },
+//     buttonTexts: [
+//         "Cancel",
+//         "Yes, remove",
+//     ],
+// });

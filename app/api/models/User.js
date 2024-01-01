@@ -1,5 +1,5 @@
 import { model, models, Schema } from "mongoose";
-import MAX from "@/lib/max";
+import { MIN, MAX } from "@/lib/constants";
 
 const TQuiz = new Schema({
     quizId: {
@@ -24,13 +24,18 @@ const UserSchema = new Schema(
         username: {
             type: String,
             required: true,
-            minLength: 2,
+            minLength: MIN.username,
             maxLength: MAX.username,
         },
         displayName: {
             type: String,
-            minLength: 2,
-            maxLength: MAX.username,
+            minLength: MIN.displayName,
+            maxLength: MAX.displayName,
+        },
+        description: {
+            type: String,
+            minLength: MIN.description,
+            maxLength: MAX.description,
         },
         avatar: {
             type: String,
@@ -55,6 +60,22 @@ const UserSchema = new Schema(
                 ref: "group",
             },
         ],
+        courses: [
+            {
+                course: {
+                    type: Schema.Types.ObjectId,
+                    ref: "course",
+                },
+                progress: {
+                    type: Number,
+                    default: 0,
+                },
+                lastViewed: {
+                    type: Date,
+                    default: Date.now,
+                },
+            },
+        ],
         quizzes: [TQuiz],
         notifications: [Object],
         lastLogin: {
@@ -69,6 +90,10 @@ const UserSchema = new Schema(
         timestamps: true,
     },
 );
+
+UserSchema.virtual("id").get(function () {
+    return this._id.toHexString();
+});
 
 UserSchema.set("toJSON", {
     virtuals: true,

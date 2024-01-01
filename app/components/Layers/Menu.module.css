@@ -1,29 +1,15 @@
 .container {
-    width: 100%;
+    min-width: 100%;
     padding: 4px 0;
     border-radius: 6px;
-    position: absolute;
-    bottom: calc(100% + 8px);
+    position: fixed;
     border: 1px solid var(--border-color);
     background-color: var(--background-secondary);
     z-index: 100;
 }
 
 .container.fit {
-    width: fit-content;
-}
-
-.container.medium {
-    width: 175px;
-}
-
-.container.down {
-    top: calc(100% + 12px);
-    bottom: auto;
-}
-
-.container.left {
-    right: 0;
+    min-width: fit-content;
 }
 
 .container > ul > hr {
@@ -43,6 +29,7 @@
     user-select: none;
     cursor: pointer;
     transition: all 0.01s ease-in-out;
+    white-space: nowrap;
 }
 
 .container > ul > li.icon {

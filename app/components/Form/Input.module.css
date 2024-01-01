@@ -58,6 +58,12 @@
     border: 1px solid transparent !important;
 }
 
+.inputContainer > input::placeholder,
+.inputContainer > select::placeholder,
+.inputContainer > textarea::placeholder {
+    font-size: 14px;
+}
+
 .select {
     display: flex;
     align-items: center;
@@ -129,8 +135,8 @@
 
 .labelContainer > label {
     font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 0.02rem;
+    font-weight: 800;
+    letter-spacing: 0.04rem;
     text-transform: uppercase;
     user-select: none;
 }

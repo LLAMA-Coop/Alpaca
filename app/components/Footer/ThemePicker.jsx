@@ -1,11 +1,9 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState, useRef } from "react";
 import { palettes } from "@/app/data/palettes";
 import styles from "./ThemePicker.module.css";
-import { Menu } from "@client";
+import { useMenu } from "@/store/store";
 
 const paletteAttributes = [
     "--accent-primary-1",
@@ -25,41 +23,15 @@ const paletteAttributes = [
 ];
 
 export function ThemePicker() {
-    const [showThemes, setShowThemes] = useState(false);
-    const [showPalettes, setShowPalettes] = useState(false);
-
     const [activeTheme, setActiveTheme] = useState(2);
     const [activePalette, setActivePalette] = useState(0);
 
-    const activeIcon = <FontAwesomeIcon icon={faCheck} />;
-    const themeRef = useRef(null);
-    const paletteRef = useRef(null);
+    const setMenu = useMenu((state) => state.setMenu);
+    const menu = useMenu((state) => state.menu);
 
-    useEffect(() => {
-        function handleClickOutside(e) {
-            if (themeRef.current && !themeRef.current.contains(e.target)) {
-                setShowThemes(false);
-            }
-            if (paletteRef.current && !paletteRef.current.contains(e.target)) {
-                setShowPalettes(false);
-            }
-        }
-
-        function handleKeyDown(e) {
-            if (e.key === "Escape") {
-                setShowThemes(false);
-                setShowPalettes(false);
-            }
-        }
-
-        document.addEventListener("click", handleClickOutside);
-        document.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            document.removeEventListener("click", handleClickOutside);
-            document.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [showThemes, showPalettes]);
+    const activeIcon = <path d="M5 12l5 5l10 -10" />;
+    const paletteButton = useRef(null);
+    const themeButton = useRef(null);
 
     useEffect(() => {
         const setTheme = () => {
@@ -150,69 +122,88 @@ export function ThemePicker() {
 
     return (
         <div className={styles.themeContainer}>
-            <div ref={themeRef}>
+            <div>
                 <button
-                    aria-label="Change theme"
+                    ref={themeButton}
                     aria-haspopup="true"
-                    aria-expanded={showThemes}
+                    aria-label="Change theme"
                     aria-controls="theme-popup"
-                    onClick={() => {
-                        setShowPalettes(false);
-                        setShowThemes((prev) => !prev);
-                    }}
-                    style={{
-                        backgroundColor: showThemes
-                            ? "var(--background-secondary)"
-                            : "",
+                    aria-expanded={themeButton === menu?.element}
+                    className={
+                        themeButton.current === menu?.element
+                            ? styles.active
+                            : ""
+                    }
+                    onClick={(e) => {
+                        if (menu?.element !== e.currentTarget) {
+                            setMenu({
+                                element: e.currentTarget,
+                                items: lightModes.map((mode) => ({
+                                    name: mode,
+                                    onClick: () => {
+                                        setTheme(lightModes.indexOf(mode));
+                                    },
+                                })),
+                                active: activePalette,
+                                activeIcon: activeIcon,
+                                keepOpen: true,
+                                top: true,
+                                right: true,
+                            });
+                        } else {
+                            setMenu(null);
+                        }
                     }}
                 >
                     <div>
                         <svg
-                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             width="16"
                             height="16"
-                            stroke="currentColor"
                         >
                             <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                fill="currentColor"
+                                className="fill"
                                 d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
                             />
                         </svg>
+
                         <span>{lightModes[activeTheme]}</span>
                     </div>
                 </button>
-
-                <Menu
-                    show={showThemes}
-                    setShow={setShowThemes}
-                    items={lightModes.map((mode) => ({
-                        name: mode,
-                        onClick: () => setTheme(lightModes.indexOf(mode)),
-                    }))}
-                    active={activeTheme}
-                    activeIcon={activeIcon}
-                    keepOpen={true}
-                />
             </div>
 
-            <div ref={paletteRef}>
+            <div>
                 <button
-                    aria-label="Color palette"
+                    ref={paletteButton}
                     aria-haspopup="true"
-                    aria-expanded={showPalettes}
                     aria-controls="palettes"
-                    onClick={() => {
-                        setShowThemes(false);
-                        setShowPalettes((prev) => !prev);
-                    }}
-                    style={{
-                        backgroundColor: showPalettes
-                            ? "var(--background-secondary)"
-                            : "",
+                    aria-label="Color palette"
+                    aria-expanded={paletteButton === menu?.element}
+                    className={
+                        paletteButton.current === menu?.element
+                            ? styles.active
+                            : ""
+                    }
+                    onClick={(e) => {
+                        if (menu?.element !== e.currentTarget) {
+                            setMenu({
+                                element: e.currentTarget,
+                                items: palettes.map((palette) => ({
+                                    name: palette.name,
+                                    onClick: () => {
+                                        setPalette(palettes.indexOf(palette));
+                                    },
+                                })),
+                                active: activePalette,
+                                activeIcon: activeIcon,
+                                keepOpen: true,
+                                top: true,
+                                right: true,
+                            });
+                        } else {
+                            setMenu(null);
+                        }
                     }}
                 >
                     <div>
@@ -221,32 +212,16 @@ export function ThemePicker() {
                             width="16"
                             height="16"
                             viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
                         >
-                            <path d="M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25" />
-                            <path d="M8.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                            <path d="M12.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                            <path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                            <path d="M3 21v-4a4 4 0 1 1 4 4h-4" />
+                            <path d="M21 3a16 16 0 0 0 -12.8 10.2" />
+                            <path d="M21 3a16 16 0 0 1 -10.2 12.8" />
+                            <path d="M10.6 9a9 9 0 0 1 4.4 4.4" />
                         </svg>
+
                         <span>{palettes[activePalette].name}</span>
                     </div>
                 </button>
-
-                <Menu
-                    show={showPalettes}
-                    setShow={setShowPalettes}
-                    items={palettes.map((palette) => ({
-                        name: palette.name,
-                        onClick: () => setPalette(palettes.indexOf(palette)),
-                    }))}
-                    active={activePalette}
-                    activeIcon={activeIcon}
-                    keepOpen={true}
-                />
             </div>
         </div>
     );

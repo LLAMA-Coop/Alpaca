@@ -1,7 +1,7 @@
-import { model, models, Schema } from "mongoose";
-import PermissionSchema from "./PermissionSchema";
-import MAX from "@/lib/max";
 import SourceReferenceSchema from "./SourceReferenceSchema";
+import PermissionSchema from "./PermissionSchema";
+import { model, models, Schema } from "mongoose";
+import { MIN, MAX } from "@/lib/constants";
 
 const QuizSchema = new Schema(
     {
@@ -23,23 +23,23 @@ const QuizSchema = new Schema(
         prompt: {
             type: String,
             required: true,
-            minLength: 1,
-            maxLength: MAX.prompt,
+            minLength: MIN.quizPrompt,
+            maxLength: MAX.quizPrompt,
         },
         choices: [
             {
                 type: String,
                 required: true,
-                minLength: 1,
-                maxLength: MAX.response,
+                minLength: MIN.quizChoice,
+                maxLength: MAX.quizChoice,
             },
         ],
         correctResponses: [
             {
                 type: Schema.Types.Mixed,
                 required: true,
-                minLength: 1,
-                maxLength: MAX.response,
+                minLength: MIN.quizzResponse,
+                maxLength: MAX.quizzResponse,
                 validate: [
                     {
                         validator: function (value) {
@@ -61,22 +61,22 @@ const QuizSchema = new Schema(
         hints: [
             {
                 type: String,
-                minLength: 1,
-                maxLength: MAX.response,
+                minLength: MIN.quizzChoice,
+                maxLength: MAX.quizChoice,
             },
         ],
         tags: [
             {
                 type: String,
-                minLength: 1,
+                minLength: MIN.tag,
                 maxLength: MAX.tag,
             },
         ],
         courses: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "course"
-            }
+                ref: "course",
+            },
         ],
         sources: [
             {
@@ -86,8 +86,8 @@ const QuizSchema = new Schema(
         ],
         sourceReferences: [
             {
-                type: SourceReferenceSchema
-            }
+                type: SourceReferenceSchema,
+            },
         ],
         notes: [
             {
@@ -116,6 +116,10 @@ const QuizSchema = new Schema(
         timestamps: true,
     },
 );
+
+QuizSchema.virtual("id").get(function () {
+    return this._id.toHexString();
+});
 
 QuizSchema.set("toJSON", {
     virtuals: true,

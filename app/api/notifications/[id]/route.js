@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { User, Group } from "@/app/api/models";
-import Notification from "../../models/Notification";
-import { useUser } from "@/lib/auth";
+import { Notification, User, Group } from "@models";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { useUser } from "@/lib/auth";
 
 export async function POST(req) {
     const notificationId = req.nextUrl.pathname.split("/")[3];
@@ -118,5 +117,45 @@ export async function POST(req) {
             error,
         );
         return server;
+    }
+}
+
+export async function DELETE(req, { params }) {
+    const { id } = params;
+
+    try {
+        const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) return unauthorized;
+
+        const notification = await Notification.findOneAndDelete({
+            _id: id,
+        });
+
+        if (!notification) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Notification not found.",
+                },
+                { status: 404 },
+            );
+        }
+
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Successfully removed notification.",
+            },
+            { status: 200 },
+        );
+    } catch (error) {
+        console.error("[ERROR] /api/notifications/id:DELETE ", error);
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Something went wrong.",
+            },
+            { status: 500 },
+        );
     }
 }

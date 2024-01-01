@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useModals } from "@/store/store";
 import styles from "./Modals.module.css";
-import { useEffect, useRef, useState } from "react";
+import { Input } from "@client";
 
 export function Modals() {
     const modals = useModals((state) => state.modals);
@@ -31,10 +32,11 @@ export function Modals() {
     );
 }
 
-export function Modal({ modal, index, length }) {
+export function Modal({ modal, index, length, buttonTexts }) {
     const [closing, setClosing] = useState(false);
+    const [password, setPassword] = useState("");
+
     const removeModal = useModals((state) => state.removeModal);
-    const addModal = useModals((state) => state.addModal);
     const closeButton = useRef(null);
     const saveButton = useRef(null);
 
@@ -103,10 +105,6 @@ export function Modal({ modal, index, length }) {
                             width="24"
                             height="24"
                             viewBox="0 0 24 24"
-                            strokeWidth="2"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
                         >
                             <path d="M18 6l-12 12" />
                             <path d="M6 6l12 12" />
@@ -115,28 +113,23 @@ export function Modal({ modal, index, length }) {
                 </header>
 
                 <div className={styles.content}>
-                    {modal.content}
+                    {modal.content === "Confirm Password" ? (
+                        <div>
+                            <p style={{ marginBottom: "24px" }}>
+                                Changing your username requires you to confirm
+                                your password.
+                            </p>
 
-                    {/* <button
-                        onClick={() =>
-                            addModal({
-                                title: "Add a new modal",
-                                content: "This is the content of the modal",
-                            })
-                        }
-                    >
-                        Add other modal
-                    </button> */}
-
-                    {/* {index > 0 && (
-                        <button
-                            onClick={() => {
-                                removeModal(modal.id);
-                            }}
-                        >
-                            Remove this modal
-                        </button>
-                    )} */}
+                            <Input
+                                label="Password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                    ) : (
+                        modal.content
+                    )}
                 </div>
 
                 <footer>
@@ -144,14 +137,14 @@ export function Modal({ modal, index, length }) {
                         className="button transparent"
                         onClick={() => close()}
                     >
-                        Close
+                        {modal.buttonTexts ? modal.buttonTexts[0] : "Cancel"}
                     </button>
 
                     <button
                         ref={saveButton}
                         className="button"
                         onClick={() => {
-                            if (modal.onSave) modal.onSave();
+                            if (modal.onSave) modal.onSave(password);
                             close();
                         }}
                         onKeyDown={(e) => {
@@ -161,7 +154,7 @@ export function Modal({ modal, index, length }) {
                             }
                         }}
                     >
-                        Save
+                        {modal.buttonTexts ? modal.buttonTexts[1] : "Save"}
                     </button>
                 </footer>
             </div>

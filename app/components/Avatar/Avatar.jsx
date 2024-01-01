@@ -1,6 +1,8 @@
 import styles from "./Avatar.module.css";
 import Image from "next/image";
 
+const cdn = process.env.NEXT_PUBLIC_CDN_URL;
+
 export function Avatar({ src, username, size = 40, outline }) {
     const letter = username?.[0]?.toUpperCase();
 
@@ -9,17 +11,20 @@ export function Avatar({ src, username, size = 40, outline }) {
             className={styles.container}
             style={{
                 width: size,
+                minWidth: size,
                 height: size,
+                minHeight: size,
                 fontSize: "16px",
                 outline: outline ? "" : "0px solid transparent",
             }}
         >
             {src ? (
                 <Image
+                    draggable={false}
                     alt={`Avatar for ${username}`}
                     width={size}
                     height={size}
-                    src={src}
+                    src={`${cdn}/${src}/`}
                 />
             ) : (
                 <div>{letter}</div>

@@ -10,7 +10,7 @@
     user-select: none;
 }
 
-.header > h1 > a {
+.header > a {
     display: inline-flex;
     font-size: 32px;
     border-radius: 5px;

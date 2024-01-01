@@ -3,7 +3,7 @@ import { disconnect, connect } from "mongoose";
 export default async function connectDB() {
     try {
         await connect(process.env.DATABASE_URL);
-        console.log("Connected to DB");
+        console.log("Successfully connected to Database");
     } catch (e) {
         console.error(
             `Error connecting to Database\n${e.name}:\n  ${e.message}`,

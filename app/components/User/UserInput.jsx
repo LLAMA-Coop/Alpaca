@@ -22,7 +22,6 @@ export function UserInput({ isRegistering, onSubmit }) {
 
     const [passwordFocus, setPasswordFocus] = useState(false);
 
-    const setIsAuthenticated = useStore((state) => state.setIsAuthenticated);
     const addAlert = useAlerts((state) => state.addAlert);
     const addModal = useModals((state) => state.addModal);
 
@@ -194,7 +193,6 @@ export function UserInput({ isRegistering, onSubmit }) {
         setLoading(false);
 
         if (response.status === 200) {
-            setIsAuthenticated(true);
             if (!onSubmit) router.push(`/users/${username}`);
             router.refresh();
 

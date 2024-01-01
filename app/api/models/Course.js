@@ -1,20 +1,20 @@
-import MAX from "@/lib/max";
 import PermissionSchema from "./PermissionSchema";
 import { model, models, Schema } from "mongoose";
+import { MIN, MAX } from "@/lib/constants";
 
 const CourseSchema = new Schema(
     {
         name: {
             type: String,
             required: true,
-            minLength: 1,
-            maxLength: MAX.title,
+            minLength: MIN.courseName,
+            maxLength: MAX.courseName,
         },
         description: {
             type: String,
             required: true,
-            minLength: 1,
-            maxLength: MAX.description,
+            minLength: MIN.courseDescription,
+            maxLength: MAX.courseDescription,
         },
         parentCourses: [
             {
@@ -28,9 +28,9 @@ const CourseSchema = new Schema(
                     type: Schema.Types.ObjectId,
                     ref: "course",
                 },
-                requiredAverageLevel: {
+                averageLevelRequired: {
                     type: Number,
-                    default: 1,
+                    default: 0,
                 },
             },
         ],
@@ -49,6 +49,10 @@ const CourseSchema = new Schema(
         timestamps: true,
     },
 );
+
+CourseSchema.virtual("id").get(function () {
+    return this._id.toHexString();
+});
 
 CourseSchema.set("toJSON", {
     virtuals: true,
