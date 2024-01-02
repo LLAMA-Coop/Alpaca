@@ -8,7 +8,7 @@ import { Input, ListAdd } from "@client";
 export function TrainSettings({ tags, courses }) {
     const settings = useDailyTrain((state) => state.settings);
     const setSettings = useDailyTrain((state) => state.setSettings);
-    const availableCourses = useStore((state) => state.courseStore);
+    const availableCourses = useStore((state) => state.courses);
 
     const [selectedTags, setSelectedTags] = useState([]);
     const [selectedCourses, setSelectedCourses] = useState([]);

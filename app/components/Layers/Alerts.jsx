@@ -1,10 +1,8 @@
 "use client";
 
-import { faCheck, faClose } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
 import { useAlerts } from "@/store/store";
 import styles from "./Alerts.module.css";
-import { useEffect, useState } from "react";
 
 export function Alerts() {
     const alerts = useAlerts((state) => state.alerts);
@@ -58,7 +56,21 @@ export function Alert({ alert }) {
             }}
         >
             <div>
-                <FontAwesomeIcon icon={alert.success ? faCheck : faClose} />
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                >
+                    {alert.success ? (
+                        <path d="M5 12l5 5l10 -10" />
+                    ) : (
+                        <g>
+                            <path d="M18 6l-12 12" />
+                            <path d="M6 6l12 12" />
+                        </g>
+                    )}
+                </svg>
             </div>
 
             <div style={{ whiteSpace: "pre-wrap" }}>{alert.message}</div>

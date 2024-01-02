@@ -14,7 +14,7 @@
     height: 32px;
     padding: 0 8px;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -25,7 +25,8 @@
 }
 
 .themeContainer > div > button:hover,
-.themeContainer > div > button:focus-visible {
+.themeContainer > div > button:focus-visible,
+.themeContainer > div > button.active {
     background-color: var(--background-secondary);
     color: var(--foreground-primary);
 }

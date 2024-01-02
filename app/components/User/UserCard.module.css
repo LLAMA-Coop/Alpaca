@@ -1,30 +1,80 @@
 .container {
+    position: relative;
     display: flex;
     align-items: center;
-    border-radius: 4px;
-    padding: 6px 16px 6px 6px;
-    height: 48px;
-    margin-top: 6px;
-    color: var(--foreground-secondary);
-    background-color: var(--background-secondary);
-}
-
-.container:hover {
-    color: var(--foreground-primary);
+    gap: 16px;
+    padding: 16px 24px 16px 16px;
+    border-radius: 6px;
     background-color: var(--background-tertiary);
+    max-width: 360px;
+    cursor: pointer;
+    transition:
+        transform 0.1s ease-in-out,
+        box-shadow 0.1s ease-in-out;
 }
 
-.container:hover > div:first-child {
-    background-color: var(--background-secondary);
+.container:hover,
+.container:focus-visible,
+.container:focus-within,
+.container.active {
+    transform: translate(2px, -2px);
+    box-shadow: -3px 3px 0px var(--background-4);
 }
 
-.container > p {
-    flex: 1;
-    margin-left: 12px;
+.container > div {
+    height: 100%;
 }
 
-.container > svg {
+.avatar {
+    align-self: stretch;
+}
+
+.container > div > h3 {
+    font-size: 20px;
+    line-height: 24px;
+    margin-bottom: 8px;
+    color: var(--foreground-primary);
     display: flex;
-    width: 18px;
-    height: 18px;
+    gap: 8px;
+}
+
+.container > div > h3 > .owner {
+    display: flex;
+    align-items: center;
+}
+
+.container > div > p {
+    color: var(--foreground-tertiary);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+.container > button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 5px;
+    border: 1px solid var(--background-4);
+    background-color: var(--background-tertiary);
+    color: var(--foreground-secondary);
+    cursor: pointer;
+    z-index: 100;
+    transition:
+        background-color 0.1s ease-in-out,
+        color 0.1s ease-in-out;
+}
+
+.container > button:hover,
+.container > button:focus-visible,
+.container > button.active {
+    background-color: var(--background-4);
+    color: var(--foreground-primary);
 }

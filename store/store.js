@@ -1,86 +1,6 @@
 import makeUniqueId from "@/lib/uniqueId";
 import { create } from "zustand";
 
-const addResources = (state, storeName, ...resources) => {
-    if (!Object.values(stores).includes(storeName)) {
-        throw Error(`We do not have a list called ${storeName}`);
-    }
-    const newStore = [...state[storeName]];
-    const tagStore = [...state.tagStore];
-    resources.forEach((resource) => {
-        const alreadyStored = newStore.find((x) => x._id === resource._id);
-        if (!alreadyStored && resource._id) {
-            newStore.push(resource);
-        } else if (!resource._id) {
-            console.error("Missing _id property", resource);
-        }
-        if (resource.tags && resource.tags.length) {
-            resource.tags.forEach((t) => {
-                if (!tagStore.includes(t)) {
-                    tagStore.push(t);
-                }
-            });
-        }
-    });
-    const newState = {};
-    newState[storeName] = newStore;
-    newState.tagStore = tagStore;
-    return newState;
-};
-
-const addTags = (state, ...tags) => {
-    const tagStore = [...state.tagStore];
-    tags.forEach((t) => {
-        if (!tagStore.includes(t)) {
-            tagStore.push(t);
-        }
-    });
-    const newState = {};
-    newState.tagStore = tagStore;
-    return newState;
-};
-
-const addNotifications = (state, ...notifications) => {
-    const newStore = [...state.notifications];
-    notifications.forEach((n) => {
-        const alreadyStored = newStore.find((x) => x._id === n._id);
-        if (!alreadyStored) newStore.push(n);
-    });
-    const newState = {};
-    newState.notifications = newStore;
-    return newState;
-};
-
-const removeNotification = (state, notification) => {
-    const newStore = [...state.notifications];
-    const notif = newStore.find((x) => x._id === notification._id);
-    const index = newStore.indexOf(notif);
-    newStore.splice(index, 1);
-    const newState = {};
-    newState.notifications = newStore;
-    return newState;
-};
-
-const updateResource = (state, storeName, newResource) => {
-    if (!Object.values(stores).includes(storeName)) {
-        throw Error(`We do not have a list called ${storeName}`);
-    }
-    if (!newResource || !newResource._id) {
-        throw Error(`This resource does not have an _id key`);
-    }
-    const newStore = [...state[storeName]];
-    const oldResource = newStore.find((x) => x._id === newResource._id);
-    if (oldResource) {
-        const index = newStore.indexOf(oldResource);
-        newStore.splice(index, 1, newResource);
-    } else {
-        newStore.push(newResource);
-    }
-    const newState = {};
-    newState[storeName] = newStore;
-    return newState;
-};
-
 export const stores = {
     source: "sourceStore",
     note: "noteStore",
@@ -91,78 +11,117 @@ export const stores = {
 };
 
 export const useStore = create((set) => ({
-    sourceStore: [],
-    noteStore: [],
-    quizStore: [],
-    courseStore: [],
-    groupStore: [],
-    userStore: [],
     user: undefined,
+    sources: [],
+    notes: [],
+    quizzes: [],
+    courses: [],
+    groups: [],
+    associates: [],
     notifications: [],
-
-    tagStore: [],
 
     setUser: (user) => {
         return set(() => ({
-            user: {
-                _id: user._id,
-                username: user.username,
-                displayName: user.displayName,
-                avatar: user.avatar,
-                associates: user.associates,
-                groups: user.groups,
-                quizzes: user.quizzes,
-            },
+            user: !user
+                ? undefined
+                : {
+                      id: user.id,
+                      username: user.username,
+                      displayName: user.displayName,
+                      description: user.description,
+                      avatar: user.avatar,
+                      isPublic: user.isPublic,
+                      createdAt: user.createdAt,
+                  },
         }));
     },
 
-    addNotifications: (...notifications) => {
-        try {
-            return set((state) => addNotifications(state, ...notifications));
-        } catch (error) {
-            console.error(error);
-        }
-    },
-
-    removeNotification: (notification) => {
-        try {
-            return set((state) => removeNotification(state, notification));
-        } catch (error) {
-            console.error(error);
-        }
-    },
-
-    isAuthenticated: false,
-    setIsAuthenticated: (isAuthenticated) => {
+    fillInitialData: (data) => {
         return set(() => ({
-            isAuthenticated,
+            sources: data.sources || [],
+            notes: data.notes || [],
+            quizzes: data.quizzes || [],
+            courses: data.courses || [],
+            groups: data.groups || [],
+            associates: data.associates || [],
+            notifications: data.notifications || [],
         }));
     },
 
-    addResources: (storeName, ...resources) => {
-        try {
-            return set((state) => addResources(state, storeName, ...resources));
-        } catch (e) {
-            console.error(e);
-        }
+    addSource: (source) => {
+        return set((state) => ({ sources: [...state.sources, source] }));
     },
 
-    updateResource: (storeName, newResource) => {
-        try {
-            return set((state) =>
-                updateResource(state, storeName, newResource),
-            );
-        } catch (e) {
-            console.error(e);
-        }
+    removeSource: (id) => {
+        return set((state) => ({
+            sources: state.sources.filter((source) => source._id !== id),
+        }));
     },
 
-    addTags: (...tags) => {
-        try {
-            return set((state) => addTags(state, ...tags));
-        } catch (e) {
-            console.error(e);
-        }
+    addNote: (note) => {
+        return set((state) => ({ notes: [...state.notes, note] }));
+    },
+
+    removeNote: (id) => {
+        return set((state) => ({
+            notes: state.notes.filter((note) => note._id !== id),
+        }));
+    },
+
+    addQuiz: (quiz) => {
+        return set((state) => ({ quizzes: [...state.quizzes, quiz] }));
+    },
+
+    removeQuiz: (id) => {
+        return set((state) => ({
+            quizzes: state.quizzes.filter((quiz) => quiz._id !== id),
+        }));
+    },
+
+    addCourse: (course) => {
+        return set((state) => ({ courses: [...state.courses, course] }));
+    },
+
+    removeCourse: (id) => {
+        return set((state) => ({
+            courses: state.courses.filter((course) => course._id !== id),
+        }));
+    },
+
+    addGroup: (group) => {
+        return set((state) => ({ groups: [...state.groups, group] }));
+    },
+
+    removeGroup: (id) => {
+        return set((state) => ({
+            groups: state.groups.filter((group) => group._id !== id),
+        }));
+    },
+
+    addAssociate: (associate) => {
+        return set((state) => ({
+            associates: [...state.associates, associate],
+        }));
+    },
+
+    removeAssociate: (id) => {
+        return set((state) => ({
+            associates: state.associates.filter(
+                (associate) => associate._id !== id,
+            ),
+        }));
+    },
+
+    addNotification: (notification) => {
+        return set(() => ({ notifications: [...notifications, notification] }));
+    },
+
+    removeNotification: (id) => {
+        return set((state) => ({
+            notifications: state.notifications.filter(
+                (notification) => notification._id !== id,
+            ),
+        }));
     },
 }));
 
@@ -242,4 +201,18 @@ export const useModals = create()((set) => ({
             modals: state.modals.filter((modal) => modal.id !== id),
         }));
     },
+}));
+
+// Menu Store
+
+export const useMenu = create()((set) => ({
+    menu: null,
+    setMenu: (menu) => set(() => ({ menu })),
+}));
+
+// Tooltip Store
+
+export const useTooltip = create()((set) => ({
+    tooltip: null,
+    setTooltip: (tooltip) => set(() => ({ tooltip })),
 }));

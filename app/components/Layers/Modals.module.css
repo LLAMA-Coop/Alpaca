@@ -82,6 +82,10 @@
     margin: 0 -16px;
 }
 
+.modal > footer > button {
+    transition: background-color 0.1s ease-in-out;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

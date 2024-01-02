@@ -1,25 +1,24 @@
 import PermissionSchema from "./PermissionSchema";
 import { model, models, Schema } from "mongoose";
-import MAX from "@/lib/max";
+import { MIN, MAX } from "@/lib/constants";
 
-//  validation:
-//  need either lastAccessed or publishDate
-//  url to match http format
+//  Needs either lastAccessed or publishDate
+//  URL has to match http format
 
 const SourceSchema = new Schema(
     {
         title: {
             type: String,
             required: true,
-            minLength: 1,
-            maxLength: MAX.title,
+            minLength: MIN.sourceTitle,
+            maxLength: MAX.sourceTitle,
         },
         authors: [
             {
                 type: String,
                 required: true,
-                minLength: 1,
-                maxLength: MAX.name,
+                minLength: MIN.username,
+                maxLength: MAX.username,
             },
         ],
         medium: {
@@ -35,15 +34,15 @@ const SourceSchema = new Schema(
         tags: [
             {
                 type: String,
-                minLength: 1,
+                minLength: MIN.tag,
                 maxLength: MAX.tag,
             },
         ],
         courses: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "course"
-            }
+                ref: "course",
+            },
         ],
         createdBy: {
             type: Schema.Types.ObjectId,
@@ -61,19 +60,19 @@ const SourceSchema = new Schema(
             type: String,
             default: "page",
             enum: {
-                values: [
-                    "page",
-                    "id reference",
-                    "section"
-                ],
-                message: "Invalid location identifier for a source reference"
-            }
-        }
+                values: ["page", "id reference", "section"],
+                message: "Invalid location identifier for a source reference",
+            },
+        },
     },
     {
         timestamps: true,
     },
 );
+
+SourceSchema.virtual("id").get(function () {
+    return this._id.toHexString();
+});
 
 SourceSchema.set("toJSON", {
     virtuals: true,

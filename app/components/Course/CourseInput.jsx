@@ -3,7 +3,7 @@
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { useEffect, useState } from "react";
 import { serializeOne } from "@/lib/db";
-import MAX from "@/lib/max";
+import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
 import {
     Input,

@@ -1,11 +1,12 @@
 "use client";
 
+import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 import { useStore, useModals, useAlerts } from "@/store/store";
-import { useEffect, useState } from "react";
-import { serializeOne } from "@/lib/db";
-import MAX from "@/lib/max";
 import SubmitErrors from "@/lib/SubmitErrors";
 import styles from "./NoteInput.module.css";
+import { useEffect, useState } from "react";
+import { serializeOne } from "@/lib/db";
+import { MAX } from "@/lib/constants";
 import {
     Label,
     Input,
@@ -16,7 +17,6 @@ import {
     ListAdd,
     UserInput,
 } from "@client";
-import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 
 export function NoteInput({ note }) {
     const [title, setTitle] = useState("");

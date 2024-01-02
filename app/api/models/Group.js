@@ -1,3 +1,4 @@
+import { MAX, MIN } from "@/lib/constants";
 import { model, models, Schema } from "mongoose";
 
 const GroupSchema = new Schema(
@@ -6,25 +7,25 @@ const GroupSchema = new Schema(
             type: String,
             required: true,
             unique: true,
-            minLength: 1,
-            maxLength: 100,
+            minLength: MIN.groupName,
+            maxLength: MAX.groupName,
         },
         description: {
             type: String,
-            minLength: 2,
-            maxLength: 512,
+            minLength: MIN.groupDescription,
+            maxLength: MAX.groupDescription,
         },
         owner: {
             type: Schema.Types.ObjectId,
             ref: "user",
         },
-        users: [
+        admins: [
             {
                 type: Schema.Types.ObjectId,
                 ref: "user",
             },
         ],
-        admins: [
+        users: [
             {
                 type: Schema.Types.ObjectId,
                 ref: "user",
@@ -39,5 +40,13 @@ const GroupSchema = new Schema(
         timestamps: true,
     },
 );
+
+GroupSchema.virtual("id").get(function () {
+    return this._id.toHexString();
+});
+
+GroupSchema.set("toJSON", {
+    virtuals: true,
+});
 
 export default models?.group || model("group", GroupSchema);

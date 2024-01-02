@@ -17,7 +17,7 @@ export function Timer() {
 
     useEffect(() => {
         setSeconds(settings.timeLimit);
-    }, [settings])
+    }, [settings]);
 
     useEffect(() => {
         if (!start) {
@@ -63,7 +63,7 @@ export function Timer() {
             >
                 {isNaN(seconds)
                     ? "00:00"
-                    : new Date(seconds*1000).toISOString().substr(14, 5)}
+                    : new Date(seconds * 1000).toISOString().substr(14, 5)}
             </p>
 
             <button
@@ -77,10 +77,6 @@ export function Timer() {
                         width="20"
                         height="20"
                         viewBox="0 0 24 24"
-                        strokeWidth="2"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
                     >
                         <path
                             d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z"

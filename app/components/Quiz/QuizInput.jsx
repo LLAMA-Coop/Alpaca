@@ -1,13 +1,14 @@
 "use client";
 
-import styles from "./QuizInput.module.css";
+import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { DeletePopup } from "../DeletePopup/DeletePopup";
 import { buildPermissions } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
-import { serializeOne } from "@/lib/db";
-import MAX from "@/lib/max";
 import SubmitErrors from "@/lib/SubmitErrors";
+import styles from "./QuizInput.module.css";
+import { serializeOne } from "@/lib/db";
+import { MAX } from "@/lib/max";
 import {
     Input,
     Label,
@@ -19,7 +20,6 @@ import {
     BlankableInput,
     UserInput,
 } from "@client";
-import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 
 export function QuizInput({ quiz }) {
     const [type, setType] = useState("prompt-response");
@@ -56,11 +56,9 @@ export function QuizInput({ quiz }) {
 
     const [loading, setLoading] = useState(false);
 
-    const availableSources = useStore((state) => state.sourceStore);
-    const availableNotes = useStore((state) => state.noteStore);
-    const availableCourses = useStore((state) => state.courseStore);
-    const availableTags = useStore((state) => state.tagStore);
-    const addTags = useStore((state) => state.addTags);
+    const availableSources = useStore((state) => state.sources);
+    const availableCourses = useStore((state) => state.courses);
+    const availableNotes = useStore((state) => state.notes);
 
     const user = useStore((state) => state.user);
     const canDelete = quiz && user && quiz.createdBy === user._id;
@@ -184,15 +182,15 @@ export function QuizInput({ quiz }) {
         setNewHint("");
     }
 
-    function handleAddTag(e) {
-        e.preventDefault();
-        if (!newTag || tags.includes(newTag)) return;
-        setTags([...tags, newTag]);
-        if (!availableTags.includes(newTag)) {
-            addTags(newTag);
-        }
-        setNewTag("");
-    }
+    // function handleAddTag(e) {
+    //     e.preventDefault();
+    //     if (!newTag || tags.includes(newTag)) return;
+    //     setTags([...tags, newTag]);
+    //     if (!availableTags.includes(newTag)) {
+    //         addTags(newTag);
+    //     }
+    //     setNewTag("");
+    // }
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -200,7 +198,7 @@ export function QuizInput({ quiz }) {
         const submitErrors = new SubmitErrors();
 
         if (!types.find((x) => x.value === type)) {
-            submitErrors.addMessage("Invalid type selected", setTypeError)
+            submitErrors.addMessage("Invalid type selected", setTypeError);
         }
 
         if (prompt === "") {
@@ -208,7 +206,10 @@ export function QuizInput({ quiz }) {
         }
 
         if (responses.length === 0) {
-            submitErrors.addMessage("Need at least one answer", setResponsesError);
+            submitErrors.addMessage(
+                "Need at least one answer",
+                setResponsesError,
+            );
         }
 
         if (sources.length === 0 && notes.length === 0) {
@@ -219,7 +220,10 @@ export function QuizInput({ quiz }) {
         }
 
         if (type === "multiple-choice" && choices.length === 0) {
-            submitErrors.addMessage("Need at least one choice", setChoicesError);
+            submitErrors.addMessage(
+                "Need at least one choice",
+                setChoicesError,
+            );
         }
 
         if (submitErrors.errors.length > 0) {
@@ -228,7 +232,7 @@ export function QuizInput({ quiz }) {
                 message: submitErrors.displayErrors(),
             });
         }
-        if(submitErrors.cannotSend){
+        if (submitErrors.cannotSend) {
             return;
         }
 
@@ -578,7 +582,7 @@ export function QuizInput({ quiz }) {
                 </div>
 
                 <div className={styles.tags}>
-                    <Label label="Tags" />
+                    {/* <Label label="Tags" />
 
                     <ul className="chipList">
                         {tags.length === 0 && <ListItem item="No tags added" />}
@@ -593,11 +597,12 @@ export function QuizInput({ quiz }) {
                                 actionType={"delete"}
                             />
                         ))}
-                    </ul>
+                    </ul> */}
 
                     <Input
                         type="datalist"
-                        choices={availableTags}
+                        // choices={availableTags}
+                        choices={[]}
                         label={"Add Tag"}
                         value={newTag}
                         maxLength={MAX.tag}
@@ -605,8 +610,29 @@ export function QuizInput({ quiz }) {
                         autoComplete="off"
                         onChange={(e) => setNewTag(e.target.value)}
                         action="Add tag"
-                        onActionTrigger={handleAddTag}
+                        // onActionTrigger={handleAddTag}
                     />
+
+                    {/* <div style={{ marginTop: "24px" }}>
+                        <Label label="Tags" />
+
+                        <ul className="chipList">
+                            {tags.length === 0 && (
+                                <ListItem item="No tags added" />
+                            )}
+
+                            {tags.map((tag) => (
+                                <ListItem
+                                    key={tag}
+                                    item={tag}
+                                    action={() => {
+                                        setTags(tags.filter((t) => t !== tag));
+                                    }}
+                                    actionType={"delete"}
+                                />
+                            ))}
+                        </ul>
+                    </div> */}
                 </div>
             </div>
 

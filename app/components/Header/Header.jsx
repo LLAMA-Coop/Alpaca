@@ -13,9 +13,7 @@ export async function Header() {
 
     return (
         <header className={styles.header}>
-            <h1>
-                <Link href="/">Mneme</Link>
-            </h1>
+            <Link href="/">Mneme</Link>
 
             <DynamicNav />
             <RightContainer user={user} />

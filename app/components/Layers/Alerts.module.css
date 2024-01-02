@@ -19,7 +19,12 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    width: fit-content;
     animation: slideIn 0.3s cubic-bezier(0.2, 0.65, 0.6, 1) both;
+}
+
+.alert > div:first-child {
+    display: flex;
 }
 
 @keyframes slideIn {

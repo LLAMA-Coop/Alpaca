@@ -3,11 +3,11 @@
 import { Label, Input, Spinner, UserInput } from "@client";
 import { useModals, useAlerts } from "@/store/store";
 import { useState, useRef, useEffect } from "react";
+import SubmitErrors from "@/lib/SubmitErrors";
 import filetypeinfo from "magic-bytes.js";
 import styles from "./Group.module.css";
+import { MAX } from "@/lib/constants";
 import Image from "next/image";
-import MAX from "@/lib/max";
-import SubmitErrors from "@/lib/SubmitErrors";
 
 export function GroupInput({ group }) {
     const [name, setName] = useState("");
@@ -86,7 +86,7 @@ export function GroupInput({ group }) {
 
         if (response.status === 400) {
             const json = await response.json();
-            if(json.sameName) setNameError("Name already taken.");
+            if (json.sameName) setNameError("Name already taken.");
             addAlert({
                 success: false,
                 message: json.message,

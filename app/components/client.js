@@ -20,8 +20,6 @@ export { SourceReference } from "./Source/SourceReference";
 
 export { UserInput } from "./User/UserInput";
 
-export { Alert } from "./Alert/Alert";
-
 export { Spinner } from "./Spinner/Spinner";
 
 export { Avatar } from "./Avatar/Avatar";
@@ -41,9 +39,8 @@ export { Timer } from "./Layers/Timer";
 export { Alerts } from "./Layers/Alerts";
 export { Modals } from "./Layers/Modals";
 
-export { InviteUser } from "./Notification/inviteUser";
-export { Notifications } from "./Notification/notifications";
-export { Notification } from "./Notification/notification";
+export { InviteUser } from "./Notification/InviteUser";
+export { Notifications } from "./Notification/Notifications";
 
 export { FillStore } from "./Websocket/FillStore";
 
@@ -52,4 +49,6 @@ export { BlankableInput } from "./Quiz/BlankableInput";
 export { UserStats } from "./Quiz/UserStats";
 export { QuizDisplay } from "./Quiz/QuizDisplay";
 
-export { Menu } from "./Menu/Menu";
+export { Menu } from "./Layers/Menu";
+
+export { UserCard } from "./User/UserCard";

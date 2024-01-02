@@ -23,8 +23,7 @@
     color: var(--foreground-primary);
 }
 
-.container > a,
-.profile > a {
+.container > a {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -116,8 +115,14 @@
 }
 
 @media (max-width: 768px) {
-    .container > :first-child {
-        display: none;
+    .container {
+        gap: 8px;
+    }
+
+    .container > :first-child img,
+    .container > :first-child > div > div {
+        width: 32px !important;
+        height: 32px !important;
     }
 
     .menu {

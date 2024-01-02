@@ -46,23 +46,11 @@ export function RightContainer({ user }) {
                             viewBox="0 0 24 24"
                             width="24"
                             height="24"
-                            strokeWidth="2"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
                         >
                             <path d="M18 6l-12 12" />
                             <path d="M6 6l12 12" />
                         </svg>
                     </button>
-
-                    <div className={styles.profile}>
-                        {user ? (
-                            <Profile user={user} />
-                        ) : (
-                            <Link href="/login">Login</Link>
-                        )}
-                    </div>
 
                     <nav>
                         <ul>
@@ -85,10 +73,6 @@ export function RightContainer({ user }) {
                     viewBox="0 0 24 24"
                     width="28"
                     height="28"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
                 >
                     <path d="M4 6l16 0" />
                     <path d="M4 12l16 0" />

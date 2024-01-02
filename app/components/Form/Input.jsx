@@ -1,7 +1,5 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState, useRef } from "react";
 import makeUniqueId from "@/lib/uniqueId";
 import styles from "./Input.module.css";
@@ -50,6 +48,7 @@ export function Input({
     autoFocus,
     outlineColor,
     inline,
+    placeholder,
 }) {
     const [inputId, setInputId] = useState("");
     const [errorId, setErrorId] = useState("");
@@ -114,7 +113,9 @@ export function Input({
                 className={`${styles.inlineContainer} ${
                     disabled && styles.disabled
                 }`}
-                onClick={type === "checkbox" && !disabled && onChange}
+                onClick={
+                    type === "checkbox" && !disabled ? onChange : undefined
+                }
             >
                 {label && (
                     <Label
@@ -140,8 +141,10 @@ export function Input({
                         preserveAspectRatio="xMinYMid meet"
                         aria-hidden="true"
                         style={{ left: value ? "12px" : "-3px" }}
+                        className="base"
                     >
                         <rect
+                            className="base"
                             fill="white"
                             x="4"
                             y="0"
@@ -151,23 +154,35 @@ export function Input({
                         />
 
                         {value ? (
-                            <svg viewBox="0 0 20 20" fill="none">
+                            <svg
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                className="base"
+                            >
                                 <path
+                                    className="base"
                                     fill="rgba(35, 165, 90, 1)"
                                     d="M7.89561 14.8538L6.30462 13.2629L14.3099 5.25755L15.9009 6.84854L7.89561 14.8538Z"
                                 />
                                 <path
+                                    className="base"
                                     fill="rgba(35, 165, 90, 1)"
                                     d="M4.08643 11.0903L5.67742 9.49929L9.4485 13.2704L7.85751 14.8614L4.08643 11.0903Z"
                                 />
                             </svg>
                         ) : (
-                            <svg viewBox="0 0 20 20" fill="none">
+                            <svg
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                className="base"
+                            >
                                 <path
+                                    className="base"
                                     fill="rgba(128, 132, 142, 1)"
                                     d="M5.13231 6.72963L6.7233 5.13864L14.855 13.2704L13.264 14.8614L5.13231 6.72963Z"
                                 />
                                 <path
+                                    className="base"
                                     fill="rgba(128, 132, 142, 1)"
                                     d="M13.2704 5.13864L14.8614 6.72963L6.72963 14.8614L5.13864 13.2704L13.2704 5.13864Z"
                                 />
@@ -227,7 +242,7 @@ export function Input({
                 className={styles.inputContainer}
                 style={{ pointerEvents: disabled ? "none" : "" }}
             >
-                {type === "select" && choices && (
+                {type === "select" && choices?.length > 0 && (
                     <select
                         id={inputId}
                         autoFocus={autoFocus ? true : false}
@@ -263,6 +278,7 @@ export function Input({
                 {type === "textarea" && (
                     <textarea
                         id={inputId}
+                        placeholder={placeholder}
                         autoCapitalize="sentences"
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
@@ -292,6 +308,7 @@ export function Input({
                         pattern={pattern}
                         min={min}
                         max={max}
+                        placeholder={placeholder}
                         autoCapitalize="none"
                         className={status}
                         autoFocus={autoFocus ? true : false}
@@ -321,6 +338,7 @@ export function Input({
                     <input
                         id={inputId}
                         list={`${inputId}_list`}
+                        placeholder={placeholder}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -342,7 +360,7 @@ export function Input({
                     />
                 )}
 
-                {type === "datalist" && (
+                {type === "datalist" && choices?.length > 0 && (
                     <datalist id={`${inputId}_list`}>
                         {choices.map((choice, index) => {
                             let key, label, value;
@@ -374,6 +392,7 @@ export function Input({
                         max={max}
                         autoCapitalize="none"
                         className={status}
+                        placeholder={placeholder}
                         autoFocus={autoFocus ? true : false}
                         autoComplete={autoComplete || "off"}
                         aria-describedby={description}
@@ -414,7 +433,15 @@ export function Input({
                             onActionTrigger(e);
                         }}
                     >
-                        <FontAwesomeIcon icon={faAdd} />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="20"
+                            height="20"
+                        >
+                            <path d="M12 5l0 14" />
+                            <path d="M5 12l14 0" />
+                        </svg>
                     </button>
                 )}
             </div>

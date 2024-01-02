@@ -2,11 +2,11 @@
 
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { buildPermissions } from "@/lib/permissions";
+import SubmitErrors from "@/lib/SubmitErrors";
 import { useState, useEffect } from "react";
 import { serializeOne } from "@/lib/db";
 import htmlDate from "@/lib/htmlDate";
-import MAX from "@/lib/max";
-import SubmitErrors from "@/lib/SubmitErrors";
+import { MAX } from "@/lib/constants";
 import {
     Input,
     Label,

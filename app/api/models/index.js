@@ -1,9 +1,9 @@
+import Notification from "./Notification";
 import Source from "./Source";
+import Course from "./Course";
+import Group from "./Group";
 import Note from "./Note";
 import Quiz from "./Quiz";
 import User from "./User";
-import Group from "./Group";
-import Notification from "./Notification";
-import Course from "./Course";
 
 export { Source, Note, Quiz, User, Group, Notification, Course };

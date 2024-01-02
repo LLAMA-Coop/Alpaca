@@ -17,7 +17,9 @@ export default async function UserPage({ params: { username } }) {
 
     return (
         <main className={styles.main}>
-            <h2>Profile</h2>
+            <div className={styles.titleBlock}>
+                <h2>Profile</h2>
+            </div>
 
             <section>
                 <div className="paragraph">
