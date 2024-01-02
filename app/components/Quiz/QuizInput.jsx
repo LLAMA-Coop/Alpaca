@@ -8,7 +8,7 @@ import { useEffect, useState, useRef } from "react";
 import SubmitErrors from "@/lib/SubmitErrors";
 import styles from "./QuizInput.module.css";
 import { serializeOne } from "@/lib/db";
-import { MAX } from "@/lib/max";
+import { MAX } from "@/lib/constants";
 import {
     Input,
     Label,
