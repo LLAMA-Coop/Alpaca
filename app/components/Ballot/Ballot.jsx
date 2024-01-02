@@ -24,7 +24,6 @@ export function Ballot({
     const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
-        console.log(ballot);
         if (!ballot) return;
 
         if (ballot.firstChoice) {
@@ -62,14 +61,14 @@ export function Ballot({
             thirdChoice,
             voteAgainst,
         };
-        if (ballot._id) {
+        if (ballot && ballot._id) {
             ballotPayload._id = ballot._id;
         }
 
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/ballot`,
             {
-                method: ballot._id ? "PUT" : "POST",
+                method: ballot && ballot._id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
