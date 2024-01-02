@@ -6,7 +6,7 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 // import User from "@mneme_app/database-models";
 import { User, Group } from "@/app/api/models";
 import SubmitErrors from "@/lib/SubmitErrors";
-import MAX from "@/lib/max";
+import { MAX } from "@/lib/constants";
 
 export async function POST(req) {
     try {
@@ -19,8 +19,8 @@ export async function POST(req) {
 
         const { name, description, icon } = await req.json();
 
-        if(!name) {
-            submitErrors.addError("Missing name")
+        if (!name) {
+            submitErrors.addError("Missing name");
         } else if (name?.length < 2 || name?.length > MAX.name) {
             submitErrors.addError(
                 `The following group name is not 2 to ${MAX.name} characters in length:\n ${name}`,
@@ -42,7 +42,7 @@ export async function POST(req) {
             return NextResponse.json(
                 {
                     message: submitErrors.displayErrors(),
-                    nameTaken: sameName != null
+                    nameTaken: sameName != null,
                 },
                 { status: 400 },
             );

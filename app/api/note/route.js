@@ -7,7 +7,7 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
 import { serializeOne } from "@/lib/db";
 import { buildPermissions } from "@/lib/permissions";
-import MAX from "@/lib/max";
+import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
 
 export async function GET(req) {

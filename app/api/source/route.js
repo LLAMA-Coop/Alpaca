@@ -8,7 +8,7 @@ import { Types } from "mongoose";
 import { buildPermissions } from "@/lib/permissions";
 import { serializeOne } from "@/lib/db";
 import SubmitErrors from "@/lib/SubmitErrors";
-import MAX from "@/lib/max";
+import { MAX } from "@/lib/constants";
 
 export async function GET(req) {
     try {
