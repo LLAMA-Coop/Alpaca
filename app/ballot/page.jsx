@@ -25,7 +25,7 @@ export default async function BallotPage() {
 
     return (
         <main className={styles.main}>
-            {!user && <Ballot motion={motion} choices={choices} />}
+            {!user || !ballot && <Ballot motion={motion} choices={choices} />}
             {user && ballot && (
                 <Ballot
                     motion={motion}

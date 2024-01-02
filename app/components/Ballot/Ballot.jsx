@@ -24,7 +24,6 @@ export function Ballot({
     const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
-        console.log(ballot);
         if (!ballot) return;
 
         if (ballot.firstChoice) {
