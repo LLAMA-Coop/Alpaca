@@ -14,8 +14,14 @@ export async function POST(req) {
 
         const submitErrors = new SubmitErrors();
 
-        const { motion, firstChoice, secondChoice, thirdChoice, voteAgainst } =
-            await req.json();
+        const {
+            motion,
+            firstChoice,
+            secondChoice,
+            thirdChoice,
+            voteAgainst,
+            amendment,
+        } = await req.json();
 
         if (!motion) {
             submitErrors.addError("Missing the motion you are voting on");
