@@ -7,12 +7,12 @@ import styles from "./Ballot.module.css";
 export function Ballot({
     motion,
     choices,
+    ballot,
     options = {
         numberChoices: 3,
         voteAgainst: true,
         canAmend: false,
     },
-    ballot,
 }) {
     const [firstChoice, setFirstChoice] = useState("");
     const [secondChoice, setSecondChoice] = useState("");
@@ -24,6 +24,7 @@ export function Ballot({
     const removeModal = useModals((state) => state.removeModal);
 
     useEffect(() => {
+        console.log(ballot);
         if (!ballot) return;
 
         if (ballot.firstChoice) {
