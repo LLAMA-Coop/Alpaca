@@ -79,22 +79,29 @@ export function Profile({ user }) {
                 else avatarUrl = result.uuid;
             }
 
-            const response = await fetch("/api/users/me", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/users/me`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        avatar: user.avatar !== avatar ? avatarUrl : null,
+                        username: user.username !== username ? username : null,
+                        displayName:
+                            user.displayName !== displayName
+                                ? displayName
+                                : null,
+                        description:
+                            user.description !== description
+                                ? description
+                                : null,
+                        email: user.email !== email ? email : null,
+                        password: password ? password : null,
+                    }),
                 },
-                body: JSON.stringify({
-                    avatar: user.avatar !== avatar ? avatarUrl : null,
-                    username: user.username !== username ? username : null,
-                    displayName:
-                        user.displayName !== displayName ? displayName : null,
-                    description:
-                        user.description !== description ? description : null,
-                    email: user.email !== email ? email : null,
-                    password: password ? password : null,
-                }),
-            }).then((res) => res.json());
+            ).then((res) => res.json());
 
             if (response.success) {
                 window.location.reload();
