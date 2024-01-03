@@ -75,7 +75,7 @@ export function Dashboard({ more = false }) {
     const [isLoading, setIsLoading] = useState(false);
 
     const [currentTab, setCurrentTab] = useState(
-        parseInt(localStorage ? localStorage.getItem("currentTab") : 0),
+        parseInt(localStorage ? localStorage.getItem("currentTab") || 0 : 0),
     );
 
     async function requestAssociate() {
@@ -478,7 +478,7 @@ export function Dashboard({ more = false }) {
                                         </div>
                                     </div>
 
-                                    <ul>
+                                    <ul className={styles.gridList}>
                                         {associates.map((user) => (
                                             <li key={user.id}>
                                                 <UserCard user={user} />

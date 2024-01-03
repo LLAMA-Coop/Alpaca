@@ -63,7 +63,11 @@
     line-height: 1.2;
     margin-bottom: 8px;
     color: var(--foreground-tertiary);
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
 }
 
 .notification > .actions {

@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const cdn = process.env.NEXT_PUBLIC_CDN_URL;
 
-export function Avatar({ src, username, size = 40, outline }) {
+export function Avatar({ src, username, size = 40, outline, background }) {
     const letter = username?.[0]?.toUpperCase();
 
     return (
@@ -14,8 +14,9 @@ export function Avatar({ src, username, size = 40, outline }) {
                 minWidth: size,
                 height: size,
                 minHeight: size,
-                fontSize: "16px",
+                fontSize: size / 3,
                 outline: outline ? "" : "0px solid transparent",
+                background: background || "",
             }}
         >
             {src ? (
