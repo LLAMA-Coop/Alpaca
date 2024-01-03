@@ -65,11 +65,7 @@ export function Dashboard({ more = false }) {
     const courses = useStore((state) => state.courses);
     const groups = useStore((state) => state.groups);
     const associates = useStore((state) => state.associates);
-    const notifications = useStore((state) => state.notifications);
-    const removeNotif = useStore((state) => state.removeNotification);
     const addAlert = useAlerts((state) => state.addAlert);
-    const addModal = useModals((state) => state.addModal);
-    const removeAssociate = useStore((state) => state.removeAssociate);
     const addAssociate = useStore((state) => state.addAssociate);
 
     const groupsCreated = groups.filter((group) => group.owner === user.id);
@@ -79,7 +75,7 @@ export function Dashboard({ more = false }) {
     const [isLoading, setIsLoading] = useState(false);
 
     const [currentTab, setCurrentTab] = useState(
-        parseInt(localStorage?.getItem("currentTab") || 0),
+        parseInt(localStorage ? localStorage.getItem("currentTab") || 0 : 0),
     );
 
     async function requestAssociate() {
@@ -482,7 +478,7 @@ export function Dashboard({ more = false }) {
                                         </div>
                                     </div>
 
-                                    <ul>
+                                    <ul className={styles.gridList}>
                                         {associates.map((user) => (
                                             <li key={user.id}>
                                                 <UserCard user={user} />

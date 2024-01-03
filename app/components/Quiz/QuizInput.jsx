@@ -15,7 +15,6 @@ import {
     ListItem,
     InputPopup,
     Spinner,
-    PermissionsInput,
     ListAdd,
     BlankableInput,
     UserInput,

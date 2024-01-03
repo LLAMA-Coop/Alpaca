@@ -62,7 +62,12 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
             href={`/users/${user.username}`}
         >
             <div className={styles.avatar}>
-                <Avatar src={user.avatar} username={user.username} size={80} />
+                <Avatar
+                    src={user.avatar}
+                    username={user.username}
+                    size={80}
+                    background="var(--background-secondary)"
+                />
             </div>
 
             <div>
