@@ -1,0 +1,493 @@
+.main {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.main > section {
+    max-width: 1700px;
+    padding: var(--padding);
+    margin: 0 auto;
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.tabList {
+    position: absolute;
+    top: 50%;
+    left: -105px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.tabList > li {
+    display: flex;
+    flex-direction: column;
+    color: var(--foreground-tertiary);
+    cursor: pointer;
+    align-items: center;
+    border-radius: 5px;
+    user-select: none;
+}
+
+.tabList > li:hover,
+.tabList > li:focus-visible {
+    color: var(--foreground-secondary);
+}
+
+.tabList > li.active {
+    color: var(--foreground-primary);
+    cursor: default;
+}
+
+.tabList > li > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    background: var(--background-secondary);
+    border-radius: 50%;
+}
+
+.tabList > li:hover > div,
+.tabList > li.active > div {
+    background: var(--background-tertiary);
+}
+
+.tabList > li > span {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    max-height: 70vh;
+    width: 100%;
+}
+
+.content > header {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 24px;
+    border-radius: 10px;
+    padding: 16px;
+    background-color: var(--background-secondary);
+    overflow-x: scroll;
+}
+
+.content > header::-webkit-scrollbar {
+    display: none;
+}
+
+.content > header > h1 {
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1 1 auto;
+}
+
+.content > header > h1 > img {
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+}
+
+.content > header > h1 > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-tertiary-1);
+    border-radius: 100vw;
+    font-size: 15px;
+    height: 32px;
+    padding: 6px 12px;
+    white-space: nowrap;
+}
+
+.browseLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 3px;
+    background-color: transparent;
+    cursor: pointer;
+    color: var(--foreground-secondary);
+}
+
+.browseLink:hover,
+.browseLink:focus-visible {
+    background-color: var(--background-tertiary);
+    color: var(--foreground-primary);
+}
+
+.content > header > .chips {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 0 0 auto;
+}
+
+.content > header > .chips > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 100vw;
+    background-color: var(--accent-tertiary-1);
+    color: var(--foreground-primary);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* .content > header > h1 > span:last-child {
+} */
+
+.content > main {
+    background-color: var(--background-secondary);
+    border-radius: 10px;
+    padding: 24px 4px 24px 24px;
+    overflow: hidden scroll;
+    flex: 1;
+    min-height: 370px;
+}
+
+.empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.empty > p {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.content > main > div {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 24px 12px 16px;
+    border-radius: 10px;
+    background-color: var(--accent-tertiary-1);
+    color: var(--foreground-primary);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+    border: 0px;
+    cursor: pointer;
+    transition: background-color 0.1s ease-in-out;
+}
+
+.dashButton:hover {
+    background-color: var(--accent-tertiary-2);
+}
+
+.dashButton:active {
+    background-color: var(--accent-tertiary-3);
+}
+
+.card {
+    background-color: var(--background-tertiary);
+    color: var(--foreground-secondary);
+    border-radius: 10px;
+    padding: 24px;
+    outline: 1px solid var(--background-4);
+    transition: all 0.1s ease-in-out;
+    height: fit-content;
+    word-break: break-word;
+}
+
+.card:hover {
+    background-color: var(--background-4);
+    outline: 0px solid var(--background-4);
+}
+
+.card > h3 {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    color: var(--foreground-primary);
+}
+
+.card > p {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.625;
+    margin-bottom: 16px;
+    margin: 0;
+}
+
+.input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+}
+
+.input > label {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.input > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 10px;
+    background-color: var(--background-tertiary);
+    border: 1px solid var(--background-4);
+    min-width: minmax(350px, 1fr);
+}
+
+.input > div:focus-within {
+    outline: 2px solid var(--accent-tertiary-1);
+}
+
+.input > div > input {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+    background-color: transparent;
+    border: 0px;
+    outline: 0px;
+    color: var(--foreground-primary);
+    width: 100%;
+    padding: 12px 16px;
+}
+
+.input > div > input::placeholder {
+    color: var(--foreground-tertiary);
+    user-select: none;
+}
+
+.input > div > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px 12px;
+    margin-right: 8px;
+    border-radius: 4px;
+    background-color: var(--accent-tertiary-1);
+    color: var(--foreground-primary);
+    font-size: 13px;
+    font-weight: 500;
+    border: 0px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.1s ease-in-out;
+}
+
+.input > div > button:hover,
+.input > div > button:focus-visible {
+    background-color: var(--accent-tertiary-2);
+}
+
+.input > div > button:active {
+    background-color: var(--accent-tertiary-3);
+}
+
+.userContent {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.userContent > div {
+    max-width: 100%;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.userContent > div > h3 {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.gridList {
+    padding: 2px;
+    margin: -2px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    max-width: 100%;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 1000px;
+    color: var(--foreground-primary);
+    background-color: var(--accent-tertiary-1);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-left: 8px;
+    user-select: none;
+    aspect-ratio: 1;
+}
+
+.associate {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 6px;
+    background-color: var(--background-tertiary);
+    max-width: 360px;
+    cursor: pointer;
+    transition:
+        transform 0.1s ease-in-out,
+        box-shadow 0.1s ease-in-out;
+}
+
+.associate:hover,
+.associate:focus-visible {
+    transform: translate(2px, -2px);
+    box-shadow: -3px 3px 0px var(--background-4);
+}
+
+.associate > div {
+    height: 100%;
+}
+
+.associate > div > h3 {
+    margin-bottom: 8px;
+    color: var(--foreground-primary);
+}
+
+.associate > div > p {
+    color: var(--foreground-tertiary);
+}
+
+.associate > button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--background-primary);
+    border: 0px;
+    cursor: pointer;
+    transition:
+        background-color 0.1s ease-in-out,
+        color 0.1s ease-in-out;
+}
+
+.associate > button:hover,
+.associate > button:focus-visible {
+    color: var(--accent-secondary-1);
+}
+
+@media screen and (max-width: 2100px) {
+    .main > section {
+        max-width: calc(100vw - 280px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .main > section {
+        max-width: calc(100vw - 48px);
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .tabList {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        top: unset;
+        transform: unset;
+        flex-direction: row;
+        width: 100%;
+        z-index: 1;
+        padding: 8px 0px;
+        justify-content: space-evenly;
+        background-color: var(--background-4);
+    }
+
+    .tabList > li > div {
+        width: 42px;
+        height: 42px;
+    }
+
+    .tabList > li > span {
+        font-size: 12px;
+    }
+
+    .tabList > li > div > svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .main > section {
+        max-width: calc(100vw - 24px);
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .content > main {
+        padding: 16px 0 16px 16px;
+    }
+
+    .content > header {
+        padding: 8px 12px;
+    }
+
+    .empty {
+        padding: 0;
+    }
+}
