@@ -32,9 +32,9 @@ export function NoteInput({ note }) {
 
     const [loading, setLoading] = useState(false);
 
-    const availableSources = useStore((state) => state.sourceStore);
-    const availableCourses = useStore((state) => state.courseStore);
-    const availableTags = useStore((state) => state.tagStore);
+    const availableSources = useStore((state) => state.sources);
+    const availableCourses = useStore((state) => state.courses);
+    const availableTags = useStore((state) => state.tags);
     const addTags = useStore((state) => state.addTags);
     const user = useStore((state) => state.user);
     const addModal = useModals((state) => state.addModal);

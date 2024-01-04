@@ -17,7 +17,7 @@ export function PermissionsInput({ permissions, setter }) {
     const [groupsRead, setGroupsRead] = useState([]);
 
     const user = useStore((state) => state.user);
-    const availableGroups = useStore((state) => state.groupStore);
+    const availableGroups = useStore((state) => state.groups);
     const addModal = useModals((state) => state.addModal);
 
     useEffect(() => {

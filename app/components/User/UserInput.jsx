@@ -1,7 +1,7 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAlerts, useStore, useModals } from "@/store/store";
+import { useAlerts, useModals } from "@/store/store";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef, useEffect } from "react";
 import styles from "./UserInput.module.css";

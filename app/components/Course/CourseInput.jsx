@@ -28,7 +28,7 @@ export function CourseInput({ course }) {
 
     const [loading, setLoading] = useState(false);
 
-    const availableCourses = useStore((state) => state.courseStore);
+    const availableCourses = useStore((state) => state.courses);
     const user = useStore((state) => state.user);
     const canDelete = course && user && course.createdBy === user._id;
     const addModal = useModals((state) => state.addModal);
