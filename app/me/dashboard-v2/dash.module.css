@@ -16,6 +16,12 @@
     justify-content: stretch;
 }
 
+@media screen and (max-width: 2100px) {
+    .main > section {
+        max-width: calc(100vw - 280px);
+    }
+}
+
 .tabList {
     position: absolute;
     top: 50%;
@@ -79,16 +85,11 @@
 .content > header {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 16px;
     margin-bottom: 24px;
     border-radius: 10px;
-    padding: 16px;
+    padding: 16px 24px;
     background-color: var(--background-secondary);
-    overflow-x: scroll;
-}
-
-.content > header::-webkit-scrollbar {
-    display: none;
 }
 
 .content > header > h1 {
@@ -118,7 +119,6 @@
     font-size: 15px;
     height: 32px;
     padding: 6px 12px;
-    white-space: nowrap;
 }
 
 .browseLink {
@@ -187,7 +187,6 @@
     font-size: 24px;
     font-weight: 500;
     margin-bottom: 24px;
-    text-align: center;
 }
 
 .content > main > div {
@@ -265,7 +264,6 @@
     font-weight: 500;
     line-height: 1.2;
     margin-bottom: 8px;
-    text-align: center;
 }
 
 .input > div {
@@ -275,7 +273,7 @@
     border-radius: 10px;
     background-color: var(--background-tertiary);
     border: 1px solid var(--background-4);
-    min-width: minmax(350px, 1fr);
+    min-width: 350px;
 }
 
 .input > div:focus-within {
@@ -370,7 +368,6 @@
     line-height: 1.2;
     margin-left: 8px;
     user-select: none;
-    aspect-ratio: 1;
 }
 
 .associate {
@@ -430,12 +427,6 @@
     color: var(--accent-secondary-1);
 }
 
-@media screen and (max-width: 2100px) {
-    .main > section {
-        max-width: calc(100vw - 280px);
-    }
-}
-
 @media screen and (max-width: 768px) {
     .main > section {
         max-width: calc(100vw - 48px);
@@ -469,25 +460,5 @@
     .tabList > li > div > svg {
         width: 20px;
         height: 20px;
-    }
-}
-
-@media screen and (max-width: 320px) {
-    .main > section {
-        max-width: calc(100vw - 24px);
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    .content > main {
-        padding: 16px 0 16px 16px;
-    }
-
-    .content > header {
-        padding: 8px 12px;
-    }
-
-    .empty {
-        padding: 0;
     }
 }
