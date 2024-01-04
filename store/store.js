@@ -38,6 +38,7 @@ export const useStore = create((set) => ({
 
     fillInitialData: (data) => {
         return set(() => ({
+            user: data.user,
             sources: data.sources || [],
             notes: data.notes || [],
             quizzes: data.quizzes || [],

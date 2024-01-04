@@ -127,6 +127,7 @@ export function ListAdd({
                     onActionTrigger={(e) => {
                         e.preventDefault();
                         if (
+                            filteredChoices &&
                             filteredChoices.length === 1 &&
                             !listChosen.includes(filteredChoices[0])
                         ) {

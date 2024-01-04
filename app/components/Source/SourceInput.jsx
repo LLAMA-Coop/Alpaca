@@ -50,8 +50,8 @@ export function SourceInput({ source }) {
     const publishRegex = /^\d{4}-\d{2}-\d{2}$/;
 
     const user = useStore((state) => state.user);
-    const availableCourses = useStore((state) => state.courseStore);
-    const availableTags = useStore((state) => state.tagStore);
+    const availableCourses = useStore((state) => state.courses);
+    const availableTags = useStore((state) => state.tags);
     const addTags = useStore((state) => state.addTags);
     const canDelete = source && source.createdBy === user._id;
 

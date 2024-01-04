@@ -181,16 +181,6 @@ export function QuizInput({ quiz }) {
         setNewHint("");
     }
 
-    // function handleAddTag(e) {
-    //     e.preventDefault();
-    //     if (!newTag || tags.includes(newTag)) return;
-    //     setTags([...tags, newTag]);
-    //     if (!availableTags.includes(newTag)) {
-    //         addTags(newTag);
-    //     }
-    //     setNewTag("");
-    // }
-
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
