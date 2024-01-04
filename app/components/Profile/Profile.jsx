@@ -6,7 +6,7 @@ import { useMenu, useStore } from "@/store/store";
 import styles from "./Profile.module.css";
 import { Avatar } from "@client";
 
-export function Profile({ user }) {
+export function Profile({ user, size = 44 }) {
     const notifications = useStore((state) => state.notifications);
     const setMenu = useMenu((state) => state.setMenu);
     const menu = useMenu((state) => state.menu);
@@ -128,7 +128,11 @@ export function Profile({ user }) {
                     }
                 }}
             >
-                <Avatar src={user.avatar} username={user.username} size={44} />
+                <Avatar
+                    src={user.avatar}
+                    username={user.username}
+                    size={size}
+                />
 
                 {!!notifications.length && (
                     <sub

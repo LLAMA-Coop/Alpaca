@@ -36,6 +36,7 @@
     display: flex;
     gap: 16px;
     overflow: visible;
+    flex-wrap: wrap;
 }
 
 .notification {
@@ -68,6 +69,7 @@
     line-clamp: 4;
     -webkit-box-orient: vertical;
     word-break: break-word;
+    overflow: hidden;
 }
 
 .notification > .actions {

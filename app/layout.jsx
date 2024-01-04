@@ -42,7 +42,11 @@ export default async function RootLayout({ children }) {
     }
 
     const user = await useUser({ token: cookies().get("token")?.value });
-    user && (await user.populate("associates", "id username avatar"));
+    user &&
+        (await user.populate(
+            "associates",
+            "id username avatar displayName description",
+        ));
     user && (await user.populate("groups"));
 
     const notifications = user

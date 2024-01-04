@@ -36,7 +36,11 @@ export function RightContainer({ user }) {
 
     return (
         <div className={styles.container}>
-            {user ? <Profile user={user} /> : <Link href="/login">Login</Link>}
+            {user ? (
+                <Profile user={user} size={44} />
+            ) : (
+                <Link href="/login">Login</Link>
+            )}
 
             {open && (
                 <div className={styles.menu}>

@@ -26,15 +26,22 @@
     width: 120px;
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .header > nav {
         display: none;
     }
 }
 
-@media (max-width: 550px) {
+@media screen and (max-width: 550px) {
     .header {
         padding: 0 20px;
+        height: 60px;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .header {
+        padding: 0 12px;
         height: 60px;
     }
 }

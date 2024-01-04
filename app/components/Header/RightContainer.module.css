@@ -119,12 +119,6 @@
         gap: 8px;
     }
 
-    .container > :first-child img,
-    .container > :first-child > div > div {
-        width: 32px !important;
-        height: 32px !important;
-    }
-
     .menu {
         display: flex;
     }
