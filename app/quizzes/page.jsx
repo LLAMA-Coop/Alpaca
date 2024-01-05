@@ -75,7 +75,6 @@ export default async function QuizzesPage({ searchParams }) {
                                 <li key={quiz.id}>
                                     <QuizDisplay
                                         quiz={quiz}
-                                        user={serializeOne(user)}
                                         canClientCheck={user ? false : true}
                                     />
 

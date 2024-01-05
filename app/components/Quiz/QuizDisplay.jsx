@@ -11,7 +11,7 @@ const sampleQuiz = {
 };
 
 export function QuizDisplay({
-    canClientCheck,
+    canClientCheck = false,
     quiz,
     handleWhenCorrect = () => {},
     isFlashcard = false,
