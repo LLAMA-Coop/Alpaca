@@ -31,7 +31,7 @@ export function Profile({ user, size = 44 }) {
                                 <path className="fill" d="M14 4h6v4h-6z" />
                             </g>
                         ),
-                        onClick: () => router.push("/me/dashboard-v2"),
+                        onClick: () => router.push("/me/dashboard"),
                     },
                     {
                         name: "Settings",
@@ -84,7 +84,7 @@ export function Profile({ user, size = 44 }) {
                         name: "See all notifications",
                         onClick: () => {
                             localStorage.setItem("currentTab", 0);
-                            router.push("/me/dashboard-v2");
+                            router.push("/me/dashboard");
                         },
                     },
                     {
