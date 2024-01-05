@@ -24,7 +24,7 @@ export function ListAdd({
 
         setFilteredChoices(
             listChoices.filter((choice) => {
-                if(!choice) return false;
+                if (!choice) return false;
                 let prop;
                 if (Array.isArray(listProperty)) {
                     prop = listProperty.find((p) => choice[p]);
@@ -78,11 +78,11 @@ export function ListAdd({
                     )}
 
                     {listChosen.length > 0 &&
-                        listChosen.map((choice) => {
-                            if (!choice) return <ListItem
-                                key={choice}
-                                item="Unavailable"
-                            />;
+                        listChosen.map((choice, index) => {
+                            if (!choice)
+                                return (
+                                    <ListItem key={`${choice}_${index}`} item="Unavailable" />
+                                );
 
                             let prop;
                             if (Array.isArray(listProperty)) {
@@ -94,7 +94,7 @@ export function ListAdd({
 
                             return (
                                 <ListItem
-                                    key={choice._id}
+                                    key={choice._id ?? choice.id}
                                     link={choice.url ? choice.url : undefined}
                                     item={choice[prop]}
                                     action={() => {
@@ -175,11 +175,11 @@ export function ListAdd({
             />
 
             {listChosen.length > 0 &&
-                listChosen.map((choice) => {
-                    if (!choice) return <ListItem
-                        key={choice}
-                        item="Unavailable"
-                    />;
+                listChosen.map((choice, index) => {
+                    if (!choice)
+                        return (
+                            <ListItem key={`${choice}_${index}`} item="Unavailable" />
+                        );
 
                     let prop;
                     if (Array.isArray(listProperty)) {
