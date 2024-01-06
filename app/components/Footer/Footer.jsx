@@ -16,7 +16,7 @@ export function Footer() {
                     <ThemePicker />
 
                     <div className={styles.socials}>
-                        <a href="https://discord.gg/JymNJbgqcC" target="_blank">
+                        <a href="https://discord.com/channels/1122590467633184920/1122590468400746590" target="_blank">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"

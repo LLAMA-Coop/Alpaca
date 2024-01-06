@@ -63,7 +63,7 @@ export default function About() {
 
                 <p>
                     For discussion about the application,{" "}
-                    <a href="https://discord.gg/PcsjqPFh" target="_blank">
+                    <a href="https://discord.com/channels/1122590467633184920/1122590468400746590" target="_blank">
                         go to our Discord server
                     </a>
                     .
