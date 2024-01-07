@@ -64,12 +64,17 @@ export default async function NotesPage({ searchParams }) {
                         {notes.map((note) => (
                             <li key={note.id}>
                                 <NoteDisplay note={note} />
+                                
                                 {user && canEdit(note, user) && (
                                     <InputPopup
                                         type="note"
                                         resource={serializeOne(note)}
                                     />
                                 )}
+
+                                <Link href={`/notes/${note.id}`}>
+                                    Go to Note Page
+                                </Link>
                             </li>
                         ))}
                     </ol>
