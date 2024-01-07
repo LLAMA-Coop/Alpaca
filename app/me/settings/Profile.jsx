@@ -47,10 +47,6 @@ export function Profile({ user }) {
         setEmail(user.email);
     }
 
-    useEffect(() => {
-        console.log(password);
-    }, [password]);
-
     async function saveUser() {
         if (isLoading) return;
         setIsLoading(true);
