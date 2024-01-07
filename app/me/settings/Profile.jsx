@@ -227,7 +227,7 @@ export function Profile({ user }) {
                     />
 
                     <div>
-                        {avatar ? (
+                        {/* {avatar ? (
                             <Image
                                 src={
                                     typeof avatar === "string"
@@ -240,7 +240,8 @@ export function Profile({ user }) {
                             />
                         ) : (
                             <span>{user.username[0].toUpperCase()}</span>
-                        )}
+                        )} */}
+                        <span>{user.username[0].toUpperCase()}</span>
 
                         <button onClick={() => avatarInput.current.click()}>
                             <svg

@@ -19,7 +19,7 @@ export function Avatar({ src, username, size = 40, outline, background }) {
                 background: background || "",
             }}
         >
-            {src ? (
+            {/* {src ? (
                 <Image
                     draggable={false}
                     alt={`Avatar for ${username}`}
@@ -29,7 +29,8 @@ export function Avatar({ src, username, size = 40, outline, background }) {
                 />
             ) : (
                 <div>{letter}</div>
-            )}
+            )} */}
+            <div>{letter}</div>
         </div>
     );
 }
