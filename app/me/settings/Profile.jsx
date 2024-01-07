@@ -69,15 +69,15 @@ export function Profile({ user }) {
         }
 
         try {
-            if (avatar !== user.avatar && avatar !== null) {
-                const result = await uploadFile(avatar, {
-                    publicKey: process.env.NEXT_PUBLIC_CDN_TOKEN,
-                    store: "auto",
-                });
+            // if (avatar !== user.avatar && avatar !== null) {
+            //     const result = await uploadFile(avatar, {
+            //         publicKey: process.env.NEXT_PUBLIC_CDN_TOKEN,
+            //         store: "auto",
+            //     });
 
-                if (!result.uuid) console.error(result);
-                else avatarUrl = result.uuid;
-            }
+            //     if (!result.uuid) console.error(result);
+            //     else avatarUrl = result.uuid;
+            // }
 
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/users/me`,
@@ -87,7 +87,7 @@ export function Profile({ user }) {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        avatar: user.avatar !== avatar ? avatarUrl : null,
+                        // avatar: user.avatar !== avatar ? avatarUrl : null,
                         username: user.username !== username ? username : null,
                         displayName:
                             user.displayName !== displayName
