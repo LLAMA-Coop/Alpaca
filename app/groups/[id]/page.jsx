@@ -9,15 +9,15 @@ import { InviteUser } from "@client";
 import { useUser } from "@/lib/auth";
 
 export default async function GroupPage({ params }) {
-    const groupId = params.groupId;
+    const { id } = params;
 
-    const group = serializeOne(await Group.findById(groupId).populate("users"));
+    const group = serializeOne(await Group.findById(id).populate("users"));
     if (!group) return redirect("/groups");
 
     const user = serializeOne(
         await useUser({ token: cookies().get("token")?.value }),
     );
-    if (!group.isPublic && !user?.groups?.includes(groupId)) {
+    if (!group.isPublic && !user?.groups?.includes(id)) {
         return redirect("/groups");
     }
 
@@ -79,10 +79,7 @@ export default async function GroupPage({ params }) {
                 {user &&
                     (user.id === group.owner ||
                         group.admins.includes(user.id)) && (
-                        <InviteUser
-                            publicUsers={publicUsers}
-                            groupId={groupId}
-                        />
+                        <InviteUser publicUsers={publicUsers} groupId={id} />
                     )}
             </section>
 

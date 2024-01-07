@@ -71,6 +71,7 @@ export default async function SourcesPage({ searchParams }) {
                                         resource={serializeOne(src)}
                                     />
                                 )}
+                                <Link href={`/sources/${src.id}`}>Go to Source Page</Link>
                             </li>
                         ))}
                     </ol>

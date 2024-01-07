@@ -21,7 +21,7 @@ export default async function CoursePage({ params }) {
 
     const user = await useUser({ token: cookies().get("token")?.value });
     if (!canRead(course, user)) {
-        return redirect("/groups");
+        return redirect("/courses");
     }
 
     const query = queryReadableResources(user);

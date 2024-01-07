@@ -89,6 +89,7 @@ export default async function QuizzesPage({ searchParams }) {
                                                 resource={serializeOne(quiz)}
                                             />
                                         )}
+                                    <Link href={`/quizzes/${quiz.id}`}>Go to Quiz Page</Link>
                                 </li>
                             );
                         })}

@@ -3,6 +3,7 @@ import { ListItem, Card } from "@client";
 import { Source, User } from "@models";
 
 export async function SourceDisplay({ source }) {
+    if(!source) return;
     const user = await User.findById(source.createdBy);
     const dbSource = await Source.findById(source._id).populate("courses");
 
