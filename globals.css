@@ -1,0 +1,431 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap");
+
+:root {
+    --max-width: 1280px;
+    --padding: 120px 40px;
+    --gradient-angle: 360deg;
+
+    --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+        "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+        "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+
+    --background-primary: hsl(0, 0%, 100%);
+    --background-secondary: hsl(0, 0%, 97%);
+    --background-tertiary: hsl(0, 0%, 94%);
+    --background-4: hsl(0, 0%, 90%);
+
+    --foreground-primary: hsl(240, 10%, 4%);
+    --foreground-secondary: hsl(240, 6%, 10%);
+    --foreground-tertiary: hsl(240, 4%, 16%);
+
+    --accent-primary-1: hsl(224, 76%, 48%);
+    --accent-primary-2: hsl(226, 71%, 40%);
+    --accent-primary-3: hsl(224, 64%, 33%);
+    --accent-primary-light: hsl(217, 91%, 60%);
+
+    --accent-secondary-1: hsl(0, 74%, 42%);
+    --accent-secondary-2: hsl(0, 70%, 35%);
+    --accent-secondary-3: hsl(0, 63%, 31%);
+    --accent-secondary-light: hsl(0, 84%, 60%);
+
+    --accent-tertiary-1: hsl(163, 94%, 24%);
+    --accent-tertiary-2: hsl(163, 88%, 20%);
+    --accent-tertiary-3: hsl(164, 86%, 16%);
+    --accent-tertiary-light: hsl(160, 84%, 39%);
+
+    --accent-foreground: white;
+
+    --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
+    --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
+    --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
+}
+
+/* root for landing page alex */
+:root {
+    --bg1: #020617;
+    --bg2: #0f172a;
+    --bg3: #1e293b;
+    --accent1: #10b77f;
+    --accent2: #38bdf8;
+    --accent3: #818cf8;
+    --trans1: rgba(129, 140, 248, 0.2);
+    --trans2: rgba(56, 189, 248, 0.15);
+    --transi: 300ms ease-in-out;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+    :root {
+        --background-primary: hsl(240, 4%, 5%);
+        --background-secondary: hsl(240, 6%, 10%);
+        --background-tertiary: hsl(240, 4%, 16%);
+        --background-4: hsl(240, 4%, 20%);
+
+        --foreground-primary: hsl(0, 0%, 98%);
+        --foreground-secondary: hsl(240, 2%, 80%);
+        --foreground-tertiary: hsl(0, 0%, 65%);
+    }
+
+    html {
+        color-scheme: dark;
+    }
+}
+
+[data-theme="dark"] {
+    --background-primary: hsl(240, 4%, 5%);
+    --background-secondary: hsl(240, 6%, 10%);
+    --background-tertiary: hsl(240, 4%, 16%);
+
+    --foreground-primary: hsl(0, 0%, 98%);
+    --foreground-secondary: hsl(240, 2%, 80%);
+    --foreground-tertiary: hsl(0, 0%, 65%);
+
+    --accent-primary-outline: hsl(224, 76%, 48%, 0.55);
+    --accent-secondary-outline: hsl(0, 74%, 42%, 0.55);
+    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.55);
+
+    --anchor-foreground: hsl(217, 91%, 60%);
+
+    --border-color: hsl(0, 0%, 20%);
+}
+
+[data-theme="light"] {
+    --background-primary: hsl(0, 0%, 100%);
+    --background-secondary: hsl(0, 0%, 97%);
+    --background-tertiary: hsl(0, 0%, 94%);
+
+    --foreground-primary: hsl(240, 10%, 4%);
+    --foreground-secondary: hsl(240, 6%, 10%);
+    --foreground-tertiary: hsl(240, 4%, 16%);
+
+    --accent-primary-outline: hsl(224, 76%, 48%, 0.55);
+    --accent-secondary-outline: hsl(0, 74%, 42%, 0.55);
+    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.55);
+
+    --anchor-foreground: hsl(226, 71%, 40%);
+
+    --border-color: hsl(0, 0%, 85%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100dvh;
+    font-size: 16px;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    color: var(--foreground-primary);
+    background-color: var(--background-primary);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    padding-left: calc(100dvw - 100%);
+    background-color: var(--bg1);
+}
+
+body > main {
+    flex: 1;
+}
+
+a {
+    color: var(--anchor-foreground);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.button {
+    height: 32px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 16px;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    color: var(--accent-foreground);
+    background-color: var(--accent-primary-1);
+    transition: background-color 0.1s ease-in-out;
+}
+
+.button:not(.submit) {
+    width: fit-content;
+}
+
+.button:hover {
+    background-color: var(--accent-primary-2);
+}
+
+.button:active {
+    background-color: var(--accent-primary-3);
+}
+
+.button.submit {
+    height: 42px;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.button.green {
+    background-color: var(--accent-tertiary-1);
+    color: var(--accent-foreground);
+}
+
+.button.green:hover {
+    background-color: var(--accent-tertiary-2);
+    color: var(--accent-foreground);
+}
+
+.button.green:active {
+    background-color: var(--accent-tertiary-3);
+    color: var(--accent-foreground);
+}
+
+.button.red {
+    background-color: var(--accent-secondary-1);
+    color: var(--accent-foreground);
+}
+
+.button.red:hover {
+    background-color: var(--accent-secondary-2);
+    color: var(--accent-foreground);
+}
+
+.button.red:active {
+    background-color: var(--accent-secondary-3);
+    color: var(--accent-foreground);
+}
+
+.button.transparent {
+    background-color: transparent;
+    color: var(--foreground-primary);
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+*:focus-visible {
+    outline: 4px solid var(--accent-primary-outline);
+}
+
+*.offset:focus-visible,
+.button:focus-visible {
+    outline-offset: 1px;
+}
+
+::-webkit-calendar-picker-indicator:focus-visible {
+    border-radius: 2px;
+    outline: 4px solid var(--accent-primary-outline);
+    outline-offset: 3px;
+}
+
+input {
+    font-family: sans-serif;
+}
+
+input[type="date"] {
+    cursor: pointer;
+}
+
+:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.thinScroller::-webkit-scrollbar {
+    width: 10px;
+}
+
+.thinScroller::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.thinScroller::-webkit-scrollbar-thumb {
+    background: var(--accent-primary-1);
+    border: 3px solid var(--background-primary);
+    border-radius: 100vw;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 24px;
+}
+
+.formGrid > *:last-child {
+    align-self: flex-end;
+}
+
+.chipList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 16px;
+}
+
+.menuPopup {
+    width: 100%;
+    padding: 4px 0;
+    border-radius: 6px;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    border: 1px solid var(--border-color);
+    background-color: var(--background-secondary);
+}
+
+.menuPopup.fit {
+    width: fit-content;
+}
+
+.menuPopup.medium {
+    width: 175px;
+}
+
+.menuPopup.down {
+    top: calc(100% + 8px);
+    bottom: auto;
+}
+
+.menuPopup.left {
+    right: 0;
+}
+
+.menuPopup > ul > hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 4px 0;
+}
+
+.menuPopup > ul > li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 6px 12px;
+    user-select: none;
+    cursor: pointer;
+    transition: all 0.01s ease-in-out;
+}
+
+.menuPopup > ul > li.icon {
+    padding-left: 36px;
+}
+
+.menuPopup > ul > li.danger {
+    color: var(--accent-secondary-1);
+}
+
+.menuPopup > ul > li:hover,
+.menuPopup > ul > li:focus-visible {
+    background-color: var(--background-tertiary);
+    outline: none;
+}
+
+.menuPopup > ul > li:active {
+    opacity: 0.8;
+}
+
+.menuPopup > ul > li > div {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.paragraph.center {
+    text-align: center;
+}
+
+.paragraph > h3 {
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.paragraph > p,
+.paragraph > ol > li,
+.paragraph > ul > li {
+    font-size: clamp(16px, 2vw, 20px);
+    line-height: 1.5;
+    font-weight: 300;
+    margin-bottom: 24px;
+    color: var(--foreground-secondary);
+}
+
+.paragraph > ul {
+    margin-left: 2rem;
+    list-style-type: disc;
+}
+
+.paragraph > ol {
+    margin-left: 2rem;
+    list-style-type: numeral;
+}
+
+.paragraph a {
+    font-weight: 400;
+}
+
+.paragraph a:hover {
+    text-decoration: underline;
+}
+
+h4 {
+    margin-bottom: 12px;
+}
+
+.listGrid {
+    width: 100%;
+    max-width: var(--max-width);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 500px));
+    grid-gap: 16px;
+}
+
+@media screen and (max-width: 1024px) {
+    :root {
+        --padding: 80px 40px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    :root {
+        --padding: 56px 24px;
+    }
+
+    .formGrid {
+        max-width: 550px;
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 550px) {
+    :root {
+        --padding: 40px 20px;
+    }
+}
