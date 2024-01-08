@@ -37,6 +37,19 @@
     --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
 }
 
+/* root for landing page alex */
+:root {
+    --bg1: #020617;
+    --bg2: #0f172a;
+    --bg3: #1e293b;
+    --accent1: #10b77f;
+    --accent2: #38bdf8;
+    --accent3: #818cf8;
+    --trans1: rgba(129, 140, 248, 0.2);
+    --trans2: rgba(56, 189, 248, 0.15);
+    --transi: 300ms ease-in-out;
+}
+
 @media screen and (prefers-color-scheme: dark) {
     :root {
         --background-primary: #020614;
