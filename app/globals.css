@@ -1,10 +1,13 @@
-:root {
-    --max-width: 1200px;
-    --padding: 120px 40px;
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap");
 
-    --font-heading: "Inter", sans-serif;
-    --font-body: "Inter", sans-serif;
-    --font-mono: Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace;
+:root {
+    --max-width: 1280px;
+    --padding: 120px 40px;
+    --gradient-angle: 360deg;
+
+    --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+        "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+        "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
     --background-primary: hsl(0, 0%, 100%);
     --background-secondary: hsl(0, 0%, 97%);
@@ -37,12 +40,25 @@
     --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
 }
 
+/* root for landing page alex */
+:root {
+    --bg1: #020617;
+    --bg2: #0f172a;
+    --bg3: #1e293b;
+    --accent1: #10b77f;
+    --accent2: #38bdf8;
+    --accent3: #818cf8;
+    --trans1: rgba(129, 140, 248, 0.2);
+    --trans2: rgba(56, 189, 248, 0.15);
+    --transi: 300ms ease-in-out;
+}
+
 @media screen and (prefers-color-scheme: dark) {
     :root {
-        --background-primary: #020614;
-        --background-secondary: #0f172a;
-        --background-tertiary: #1e293b;
-        --background-4: #334155;
+        --background-primary: hsl(240, 4%, 5%);
+        --background-secondary: hsl(240, 6%, 10%);
+        --background-tertiary: hsl(240, 4%, 16%);
+        --background-4: hsl(240, 4%, 20%);
 
         --foreground-primary: hsl(0, 0%, 98%);
         --foreground-secondary: hsl(240, 2%, 80%);
@@ -55,41 +71,39 @@
 }
 
 [data-theme="dark"] {
-    --background-primary: hsl(229, 84%, 5%);
-    --background-secondary: hsl(222, 47%, 11%);
-    --background-tertiary: hsl(217, 33%, 17%);
-    --background-4: hsl(215, 25%, 27%);
+    --background-primary: hsl(240, 4%, 5%);
+    --background-secondary: hsl(240, 6%, 10%);
+    --background-tertiary: hsl(240, 4%, 16%);
 
     --foreground-primary: hsl(0, 0%, 98%);
     --foreground-secondary: hsl(240, 2%, 80%);
     --foreground-tertiary: hsl(0, 0%, 65%);
 
-    --accent-primary-outline: hsl(160, 84%, 39%);
-    --accent-secondary-outline: hsl(189, 93%, 60%);
-    --accent-tertiary-outline: hsl(234, 89%, 74%);
+    --accent-primary-outline: hsl(224, 76%, 48%, 0.55);
+    --accent-secondary-outline: hsl(0, 74%, 42%, 0.55);
+    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.55);
 
     --anchor-foreground: hsl(217, 91%, 60%);
 
-    --border-color: hsl(227, 15%, 18%);
+    --border-color: hsl(0, 0%, 20%);
 }
 
 [data-theme="light"] {
     --background-primary: hsl(0, 0%, 100%);
     --background-secondary: hsl(0, 0%, 97%);
     --background-tertiary: hsl(0, 0%, 94%);
-    --background-4: hsl(0, 0%, 90%);
 
     --foreground-primary: hsl(240, 10%, 4%);
     --foreground-secondary: hsl(240, 6%, 10%);
     --foreground-tertiary: hsl(240, 4%, 16%);
 
-    --accent-primary-outline: hsl(160, 84%, 39%, 0.5);
-    --accent-secondary-outline: hsl(189, 93%, 60%, 0.5);
-    --accent-tertiary-outline: hsl(234, 89%, 74%, 0.5);
+    --accent-primary-outline: hsl(224, 76%, 48%, 0.55);
+    --accent-secondary-outline: hsl(0, 74%, 42%, 0.55);
+    --accent-tertiary-outline: hsl(163, 94%, 24%, 0.55);
 
     --anchor-foreground: hsl(226, 71%, 40%);
 
-    --border-color: hsl(227, 15%, 18%);
+    --border-color: hsl(0, 0%, 85%);
 }
 
 * {
@@ -113,33 +127,18 @@ body {
 body {
     display: flex;
     flex-direction: column;
-    /* padding-left: calc(100dvw - 100%); */
+    padding-left: calc(100dvw - 100%);
+    background-color: var(--bg1);
+}
+
+body > main {
+    flex: 1;
 }
 
 a {
     color: var(--anchor-foreground);
     text-decoration: none;
     font-weight: 500;
-}
-
-.scrollbar::-webkit-scrollbar {
-    width: 20px;
-    height: 20px;
-}
-
-.scrollbar::-webkit-scrollbar-track {
-    border-radius: 1000px;
-    border: 6px var(--background-secondary) solid;
-    background-color: var(--background-tertiary);
-    background-clip: padding-box;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-    border-radius: 1000px;
-    border: 6px var(--background-tertiary) solid;
-    border-color: transparent;
-    background-color: var(--background-primary);
-    background-clip: padding-box;
 }
 
 .button {
@@ -158,10 +157,7 @@ a {
     user-select: none;
     color: var(--accent-foreground);
     background-color: var(--accent-primary-1);
-    transition:
-        background-color 0.1s ease-in-out,
-        color 0.1s ease-in-out,
-        box-shadow 0.1s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
 }
 
 .button:not(.submit) {
@@ -223,12 +219,12 @@ ol {
 }
 
 *:focus-visible {
-    outline: 3px solid var(--accent-primary-outline);
+    outline: 4px solid var(--accent-primary-outline);
 }
 
 *.offset:focus-visible,
 .button:focus-visible {
-    outline-offset: 2px;
+    outline-offset: 1px;
 }
 
 ::-webkit-calendar-picker-indicator:focus-visible {
@@ -279,13 +275,85 @@ input[type="date"] {
     flex-wrap: wrap;
 }
 
-.chipList > li {
-    max-width: 100%;
-}
-
 .buttonContainer {
     display: flex;
     gap: 16px;
+}
+
+.menuPopup {
+    width: 100%;
+    padding: 4px 0;
+    border-radius: 6px;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    border: 1px solid var(--border-color);
+    background-color: var(--background-secondary);
+}
+
+.menuPopup.fit {
+    width: fit-content;
+}
+
+.menuPopup.medium {
+    width: 175px;
+}
+
+.menuPopup.down {
+    top: calc(100% + 8px);
+    bottom: auto;
+}
+
+.menuPopup.left {
+    right: 0;
+}
+
+.menuPopup > ul > hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 4px 0;
+}
+
+.menuPopup > ul > li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 6px 12px;
+    user-select: none;
+    cursor: pointer;
+    transition: all 0.01s ease-in-out;
+}
+
+.menuPopup > ul > li.icon {
+    padding-left: 36px;
+}
+
+.menuPopup > ul > li.danger {
+    color: var(--accent-secondary-1);
+}
+
+.menuPopup > ul > li:hover,
+.menuPopup > ul > li:focus-visible {
+    background-color: var(--background-tertiary);
+    outline: none;
+}
+
+.menuPopup > ul > li:active {
+    opacity: 0.8;
+}
+
+.menuPopup > ul > li > div {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .paragraph.center {
@@ -335,42 +403,8 @@ h4 {
     width: 100%;
     max-width: var(--max-width);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
-    grid-gap: 24px;
-}
-
-.listGrid > li {
-    width: fit-content;
-}
-
-.flexColumn {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-svg:not(.base),
-path:not(.base) {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2px;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-svg.fill,
-path.fill {
-    fill: currentColor;
-}
-
-svg.noStroke,
-path.noStroke {
-    stroke: none;
-}
-
-svg.stroke0,
-path.stroke0 {
-    stroke-width: 0;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 500px));
+    grid-gap: 16px;
 }
 
 @media screen and (max-width: 1024px) {
@@ -393,11 +427,5 @@ path.stroke0 {
 @media (max-width: 550px) {
     :root {
         --padding: 40px 20px;
-    }
-}
-
-@media (max-width: 320px) {
-    :root {
-        --padding: 20px 10px;
     }
 }

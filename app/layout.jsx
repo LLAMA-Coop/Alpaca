@@ -1,16 +1,16 @@
-import { Source, Note, Quiz, Notification, Course } from "@models";
-import { FillStore, Timer, Alerts, Modals, Menu } from "@client";
+import { Source, Note, Quiz, Group, User, Notification, Course } from "@models";
+import { useUser, queryReadableResources } from "@/lib/auth";
+import { FillStore, Timer, Alerts, Modals } from "@client";
 import { Header, Footer, DBConnectError } from "@server";
 import { serialize, serializeOne } from "@/lib/db";
-import { Sofia_Sans } from "next/font/google";
 import { metadatas } from "@/lib/metadatas";
+import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
-import { useUser } from "@/lib/auth";
 import connectDB from "./api/db";
 import "./globals.css";
 
 const connection = await connectDB();
-const sofiaSans = Sofia_Sans({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
     metadataBase: new URL(metadatas.layout.url),
@@ -32,7 +32,7 @@ export default async function RootLayout({ children }) {
     if (connection === false) {
         return (
             <html lang="en">
-                <body className={sofiaSans.className}>
+                <body className={inter.className}>
                     <Header />
                     <DBConnectError />
                     <Footer />
@@ -40,57 +40,66 @@ export default async function RootLayout({ children }) {
             </html>
         );
     }
-
     const user = await useUser({ token: cookies().get("token")?.value });
-    user &&
-        (await user.populate(
-            "associates",
-            "id username avatar displayName description",
-        ));
-    user && (await user.populate("groups"));
+    if (user) {
+        await user.populate("associates");
+        await user.populate("groups");
+    }
 
     const notifications = user
-        ? serialize(await Notification.find({ recipient: user.id }))
+        ? serialize(
+              await Notification.find({ recipient: user._id })
+                  .populate("senderUser")
+                  .populate("senderGroup"),
+          )
         : [];
 
-    const sources = user
-        ? serialize(await Source.find({ createdBy: user.id }))
+    const query = queryReadableResources(user);
+    const sources = serialize(await Source.find(query));
+    const notes = serialize(await Note.find(query));
+    const quizzes = serialize(await Quiz.find(query));
+    const courses = serialize(await Course.find(query));
+
+    const publicUsers = await User.find({ isPublic: true });
+    const associates = user
+        ? user.associates.filter((a) => !publicUsers.includes(a))
         : [];
-    const notes = user
-        ? serialize(await Note.find({ createdBy: user.id }))
-        : [];
-    const quizzes = user
-        ? serialize(await Quiz.find({ createdBy: user.id }))
-        : [];
-    const courses = user
-        ? serialize(await Course.find({ createdBy: user.id }))
-        : [];
+    const availableUsers = serialize([
+        ...associates.filter((x) => !x.isPublic),
+        ...publicUsers,
+    ]).map((x) => ({
+        _id: x._id,
+        username: x.username,
+        displayName: x.displayName,
+        avatar: x.avatar,
+    }));
+    const publicGroups = await Group.find({ isPublic: true });
+    const availableGroups = serialize(
+        user && user.groups
+            ? [...user.groups, ...publicGroups]
+            : [...publicGroups],
+    );
 
     return (
         <html lang="en">
-            {user && (
-                <FillStore
-                    user={serializeOne(user)}
-                    sources={sources}
-                    notes={notes}
-                    quizzes={quizzes}
-                    courses={courses}
-                    groups={serialize(user.groups)}
-                    associates={serialize(user.associates)}
-                    notifications={notifications}
-                    webSocketURL={process.env.WS_URL}
-                />
-            )}
+            <FillStore
+                sourceStore={sources}
+                noteStore={notes}
+                quizStore={quizzes}
+                courseStore={courses}
+                groupStore={availableGroups}
+                userStore={availableUsers}
+                user={serializeOne(user)}
+                notifications={notifications}
+                webSocketURL={process.env.WS_URL}
+            />
 
-            <body className={sofiaSans.className}>
-                <Header />
+            <body className={inter.className}>
                 {children}
-                <Footer />
 
                 <Timer />
                 <Alerts />
                 <Modals />
-                <Menu />
             </body>
         </html>
     );
