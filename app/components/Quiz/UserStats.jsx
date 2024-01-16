@@ -2,7 +2,7 @@ import styles from "./UserStats.module.css";
 import htmlDate from "@/lib/htmlDate";
 
 export function UserStats({ userQuizInfo }) {
-    const canLevel = userQuizInfo.hiddenUntil < Date.now();
+    const canLevel = new Date(userQuizInfo.hiddenUntil) < Date.now();
 
     return (
         <div className={styles.info}>
