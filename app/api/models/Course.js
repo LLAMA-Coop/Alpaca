@@ -44,6 +44,26 @@ const CourseSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "user",
         },
+        students: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "user",
+            },
+        ],
+        tutors: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "user",
+            },
+        ],
+        enrollment: {
+            type: String,
+            default: "private",
+            enum: {
+                values: ["open", "paid", "private"],
+                message: "Invalid enrollment type"
+            },
+        },
     },
     {
         timestamps: true,
