@@ -1,13 +1,7 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useRef, useEffect } from "react";
 import styles from "./ListItem.module.css";
-import {
-    faAdd,
-    faSubtract,
-    faArrowRight,
-} from "@fortawesome/free-solid-svg-icons";
 
 export function ListItem({ item, action, actionType, link, select, disabled }) {
     const [showSelect, setShowSelect] = useState(false);
