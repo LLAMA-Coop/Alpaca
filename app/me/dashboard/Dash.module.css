@@ -76,6 +76,18 @@
     width: 100%;
 }
 
+.content > h1, .content > h2 {
+    text-align: center;
+}
+
+.content > h1 {
+    font-size: 2rem;
+}
+.content > h2 {
+    font-size: 1.75;
+    font-style: italic;
+}
+
 .content > header {
     display: flex;
     align-items: center;
@@ -91,7 +103,8 @@
     display: none;
 }
 
-.content > header > h1 {
+.content > header > h1,
+.content > header > h3 {
     font-size: 36px;
     font-weight: 600;
     line-height: 1.2;
@@ -103,13 +116,15 @@
     flex: 1 1 auto;
 }
 
-.content > header > h1 > img {
+.content > header > h1 > img,
+.content > header > h3 > img {
     border-radius: 50%;
     width: 42px;
     height: 42px;
 }
 
-.content > header > h1 > span {
+.content > header > h1 > span,
+.content > header > h3 > span {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -159,9 +174,6 @@
     font-weight: 700;
     line-height: 1.2;
 }
-
-/* .content > header > h1 > span:last-child {
-} */
 
 .content > main {
     background-color: var(--background-secondary);
