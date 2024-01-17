@@ -98,7 +98,7 @@ export function CourseDash({ course }) {
             hiddenUntil: new Date(0),
         };
     });
-    const averageLevel = sum / quizzes.length;
+    const averageLevel = quizzes.length ? sum / quizzes.length : 0;
 
     return (
         <main className={styles.main}>

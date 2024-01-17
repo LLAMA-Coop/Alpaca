@@ -321,7 +321,7 @@ export function Dashboard({ more = false }) {
                                         <Link
                                             key={course.id}
                                             className={styles.card}
-                                            href={`/courses/${course.id}`}
+                                            href={`/courses/${course.name}`}
                                         >
                                             <h3>{course.name}</h3>
 
