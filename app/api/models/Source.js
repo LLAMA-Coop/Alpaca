@@ -17,8 +17,8 @@ const SourceSchema = new Schema(
             {
                 type: String,
                 required: true,
-                minLength: MIN.username,
-                maxLength: MAX.username,
+                minLength: MIN.author,
+                maxLength: MAX.author,
             },
         ],
         medium: {
