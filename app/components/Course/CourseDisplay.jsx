@@ -10,7 +10,10 @@ export async function CourseDisplay({ course }) {
         .populate("prerequisites.course");
 
     return (
-        <Card title={`${dbCourse.name}`} description={`${dbCourse.description}`}>
+        <Card
+            title={`${dbCourse.name}`}
+            description={`${dbCourse.description}`}
+        >
             <div className={styles.tags}>
                 <h5>Parent Courses of this Course</h5>
                 {dbCourse.parentCourses.length > 0 ? (
@@ -28,15 +31,25 @@ export async function CourseDisplay({ course }) {
                 <h5>Prerequisites for this Course</h5>
                 {dbCourse.prerequisites.length > 0 ? (
                     <ol className="chipList">
-                        {dbCourse.prerequisites.map((p) => (
-                            <ListItem key={p._id} item={p.requiredAverageLevel} />
-                        ))}
+                        {dbCourse.prerequisites.map((p) => {
+                            const course = p.course;
+                            if (!course) {
+                                return <li key={p.course}>Unavailable</li>;
+                            }
+
+                            const display = `${course.name} - Average Level Required ${p.averageLevelRequired}`
+
+
+                            return (
+                                <ListItem key={course._id} item={display} />
+                            );
+                        })}
                     </ol>
                 ) : (
                     <p>No Prerequisites Listed</p>
                 )}
             </div>
-            
+
             <p>Created by: {user.username}</p>
         </Card>
     );
