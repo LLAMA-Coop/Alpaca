@@ -365,6 +365,10 @@ MEDIA QUERIES
     .freePlan li {
         margin-left: 0;
     }
+
+    .content ul li{
+    font-size: 15px;
+    }
 }
 
 @media (min-width: 428px) {

@@ -19,24 +19,6 @@ function page() {
     return (
         <div className={styles.body}>
             <div className={styles.container}>
-                <nav className={styles.nav}>
-                    <a className={styles.Mneme} href="http://localhost:3001">
-                        Mneme
-                    </a>
-                    <ul className={styles.navigation}>
-                        <li>create</li>
-                        <li>learn</li>
-                        <li>test</li>
-                        <li>marketplace</li>
-                    </ul>
-                    <a
-                        href="http://localhost:3001/login"
-                        className={`${styles.loginBtn} ${styles.hover}`}
-                        style={{ color: "#0f172a" }}
-                    >
-                        login
-                    </a>
-                </nav>
                 <span className={styles.orb1}></span>
                 <span className={styles.orb2}></span>
                 {/* <!-- <span  className="star">
@@ -254,15 +236,6 @@ function page() {
                                 </ul>
                             </div>
                         </article>
-                    </div>
-                    <div className={styles.at}>
-                        <a
-                            className={styles.accent}
-                            href="http://localhost:3001"
-                        >
-                            Mneme
-                        </a>
-                        © 2023 Gnosis Corp.
                     </div>
                 </footer>
             </div>
