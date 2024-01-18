@@ -237,15 +237,6 @@ function page() {
                             </div>
                         </article>
                     </div>
-                    <div className={styles.at}>
-                        <a
-                            className={styles.accent}
-                            href="http://localhost:3001"
-                        >
-                            Mneme
-                        </a>
-                        © 2023 Gnosis Corp.
-                    </div>
                 </footer>
             </div>
         </div>
