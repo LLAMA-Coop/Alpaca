@@ -2,6 +2,7 @@
 import styles from "./home.module.css";
 import { useRef } from "react";
 import Image from "next/image";
+import llama from "../../public/assets/landing/llama.png"
 
 function page() {
     // Creating a ref for the target element
@@ -29,12 +30,12 @@ function page() {
                     />
                 </span>
                 <span className="inter">
-                    <img src="/assets/landing/inter.png" alt="" />
+                    <img src="/assets/landing/inter.png" alt="Constellation Orion" />
                 </span>
 
                 <div className={styles.hero}>
                     <Image
-                        src="/assets/landing/llama.png"
+                        src={llama}
                         width={279}
                         height={279}
                         alt="Drawing of a llama angel"
@@ -53,7 +54,7 @@ function page() {
                 </div>
 
                 <span className="inter2">
-                    <img src="assets/landing/inter2.png" alt="" />
+                    <img src="assets/landing/inter2.png" alt="Constellation Ursa Major" />
                 </span>
                 <span className="star2">
                     <img
