@@ -1,6 +1,7 @@
 "use client";
 import styles from "./home.module.css";
 import { useRef } from "react";
+import Image from "next/image";
 
 function page() {
     // Creating a ref for the target element
@@ -21,18 +22,23 @@ function page() {
             <div className={styles.container}>
                 <span className={styles.orb1}></span>
                 <span className={styles.orb2}></span>
-                {/* <!-- <span  className="star">
-        <img src="assets/stars.png" alt="drawing of stars" />
-      </span>
-      <span  className="inter">
-        <img src="assets/inter.png" alt="" />
-      </span> --> */}
+                <span className="star">
+                    <img
+                        src="/assets/landing/stars.png"
+                        alt="drawing of stars"
+                    />
+                </span>
+                <span className="inter">
+                    <img src="/assets/landing/inter.png" alt="" />
+                </span>
 
                 <div className={styles.hero}>
-                    <img
-                        src="./assets/landing/lama.png"
-                        alt="drawing of a lama"
-                        className={styles.lamaImg}
+                    <Image
+                        src="/assets/landing/llama.png"
+                        width={279}
+                        height={279}
+                        alt="Drawing of a llama angel"
+                        className={styles.llamaImg}
                     />
 
                     <div className={styles.welcomeText}>Welcome To Mneme!</div>
@@ -46,12 +52,15 @@ function page() {
                     </a>
                 </div>
 
-                {/* <!-- <span  className="inter2">
-        <img src="assets/inter2.png" alt="" />
-      </span>
-      <span  className="star2">
-        <img src="assets/stars.png" alt="drawing of stars" />
-      </span> --> */}
+                <span className="inter2">
+                    <img src="assets/landing/inter2.png" alt="" />
+                </span>
+                <span className="star2">
+                    <img
+                        src="assets/landing/stars.png"
+                        alt="drawing of stars"
+                    />
+                </span>
 
                 <section className={styles.info}>
                     <article className={`${styles.one} ${styles.article}`}>
@@ -71,7 +80,7 @@ function page() {
                             </p>
                         </div>
                         <img
-                            className={styles.lamaImg}
+                            className={styles.llamaImg}
                             src="./assets/landing/discordImg.png"
                             alt="image of a discord server"
                         />
