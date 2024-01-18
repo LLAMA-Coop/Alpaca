@@ -36,8 +36,6 @@ function page() {
                 <div className={styles.hero}>
                     <Image
                         src={llama}
-                        width={279}
-                        height={279}
                         alt="Drawing of a llama angel"
                         className={styles.llamaImg}
                     />
