@@ -7,7 +7,7 @@ import { serializeOne } from "@/lib/db";
 
 export default async function BallotPage() {
     const choices = [
-        "Yeah", "Nay"
+        "Yea", "Nay"
     ];
 
     const motion = `
