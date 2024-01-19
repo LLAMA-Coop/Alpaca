@@ -1,4 +1,5 @@
 import styles from "./Landing.module.css";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function LandingPage() {
@@ -11,12 +12,17 @@ export default function LandingPage() {
             <span className={styles.orb} />
 
             <section className={styles.hero}>
-                <img src="/assets/landing/lama.png" alt="Drawing of a llama" />
+                <img src="/assets/landing/llama.png" alt="Drawing of a llama" />
 
                 <h1>Welcome To Mneme!</h1>
                 <p>Create | Test | Learn</p>
 
                 <Link href="#grid">Discover plans</Link>
+
+                <img src="/assets/landing/stars.png" alt="Stars illustration" />
+                <img src="/assets/landing/stars.png" alt="Stars illustration" />
+                <img src="/assets/landing/inter.png" alt="Constellation" />
+                <img src="/assets/landing/inter2.png" alt="Constellation" />
             </section>
 
             <section className={styles.section}>

@@ -17,8 +17,6 @@ export default async function Home({ searchParams }) {
 
     return (
         <main className={styles.main}>
-            <button onClick={() => {}}>wd;kawp</button>
-
             <div className={styles.titleBlock}>
                 <h2>Welcome to Mneme!</h2>
             </div>
