@@ -1,4 +1,4 @@
-.container {
+/* .container {
     width: 100%;
     position: relative;
     border-top: 1px solid var(--background-3);
@@ -86,5 +86,88 @@
 @media (max-width: 550px) {
     .container > div {
         padding: 28px 20px;
+    }
+} */
+
+.footer {
+    padding: 0 40px;
+    margin-top: 100px;
+    width: 100%;
+}
+
+.footer > * {
+    margin: 0 auto;
+    max-width: var(--max-width);
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
+    padding: 32px 0;
+}
+
+.links {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    padding-bottom: 64px;
+}
+
+.links > ol {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.title {
+    color: var(--accent-3);
+    margin-bottom: 16px;
+}
+
+.link {
+    color: var(--foreground-3);
+}
+
+.link:hover:not(.disabled) {
+    color: var(--foreground-1);
+    text-decoration: underline;
+}
+
+.link.disabled {
+    color: var(--foreground-3);
+    cursor: not-allowed;
+}
+
+.footer > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--foreground-3);
+}
+
+.footer > div > a {
+    color: var(--accent-1);
+    font-size: 24px;
+    font-weight: 800;
+    font-family: var(--font-heading);
+}
+
+@media (max-width: 1024px) {
+    .links {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 530px) {
+    .footer {
+        padding: 0 20px;
+    }
+
+    .links {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media (max-width: 320px) {
+    .footer {
+        padding: 0 10px;
     }
 }
