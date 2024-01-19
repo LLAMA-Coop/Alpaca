@@ -21,7 +21,5 @@ export default async function CoursePage({ params }) {
         return redirect("/courses");
     }
 
-    console.log(course)
-
     return <CourseDash course={serializeOne(course)} />;
 }

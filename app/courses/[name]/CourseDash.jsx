@@ -8,7 +8,10 @@ import {
     QuizDisplay,
     UserStats,
     ListItem,
+    InputPopup,
 } from "@/app/components/client";
+import { canEdit } from "@/lib/auth";
+import { CourseInput } from "@/app/components/Course/CourseInput";
 
 const tabs = [
     {
@@ -59,10 +62,16 @@ export function CourseDash({ course }) {
     const [isLoading, setIsLoading] = useState(false);
 
     const [currentTab, setCurrentTab] = useState(
-        parseInt(localStorage ? localStorage.getItem("currentTab") || 0 : 0),
+        parseInt(
+            typeof window != "undefined"
+                ? localStorage.getItem("currentTab") || 0
+                : 0,
+        ),
     );
 
     if (!user) return null;
+
+    const isEditable = canEdit(user, course);
 
     function filter(x) {
         return x.courses.find((c) => c.toString() === course._id);
@@ -185,86 +194,81 @@ export function CourseDash({ course }) {
                     </header>
 
                     <main className="scrollbar">
-                        <ul>
-                            {currentTab === 0 && (
-                                <Card
-                                    title={course.name}
-                                    description={course.description}
-                                >
-                                    <div className={styles.card}>
-                                        <h4>Parent Courses</h4>
-                                        {course.parentCourses &&
-                                        course.parentCourses.length ? (
-                                            <ol className="chipList">
-                                                {course.parentCourses.map(
-                                                    (course) => {
-                                                        
-                                                        if (!course) {
-                                                            return (
-                                                                <li
-                                                                    key={
-                                                                        course._id
-                                                                    }
-                                                                >
-                                                                    Unavailable
-                                                                </li>
-                                                            );
-                                                        }
-
+                        {currentTab === 0 && (
+                            <Card
+                                title={course.name}
+                                description={course.description}
+                            >
+                                <div className={styles.card}>
+                                    <h4>Parent Courses</h4>
+                                    {course.parentCourses &&
+                                    course.parentCourses.length ? (
+                                        <ol className="chipList">
+                                            {course.parentCourses.map(
+                                                (course) => {
+                                                    if (!course) {
                                                         return (
-                                                            <ListItem
+                                                            <li
                                                                 key={course._id}
-                                                                item={course.name}
-                                                            />
+                                                            >
+                                                                Unavailable
+                                                            </li>
                                                         );
-                                                    },
-                                                )}
-                                            </ol>
-                                        ) : (
-                                            <p>No parent courses listed</p>
-                                        )}
-                                    </div>
+                                                    }
 
-                                    <div className={styles.card}>
-                                        <h4>Prerequisite Courses</h4>
-                                        {course.prerequisites &&
-                                        course.prerequisites.length ? (
-                                            <ol className="chipList">
-                                                {course.prerequisites.map(
-                                                    (p) => {
-                                                        const crs = p.course;
-                                                        if (!crs) {
-                                                            return (
-                                                                <li
-                                                                    key={
-                                                                        p
-                                                                    }
-                                                                >
-                                                                    Unavailable
-                                                                </li>
-                                                            );
-                                                        }
+                                                    return (
+                                                        <ListItem
+                                                            key={course._id}
+                                                            item={course.name}
+                                                        />
+                                                    );
+                                                },
+                                            )}
+                                        </ol>
+                                    ) : (
+                                        <p>No parent courses listed</p>
+                                    )}
+                                </div>
 
-                                                        const display = `${crs.name} - Average Level Required: ${p.averageLevelRequired}`
+                                <div className={styles.card}>
+                                    <h4>Prerequisite Courses</h4>
+                                    {course.prerequisites &&
+                                    course.prerequisites.length ? (
+                                        <ol className="chipList">
+                                            {course.prerequisites.map((p) => {
+                                                const crs = p.course;
+                                                if (!crs) {
+                                                    return (
+                                                        <li key={p}>
+                                                            Unavailable
+                                                        </li>
+                                                    );
+                                                }
 
-                                                        return (
-                                                            <ListItem
-                                                                key={p.course._id}
-                                                                item={display}
-                                                            />
-                                                        );
-                                                    },
-                                                )}
-                                            </ol>
-                                        ) : (
-                                            <p>
-                                                No prerequisite courses listed
-                                            </p>
-                                        )}
-                                    </div>
-                                </Card>
-                            )}
+                                                const display = `${crs.name} - Average Level Required: ${p.averageLevelRequired}`;
 
+                                                return (
+                                                    <ListItem
+                                                        key={p.course._id}
+                                                        item={display}
+                                                    />
+                                                );
+                                            })}
+                                        </ol>
+                                    ) : (
+                                        <p>No prerequisite courses listed</p>
+                                    )}
+                                </div>
+
+                                {isEditable && (
+                                    <InputPopup
+                                        resource={course}
+                                        type={"course"}
+                                    />
+                                )}
+                            </Card>
+                        )}
+                        <ul>
                             {currentTab === 1 &&
                                 quizzes.map((quiz) => {
                                     const userQuiz = userQuizzes.find(
