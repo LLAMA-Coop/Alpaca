@@ -16,7 +16,7 @@ export default async function BallotPage() {
         "Oikos",
     ];
 
-    const motion = "What shall the name of our company be?";
+    const motion = "What shall be the name of our company?";
 
     const user = await useUser({ token: cookies().get("token")?.value });
     const ballot = user
