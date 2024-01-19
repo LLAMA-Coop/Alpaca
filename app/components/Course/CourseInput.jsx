@@ -11,10 +11,12 @@ import {
     Label,
     Spinner,
     UserInput,
-    PermissionsInput,
     DeletePopup,
     ListAdd,
+    Card,
 } from "@client";
+import styles from "./CourseInput.module.css";
+import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 
 export function CourseInput({ course }) {
     const [name, setName] = useState("");
@@ -25,10 +27,18 @@ export function CourseInput({ course }) {
 
     const [parentCourses, setParentCourses] = useState([]);
     const [prerequisites, setPrerequisites] = useState([]);
+    const [sources, setSources] = useState([]);
+    const [addAllFromSources, setAddAllFromSources] = useState(false);
+    const [notes, setNotes] = useState([]);
+    const [addAllFromNotes, setAddAllFromNotes] = useState(false);
+    const [quizzes, setQuizzes] = useState([]);
 
     const [loading, setLoading] = useState(false);
 
     const availableCourses = useStore((state) => state.courses);
+    const availableSources = useStore((state) => state.sources);
+    const availableNotes = useStore((state) => state.notes);
+    const availableQuizzes = useStore((state) => state.quizzes);
     const user = useStore((state) => state.user);
     const canDelete = course && user && course.createdBy === user._id;
     const addModal = useModals((state) => state.addModal);
@@ -83,19 +93,25 @@ export function CourseInput({ course }) {
             return;
         }
 
-        const catPayload = {
+        const crsPayload = {
             name,
             description,
-            parentCourses: parentCourses.map((cat) => cat._id),
-            prerequisites: prerequisites.map((cat) => ({
+            parentCourses: parentCourses.map((course) => course._id),
+            prerequisites: prerequisites.map((course) => ({
                 requiredAverageLevel: 1,
-                course: cat._id,
+                course: course._id,
             })),
+            sources: sources.map((source) => source._id),
+            notes: notes.map((note) => note._id),
+            quizzes: quizzes.map((quiz) => quiz._id),
+            addAllFromSources,
+            addAllFromNotes,
+            permissions
         };
-        catPayload.permissions = permissions;
+        crsPayload.permissions = permissions;
         if (course && course._id) {
             // this will change to implement PATCH in /[id]/route.js
-            catPayload._id = course._id;
+            crsPayload._id = course._id;
         }
 
         setLoading(true);
@@ -107,7 +123,7 @@ export function CourseInput({ course }) {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(catPayload),
+                body: JSON.stringify(crsPayload),
             },
         );
 
@@ -144,7 +160,7 @@ export function CourseInput({ course }) {
     }
 
     return (
-        <div className="formGrid">
+        <div className={styles.form}>
             <Input
                 required={true}
                 onChange={(e) => {
@@ -201,14 +217,86 @@ export function CourseInput({ course }) {
                 />
             </div>
 
-            {(!course || !user || course.createdBy === user._id) && (
-                <PermissionsInput
-                    permissions={course ? course.permissions : {}}
-                    setter={setPermissions}
-                />
-            )}
+            <div className={styles.links}>
+                <div className={styles.sources}>
+                    <Label
+                        required={false}
+                        label="Sources Used by This Course"
+                    />
 
-            <button onClick={handleSubmit} className="button submit">
+                    <ListAdd
+                        item="Add a source"
+                        listChoices={availableSources}
+                        listChosen={sources}
+                        listProperty={"title"}
+                        listSetter={setSources}
+                        createNew={<InputPopup type="source" />}
+                        type="datalist"
+                        messageIfNone="No sources added"
+                    />
+
+                    <Input
+                        label="Add all notes and quizzes linked to these sources"
+                        type="checkbox"
+                        value={addAllFromSources}
+                        onChange={() => setAddAllFromSources(!addAllFromSources)}
+                    />
+                </div>
+
+                <div className={styles.notes}>
+                    <Label label="Notes Used by This Course" />
+
+                    <ListAdd
+                        item="Add a note"
+                        listChoices={availableNotes}
+                        listChosen={notes}
+                        listProperty={["title", "text"]}
+                        listSetter={setNotes}
+                        createNew={<InputPopup type="note" />}
+                        type="datalist"
+                        messageIfNone="No notes added"
+                    />
+
+                    <Input
+                        label="Add all quizzes linked to these notes"
+                        type="checkbox"
+                        value={addAllFromNotes}
+                        onChange={() => setAddAllFromNotes(!addAllFromNotes)}
+                    />
+                </div>
+
+                <div className={styles.quizzes}>
+                    <Label label="Quizzes Used by This Course" />
+
+                    <ListAdd
+                        item="Add a quiz"
+                        listChoices={availableQuizzes}
+                        listChosen={quizzes}
+                        listProperty={"prompt"}
+                        listSetter={setQuizzes}
+                        createNew={<InputPopup type="quiz" />}
+                        type="datalist"
+                        messageIfNone="No quizzes added"
+                    />
+                </div>
+            </div>
+
+            <div className={styles.permissions}>
+                <PermissionsDisplay permissions={permissions} />
+
+                {(!course || !user || course.createdBy === user._id) && (
+                    <InputPopup
+                        type="permissions"
+                        resource={permissions}
+                        setter={setPermissions}
+                    />
+                )}
+            </div>
+
+            <button
+                onClick={handleSubmit}
+                className={`button submit ${styles.submit}`}
+            >
                 {loading ? <Spinner /> : "Submit Course"}
             </button>
 

@@ -1,0 +1,17 @@
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.form > div, .submit {
+    flex-basis: 100%;
+}
+
+.permissions {
+    flex-basis: 50%;
+}
+
+.links {
+    padding: 1rem;
+}

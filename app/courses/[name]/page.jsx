@@ -6,17 +6,20 @@ import { CourseDash } from "./CourseDash";
 import { serializeOne } from "@/lib/db";
 
 export default async function CoursePage({ params }) {
-    const { id } = params;
+    const user = await useUser({ token: cookies().get("token")?.value });
+    if (!user) return redirect("/login");
 
-    const course = await Course.findById(id)
+    const { name } = params;
+    const nameDecoded = decodeURIComponent(name);
+
+    const course = await Course.findOne({ name: nameDecoded })
         .populate("prerequisites.course")
         .populate("parentCourses");
     if (!course) return redirect("/groups");
 
-    const user = await useUser({ token: cookies().get("token")?.value });
     if (!canRead(course, user)) {
         return redirect("/courses");
     }
 
-    return <CourseDash course={serializeOne(course)} />
+    return <CourseDash course={serializeOne(course)} />;
 }
