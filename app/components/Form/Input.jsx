@@ -132,8 +132,8 @@ export function Input({
                     className={styles.checkbox}
                     style={{
                         backgroundColor: value
-                            ? "var(--accent-tertiary-light)"
-                            : "var(--background-tertiary)",
+                            ? "var(--accent-3-light)"
+                            : "var(--background-3)",
                     }}
                 >
                     <svg

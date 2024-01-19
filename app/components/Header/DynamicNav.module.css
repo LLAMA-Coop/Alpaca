@@ -23,11 +23,11 @@
     border-radius: 3px;
     padding: 7px 14px;
     user-select: none;
-    color: var(--foreground-secondary);
+    color: var(--foreground-3);
     transition: color 0.1s ease-in-out;
     font-size: 14px;
 }
 
 .nav > ul > li > a:hover {
-    color: var(--foreground-primary);
+    color: var(--foreground-1);
 }

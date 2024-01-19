@@ -11,7 +11,7 @@
 
 .alert {
     padding: 16px;
-    background-color: var(--background-tertiary);
+    background-color: var(--background-3);
     color: white;
     border-radius: 4px;
     box-shadow: var(--boxshadow-dark);

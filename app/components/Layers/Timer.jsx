@@ -59,7 +59,7 @@ export function Timer() {
         <div className={styles.container}>
             <p
                 className={isPaused ? styles.paused : undefined}
-                style={{ color: danger ? "var(--accent-secondary-1)" : "" }}
+                style={{ color: danger ? "var(--accent-2)" : "" }}
             >
                 {isNaN(seconds)
                     ? "00:00"

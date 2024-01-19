@@ -9,15 +9,21 @@
     flex-basis: 100%;
 }
 
-.courses, .permissions {
+.courses,
+.permissions {
     flex-basis: 50%;
 }
 
-.answer, .multipleChoice, .links, .advanced,  .submit {
+.answer,
+.multipleChoice,
+.links,
+.advanced,
+.submit {
     flex-basis: 100%;
 }
 
-.links, .advanced {
+.links,
+.advanced {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -28,15 +34,18 @@
     text-align: center;
 }
 
-.sources, .notes, .hints, .tags {
+.sources,
+.notes,
+.hints,
+.tags {
     width: 50%;
 }
 
 .blankBank {
     flex-basis: 100%;
-    background-color: var(--background-secondary);
-    border: 1px solid var(--background-tertiary);
-    color: var(--foreground-tertiary);
+    background-color: var(--background-2);
+    border: 1px solid var(--background-3);
+    color: var(--foreground-3);
     padding: 10px;
     font-size: 1.2rem;
     border-radius: 4px;
@@ -54,8 +63,8 @@
     margin-right: 6px;
     padding: 2px 8px;
     border-radius: 4px;
-    background-color: var(--background-tertiary);
-    color: var(--foreground-tertiary);
+    background-color: var(--background-3);
+    color: var(--foreground-3);
     font-size: 1rem;
     cursor: pointer;
     user-select: none;
@@ -67,7 +76,7 @@
 }
 
 .blankBank input:checked + label {
-    background-color: var(--accent-tertiary-2);
+    background-color: var(--accent-3-hover);
     color: white;
 }
 

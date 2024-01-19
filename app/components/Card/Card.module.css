@@ -17,13 +17,13 @@
     width: 300%;
     height: 300%;
     background-image: conic-gradient(
-        var(--accent-primary-1),
+        var(--accent-1),
         transparent,
         transparent,
-        var(--accent-primary-2),
+        var(--accent-1-hover),
         transparent,
         transparent,
-        var(--accent-primary-3),
+        var(--accent-1-active),
         transparent,
         transparent
     );
@@ -74,12 +74,12 @@
     bottom: 2px;
     left: 2px;
     border-radius: 8px;
-    background-color: var(--background-tertiary);
+    background-color: var(--background-3);
     z-index: 2;
 }
 
 .container:hover > .content {
-    background-color: var(--background-tertiary);
+    background-color: var(--background-3);
 }
 
 .textContent {
@@ -135,7 +135,7 @@
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background-color: var(--accent-primary-1);
+    background-color: var(--accent-1);
 }
 
 .buttonContainer {
@@ -155,16 +155,16 @@
     cursor: pointer;
     user-select: none;
     color: var(--accent-foreground);
-    background-color: var(--accent-primary-1);
+    background-color: var(--accent-1);
     transition: background-color 0.2s ease-in-out;
 }
 
 .buttonContainer > *:hover {
-    background-color: var(--accent-primary-2);
+    background-color: var(--accent-1-hover);
 }
 
 .buttonContainer > *:active {
-    background-color: var(--accent-primary-3);
+    background-color: var(--accent-1-active);
 }
 /* 
 .childrenContent {
@@ -182,7 +182,7 @@
         var(--gradient-angle),
         var(--accent-primary-outline),
         hsla(0, 0%, 100%, 0.1),
-        var(--accent-primary-1),
+        var(--accent-1),
         hsla(0, 0%, 100%, 0.3)
     );
 }

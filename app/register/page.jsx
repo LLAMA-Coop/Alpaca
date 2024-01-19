@@ -22,7 +22,9 @@ export default async function RegisterPage() {
 
                 <div>
                     Already have an acccount?{" "}
-                    <Link href="/login">Login here</Link>
+                    <Link className="link" href="/login">
+                        Login here
+                    </Link>
                 </div>
             </section>
         </main>

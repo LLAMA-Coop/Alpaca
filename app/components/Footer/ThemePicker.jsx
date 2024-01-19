@@ -6,20 +6,20 @@ import styles from "./ThemePicker.module.css";
 import { useMenu } from "@/store/store";
 
 const paletteAttributes = [
-    "--accent-primary-1",
-    "--accent-primary-2",
-    "--accent-primary-3",
-    "--accent-primary-light",
+    "--accent-1",
+    "--accent-1-hover",
+    "--accent-1-active",
+    "--accent-1-light",
 
-    "--accent-secondary-1",
-    "--accent-secondary-2",
-    "--accent-secondary-3",
-    "--accent-secondary-light",
+    "--accent-2",
+    "--accent-2-hover",
+    "--accent-2-active",
+    "--accent-2-light",
 
-    "--accent-tertiary-1",
-    "--accent-tertiary-2",
-    "--accent-tertiary-3",
-    "--accent-tertiary-light",
+    "--accent-3",
+    "--accent-3-hover",
+    "--accent-3-active",
+    "--accent-3-light",
 ];
 
 export function ThemePicker() {

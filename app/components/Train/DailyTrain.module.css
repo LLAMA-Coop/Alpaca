@@ -7,7 +7,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--background-secondary);
+    background: var(--background-2);
     border: none;
     cursor: pointer;
     width: 32px;
@@ -16,7 +16,7 @@
 }
 
 .settingsButton:hover {
-    background: var(--background-tertiary);
+    background: var(--background-3);
 }
 
 .settings > div {
@@ -38,7 +38,7 @@
     width: 100dvw;
     height: 100vh;
     height: 100dvh;
-    background-color: var(--background-primary);
+    background-color: var(--background-1);
     z-index: 10;
     display: flex;
     justify-content: center;
@@ -65,14 +65,14 @@
     align-items: center;
     justify-content: center;
     border: none;
-    background: var(--background-tertiary);
-    color: var(--foreground-secondary);
+    background: var(--background-3);
+    color: var(--foreground-2);
     cursor: pointer;
 }
 
 .closeButton:hover {
     background: var(--background-4);
-    color: var(--foreground-primary);
+    color: var(--foreground-1);
 }
 
 .blurContainer {

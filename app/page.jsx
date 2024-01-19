@@ -17,6 +17,8 @@ export default async function Home({ searchParams }) {
 
     return (
         <main className={styles.main}>
+            <button onClick={() => {}}>wd;kawp</button>
+
             <div className={styles.titleBlock}>
                 <h2>Welcome to Mneme!</h2>
             </div>
@@ -38,7 +40,10 @@ export default async function Home({ searchParams }) {
                         other users, organize users into groups, and give other
                         users or groups privileges to read or edit what you have
                         created. You can use the{" "}
-                        <Link href="/login">Login</Link> link in the menu above.
+                        <Link className="link" href="/login">
+                            Login
+                        </Link>{" "}
+                        link in the menu above.
                     </li>
 
                     <li>
@@ -72,12 +77,15 @@ export default async function Home({ searchParams }) {
 
                     <li>
                         For information you want to reinforce over time, create
-                        one or more <a href="#quiz">Quiz</a> questions. The Quiz
-                        question is meant to challenge a user, either its
-                        creator or people to whom the creator has shared the
-                        Quiz. It presents a prompt of some type and provides one
-                        or more inputs for the user to enter their response.
-                        This can come in a few different forms:
+                        one or more{" "}
+                        <a className="link" href="#quiz">
+                            Quiz
+                        </a>{" "}
+                        questions. The Quiz question is meant to challenge a
+                        user, either its creator or people to whom the creator
+                        has shared the Quiz. It presents a prompt of some type
+                        and provides one or more inputs for the user to enter
+                        their response. This can come in a few different forms:
                         <ul>
                             <li>Prompt/Response, similar to flashcards</li>
 
@@ -152,7 +160,7 @@ export default async function Home({ searchParams }) {
 
                 <div
                     style={{
-                        border: "1px solid var(--background-tertiary)",
+                        border: "1px solid var(--background-3)",
                         padding: "1rem",
                         margin: "40px 0",
                     }}

@@ -8,10 +8,13 @@ export default function NotFound() {
                 <h2>Page Not Found</h2>
 
                 <p>
-                    I'm sorry, but the address you are seeking is not valid.
+                    Unfortunately, the page you are looking for does not exist.
                     <br />
                     Check the above navigation to see if you can find what you
-                    are looking for. Or you can <Link href="/">go home</Link>
+                    are looking for. Or you can{" "}
+                    <Link className="link" href="/">
+                        go home
+                    </Link>
                 </p>
             </div>
         </main>

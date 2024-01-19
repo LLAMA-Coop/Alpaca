@@ -2,7 +2,7 @@
     max-width: 100%;
     width: 100%;
     margin-bottom: 40px;
-    background-color: var(--background-secondary);
+    background-color: var(--background-2);
 }
 
 .container > h3 {
@@ -21,8 +21,8 @@
     width: 22px;
     height: 22px;
     border-radius: 1000px;
-    color: var(--foreground-primary);
-    background-color: var(--accent-secondary-1);
+    color: var(--foreground-1);
+    background-color: var(--accent-2);
     font-size: 15px;
     font-weight: 700;
     line-height: 1.2;
@@ -47,7 +47,7 @@
     gap: 12px;
     padding: 16px;
     border-radius: 6px;
-    background-color: var(--background-primary);
+    background-color: var(--background-1);
     max-width: 360px;
 }
 
@@ -63,7 +63,7 @@
     font-weight: 500;
     line-height: 1.2;
     margin-bottom: 8px;
-    color: var(--foreground-tertiary);
+    color: var(--foreground-3);
     display: -webkit-box;
     -webkit-line-clamp: 4;
     line-clamp: 4;
@@ -85,8 +85,8 @@
     gap: 12px;
     padding: 6px;
     border-radius: 50%;
-    background-color: var(--accent-tertiary-1);
-    color: var(--foreground-primary);
+    background-color: var(--accent-3);
+    color: var(--foreground-1);
     font-size: 13px;
     font-weight: 500;
     border: 0px;
@@ -96,16 +96,16 @@
 
 .notification > .actions > button:hover,
 .notification > .actions > button:focus-visible {
-    background-color: var(--accent-tertiary-2);
+    background-color: var(--accent-3-hover);
 }
 
 .notification > .actions > button:active {
-    background-color: var(--accent-tertiary-3);
+    background-color: var(--accent-3-active);
 }
 
 .notification > .actions > button:last-child {
-    background-color: var(--background-tertiary);
-    color: var(--foreground-tertiary);
+    background-color: var(--background-3);
+    color: var(--foreground-3);
 }
 
 .notification > .actions > button:last-child:hover,
@@ -127,7 +127,7 @@
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background-color: var(--background-tertiary);
+    background-color: var(--background-3);
     border: 0px;
     cursor: pointer;
     transition:
@@ -137,5 +137,5 @@
 
 .notification > button:hover,
 .notification > button:focus-visible {
-    color: var(--accent-secondary-1);
+    color: var(--accent-2);
 }

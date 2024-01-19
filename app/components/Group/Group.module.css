@@ -26,7 +26,7 @@
     height: 44px;
     border-radius: 50%;
     cursor: pointer;
-    background-color: var(--background-secondary);
+    background-color: var(--background-2);
 }
 
 .image > div {
@@ -38,5 +38,5 @@
     height: 46px;
     border-radius: 50%;
     pointer-events: none;
-    background-color: var(--background-secondary);
+    background-color: var(--background-2);
 }

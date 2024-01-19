@@ -2,7 +2,6 @@ import { Source, Note, Quiz, Notification, Course } from "@models";
 import { FillStore, Timer, Alerts, Modals, Menu } from "@client";
 import { Header, Footer, DBConnectError } from "@server";
 import { serialize, serializeOne } from "@/lib/db";
-import { Sofia_Sans } from "next/font/google";
 import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -10,7 +9,6 @@ import connectDB from "./api/db";
 import "./globals.css";
 
 const connection = await connectDB();
-const sofiaSans = Sofia_Sans({ subsets: ["latin"] });
 
 export const metadata = {
     metadataBase: new URL(metadatas.layout.url),
@@ -29,17 +27,17 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-    if (connection === false) {
-        return (
-            <html lang="en">
-                <body className={sofiaSans.className}>
-                    <Header />
-                    <DBConnectError />
-                    <Footer />
-                </body>
-            </html>
-        );
-    }
+    // if (connection === false) {
+    //     return (
+    //         <html lang="en">
+    //             <body>
+    //                 <Header />
+    //                 <DBConnectError />
+    //                 <Footer />
+    //             </body>
+    //         </html>
+    //     );
+    // }
 
     const user = await useUser({ token: cookies().get("token")?.value });
     user &&
@@ -82,7 +80,7 @@ export default async function RootLayout({ children }) {
                 />
             )}
 
-            <body className={sofiaSans.className}>
+            <body>
                 <Header />
                 {children}
                 <Footer />

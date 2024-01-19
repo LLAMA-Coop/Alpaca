@@ -6,7 +6,7 @@
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: var(--background-tertiary);
+    background-color: var(--background-3);
     border-radius: 4px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease-in-out;
@@ -29,8 +29,8 @@
     width: 32px;
     height: 32px;
     margin-left: 10px;
-    background-color: var(--background-secondary);
-    color: var(--foreground-secondary);
+    background-color: var(--background-2);
+    color: var(--foreground-2);
     border: none;
     border-radius: 3px;
     cursor: pointer;
@@ -38,7 +38,7 @@
 }
 
 .container > button:hover {
-    color: var(--foreground-primary);
+    color: var(--foreground-1);
 }
 
 @keyframes topToBottom {

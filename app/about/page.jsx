@@ -35,6 +35,7 @@ export default function About() {
                 <p>
                     Named for the{" "}
                     <a
+                        className="link"
                         href="https://en.wikipedia.org/wiki/Mneme"
                         target="_blank"
                     >
@@ -52,6 +53,7 @@ export default function About() {
                 <p>
                     This project is open source. Contributors are welcome to{" "}
                     <a
+                        className="link"
                         href="https://github.com/joewrotehaikus/mnemefeast"
                         target="_blank"
                     >
@@ -63,7 +65,11 @@ export default function About() {
 
                 <p>
                     For discussion about the application,{" "}
-                    <a href="https://discord.com/channels/1122590467633184920/1122590468400746590" target="_blank">
+                    <a
+                        className="link"
+                        href="https://discord.com/channels/1122590467633184920/1122590468400746590"
+                        target="_blank"
+                    >
                         go to our Discord server
                     </a>
                     .

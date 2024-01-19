@@ -22,7 +22,9 @@ export default async function LoginPage() {
 
                 <div>
                     Don't have an account?{" "}
-                    <Link href="/register">Register here</Link>
+                    <Link className="link" href="/register">
+                        Register here
+                    </Link>
                 </div>
             </section>
         </main>

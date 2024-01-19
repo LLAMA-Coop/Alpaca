@@ -1,17 +1,20 @@
-import styles from "@/app/page.module.css";
+import styles from "../../page.module.css";
 
 export function DBConnectError() {
     return (
         <main className={styles.main}>
-            <h2>Could not connect to database</h2>
+            <div className={styles.titleBlock}>
+                <h2>Could not connect to database</h2>
+            </div>
 
             <section>
                 <div className="paragraph">
                     <p>
-                        I'm sorry, but this application was not able to connect
-                        to a database.
+                        The application could not connect to the database.
+                        <br />
+                        Please contact the maintainer of this website.
                     </p>
-                    <p>Contact the developer about this issue.</p>
+
                     <p>
                         If you are the developer, check the `.env` file and make
                         sure the <em>DATABASE_URL</em> value is the correct URL
@@ -24,11 +27,17 @@ export function DBConnectError() {
                     <p>
                         You have many options for setting up a database for this
                         project. This project uses MongoDB. You can{" "}
-                        <a href="https://www.mongodb.com/atlas">
+                        <a
+                            className="link"
+                            href="https://www.mongodb.com/atlas"
+                        >
                             use MongoDB Atlas
                         </a>{" "}
                         or{" "}
-                        <a href="https://www.freecodecamp.org/news/learn-mongodb-a4ce205e7739/">
+                        <a
+                            className="link"
+                            href="https://www.freecodecamp.org/news/learn-mongodb-a4ce205e7739/"
+                        >
                             set up your own MongoDB server
                         </a>
                         .

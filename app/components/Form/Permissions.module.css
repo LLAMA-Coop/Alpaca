@@ -14,7 +14,7 @@
 .permissions li {
     margin: 4px;
     padding: 4px;
-    background-color: var(--background-tertiary);
+    background-color: var(--background-3);
 }
 
 .permissions li > * {

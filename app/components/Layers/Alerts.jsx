@@ -50,8 +50,8 @@ export function Alert({ alert }) {
             onMouseLeave={() => setStopTimeout(false)}
             style={{
                 backgroundColor: alert.success
-                    ? "var(--accent-tertiary-1)"
-                    : "var(--accent-secondary-1)",
+                    ? "var(--accent-3)"
+                    : "var(--accent-2)",
                 animationName: animateOut ? styles.slideOut : "",
             }}
         >

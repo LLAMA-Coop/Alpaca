@@ -1,65 +1,72 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap");
+
 :root {
     --max-width: 1200px;
     --padding: 120px 40px;
 
-    --font-heading: "Inter", sans-serif;
+    --font-heading: "Sofia Sans", sans-serif;
     --font-body: "Inter", sans-serif;
     --font-mono: Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace;
 
-    --background-primary: hsl(0, 0%, 100%);
-    --background-secondary: hsl(0, 0%, 97%);
-    --background-tertiary: hsl(0, 0%, 94%);
-    --background-4: hsl(0, 0%, 90%);
+    --background-1: #f8fafc;
+    --background-2: #f1f5f9;
+    --background-3: #e2e8f0;
+    --background-4: #cbd5e1;
 
-    --foreground-primary: hsl(240, 10%, 4%);
-    --foreground-secondary: hsl(240, 6%, 10%);
-    --foreground-tertiary: hsl(240, 4%, 16%);
+    --foreground-1: #020617;
+    --foreground-2: #0f172a;
+    --foreground-3: #1e293b;
 
-    --accent-primary-1: hsl(224, 76%, 48%);
-    --accent-primary-2: hsl(226, 71%, 40%);
-    --accent-primary-3: hsl(224, 64%, 33%);
-    --accent-primary-light: hsl(217, 91%, 60%);
+    --accent-1: #10b981;
+    --accent-1-hover: #059669;
+    --accent-1-active: #047857;
+    --accent-1-light: #4ade80;
+    --accent-1-transparent: #10b98133;
 
-    --accent-secondary-1: hsl(0, 74%, 42%);
-    --accent-secondary-2: hsl(0, 70%, 35%);
-    --accent-secondary-3: hsl(0, 63%, 31%);
-    --accent-secondary-light: hsl(0, 84%, 60%);
+    --accent-2: #38bdf8;
+    --accent-2-hover: #0ea5e9;
+    --accent-2-active: #0284c7;
+    --accent-2-light: #7dd3fc;
+    --accent-2-transparent: #38bdf833;
 
-    --accent-tertiary-1: hsl(163, 94%, 24%);
-    --accent-tertiary-2: hsl(163, 88%, 20%);
-    --accent-tertiary-3: hsl(164, 86%, 16%);
-    --accent-tertiary-light: hsl(160, 84%, 39%);
+    --accent-3: #8b5cf6;
+    --accent-3-hover: #7c3aed;
+    --accent-3-active: #6d28d9;
+    --accent-3-light: #a78bfa;
+    --accent-3-transparent: #8b5cf620;
 
-    --accent-foreground: white;
+    --success: #4ade80;
+    --success-hover: #22c55e;
+    --success-active: #16a34a;
+    --success-light: #86efac;
+    --success-transparent: #4ade8033;
+
+    --error: #e11d48;
+    --error-hover: #be123c;
+    --error-active: #9f1239;
+    --error-light: #fb7185;
+    --error-transparent: #e11d4833;
+
+    --accent-foreground: #020617;
+    --anchor-foreground: #3182ce;
+    --border-color: hsl(227, 15%, 18%);
 
     --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
     --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
     --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
 }
 
-/* root for landing page alex */
-:root {
-    --bg1: #020617;
-    --bg2: #0f172a;
-    --bg3: #1e293b;
-    --accent1: #10b77f;
-    --accent2: #38bdf8;
-    --accent3: #818cf8;
-    --trans1: rgba(129, 140, 248, 0.2);
-    --trans2: rgba(56, 189, 248, 0.15);
-    --transi: 300ms ease-in-out;
-}
-
 @media screen and (prefers-color-scheme: dark) {
     :root {
-        --background-primary: #020614;
-        --background-secondary: #0f172a;
-        --background-tertiary: #1e293b;
+        --background-1: #020617;
+        --background-2: #0f172a;
+        --background-3: #1e293b;
         --background-4: #334155;
 
-        --foreground-primary: hsl(0, 0%, 98%);
-        --foreground-secondary: hsl(240, 2%, 80%);
-        --foreground-tertiary: hsl(0, 0%, 65%);
+        --foreground-1: #f8fafc;
+        --foreground-2: #e2e8f0;
+        --foreground-3: #cbd5e1;
     }
 
     html {
@@ -67,60 +74,56 @@
     }
 }
 
-[data-theme="dark"] {
-    --background-primary: hsl(229, 84%, 5%);
-    --background-secondary: hsl(222, 47%, 11%);
-    --background-tertiary: hsl(217, 33%, 17%);
-    --background-4: hsl(215, 25%, 27%);
+[data-theme="light"] {
+    --background-1: #f8fafc;
+    --background-2: #f1f5f9;
+    --background-3: #e2e8f0;
+    --background-4: #cbd5e1;
 
-    --foreground-primary: hsl(0, 0%, 98%);
-    --foreground-secondary: hsl(240, 2%, 80%);
-    --foreground-tertiary: hsl(0, 0%, 65%);
+    --foreground-1: #020617;
+    --foreground-2: #0f172a;
+    --foreground-3: #1e293b;
 
-    --accent-primary-outline: hsl(160, 84%, 39%);
-    --accent-secondary-outline: hsl(189, 93%, 60%);
-    --accent-tertiary-outline: hsl(234, 89%, 74%);
-
-    --anchor-foreground: hsl(217, 91%, 60%);
-
-    --border-color: hsl(227, 15%, 18%);
+    html {
+        color-scheme: light;
+    }
 }
 
-[data-theme="light"] {
-    --background-primary: hsl(0, 0%, 100%);
-    --background-secondary: hsl(0, 0%, 97%);
-    --background-tertiary: hsl(0, 0%, 94%);
-    --background-4: hsl(0, 0%, 90%);
+[data-theme="dark"] {
+    --background-1: #020617;
+    --background-2: #0f172a;
+    --background-3: #1e293b;
+    --background-4: #334155;
 
-    --foreground-primary: hsl(240, 10%, 4%);
-    --foreground-secondary: hsl(240, 6%, 10%);
-    --foreground-tertiary: hsl(240, 4%, 16%);
+    --foreground-1: #f8fafc;
+    --foreground-2: #e2e8f0;
+    --foreground-3: #cbd5e1;
 
-    --accent-primary-outline: hsl(160, 84%, 39%, 0.5);
-    --accent-secondary-outline: hsl(189, 93%, 60%, 0.5);
-    --accent-tertiary-outline: hsl(234, 89%, 74%, 0.5);
-
-    --anchor-foreground: hsl(226, 71%, 40%);
-
-    --border-color: hsl(227, 15%, 18%);
+    html {
+        color-scheme: dark;
+    }
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    vertical-align: baseline;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
     margin: 0;
     padding: 0;
+    min-height: 100vh;
     min-height: 100dvh;
     font-size: 16px;
+    font-family: var(--font-body);
     overflow-x: hidden;
     scroll-behavior: smooth;
-    color: var(--foreground-primary);
-    background-color: var(--background-primary);
+    color: var(--foreground-1);
+    background-color: var(--background-1);
 }
 
 body {
@@ -130,9 +133,18 @@ body {
 }
 
 a {
-    color: var(--anchor-foreground);
+    color: inherit;
     text-decoration: none;
+}
+
+.link {
     font-weight: 500;
+    text-decoration: none;
+    color: var(--anchor-foreground);
+}
+
+.link:hover {
+    text-decoration: underline;
 }
 
 .scrollbar::-webkit-scrollbar {
@@ -142,16 +154,16 @@ a {
 
 .scrollbar::-webkit-scrollbar-track {
     border-radius: 1000px;
-    border: 6px var(--background-secondary) solid;
-    background-color: var(--background-tertiary);
+    border: 6px var(--background-2) solid;
+    background-color: var(--background-3);
     background-clip: padding-box;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
     border-radius: 1000px;
-    border: 6px var(--background-tertiary) solid;
+    border: 6px var(--background-3) solid;
     border-color: transparent;
-    background-color: var(--background-primary);
+    background-color: var(--background-1);
     background-clip: padding-box;
 }
 
@@ -166,11 +178,11 @@ a {
     border-radius: 3px;
     font-size: 14px;
     line-height: 16px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     user-select: none;
     color: var(--accent-foreground);
-    background-color: var(--accent-primary-1);
+    background-color: var(--accent-1);
     transition:
         background-color 0.1s ease-in-out,
         color 0.1s ease-in-out,
@@ -182,11 +194,11 @@ a {
 }
 
 .button:hover {
-    background-color: var(--accent-primary-2);
+    background-color: var(--accent-1-hover);
 }
 
 .button:active {
-    background-color: var(--accent-primary-3);
+    background-color: var(--accent-1-active);
 }
 
 .button.submit {
@@ -196,38 +208,38 @@ a {
 }
 
 .button.green {
-    background-color: var(--accent-tertiary-1);
+    background-color: var(--accent-3);
     color: var(--accent-foreground);
 }
 
 .button.green:hover {
-    background-color: var(--accent-tertiary-2);
+    background-color: var(--accent-3-hover);
     color: var(--accent-foreground);
 }
 
 .button.green:active {
-    background-color: var(--accent-tertiary-3);
+    background-color: var(--accent-3-active);
     color: var(--accent-foreground);
 }
 
 .button.red {
-    background-color: var(--accent-secondary-1);
+    background-color: var(--accent-2);
     color: var(--accent-foreground);
 }
 
 .button.red:hover {
-    background-color: var(--accent-secondary-2);
+    background-color: var(--accent-2-hover);
     color: var(--accent-foreground);
 }
 
 .button.red:active {
-    background-color: var(--accent-secondary-3);
+    background-color: var(--accent-2-active);
     color: var(--accent-foreground);
 }
 
 .button.transparent {
     background-color: transparent;
-    color: var(--foreground-primary);
+    color: var(--foreground-1);
 }
 
 ul,
@@ -236,17 +248,12 @@ ol {
 }
 
 *:focus-visible {
-    outline: 3px solid var(--accent-primary-outline);
-}
-
-*.offset:focus-visible,
-.button:focus-visible {
-    outline-offset: 2px;
+    outline: 2px solid var(--accent-1);
 }
 
 ::-webkit-calendar-picker-indicator:focus-visible {
     border-radius: 2px;
-    outline: 4px solid var(--accent-primary-outline);
+    outline: 4px solid var(--accent-1);
     outline-offset: 3px;
 }
 
@@ -272,8 +279,8 @@ input[type="date"] {
 }
 
 .thinScroller::-webkit-scrollbar-thumb {
-    background: var(--accent-primary-1);
-    border: 3px solid var(--background-primary);
+    background: var(--accent-1);
+    border: 3px solid var(--background-1);
     border-radius: 100vw;
 }
 
@@ -319,7 +326,7 @@ input[type="date"] {
     line-height: 1.5;
     font-weight: 300;
     margin-bottom: 24px;
-    color: var(--foreground-secondary);
+    color: var(--foreground-2);
 }
 
 .paragraph > ul {
@@ -388,13 +395,13 @@ path.stroke0 {
 
 @media screen and (max-width: 1024px) {
     :root {
-        --padding: 80px 40px;
+        --padding: 100px 40px;
     }
 }
 
 @media screen and (max-width: 767px) {
     :root {
-        --padding: 56px 24px;
+        --padding: 60px 24px;
     }
 
     .formGrid {
@@ -405,7 +412,7 @@ path.stroke0 {
 
 @media (max-width: 550px) {
     :root {
-        --padding: 40px 20px;
+        --padding: 60px 20px;
     }
 }
 

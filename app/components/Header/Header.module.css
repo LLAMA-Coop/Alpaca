@@ -11,11 +11,12 @@
 }
 
 .header > a {
+    font-family: var(--font-heading);
     display: inline-flex;
     font-size: 32px;
     border-radius: 5px;
     outline-offset: 4px;
-    color: var(--foreground-primary);
+    color: var(--foreground-1);
 }
 
 .header > nav {

@@ -14,13 +14,13 @@
     background: transparent;
     padding: 10px;
     cursor: pointer;
-    color: var(--foreground-secondary);
+    color: var(--foreground-2);
     border-radius: 8px;
     margin-right: -10px;
 }
 
 .button:hover {
-    color: var(--foreground-primary);
+    color: var(--foreground-1);
 }
 
 .container > a {
@@ -28,10 +28,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-radius: 100vw;
-    padding: 10px 20px;
-    color: var(--foreground-secondary);
-    background-color: var(--background-secondary);
+    border-radius: 999px;
+    padding: 10px 24px;
+    font-weight: 700;
+    color: var(--accent-foreground);
+    background-color: var(--accent-1);
     transition:
         background-color 0.1s ease-in-out,
         color 0.1s ease-in-out;
@@ -39,8 +40,12 @@
 
 .container > a:hover,
 .profile > a:hover {
-    color: var(--foreground-primary);
-    background-color: var(--background-tertiary);
+    background-color: var(--accent-1-hover);
+}
+
+.container > a:active,
+.profile > a:active {
+    background-color: var(--accent-1-active);
 }
 
 .menu {
@@ -51,7 +56,7 @@
     min-height: 100dvh;
     min-width: 100vw;
     min-width: 100dvw;
-    background-color: var(--background-primary);
+    background-color: var(--background-1);
     z-index: 100;
     display: none;
     animation: rightToLeft 0.2s ease-in-out;
@@ -61,7 +66,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--foreground-secondary);
+    color: var(--foreground-2);
     background: transparent;
     border: none;
     position: absolute;
@@ -72,7 +77,7 @@
 }
 
 .menu > button:hover {
-    color: var(--foreground-primary);
+    color: var(--foreground-1);
 }
 
 .menu > nav {
@@ -90,11 +95,11 @@
 }
 
 .menu ul a {
-    color: var(--foreground-secondary);
+    color: var(--foreground-2);
 }
 
 .menu ul a:hover {
-    color: var(--accent-primary-1);
+    color: var(--accent-1);
 }
 
 .profile {

@@ -20,6 +20,7 @@
         ],
         "paths": {
             "@/*": ["./*"],
+            "@app/*": ["./app/*"],
             "@components/*": ["./app/components/*"],
             "@server": ["./app/components/server.js"],
             "@client": ["./app/components/client.js"],

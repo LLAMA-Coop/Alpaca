@@ -14,9 +14,10 @@
     flex-basis: 50%;
 }
 
-.tags, .permissions {
+.tags,
+.permissions {
     flex-basis: calc(50% - 5px);
-    background-color: var(--background-secondary);
+    background-color: var(--background-2);
     padding: 10px;
     border-radius: 4px;
     margin: 5px 0;
@@ -26,7 +27,7 @@
 .sources,
 .courses {
     flex-basis: calc(50% - 5px);
-    background-color: var(--background-tertiary);
+    background-color: var(--background-3);
     padding: 10px;
     border-radius: 4px;
     margin: 5px 0;
@@ -41,11 +42,11 @@
     padding: 4px 8px;
     height: 48px;
     margin-top: 6px;
-    color: var(--foreground-primary);
-    background-color: var(--background-secondary);
+    color: var(--foreground-1);
+    background-color: var(--background-2);
     text-transform: capitalize;
 }
 
 .sourceLink:hover {
-    background-color: var(--background-primary);
+    background-color: var(--background-1);
 }

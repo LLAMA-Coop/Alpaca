@@ -1,12 +1,12 @@
 .authors {
-    background-color: var(--background-primary);
+    background-color: var(--background-1);
     padding: 10px;
     border-radius: 4px;
     margin: 5px 0;
 }
 
 .tags {
-    background-color: var(--background-secondary);
+    background-color: var(--background-2);
     padding: 10px;
     border-radius: 4px;
     margin: 5px 0;

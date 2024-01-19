@@ -13,7 +13,9 @@ export function RightContainer({ user }) {
 
     useEffect(() => {
         if (open) {
-            document.documentElement.style.overflow = "hidden";
+            setTimeout(() => {
+                document.documentElement.style.overflow = "hidden";
+            }, 300);
         } else {
             document.documentElement.style.overflow = "auto";
         }

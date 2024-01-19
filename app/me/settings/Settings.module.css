@@ -20,23 +20,23 @@
     padding: 8px 12px;
     border-radius: 4px;
     cursor: pointer;
-    color: var(--foreground-secondary);
+    color: var(--foreground-2);
     user-select: none;
 }
 
 .tabList > li:hover,
 .tabList > li:focus-within {
-    background-color: var(--background-secondary);
-    color: var(--foreground-primary);
+    background-color: var(--background-2);
+    color: var(--foreground-1);
 }
 
 .tabList > li:active {
-    background-color: var(--background-tertiary);
+    background-color: var(--background-3);
 }
 
 .tabList > li.active {
-    background-color: var(--background-tertiary);
-    color: var(--foreground-primary);
+    background-color: var(--background-3);
+    color: var(--foreground-1);
 }
 
 .tabList > li.active::before {
@@ -48,7 +48,7 @@
     bottom: 0;
     width: 4px;
     height: 70%;
-    background-color: var(--accent-primary-1);
+    background-color: var(--accent-1);
     border-radius: 1000px;
 }
 
@@ -75,14 +75,14 @@
     width: 32px;
     height: 32px;
     margin-left: 8px;
-    color: var(--foreground-secondary);
+    color: var(--foreground-2);
     border-radius: 3px;
     cursor: pointer;
 }
 
 .main > section > h1 > button:hover {
-    background-color: var(--background-secondary);
-    color: var(--foreground-primary);
+    background-color: var(--background-2);
+    color: var(--foreground-1);
 }
 
 .content {
@@ -121,7 +121,7 @@
     width: 125px;
     height: 125px;
     border-radius: 1000px;
-    background-color: var(--background-tertiary);
+    background-color: var(--background-3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -146,8 +146,8 @@
     bottom: 5px;
     border-radius: 5px;
     padding: 6px 12px 6px 6px;
-    background-color: var(--background-primary);
-    color: var(--foreground-secondary);
+    background-color: var(--background-1);
+    color: var(--foreground-2);
     border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
@@ -168,8 +168,8 @@
 }
 
 .avatar > div > button:hover {
-    background-color: var(--background-secondary);
-    color: var(--foreground-primary);
+    background-color: var(--background-2);
+    color: var(--foreground-1);
 }
 
 @media screen and (max-width: 1024px) {

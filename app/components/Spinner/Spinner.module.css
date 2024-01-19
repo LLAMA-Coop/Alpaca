@@ -2,7 +2,7 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    border: 1px solid var(--accent-primary-3);
+    border: 1px solid var(--accent-1-active);
     border-top: 2px solid hsl(0, 0%, 100%);
     animation: spin 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }

@@ -105,12 +105,10 @@ export function Verbatim({
     let label, color, icon;
     if (isFlashcard) {
         label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
-        color = showAnswer ? "var(--accent-tertiary-1)" : undefined;
+        color = showAnswer ? "var(--accent-3)" : undefined;
     } else if (responseStatus === "complete") {
         label = incorrectIndexes.length ? "Incorrect" : "Correct";
-        color = incorrectIndexes.length
-            ? "var(--accent-secondary-1)"
-            : "var(--accent-tertiary-1)";
+        color = incorrectIndexes.length ? "var(--accent-2)" : "var(--accent-3)";
         icon = incorrectIndexes.length ? faXmark : faCheck;
     } else {
         label = "Check Answer";
@@ -155,8 +153,8 @@ export function Verbatim({
                             outlineColor={
                                 responseStatus === "complete" &&
                                 (incorrectIndexes.includes(index)
-                                    ? "var(--accent-secondary-1)"
-                                    : "var(--accent-tertiary-1)")
+                                    ? "var(--accent-2)"
+                                    : "var(--accent-3)")
                             }
                         />
                     );
