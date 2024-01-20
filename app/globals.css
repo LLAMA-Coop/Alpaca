@@ -208,33 +208,29 @@ a {
 }
 
 .button.green {
-    background-color: var(--accent-3);
+    background-color: var(--success);
     color: var(--accent-foreground);
 }
 
 .button.green:hover {
-    background-color: var(--accent-3-hover);
-    color: var(--accent-foreground);
+    background-color: var(--success-hover);
 }
 
 .button.green:active {
-    background-color: var(--accent-3-active);
-    color: var(--accent-foreground);
+    background-color: var(--success-active);
 }
 
 .button.red {
-    background-color: var(--accent-2);
+    background-color: var(--error);
     color: var(--accent-foreground);
 }
 
 .button.red:hover {
-    background-color: var(--accent-2-hover);
-    color: var(--accent-foreground);
+    background-color: var(--error-hover);
 }
 
 .button.red:active {
-    background-color: var(--accent-2-active);
-    color: var(--accent-foreground);
+    background-color: var(--error-active);
 }
 
 .button.transparent {
