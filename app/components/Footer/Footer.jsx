@@ -1,7 +1,7 @@
-import Link from "next/link";
 import styles from "./Footer.module.css";
 import { footerLinks } from "@/lib/nav";
 import { ThemePicker } from "@client";
+import Link from "next/link";
 
 export function Footer() {
     // return (
@@ -85,8 +85,7 @@ export function Footer() {
             </nav>
 
             <div>
-                <a href="http://localhost:3001">Mneme</a>©{" "}
-                {new Date().getFullYear()} LLAMA
+                <Link href="/">Mneme</Link>© {new Date().getFullYear()} LLAMA
             </div>
         </footer>
     );
