@@ -10,7 +10,7 @@ export function Notifications() {
     const addAlert = useAlerts((state) => state.addAlert);
     const addGroup = useStore((state) => state.addGroup);
 
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+    const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
     async function accept(notification) {
         let url = `/api/associates/${notification.id}/accept`;

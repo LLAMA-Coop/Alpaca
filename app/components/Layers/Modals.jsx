@@ -36,6 +36,13 @@ export function Modal({ modal, index, length, buttonTexts }) {
     const [closing, setClosing] = useState(false);
     const [password, setPassword] = useState("");
 
+    const [reportTitle, setReportTitle] = useState("");
+    const [reportDescription, setReportDescription] = useState("");
+    const [descriptionError, setDescriptionError] = useState("");
+    const [reportUrl, setReportUrl] = useState(
+        typeof window !== "undefined" ? window.location.href : "",
+    );
+
     const removeModal = useModals((state) => state.removeModal);
     const closeButton = useRef(null);
     const saveButton = useRef(null);
@@ -127,6 +134,40 @@ export function Modal({ modal, index, length, buttonTexts }) {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+                    ) : modal.content === "Report a bug" ? (
+                        <div>
+                            <p style={{ marginBottom: "24px" }}>
+                                Please describe the bug you encountered below.
+                                If you can, please include steps to reproduce
+                                the bug.
+                            </p>
+
+                            <Input
+                                label="Title"
+                                value={reportTitle}
+                                maxLength={128}
+                                onChange={(e) => setReportTitle(e.target.value)}
+                            />
+
+                            <Input
+                                label="Description"
+                                value={reportDescription}
+                                maxLength={4096}
+                                onChange={(e) => {
+                                    setReportDescription(e.target.value);
+                                    setDescriptionError("");
+                                }}
+                                textarea
+                                error={descriptionError}
+                            />
+
+                            <Input
+                                label="URL"
+                                value={reportUrl}
+                                maxLength={256}
+                                onChange={(e) => setReportUrl(e.target.value)}
+                            />
+                        </div>
                     ) : (
                         modal.content
                     )}
@@ -144,7 +185,25 @@ export function Modal({ modal, index, length, buttonTexts }) {
                         ref={saveButton}
                         className="button"
                         onClick={() => {
-                            if (modal.onSave) modal.onSave(password);
+                            if (modal.onSave) {
+                                if (modal.content === "Confirm Password") {
+                                    modal.onSave(password);
+                                } else if (modal.content === "Report a bug") {
+                                    if (reportDescription.length < 10) {
+                                        setDescriptionError(
+                                            "Description must be at least 10 characters long.",
+                                        );
+                                        return;
+                                    }
+                                    modal.onSave({
+                                        title: reportTitle,
+                                        description: reportDescription,
+                                        url: reportUrl,
+                                    });
+                                } else {
+                                    modal.onSave();
+                                }
+                            }
                             close();
                         }}
                         onKeyDown={(e) => {
