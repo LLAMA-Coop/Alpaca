@@ -13,7 +13,6 @@ import {
     UserInput,
     DeletePopup,
     ListAdd,
-    Card,
 } from "@client";
 import styles from "./CourseInput.module.css";
 import { PermissionsDisplay } from "../Form/PermissionsDisplay";
@@ -106,7 +105,7 @@ export function CourseInput({ course }) {
             quizzes: quizzes.map((quiz) => quiz._id),
             addAllFromSources,
             addAllFromNotes,
-            permissions
+            permissions,
         };
         crsPayload.permissions = permissions;
         if (course && course._id) {
@@ -239,7 +238,9 @@ export function CourseInput({ course }) {
                         label="Add all notes and quizzes linked to these sources"
                         type="checkbox"
                         value={addAllFromSources}
-                        onChange={() => setAddAllFromSources(!addAllFromSources)}
+                        onChange={() =>
+                            setAddAllFromSources(!addAllFromSources)
+                        }
                     />
                 </div>
 

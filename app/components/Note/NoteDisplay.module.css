@@ -5,6 +5,10 @@
     margin: 5px 0;
 }
 
+.tags > h5 {
+    margin-bottom: 8px;
+}
+
 .sources {
     background-color: var(--background-1);
     padding: 10px;

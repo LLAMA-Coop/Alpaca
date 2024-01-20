@@ -376,9 +376,9 @@
     width: 24px;
     height: 24px;
     border-radius: 1000px;
-    color: var(--foreground-1);
-    background-color: var(--accent-3);
-    font-size: 15px;
+    color: var(--accent-foreground);
+    background-color: var(--accent-1);
+    font-size: 13px;
     font-weight: 700;
     line-height: 1.2;
     margin-left: 8px;

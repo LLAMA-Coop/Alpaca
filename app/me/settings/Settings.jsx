@@ -4,6 +4,7 @@ import styles from "./Settings.module.css";
 import { useAlerts } from "@/store/store";
 import { Profile } from "./Profile";
 import { useState } from "react";
+import { Appearance } from "./Appearance";
 
 export function Settings({ user }) {
     const [currentTab, setCurrentTab] = useState(0);
@@ -21,7 +22,7 @@ export function Settings({ user }) {
         },
         {
             name: "Appearance",
-            component: "Appearance",
+            component: <Appearance user={user} />,
         },
         {
             name: "Security",
