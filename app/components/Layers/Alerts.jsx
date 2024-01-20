@@ -44,8 +44,7 @@ export function Alert({ alert }) {
             aria-relevant="additions"
             aria-label="Alert message"
             aria-describedby="alert"
-            className={styles.alert}
-            onClick={() => hideAlert()}
+            className={`${styles.alert} ${alert.success ? styles.success : ""}`}
             onMouseEnter={() => setStopTimeout(true)}
             onMouseLeave={() => setStopTimeout(false)}
             style={{
@@ -55,7 +54,7 @@ export function Alert({ alert }) {
                 animationName: animateOut ? styles.slideOut : "",
             }}
         >
-            <div>
+            <div onClick={() => hideAlert()}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

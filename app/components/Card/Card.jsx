@@ -42,9 +42,16 @@ export function Card({
                     {(title || subtitle || description) && (
                         <div className={styles.textContent}>
                             {(title || subtitle) && (
-                                <div>
+                                <header>
                                     {title && (
-                                        <header title={title}>
+                                        <h4
+                                            style={{
+                                                marginBottom: subtitle
+                                                    ? "14px"
+                                                    : "0",
+                                            }}
+                                            title={title}
+                                        >
                                             {url ? (
                                                 url.startsWith("http") ? (
                                                     <a href={url}>
@@ -58,11 +65,13 @@ export function Card({
                                             ) : (
                                                 title
                                             )}
-                                        </header>
+                                        </h4>
                                     )}
+
                                     {subtitle && <h5>{subtitle}</h5>}
-                                </div>
+                                </header>
                             )}
+
                             {description && (
                                 <p className={styles.description}>
                                     {description}

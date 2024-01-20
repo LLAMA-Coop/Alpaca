@@ -12,25 +12,19 @@ export function DeletePopup({ resourceType, resourceId }) {
 
     function askDelete() {
         addModal({
-            title: "Are you sure you want to delete?",
-            content: (
-                <div>
-                    <h4>
-                        Are you sure you want to delete this {resourceType}?
-                    </h4>
-                    <button onClick={handleDelete} className="button red">
-                        Delete
-                    </button>
-                </div>
-            ),
+            title: "Confirm your choice",
+            content: `Are you sure you want to delete this ${resourceType}?`,
+            buttonTexts: ["Cancel", "Delete"],
+            isActionDangerous: true,
+            onSave: handleDelete,
         });
     }
 
     async function handleDelete() {
+        const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
+
         const response = await fetch(
-            `${
-                process.env.NEXT_PUBLIC_BASEPATH ?? ""
-            }/api/${resourceType}/${resourceId}`,
+            `${basePath}/api/${resourceType}/${resourceId}`,
             {
                 method: "DELETE",
             },

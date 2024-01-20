@@ -15,12 +15,13 @@ export async function CourseDisplay({ course }) {
             description={`${dbCourse.description}`}
         >
             <div className={styles.tags}>
-                <h5>Parent Courses of this Course</h5>
+                <h5>Parent Courses</h5>
+
                 {dbCourse.parentCourses.length > 0 ? (
                     <ol className="chipList">
-                        {dbCourse.parentCourses.map((cat) => {
-                            return <ListItem key={cat._id} item={cat.name} />;
-                        })}
+                        {dbCourse.parentCourses.map((cat) => (
+                            <ListItem key={cat._id} item={cat.name} />
+                        ))}
                     </ol>
                 ) : (
                     <p>No Parent Courses Listed</p>
@@ -28,7 +29,8 @@ export async function CourseDisplay({ course }) {
             </div>
 
             <div className={styles.tags}>
-                <h5>Prerequisites for this Course</h5>
+                <h5>Prerequisites</h5>
+
                 {dbCourse.prerequisites.length > 0 ? (
                     <ol className="chipList">
                         {dbCourse.prerequisites.map((p) => {
@@ -37,12 +39,9 @@ export async function CourseDisplay({ course }) {
                                 return <li key={p.course}>Unavailable</li>;
                             }
 
-                            const display = `${course.name} - Average Level Required ${p.averageLevelRequired}`
+                            const display = `${course.name} - Average Level Required ${p.averageLevelRequired}`;
 
-
-                            return (
-                                <ListItem key={course._id} item={display} />
-                            );
+                            return <ListItem key={course._id} item={display} />;
                         })}
                     </ol>
                 ) : (
