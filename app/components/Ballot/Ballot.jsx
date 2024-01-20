@@ -23,7 +23,6 @@ export function Ballot({
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
 
-    console.log(options);
     useEffect(() => {
         if (!ballot) return;
 
