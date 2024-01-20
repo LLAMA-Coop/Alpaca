@@ -1,20 +1,24 @@
 import { NextResponse } from "next/server";
 
-const url = process.env.DISCORD_ERRORS_WEBHOOK;
+const webhookUrl = process.env.DISCORD_ERRORS_WEBHOOK;
 
 export async function POST(req) {
-    const { message, stack, userInfo, isClient } = await req.json();
+    const { message, stack, url, userInfo, isClient, report } =
+        await req.json();
 
     try {
         const embed = {
-            title: "An error occurred on the website",
-            description: message,
+            title: isClient
+                ? report
+                    ? "Someone reported an error on the website"
+                    : "An error occurred on the website"
+                : "An error occurred on the server",
+            description: `
+                **${report ? "Title" : "Message"}:** ${message}\n
+                **${report ? "Description" : "Stack"}:** ${stack}\n
+                ${report && `**URL**: ${url}`}
+            `,
             fields: [
-                {
-                    name: "Stack trace",
-                    // Cant be more than 1024 characters
-                    value: stack.slice(0, 1021) + "...",
-                },
                 {
                     name: "User info",
                     value: JSON.stringify(userInfo, null, 4),
@@ -25,7 +29,7 @@ export async function POST(req) {
 
         console.log(embed);
 
-        const response = await fetch(`${url}?wait=true`, {
+        const response = await fetch(`${webhookUrl}?wait=true`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

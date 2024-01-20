@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export default function Error({ error, reset }) {
     const [showDetails, setShowDetails] = useState(false);

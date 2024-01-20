@@ -1,13 +1,16 @@
 "use client";
 
+import { useMenu, useModals, useStore } from "@/store/store";
 import { usePathname, useRouter } from "next/navigation";
 import { protectedPaths } from "@/app/data/paths";
-import { useMenu, useStore } from "@/store/store";
 import styles from "./Profile.module.css";
 import { Avatar } from "@client";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export function Profile({ user, size = 44 }) {
     const notifications = useStore((state) => state.notifications);
+    const addModal = useModals((state) => state.addModal);
     const setMenu = useMenu((state) => state.setMenu);
     const menu = useMenu((state) => state.menu);
 
@@ -44,6 +47,65 @@ export function Profile({ user, size = 44 }) {
                             </g>
                         ),
                         onClick: () => router.push("/me/settings"),
+                    },
+                    {
+                        name: "hr",
+                    },
+                    {
+                        name: "Report a bug",
+                        icon: (
+                            <g>
+                                <path
+                                    stroke="none"
+                                    d="M0 0h24v24H0z"
+                                    fill="none"
+                                    className="base"
+                                />
+                                <path
+                                    d="M4 5a1 1 0 0 1 .3 -.714a6 6 0 0 1 8.213 -.176l.351 .328a4 4 0 0 0 5.272 0l.249 -.227c.61 -.483 1.527 -.097 1.61 .676l.005 .113v9a1 1 0 0 1 -.3 .714a6 6 0 0 1 -8.213 .176l-.351 -.328a4 4 0 0 0 -5.136 -.114v6.552a1 1 0 0 1 -1.993 .117l-.007 -.117v-16z"
+                                    stroke-width="0"
+                                    fill="currentColor"
+                                    className="fill stroke0"
+                                />
+                            </g>
+                        ),
+                        onClick: () =>
+                            addModal({
+                                title: "Report a bug",
+                                content: "Report a bug",
+                                buttonTexts: ["Cancel", "Send"],
+                                onSave: (data) => {
+                                    fetch(`${basePath}/api/error`, {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                            message:
+                                                data.title ??
+                                                "No title provided",
+                                            stack: data.description,
+                                            url: data.url,
+                                            userInfo: {
+                                                userAgent: navigator.userAgent,
+                                                language: navigator.language,
+                                                cookieEnabled:
+                                                    navigator.cookieEnabled,
+                                                doNotTrack:
+                                                    navigator.doNotTrack,
+                                                hardwareConcurrency:
+                                                    navigator.hardwareConcurrency,
+                                                maxTouchPoints:
+                                                    navigator.maxTouchPoints,
+                                                isOnline: navigator.onLine,
+                                            },
+                                            isClient: true,
+                                            report: true,
+                                        }),
+                                    });
+                                },
+                            }),
+                        danger: true,
                     },
                     {
                         name: "hr",
