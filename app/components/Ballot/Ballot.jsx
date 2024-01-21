@@ -9,9 +9,9 @@ export function Ballot({
     choices,
     ballot,
     options = {
-        numberChoices: 3,
-        voteAgainst: true,
-        canAmend: false,
+        numberChoices: 1,
+        voteAgainst: false,
+        canAmend: true,
     },
 }) {
     const [firstChoice, setFirstChoice] = useState("");
@@ -106,7 +106,7 @@ export function Ballot({
 
     return (
         <main className={styles.main}>
-            <h2>{motion}</h2>
+            <h2 style={{ whiteSpace: "pre-wrap" }}>{motion}</h2>
             <section>
                 <h3>Your Choices Are:</h3>
                 <ol>

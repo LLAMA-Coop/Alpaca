@@ -157,7 +157,7 @@ export function Modal({ modal, index, length, buttonTexts }) {
                                     setReportDescription(e.target.value);
                                     setDescriptionError("");
                                 }}
-                                textarea
+                                type="textarea"
                                 error={descriptionError}
                             />
 
@@ -183,7 +183,9 @@ export function Modal({ modal, index, length, buttonTexts }) {
 
                     <button
                         ref={saveButton}
-                        className="button"
+                        className={`button ${
+                            modal.isActionDangerous ? "red" : ""
+                        }`}
                         onClick={() => {
                             if (modal.onSave) {
                                 if (modal.content === "Confirm Password") {
