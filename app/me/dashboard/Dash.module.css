@@ -29,7 +29,7 @@
 .tabList > li {
     display: flex;
     flex-direction: column;
-    color: var(--foreground-3);
+    color: var(--foreground-1);
     cursor: pointer;
     align-items: center;
     border-radius: 5px;
@@ -464,10 +464,16 @@
         transform: unset;
         flex-direction: row;
         width: 100%;
-        z-index: 1;
-        padding: 8px 0px;
+        z-index: 2;
+        padding: 7px 0px;
         justify-content: space-evenly;
-        background-color: var(--background-4);
+        background-color: var(--background-3 );
+        border-radius: 20px 20px 0px 0px;
+    }
+
+    .tablist > li.active ,
+    .tablist > li.hover {
+        color: white;
     }
 
     .tabList > li > div {
