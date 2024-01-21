@@ -114,7 +114,7 @@ export function UserInput({ isRegistering, onSubmit }) {
             return;
         }
 
-        const user = { username, password };
+        const user = { username: username.trim(), password };
 
         setLoading(true);
 

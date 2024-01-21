@@ -78,7 +78,7 @@ export async function POST(req) {
         }
 
         const course = new Course({
-            name,
+            name: name.trim(),
             description,
             parentCourses,
             prerequisites,
