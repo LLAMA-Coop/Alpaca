@@ -340,7 +340,7 @@
 }
 
 .userContent {
-    max-width: 100%;
+    min-width: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -458,27 +458,36 @@
 
     .tabList {
         position: fixed;
-        bottom: 0;
+        bottom: 10px;
         left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
         top: unset;
         transform: unset;
         flex-direction: row;
-        width: 100%;
+        width: 90%;
         z-index: 2;
-        padding: 7px 0px;
-        justify-content: space-evenly;
-        background-color: var(--background-3 );
-        border-radius: 20px 20px 0px 0px;
+        padding: 8px 2px;
+        background-color: var(--background-2);
+        border-radius: 20px;
+        justify-content: center;
+        gap: 35px;
+        border: solid 1px var(--background-4);
     }
 
-    .tablist > li.active ,
-    .tablist > li.hover {
+    .tablist > li {
+        margin: auto;
+    }
+
+    .tablist > li > div.active ,
+    .tablist > li > div.hover {
         color: white;
     }
 
     .tabList > li > div {
-        width: 42px;
-        height: 42px;
+        width: 45px;
+        height: 45px;
     }
 
     .tabList > li > span {
@@ -486,14 +495,14 @@
     }
 
     .tabList > li > div > svg {
-        width: 20px;
-        height: 20px;
+        width: 25px;
+        height: 25px;
     }
 }
 
 @media screen and (max-width: 320px) {
     .main > section {
-        max-width: calc(100vw - 24px);
+        min-width: calc(100vw - 24px);
         padding-left: 0;
         padding-right: 0;
     }

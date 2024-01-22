@@ -141,8 +141,6 @@ export function Dashboard({ more = false }) {
                                         {tab.icon}
                                     </svg>
                                 </div>
-
-                                <span>{tab.name}</span>
                             </li>
                         ))}
                     </ul>
