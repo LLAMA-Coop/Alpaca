@@ -76,17 +76,17 @@
     width: 100%;
 }
 
-.content > h1,
-.content > h2 {
+.content > h1 {
+    font-family: var(--font-heading);
     text-align: center;
+    font-size: 2rem;
+    margin-bottom: 12px;
 }
 
-.content > h1 {
-    font-size: 2rem;
-}
-.content > h2 {
-    font-size: 1.75;
-    font-style: italic;
+.content > p {
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 24px;
 }
 
 .content > header {
@@ -208,6 +208,17 @@
     width: 100%;
     justify-content: center;
     align-items: center;
+}
+
+.content > main > div.column {
+    flex-direction: column;
+}
+
+.actionButtons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
 .dashButton {
@@ -480,7 +491,7 @@
         margin: auto;
     }
 
-    .tablist > li > div.active ,
+    .tablist > li > div.active,
     .tablist > li > div.hover {
         color: white;
     }

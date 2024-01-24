@@ -46,6 +46,7 @@ export default async function RootLayout({ children }) {
             "id username avatar displayName description",
         ));
     user && (await user.populate("groups"));
+    user && (await user.populate("courses.course"));
 
     const notifications = user
         ? serialize(await Notification.find({ recipient: user.id }))
@@ -61,7 +62,10 @@ export default async function RootLayout({ children }) {
         ? serialize(await Quiz.find({ createdBy: user.id }))
         : [];
     const courses = user
-        ? serialize(await Course.find({ createdBy: user.id }))
+        ? [
+              ...serialize(await Course.find({ createdBy: user.id })),
+              ...serialize(user.courses.map((course) => course.course)),
+          ]
         : [];
 
     return (
