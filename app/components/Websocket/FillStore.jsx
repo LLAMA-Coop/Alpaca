@@ -18,6 +18,7 @@ export function FillStore({
     const setUser = useStore((state) => state.setUser);
 
     useEffect(() => {
+        if(!webSocketURL) return;
         const ws = new WebSocket(webSocketURL);
 
         ws.onopen = () => {

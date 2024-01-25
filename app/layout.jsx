@@ -80,7 +80,7 @@ export default async function RootLayout({ children }) {
                     groups={serialize(user.groups)}
                     associates={serialize(user.associates)}
                     notifications={notifications}
-                    webSocketURL={process.env.WS_URL}
+                    // webSocketURL={process.env.WS_URL}
                 />
             )}
 
