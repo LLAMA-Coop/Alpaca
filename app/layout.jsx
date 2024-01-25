@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import connectDB from "./api/db";
 import "./globals.css";
+import { queryReadableResources } from "@/lib/auth";
 
 const connection = await connectDB();
 
@@ -52,14 +53,16 @@ export default async function RootLayout({ children }) {
         ? serialize(await Notification.find({ recipient: user.id }))
         : [];
 
+    const query = queryReadableResources(user);
+
     const sources = user
-        ? serialize(await Source.find({ createdBy: user.id }))
+        ? serialize(await Source.find(query))
         : [];
     const notes = user
-        ? serialize(await Note.find({ createdBy: user.id }))
+        ? serialize(await Note.find(query))
         : [];
     const quizzes = user
-        ? serialize(await Quiz.find({ createdBy: user.id }))
+        ? serialize(await Quiz.find(query))
         : [];
     const courses = user
         ? [
