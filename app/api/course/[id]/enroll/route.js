@@ -9,7 +9,9 @@ export async function POST(req, { params }) {
     const { id } = params;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({
+            token: cookies().get("token")?.value,
+        });
         if (!user) return unauthorized;
 
         const course = await Course.findById(id);

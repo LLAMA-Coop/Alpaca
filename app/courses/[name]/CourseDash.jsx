@@ -152,6 +152,41 @@ export function CourseDash({ course, isLogged }) {
         setIsLoading(false);
     }
 
+    async function unenroll() {
+        setIsLoading(true);
+
+        try {
+            const response = await fetch(
+                `${basePath}/api/course/${course.id}/unenroll`,
+                {
+                    method: "POST",
+                },
+            ).then((res) => res.json());
+
+            if (response.success) {
+                addAlert({
+                    success: true,
+                    message: response.message,
+                });
+
+                window.location.reload();
+            } else {
+                addAlert({
+                    success: false,
+                    message: response.message || "Something went wrong",
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            addAlert({
+                success: false,
+                message: "Something went wrong",
+            });
+        }
+
+        setIsLoading(false);
+    }
+
     async function enrollment(action) {
         setIsLoading(true);
 
@@ -297,11 +332,11 @@ export function CourseDash({ course, isLogged }) {
                                 <button
                                     onClick={() => {
                                         if (isEnrolled) {
-                                            // unenroll();
-                                            addAlert({
-                                                success: false,
-                                                message: "Not yet implemented",
-                                            });
+                                            unenroll();
+                                            // addAlert({
+                                            //     success: false,
+                                            //     message: "Not yet implemented",
+                                            // });
                                         } else {
                                             enroll();
                                         }
