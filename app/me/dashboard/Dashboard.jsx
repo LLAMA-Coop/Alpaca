@@ -246,14 +246,55 @@ export function Dashboard({ more = false }) {
                     </header>
 
                     <main className="scrollbar">
-                        <div className={styles.summaries}>
-                            {tabs[currentTab].summaries.map((sum) => (
-                                <div key={sum.name}>
-                                    <p>{sum.name}</p>
-                                    <p>{sum.data}</p>
-                                </div>
-                            ))}
-                        </div>
+                        <header>
+                            <h1>
+                                {currentTab === 0 && (
+                                    <Avatar
+                                        src={user.avatar}
+                                        username={user.username}
+                                        size={42}
+                                    />
+                                )}
+
+                                {currentTab === 0
+                                    ? user.username
+                                    : tabs[currentTab].name}
+
+                                {currentTab === 0 && (
+                                    <span>XP {user.xp ? user.xp : 0}</span>
+                                )}
+
+                                {currentTab !== 0 && (
+                                    <Link
+                                        className={styles.browseLink}
+                                        title={`Browse ${tabs[currentTab].name}`}
+                                        href={`/${tabs[
+                                            currentTab
+                                        ].name.toLowerCase()}`}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            width="20"
+                                            height="20"
+                                        >
+                                            <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" />
+                                            <path d="M11 13l9 -9" />
+                                            <path d="M15 4h5v5" />
+                                        </svg>
+                                    </Link>
+                                )}
+                            </h1>
+
+                            <div className={styles.summaries}>
+                                {tabs[currentTab].summaries.map((sum) => (
+                                    <div key={sum.name}>
+                                        <p>{sum.name}</p>
+                                        <p>{sum.data}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </header>
 
                         {currentTab === 0 && (
                             <div className={styles.userContent}>

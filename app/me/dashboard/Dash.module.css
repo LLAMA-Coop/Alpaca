@@ -89,7 +89,7 @@
     margin-bottom: 24px;
 }
 
-.content > header {
+.content header {
     display: flex;
     align-items: center;
     gap: 32px;
@@ -97,6 +97,9 @@
     border-radius: 10px;
     padding: 16px;
     background-color: var(--background-2);
+}
+
+.content > header {
     overflow-x: scroll;
 }
 
@@ -104,8 +107,8 @@
     display: none;
 }
 
-.content > header > h1,
-.content > header > h3 {
+.content header > h1,
+.content header > h3 {
     font-size: 36px;
     font-weight: 600;
     line-height: 1.2;
@@ -117,15 +120,15 @@
     flex: 1 1 auto;
 }
 
-.content > header > h1 > img,
-.content > header > h3 > img {
+.content header > h1 > img,
+.content header > h3 > img {
     border-radius: 50%;
     width: 42px;
     height: 42px;
 }
 
-.content > header > h1 > span,
-.content > header > h3 > span {
+.content header > h1 > span,
+.content header > h3 > span {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -162,7 +165,7 @@
     flex: 0 0 auto;
 }
 
-.content > header > .summaries > div {
+.content header > .summaries > div {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -176,7 +179,7 @@
     line-height: 1.2;
 }
 
-.content > .main > .summaries > div {
+.content > main > header {
     display: none;
 }
 
@@ -471,9 +474,17 @@
         padding-right: 0;
     }
 
+    .main > section {
+        padding-top: 0;
+    }
+
+    .content {
+        max-height: 80vh;
+    }
+
     .tabList {
         position: fixed;
-        bottom: 10px;
+        bottom: 0;
         left: 0;
         right: 0;
         margin-left: auto;
@@ -489,6 +500,7 @@
         justify-content: center;
         gap: 35px;
         border: solid 1px var(--background-4);
+        max-height: 20vh;
     }
 
     .tablist > li {
@@ -527,19 +539,19 @@
     }
 
     .content > header {
-        padding: 8px 12px;
-    }
-
-    .content > header > .summaries {
         display: none;
     }
 
-    .content > main > .summaries {
+    .content > main > header {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .content > main > header > .summaries {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         gap: 12px;
-        flex: 0 0 auto;
     }
 
     .content > main > .summaries > div {
