@@ -23,7 +23,7 @@
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
-    gap: 48px;
+    /* gap: 48px; */
 }
 
 .tabList > li {
@@ -34,6 +34,7 @@
     align-items: center;
     border-radius: 5px;
     user-select: none;
+    margin: 24px 0;
 }
 
 .tabList > li:hover,
@@ -76,7 +77,7 @@
     width: 100%;
 }
 
-.content > h1 {
+.content > h1, .content > h3 {
     font-family: var(--font-heading);
     text-align: center;
     font-size: 2rem;
@@ -92,7 +93,7 @@
 .content header {
     display: flex;
     align-items: center;
-    gap: 32px;
+    /* gap: 32px; */
     margin-bottom: 24px;
     border-radius: 10px;
     padding: 16px;
@@ -112,11 +113,11 @@
     font-size: 36px;
     font-weight: 600;
     line-height: 1.2;
-    margin-bottom: 16px;
     margin: 0;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    /* gap: 16px; */
     flex: 1 1 auto;
 }
 
@@ -140,6 +141,14 @@
     white-space: nowrap;
 }
 
+.content header > h1 > :first-child {
+    margin-right: 16px;
+}
+
+.content header > h1 > :last-child {
+    margin-left: 16px;
+}
+
 .browseLink {
     display: flex;
     align-items: center;
@@ -161,7 +170,7 @@
 .content > header > .summaries {
     display: flex;
     align-items: center;
-    gap: 12px;
+    /* gap: 12px; */
     flex: 0 0 auto;
 }
 
@@ -169,7 +178,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    /* gap: 8px; */
+    margin: 6px;
     padding: 6px 12px;
     border-radius: 100vw;
     background-color: var(--accent-3);
@@ -177,6 +187,10 @@
     font-size: 15px;
     font-weight: 700;
     line-height: 1.2;
+}
+
+.summaries > div > * {
+    margin: 0 4px;
 }
 
 .content > main > header {
@@ -187,7 +201,8 @@
     background-color: var(--background-2);
     border-radius: 10px;
     padding: 24px 4px 24px 24px;
-    overflow: hidden scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
     flex: 1;
     min-height: 370px;
 }
@@ -197,7 +212,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    /* gap: 24px; */
     align-items: center;
     justify-content: center;
     padding: 24px;
@@ -224,7 +239,7 @@
 .actionButtons {
     display: flex;
     align-items: center;
-    gap: 16px;
+    /* gap: 16px; */
     margin-bottom: 24px;
 }
 
@@ -232,7 +247,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    /* gap: 12px; */
     padding: 12px 24px 12px 16px;
     border-radius: 10px;
     background-color: var(--accent-3);
@@ -243,6 +258,10 @@
     border: 0px;
     cursor: pointer;
     transition: background-color 0.1s ease-in-out;
+}
+
+.dashButton > * {
+    margin: 6px;
 }
 
 .dashButton:hover {
@@ -302,7 +321,7 @@
 .input > div {
     display: flex;
     align-items: center;
-    gap: 8px;
+    /* gap: 8px; */
     border-radius: 10px;
     background-color: var(--background-3);
     border: 1px solid var(--background-4);
@@ -323,6 +342,7 @@
     color: var(--foreground-1);
     width: 100%;
     padding: 12px 16px;
+    margin-bottom: 8px;
 }
 
 .input > div > input::placeholder {
@@ -334,7 +354,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    /* gap: 12px; */
     padding: 8px 12px;
     margin-right: 8px;
     border-radius: 4px;
@@ -383,8 +403,12 @@
     margin: -2px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
+    /* gap: 24px; */
     max-width: 100%;
+}
+
+.gridList > * {
+    margin: 12px;
 }
 
 .chip {
@@ -408,7 +432,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 16px;
+    /* gap: 16px; */
     padding: 16px;
     border-radius: 6px;
     background-color: var(--background-3);
@@ -497,18 +521,18 @@
         padding: 8px 2px;
         background-color: var(--background-2);
         border-radius: 20px;
-        justify-content: center;
-        gap: 35px;
+        justify-content: space-between;
+        /* gap: 35px; */
         border: solid 1px var(--background-4);
         max-height: 20vh;
     }
 
-    .tablist > li {
+    .tabList > li {
         margin: auto;
     }
 
-    .tablist > li > div.active,
-    .tablist > li > div.hover {
+    .tabList > li > div.active,
+    .tabList > li > div.hover {
         color: white;
     }
 
@@ -551,14 +575,15 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 12px;
+        /* gap: 12px; */
     }
 
     .content > main > .summaries > div {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        /* gap: 8px; */
+        margin: 6px;
         padding: 6px 12px;
         border-radius: 100vw;
         background-color: var(--accent-3);

@@ -455,12 +455,13 @@ export function Dashboard({ more = false }) {
                                     <p>You haven't added any associates yet.</p>
 
                                     <div className={styles.input}>
-                                        <label htmlFor="">
+                                        <label htmlFor="addAssociate">
                                             Add Associate by Username or ID
                                         </label>
 
                                         <div>
                                             <input
+                                                id="addAssociate"
                                                 type="text"
                                                 placeholder="Username or ID"
                                                 value={associate}
@@ -491,12 +492,13 @@ export function Dashboard({ more = false }) {
                             ) : (
                                 <>
                                     <div className={styles.input}>
-                                        <label htmlFor="">
+                                        <label htmlFor="addAssociate">
                                             Add Associate by Username or ID
                                         </label>
 
                                         <div>
                                             <input
+                                                id="addAssociate"
                                                 type="text"
                                                 placeholder="Username or ID"
                                                 value={associate}
