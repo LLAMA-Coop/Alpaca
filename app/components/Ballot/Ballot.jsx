@@ -105,10 +105,10 @@ export function Ballot({
     }
 
     return (
-        <main className={styles.main}>
-            <h2 style={{ whiteSpace: "pre-wrap" }}>{motion}</h2>
+        <div className={styles.main}>
+            <h3 style={{ whiteSpace: "pre-wrap" }}>{motion}</h3>
             <section>
-                <h3>Your Choices Are:</h3>
+                <h4>Your Choices Are:</h4>
                 <ol>
                     {choices.map((choice, index) => (
                         <li key={index}>{choice}</li>
@@ -117,7 +117,7 @@ export function Ballot({
             </section>
 
             <section className={styles.inputs}>
-                <h3>Make Your Selections</h3>
+                <h4>Make Your Selections</h4>
 
                 <Input
                     required={true}
@@ -195,7 +195,7 @@ export function Ballot({
                     <thead>
                         <tr>
                             <th colSpan={2}>
-                                <h3>Your Selections</h3>
+                                <h4>Your Selections</h4>
                             </th>
                         </tr>
                     </thead>
@@ -206,7 +206,7 @@ export function Ballot({
                                     ? "Choice"
                                     : "First Choice"}
                             </td>
-                            <td>{firstChoice ? firstChoice : "none"}</td>
+                            <td>{firstChoice ? `${firstChoice}` : "none"}</td>
                         </tr>
 
                         {options.numberChoices > 1 && (
@@ -247,6 +247,6 @@ export function Ballot({
                     Submit Vote
                 </button>
             </section>
-        </main>
+        </div>
     );
 }

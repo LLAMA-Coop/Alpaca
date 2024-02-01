@@ -1,0 +1,17 @@
+.main {
+    background-color: lightblue;
+}
+
+.main h2 {
+    margin: 1rem;
+    margin-bottom: 2rem;
+}
+
+.main > section > ol > li {
+    border: 1px solid red;
+    padding: 0.5rem;
+    padding-top: 2rem;
+    margin: 0.5rem 0.5rem 20rem 0.5rem;
+    border-radius: 20px;
+    white-space: pre-wrap;
+}
