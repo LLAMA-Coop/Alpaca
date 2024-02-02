@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Input, UserInput } from "../client";
 import { useAlerts, useModals } from "@/store/store";
 import styles from "./Ballot.module.css";
+import { useBallots } from "@/store/store";
 
 export function Ballot({
     motion,
@@ -19,6 +20,10 @@ export function Ballot({
     const [thirdChoice, setThirdChoice] = useState("");
     const [voteAgainst, setVoteAgainst] = useState("");
     const [amendment, setAmendment] = useState("");
+    const [submitted, setSubmitted] = useState(false);
+
+    const addBallot = useBallots((state) => state.addBallot);
+    const editBallot = useBallots((state) => state.editBallot);
     const addAlert = useAlerts((state) => state.addAlert);
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
@@ -26,6 +31,7 @@ export function Ballot({
     useEffect(() => {
         if (!ballot) return;
 
+        setSubmitted(true);
         if (ballot.firstChoice) {
             setFirstChoice(ballot.firstChoice);
         }
@@ -81,11 +87,14 @@ export function Ballot({
                 success: true,
                 message: "Ballot received!",
             });
+            addBallot(ballotPayload);
+            setSubmitted(true);
         } else if (response.status === 200) {
             addAlert({
                 success: true,
                 message: "Ballot edited succesfully.",
             });
+            editBallot(ballotPayload);
         } else if (response.status === 401) {
             addAlert({
                 success: false,
@@ -107,6 +116,19 @@ export function Ballot({
     return (
         <div className={styles.main}>
             <h3 style={{ whiteSpace: "pre-wrap" }}>{motion}</h3>
+            {!submitted && (
+                <p
+                    style={{
+                        backgroundColor: "red",
+                        padding: "1rem",
+                        color: "white",
+                        fontWeight: "bolder",
+                        borderRadius: "20px"
+                    }}
+                >
+                    Awaiting Your Vote
+                </p>
+            )}
             <section>
                 <h4>Your Choices Are:</h4>
                 <ol>
@@ -244,7 +266,7 @@ export function Ballot({
                 </table>
 
                 <button className="button submit" onClick={handleSubmit}>
-                    Submit Vote
+                    {submitted ? "Edit" : "Submit"} Vote
                 </button>
             </section>
         </div>
