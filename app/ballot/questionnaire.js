@@ -158,7 +158,7 @@ Company Policy will establish professional standards, ethics, and rules. Violati
         ],
     },
     {
-        heading: "",
+        heading: "Meetings of Members",
         questions: [
             {
                 motion: "When is the annual meeting?",
