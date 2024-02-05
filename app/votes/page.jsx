@@ -1,7 +1,7 @@
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import BallotModel from "../api/models/Ballot";
-import styles from "./votes.module.css"
+import styles from "./votes.module.css";
 
 export default async function VotesPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
@@ -12,22 +12,27 @@ export default async function VotesPage() {
     const motions = [];
     const rows = [];
     ballots.forEach((b) => {
-        if (!b.motion || b.motion === "What shall the name of our company be?") return;
+        if (
+            !b.motion ||
+            b.motion === "What shall the name of our company be?" ||
+            /Joseph Roper/.test(b.motion)
+        )
+            return;
         if (!voters.includes(b.voter.username)) {
             voters.push(b.voter.username);
         }
         if (!motions.includes(b.motion)) {
             motions.push(b.motion);
         }
-        let row = rows.find(r => r.motion === b.motion)
-        if(!row){
+        let row = rows.find((r) => r.motion === b.motion);
+        if (!row) {
             row = {
                 motion: b.motion,
-                voters: {}
-            }
-            rows.push(row)
+                voters: {},
+            };
+            rows.push(row);
         }
-        row.voters[b.voter.username] = b.firstChoice
+        row.voters[b.voter.username] = b.firstChoice;
     });
 
     return (
