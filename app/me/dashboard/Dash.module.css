@@ -23,7 +23,6 @@
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
-    /* gap: 48px; */
 }
 
 .tabList > li {
@@ -77,13 +76,6 @@
     width: 100%;
 }
 
-.content > h1, .content > h3 {
-    font-family: var(--font-heading);
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 12px;
-}
-
 .content > p {
     font-size: 1rem;
     text-align: center;
@@ -93,7 +85,7 @@
 .content header {
     display: flex;
     align-items: center;
-    /* gap: 32px; */
+    flex-wrap: wrap;
     margin-bottom: 24px;
     border-radius: 10px;
     padding: 16px;
@@ -114,10 +106,8 @@
     font-weight: 600;
     line-height: 1.2;
     margin: 0;
-    margin-bottom: 16px;
     display: flex;
     align-items: center;
-    /* gap: 16px; */
     flex: 1 1 auto;
 }
 
@@ -169,16 +159,15 @@
 
 .content > header > .summaries {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    /* gap: 12px; */
-    flex: 0 0 auto;
+    justify-content: space-around;
 }
 
 .content header > .summaries > div {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* gap: 8px; */
     margin: 6px;
     padding: 6px 12px;
     border-radius: 100vw;
@@ -212,7 +201,6 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    /* gap: 24px; */
     align-items: center;
     justify-content: center;
     padding: 24px;
@@ -239,7 +227,6 @@
 .actionButtons {
     display: flex;
     align-items: center;
-    /* gap: 16px; */
     margin-bottom: 24px;
 }
 
@@ -247,7 +234,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* gap: 12px; */
     padding: 12px 24px 12px 16px;
     border-radius: 10px;
     background-color: var(--accent-3);
@@ -321,7 +307,6 @@
 .input > div {
     display: flex;
     align-items: center;
-    /* gap: 8px; */
     border-radius: 10px;
     background-color: var(--background-3);
     border: 1px solid var(--background-4);
@@ -354,7 +339,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* gap: 12px; */
     padding: 8px 12px;
     margin-right: 8px;
     border-radius: 4px;
@@ -403,7 +387,6 @@
     margin: -2px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    /* gap: 24px; */
     max-width: 100%;
 }
 
@@ -432,7 +415,6 @@
     position: relative;
     display: flex;
     align-items: center;
-    /* gap: 16px; */
     padding: 16px;
     border-radius: 6px;
     background-color: var(--background-3);
@@ -522,7 +504,6 @@
         background-color: var(--background-2);
         border-radius: 20px;
         justify-content: space-between;
-        /* gap: 35px; */
         border: solid 1px var(--background-4);
         max-height: 20vh;
     }
@@ -575,14 +556,12 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        /* gap: 12px; */
     }
 
     .content > main > .summaries > div {
         display: flex;
         align-items: center;
         justify-content: center;
-        /* gap: 8px; */
         margin: 6px;
         padding: 6px 12px;
         border-radius: 100vw;
