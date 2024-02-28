@@ -229,7 +229,7 @@ export async function PUT(req) {
         const promises = [];
 
         if (name) {
-            course.name = name;
+            course.name = name.trim();
         }
         if (description) {
             course.description = description;

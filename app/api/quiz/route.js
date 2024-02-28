@@ -149,7 +149,7 @@ export async function POST(req) {
 
         const quiz = new Quiz({
             type,
-            prompt,
+            prompt: prompt.trim(),
             choices,
             correctResponses,
             hints: hints ?? [],
@@ -225,7 +225,7 @@ export async function PUT(req) {
             quiz.type = type;
         }
         if (prompt) {
-            quiz.prompt = prompt;
+            quiz.prompt = prompt.trim();
         }
         if (choices) {
             quiz.choices = [...choices];
