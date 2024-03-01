@@ -193,16 +193,16 @@ a {
     width: fit-content;
 }
 
-.button:hover {
+.button:hover:not(:disabled) {
     background-color: var(--accent-1-hover);
 }
 
-.button:active {
+.button:active:not(:disabled) {
     background-color: var(--accent-1-active);
 }
 
 .button.submit {
-    height: 42px;
+    height: 44px;
     font-size: 16px;
     line-height: 24px;
 }
@@ -212,11 +212,11 @@ a {
     color: var(--accent-foreground);
 }
 
-.button.green:hover {
+.button.green:hover:not(:disabled) {
     background-color: var(--success-hover);
 }
 
-.button.green:active {
+.button.green:active:not(:disabled) {
     background-color: var(--success-active);
 }
 
@@ -225,11 +225,11 @@ a {
     color: var(--accent-foreground);
 }
 
-.button.red:hover {
+.button.red:hover:not(.:disabled) {
     background-color: var(--error-hover);
 }
 
-.button.red:active {
+.button.red:active:not(:disabled) {
     background-color: var(--error-active);
 }
 
