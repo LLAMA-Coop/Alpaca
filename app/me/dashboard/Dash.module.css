@@ -21,7 +21,7 @@
 .tabList {
     position: absolute;
     top: 50%;
-    left: -105px;
+    left: -60px;
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
@@ -75,7 +75,6 @@
 .content {
     display: flex;
     flex-direction: column;
-    max-height: 70vh;
     width: 100%;
 }
 
@@ -475,7 +474,7 @@
 
 @media screen and (max-width: 2100px) {
     .main > section {
-        max-width: calc(100vw - 280px);
+        max-width: calc(100vw - 200px);
     }
 }
 
@@ -488,10 +487,6 @@
 
     .main > section {
         padding-top: 40px;
-    }
-
-    .content {
-        max-height: 80vh;
     }
 
     .tabList {
