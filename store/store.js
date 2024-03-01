@@ -124,6 +124,26 @@ export const useStore = create((set) => ({
             ),
         }));
     },
+
+    readNotification: (id) => {
+        return set((state) => ({
+            notifications: state.notifications.map((notification) => {
+                if (notification._id === id) {
+                    notification.read = true;
+                }
+                return notification;
+            }),
+        }));
+    },
+
+    readAll: () => {
+        return set((state) => ({
+            notifications: state.notifications.map((notification) => {
+                notification.read = true;
+                return notification;
+            }),
+        }));
+    },
 }));
 
 // Daily Train Store
