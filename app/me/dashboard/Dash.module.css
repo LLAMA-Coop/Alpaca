@@ -23,7 +23,6 @@
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
-    gap: 48px;
 }
 
 .tabList > li {
@@ -34,6 +33,7 @@
     align-items: center;
     border-radius: 5px;
     user-select: none;
+    margin: 24px 0;
 }
 
 .tabList > li:hover,
@@ -76,27 +76,23 @@
     width: 100%;
 }
 
-.content > h1 {
-    font-family: var(--font-heading);
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 12px;
-}
-
 .content > p {
     font-size: 1rem;
     text-align: center;
     margin-bottom: 24px;
 }
 
-.content > header {
+.content header {
     display: flex;
     align-items: center;
-    gap: 32px;
+    flex-wrap: wrap;
     margin-bottom: 24px;
     border-radius: 10px;
     padding: 16px;
     background-color: var(--background-2);
+}
+
+.content > header {
     overflow-x: scroll;
 }
 
@@ -104,28 +100,26 @@
     display: none;
 }
 
-.content > header > h1,
-.content > header > h3 {
+.content header > h1,
+.content header > h3 {
     font-size: 36px;
     font-weight: 600;
     line-height: 1.2;
-    margin-bottom: 16px;
     margin: 0;
     display: flex;
     align-items: center;
-    gap: 16px;
     flex: 1 1 auto;
 }
 
-.content > header > h1 > img,
-.content > header > h3 > img {
+.content header > h1 > img,
+.content header > h3 > img {
     border-radius: 50%;
     width: 42px;
     height: 42px;
 }
 
-.content > header > h1 > span,
-.content > header > h3 > span {
+.content header > h1 > span,
+.content header > h3 > span {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -135,6 +129,14 @@
     height: 32px;
     padding: 6px 12px;
     white-space: nowrap;
+}
+
+.content header > h1 > :first-child {
+    margin-right: 16px;
+}
+
+.content header > h1 > :last-child {
+    margin-left: 16px;
 }
 
 .browseLink {
@@ -155,18 +157,18 @@
     color: var(--foreground-1);
 }
 
-.content > header > .chips {
+.content > header > .summaries {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 12px;
-    flex: 0 0 auto;
+    justify-content: space-around;
 }
 
-.content > header > .chips > div {
+.content header > .summaries > div {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    margin: 6px;
     padding: 6px 12px;
     border-radius: 100vw;
     background-color: var(--accent-3);
@@ -176,11 +178,20 @@
     line-height: 1.2;
 }
 
+.summaries > div > * {
+    margin: 0 4px;
+}
+
+.content > main > header {
+    display: none;
+}
+
 .content > main {
     background-color: var(--background-2);
     border-radius: 10px;
     padding: 24px 4px 24px 24px;
-    overflow: hidden scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
     flex: 1;
     min-height: 370px;
 }
@@ -190,7 +201,6 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 24px;
     align-items: center;
     justify-content: center;
     padding: 24px;
@@ -217,7 +227,6 @@
 .actionButtons {
     display: flex;
     align-items: center;
-    gap: 16px;
     margin-bottom: 24px;
 }
 
@@ -225,7 +234,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
     padding: 12px 24px 12px 16px;
     border-radius: 10px;
     background-color: var(--accent-3);
@@ -236,6 +244,10 @@
     border: 0px;
     cursor: pointer;
     transition: background-color 0.1s ease-in-out;
+}
+
+.dashButton > * {
+    margin: 6px;
 }
 
 .dashButton:hover {
@@ -295,7 +307,6 @@
 .input > div {
     display: flex;
     align-items: center;
-    gap: 8px;
     border-radius: 10px;
     background-color: var(--background-3);
     border: 1px solid var(--background-4);
@@ -316,6 +327,7 @@
     color: var(--foreground-1);
     width: 100%;
     padding: 12px 16px;
+    margin-bottom: 8px;
 }
 
 .input > div > input::placeholder {
@@ -327,7 +339,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
     padding: 8px 12px;
     margin-right: 8px;
     border-radius: 4px;
@@ -376,8 +387,11 @@
     margin: -2px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
     max-width: 100%;
+}
+
+.gridList > * {
+    margin: 12px;
 }
 
 .chip {
@@ -401,7 +415,6 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 16px;
     padding: 16px;
     border-radius: 6px;
     background-color: var(--background-3);
@@ -467,9 +480,17 @@
         padding-right: 0;
     }
 
+    .main > section {
+        padding-top: 0;
+    }
+
+    .content {
+        max-height: 80vh;
+    }
+
     .tabList {
         position: fixed;
-        bottom: 10px;
+        bottom: 0;
         left: 0;
         right: 0;
         margin-left: auto;
@@ -482,17 +503,17 @@
         padding: 8px 2px;
         background-color: var(--background-2);
         border-radius: 20px;
-        justify-content: center;
-        gap: 35px;
+        justify-content: space-between;
         border: solid 1px var(--background-4);
+        max-height: 20vh;
     }
 
-    .tablist > li {
+    .tabList > li {
         margin: auto;
     }
 
-    .tablist > li > div.active,
-    .tablist > li > div.hover {
+    .tabList > li > div.active,
+    .tabList > li > div.hover {
         color: white;
     }
 
@@ -511,7 +532,7 @@
     }
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 375px) {
     .main > section {
         min-width: calc(100vw - 24px);
         padding-left: 0;
@@ -523,7 +544,32 @@
     }
 
     .content > header {
-        padding: 8px 12px;
+        display: none;
+    }
+
+    .content > main > header {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .content > main > header > .summaries {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .content > main > .summaries > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 6px;
+        padding: 6px 12px;
+        border-radius: 100vw;
+        background-color: var(--accent-3);
+        color: var(--foreground-1);
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.2;
     }
 
     .empty {

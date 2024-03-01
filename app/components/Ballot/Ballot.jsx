@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Input, UserInput } from "../client";
 import { useAlerts, useModals } from "@/store/store";
 import styles from "./Ballot.module.css";
+import { useBallots } from "@/store/store";
 
 export function Ballot({
     motion,
@@ -19,6 +20,10 @@ export function Ballot({
     const [thirdChoice, setThirdChoice] = useState("");
     const [voteAgainst, setVoteAgainst] = useState("");
     const [amendment, setAmendment] = useState("");
+    const [submitted, setSubmitted] = useState(false);
+
+    const addBallot = useBallots((state) => state.addBallot);
+    const editBallot = useBallots((state) => state.editBallot);
     const addAlert = useAlerts((state) => state.addAlert);
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
@@ -26,6 +31,7 @@ export function Ballot({
     useEffect(() => {
         if (!ballot) return;
 
+        setSubmitted(true);
         if (ballot.firstChoice) {
             setFirstChoice(ballot.firstChoice);
         }
@@ -81,11 +87,14 @@ export function Ballot({
                 success: true,
                 message: "Ballot received!",
             });
+            addBallot(ballotPayload);
+            setSubmitted(true);
         } else if (response.status === 200) {
             addAlert({
                 success: true,
                 message: "Ballot edited succesfully.",
             });
+            editBallot(ballotPayload);
         } else if (response.status === 401) {
             addAlert({
                 success: false,
@@ -105,10 +114,23 @@ export function Ballot({
     }
 
     return (
-        <main className={styles.main}>
-            <h2 style={{ whiteSpace: "pre-wrap" }}>{motion}</h2>
+        <div className={styles.main}>
+            <h3 style={{ whiteSpace: "pre-wrap" }}>{motion}</h3>
+            {!submitted && (
+                <p
+                    style={{
+                        backgroundColor: "red",
+                        padding: "1rem",
+                        color: "white",
+                        fontWeight: "bolder",
+                        borderRadius: "20px"
+                    }}
+                >
+                    Awaiting Your Vote
+                </p>
+            )}
             <section>
-                <h3>Your Choices Are:</h3>
+                <h4>Your Choices Are:</h4>
                 <ol>
                     {choices.map((choice, index) => (
                         <li key={index}>{choice}</li>
@@ -117,7 +139,7 @@ export function Ballot({
             </section>
 
             <section className={styles.inputs}>
-                <h3>Make Your Selections</h3>
+                <h4>Make Your Selections</h4>
 
                 <Input
                     required={true}
@@ -195,7 +217,7 @@ export function Ballot({
                     <thead>
                         <tr>
                             <th colSpan={2}>
-                                <h3>Your Selections</h3>
+                                <h4>Your Selections</h4>
                             </th>
                         </tr>
                     </thead>
@@ -206,7 +228,7 @@ export function Ballot({
                                     ? "Choice"
                                     : "First Choice"}
                             </td>
-                            <td>{firstChoice ? firstChoice : "none"}</td>
+                            <td>{firstChoice ? `${firstChoice}` : "none"}</td>
                         </tr>
 
                         {options.numberChoices > 1 && (
@@ -244,9 +266,9 @@ export function Ballot({
                 </table>
 
                 <button className="button submit" onClick={handleSubmit}>
-                    Submit Vote
+                    {submitted ? "Edit" : "Submit"} Vote
                 </button>
             </section>
-        </main>
+        </div>
     );
 }

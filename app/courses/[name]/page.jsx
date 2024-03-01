@@ -17,5 +17,5 @@ export default async function CoursePage({ params }) {
 
     if (!course || !canRead(course, user)) return redirect("/courses");
 
-    return <CourseDash course={serializeOne(course)} isLogged={!!user} />;
+    return <CourseDash course={serializeOne(course)} isLogged={user ? true : false} />;
 }
