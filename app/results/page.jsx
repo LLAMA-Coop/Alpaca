@@ -5,6 +5,7 @@ import elections from "../ballot/boardelection04MAR2024";
 import { serialize } from "@/lib/db";
 import Votes from "./votes";
 import styles from "./results.module.css"
+import { redirect } from "next/navigation";
 
 export default async function ResultsPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
