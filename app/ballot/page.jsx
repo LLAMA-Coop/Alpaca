@@ -4,7 +4,7 @@ import BallotModel from "../api/models/Ballot";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { serializeOne } from "@/lib/db";
-import questionnaire from "./questionnaire";
+import questionnaire from "./boardelection04MAR2024";
 import { BallotProgress } from "./ballotProgress";
 
 export default async function BallotPage() {

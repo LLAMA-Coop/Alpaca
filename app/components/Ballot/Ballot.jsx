@@ -10,9 +10,9 @@ export function Ballot({
     choices,
     ballot,
     options = {
-        numberChoices: 1,
+        numberChoices: 3,
         voteAgainst: false,
-        canAmend: true,
+        canAmend: false,
     },
 }) {
     const [firstChoice, setFirstChoice] = useState("");
@@ -21,6 +21,7 @@ export function Ballot({
     const [voteAgainst, setVoteAgainst] = useState("");
     const [amendment, setAmendment] = useState("");
     const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const addBallot = useBallots((state) => state.addBallot);
     const editBallot = useBallots((state) => state.editBallot);
@@ -51,6 +52,8 @@ export function Ballot({
 
     async function handleSubmit(e) {
         e.preventDefault();
+
+        setLoading(true);
 
         if (!firstChoice) {
             addAlert({
@@ -111,6 +114,8 @@ export function Ballot({
                 message: json.message,
             });
         }
+
+        setLoading(false);
     }
 
     return (
@@ -265,7 +270,7 @@ export function Ballot({
                     </tbody>
                 </table>
 
-                <button className="button submit" onClick={handleSubmit}>
+                <button className="button submit" onClick={handleSubmit} disabled={loading}>
                     {submitted ? "Edit" : "Submit"} Vote
                 </button>
             </section>
