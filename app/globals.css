@@ -128,7 +128,9 @@ body {
 body {
     display: flex;
     flex-direction: column;
-    /* padding-left: calc(100dvw - 100%); */
+    --scrollbar-width: calc(100vw - 100%);
+    --scrollbar-width: calc(100dvw - 100%);
+    padding-left: var(--scrollbar-width);
 }
 
 a {
