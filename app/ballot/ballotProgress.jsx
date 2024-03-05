@@ -26,9 +26,12 @@ export function BallotProgress({ questions, motions, ballots }) {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    console.log("Votes: ", votes);
+    console.log("Questions: ", questions);
+
     return (
         <>
-            <div className={styles.progress}>
+            <aside className={styles.progress}>
                 <div>
                     <svg
                         className={styles.svg}
@@ -49,7 +52,7 @@ export function BallotProgress({ questions, motions, ballots }) {
                             cy="50"
                             r="45"
                             fill="none"
-                            stroke="var(--error)"
+                            stroke="var(--accent-1)"
                             strokeWidth="5"
                             pathLength="100"
                             strokeDasharray="100"
@@ -59,20 +62,42 @@ export function BallotProgress({ questions, motions, ballots }) {
                                     100 - (votes.length / motions.length) * 100,
                             }}
                         />
+
+                        <text
+                            x="50"
+                            y="50"
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                            fontSize="20"
+                            fill="var(--foreground-3)"
+                            transform="rotate(90, 50, 50)"
+                        >
+                            {votes.length}/{motions.length}
+                        </text>
                     </svg>
 
                     <ol className={styles.categories}>
                         {questions.map((c, i) => (
                             <li key={i}>
                                 <a href={`#${c.heading}`}>
+                                    <span>
+                                        {
+                                            c.ballots.filter((b) => {
+                                                return votes
+                                                    .map((v) => v.motion)
+                                                    .includes(b.motion);
+                                            }).length
+                                        }
+                                        /{c.ballots.length}
+                                    </span>
+
                                     {c.heading}
-                                    {/* {c.ballots.length} */}
                                 </a>
                             </li>
                         ))}
                     </ol>
                 </div>
-            </div>
+            </aside>
 
             {hasScrolled && (
                 <button
