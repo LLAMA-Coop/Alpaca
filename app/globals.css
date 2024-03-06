@@ -3,7 +3,7 @@
 
 :root {
     --max-width: 1200px;
-    --padding: 120px 40px;
+    --padding: 80px 40px;
 
     --font-heading: "Sofia Sans", sans-serif;
     --font-body: "Inter", sans-serif;
@@ -120,7 +120,6 @@ body {
     min-height: 100dvh;
     font-size: 16px;
     font-family: var(--font-body);
-    overflow-x: hidden;
     scroll-behavior: smooth;
     color: var(--foreground-1);
     background-color: var(--background-1);
@@ -129,7 +128,9 @@ body {
 body {
     display: flex;
     flex-direction: column;
-    /* padding-left: calc(100dvw - 100%); */
+    --scrollbar-width: calc(100vw - 100%);
+    --scrollbar-width: calc(100dvw - 100%);
+    padding-left: var(--scrollbar-width);
 }
 
 a {
@@ -193,16 +194,16 @@ a {
     width: fit-content;
 }
 
-.button:hover {
+.button:hover:not(:disabled) {
     background-color: var(--accent-1-hover);
 }
 
-.button:active {
+.button:active:not(:disabled) {
     background-color: var(--accent-1-active);
 }
 
 .button.submit {
-    height: 42px;
+    height: 44px;
     font-size: 16px;
     line-height: 24px;
 }
@@ -212,11 +213,11 @@ a {
     color: var(--accent-foreground);
 }
 
-.button.green:hover {
+.button.green:hover:not(:disabled) {
     background-color: var(--success-hover);
 }
 
-.button.green:active {
+.button.green:active:not(:disabled) {
     background-color: var(--success-active);
 }
 
@@ -225,11 +226,11 @@ a {
     color: var(--accent-foreground);
 }
 
-.button.red:hover {
+.button.red:hover:not(.:disabled) {
     background-color: var(--error-hover);
 }
 
-.button.red:active {
+.button.red:active:not(:disabled) {
     background-color: var(--error-active);
 }
 

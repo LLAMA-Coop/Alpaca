@@ -5,12 +5,7 @@ import { useAlerts, useModals } from "@/store/store";
 import styles from "./Ballot.module.css";
 import { useBallots } from "@/store/store";
 
-export function Ballot({
-    motion,
-    choices,
-    ballot,
-    options,
-}) {
+export function Ballot({ motion, choices, ballot, options }) {
     const [firstChoice, setFirstChoice] = useState("");
     const [secondChoice, setSecondChoice] = useState("");
     const [thirdChoice, setThirdChoice] = useState("");
@@ -118,17 +113,7 @@ export function Ballot({
         <div className={styles.main}>
             <h3 style={{ whiteSpace: "pre-wrap" }}>{motion}</h3>
             {!submitted && (
-                <p
-                    style={{
-                        backgroundColor: "red",
-                        padding: "1rem",
-                        color: "white",
-                        fontWeight: "bolder",
-                        borderRadius: "20px"
-                    }}
-                >
-                    Awaiting Your Vote
-                </p>
+                <p className={styles.waitingTip}>Awaiting Your Vote</p>
             )}
             <section>
                 <h4>Your Choices Are:</h4>
@@ -266,7 +251,11 @@ export function Ballot({
                     </tbody>
                 </table>
 
-                <button className="button submit" onClick={handleSubmit} disabled={loading}>
+                <button
+                    className="button submit"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                >
                     {submitted ? "Edit" : "Submit"} Vote
                 </button>
             </section>

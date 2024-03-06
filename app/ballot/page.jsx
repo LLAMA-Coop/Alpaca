@@ -52,29 +52,41 @@ export default async function BallotPage() {
 
     return (
         <main className={styles.main}>
-            <BallotProgress motions={motions} ballots={votes} />
-
-            {questions.map((point, index) => (
-                <section key={index}>
-                    <h2>{point.heading}</h2>
-                    <ol>
-                        {point.ballots.map((ballot, index) => (
-                            <li key={index}>
-                                <Ballot
-                                    motion={ballot.motion}
-                                    choices={ballot.choices}
-                                    ballot={ballot.ballot}
-                                    options={
-                                        ballot.options
-                                            ? ballot.options
-                                            : defaultOptions
-                                    }
-                                />
-                            </li>
-                        ))}
-                    </ol>
-                </section>
-            ))}
+            <div>
+                <BallotProgress
+                    motions={motions}
+                    ballots={votes}
+                    questions={questions}
+                />
+                <div>
+                    {questions.map((point, index) => (
+                        <section
+                            key={index}
+                            className={styles.ballot}
+                            id={point.heading}
+                        >
+                            <h2>{point.heading}</h2>
+                            <ol>
+                                {point.ballots.map((ballot, index) => (
+                                    <li key={index}>
+                                        <Ballot
+                                            motion={ballot.motion}
+                                            choices={ballot.choices}
+                                            ballot={ballot.ballot}
+                                            options={
+                                                ballot.options
+                                                    ? ballot.options
+                                                    : defaultOptions
+                                            }
+                                        />
+                                    </li>
+                                ))}
+                            </ol>
+                        </section>
+                    ))}
+                </div>
+                <div></div>
+            </div>
         </main>
     );
 }
