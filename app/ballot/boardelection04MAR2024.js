@@ -1,5 +1,28 @@
 const ballots = [
     {
+        heading: "Written Waiver of Notice",
+        questions: [
+            {
+                motion: "I acknowledge that I did not receive 10 days notice of this meeting. In accordance with our Operating Agreement in 4.4, I waive my notice and consent to attend the member meeting on March 5, 2024.",
+                choices: ["Waive notice", "Do not waive notice"],
+                options: {
+                    numberChoices: 1,
+                    voteAgainst: false,
+                    canAmend: false,
+                },
+            },
+            {
+                motion: "Confirm name",
+                choices: ["Type name"],
+                options: {
+                    numberChoices: 1,
+                    voteAgainst: false,
+                    canAmend: false,
+                },
+            },
+        ],
+    },
+    {
         heading: "President",
         questions: [
             {

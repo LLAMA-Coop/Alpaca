@@ -9,11 +9,7 @@ export function Ballot({
     motion,
     choices,
     ballot,
-    options = {
-        numberChoices: 3,
-        voteAgainst: false,
-        canAmend: false,
-    },
+    options,
 }) {
     const [firstChoice, setFirstChoice] = useState("");
     const [secondChoice, setSecondChoice] = useState("");
