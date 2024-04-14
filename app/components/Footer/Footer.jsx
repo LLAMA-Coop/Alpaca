@@ -63,7 +63,14 @@ export function Footer() {
 
     return (
         <footer className={styles.footer}>
-            <nav className={styles.links}>
+            <div>
+                <Link href="/">Mneme</Link>© {new Date().getFullYear()} LLAMA
+            </div>
+        </footer>
+    );
+}
+/*
+<nav className={styles.links}>
                 {footerLinks.map((link) => (
                     <ol key={encodeURI(link.category)}>
                         <div className={styles.title}>{link.category}</div>
@@ -83,10 +90,4 @@ export function Footer() {
                     </ol>
                 ))}
             </nav>
-
-            <div>
-                <Link href="/">Mneme</Link>© {new Date().getFullYear()} LLAMA
-            </div>
-        </footer>
-    );
-}
+*/ 

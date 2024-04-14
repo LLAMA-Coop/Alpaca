@@ -12,6 +12,9 @@
     font-weight: 400;
     line-height: 1.8;
     margin-bottom: 20px;
+    font-weight: 400;
+    line-height: 1.8;
+    margin-bottom: 20px;
 }
 
 .inputs > * {
@@ -55,7 +58,7 @@
     background-color: var(--error);
     padding: 12px 16px;
     margin-bottom: 12px;
-    color: beige;
+    color: var(--foreground-1);
     font-weight: 700;
     border-radius: 8px;
 }

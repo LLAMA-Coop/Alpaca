@@ -4,6 +4,7 @@
 :root {
     --max-width: 1200px;
     --padding: 80px 40px;
+    --radius-1: 10px;
 
     --font-heading: "Sofia Sans", sans-serif;
     --font-body: "Inter", sans-serif;
@@ -104,6 +105,14 @@
     }
 }
 
+*::-webkit-scrollbar {
+    display: none;
+  }
+
+*::-webkit-scrollbar {
+    display: none;
+  }
+
 * {
     margin: 0;
     padding: 0;
@@ -194,15 +203,16 @@ a {
     width: fit-content;
 }
 
-.button:hover:not(:disabled) {
+.button:hover:not(:disabled):not(:disabled) {
     background-color: var(--accent-1-hover);
 }
 
-.button:active:not(:disabled) {
+.button:active:not(:disabled):not(:disabled) {
     background-color: var(--accent-1-active);
 }
 
 .button.submit {
+    height: 44px;
     height: 44px;
     font-size: 16px;
     line-height: 24px;
@@ -213,11 +223,11 @@ a {
     color: var(--accent-foreground);
 }
 
-.button.green:hover:not(:disabled) {
+.button.green:hover:not(:disabled):not(:disabled) {
     background-color: var(--success-hover);
 }
 
-.button.green:active:not(:disabled) {
+.button.green:active:not(:disabled):not(:disabled) {
     background-color: var(--success-active);
 }
 
@@ -226,7 +236,7 @@ a {
     color: var(--accent-foreground);
 }
 
-.button.red:hover:not(.:disabled) {
+.button.red:hover:not(.:disabled):not(:disabled) {
     background-color: var(--error-hover);
 }
 

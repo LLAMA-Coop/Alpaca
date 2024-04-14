@@ -5,6 +5,7 @@ import styles from "./Notifications.module.css";
 
 export function Notifications() {
     const removeNotification = useStore((state) => state.removeNotification);
+    const readNotification = useStore((state) => state.readNotification);
     const notifications = useStore((state) => state.notifications);
     const addAssociate = useStore((state) => state.addAssociate);
     const addAlert = useAlerts((state) => state.addAlert);
@@ -71,14 +72,14 @@ export function Notifications() {
     }
 
     async function read(notification) {
-        let url = `/api/notification/${notification.id}`;
+        const url = `/api/notifications/${notification.id}`;
 
         const response = await fetch(`${basePath}${url}`, {
             method: "PATCH",
         }).then((res) => res.json());
 
         if (response.success) {
-            // removeNotification(notification.id);
+            readNotification(notification.id);
         }
     }
 
@@ -93,7 +94,12 @@ export function Notifications() {
 
             <ul className="scrollbar">
                 {notifications.map((n) => (
-                    <div key={n.id} className={styles.notification}>
+                    <div
+                        key={n.id}
+                        className={`${styles.notification} ${
+                            n.read ? styles.read : ""
+                        }`}
+                    >
                         <header>
                             <h3>{n.subject}</h3>
                             <p>{n.message}</p>

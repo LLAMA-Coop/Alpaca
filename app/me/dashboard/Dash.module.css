@@ -1,13 +1,10 @@
 .main {
-    flex: 1;
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
+    height: max-content;
 }
 
 .main > section {
     max-width: 1700px;
-    padding: var(--padding);
+    padding: 20px 80px;
     margin: 0 auto;
     position: relative;
     flex: 1;
@@ -18,8 +15,8 @@
 
 .tabList {
     position: absolute;
-    top: 50%;
-    left: -105px;
+    top: 300px;
+    left: -60px;
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
@@ -31,7 +28,7 @@
     color: var(--foreground-1);
     cursor: pointer;
     align-items: center;
-    border-radius: 5px;
+    border-radius: 50%;
     user-select: none;
     margin: 24px 0;
 }
@@ -57,6 +54,7 @@
 }
 
 .tabList > li:hover > div,
+.tabList > li:focus-visible > div,
 .tabList > li.active > div {
     background: var(--background-3);
 }
@@ -72,8 +70,9 @@
 .content {
     display: flex;
     flex-direction: column;
-    max-height: 70vh;
     width: 100%;
+    height: max-content;
+    overflow-x: auto;
 }
 
 .content > p {
@@ -90,10 +89,6 @@
     border-radius: 10px;
     padding: 16px;
     background-color: var(--background-2);
-}
-
-.content > header {
-    overflow-x: scroll;
 }
 
 .content > header::-webkit-scrollbar {
@@ -137,6 +132,13 @@
 
 .content header > h1 > :last-child {
     margin-left: 16px;
+}
+
+.courseHead{
+    margin-bottom: 20px;
+}
+.courseHead h1{
+    font-size: 40px;
 }
 
 .browseLink {
@@ -187,13 +189,11 @@
 }
 
 .content > main {
-    background-color: var(--background-2);
     border-radius: 10px;
     padding: 24px 4px 24px 24px;
-    overflow-x: hidden;
-    overflow-y: scroll;
     flex: 1;
     min-height: 370px;
+    height: auto;
 }
 
 .empty {
@@ -327,7 +327,6 @@
     color: var(--foreground-1);
     width: 100%;
     padding: 12px 16px;
-    margin-bottom: 8px;
 }
 
 .input > div > input::placeholder {
@@ -370,6 +369,9 @@
 .userContent > div {
     max-width: 100%;
     width: 100%;
+}
+
+.userContent > div:not(:last-child) {
     margin-bottom: 40px;
 }
 
@@ -388,10 +390,11 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     max-width: 100%;
+    margin-bottom: -24px;
 }
 
 .gridList > * {
-    margin: 12px;
+    margin: 0 24px 24px 0;
 }
 
 .chip {
@@ -469,7 +472,7 @@
 
 @media screen and (max-width: 2100px) {
     .main > section {
-        max-width: calc(100vw - 280px);
+        max-width: calc(100vw - 200px);
     }
 }
 
@@ -481,11 +484,7 @@
     }
 
     .main > section {
-        padding-top: 0;
-    }
-
-    .content {
-        max-height: 80vh;
+        padding-top: 40px;
     }
 
     .tabList {
@@ -493,19 +492,18 @@
         bottom: 0;
         left: 0;
         right: 0;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto 16px auto;
         top: unset;
         transform: unset;
         flex-direction: row;
-        width: 90%;
+        max-width: 90%;
         z-index: 2;
         padding: 8px 2px;
         background-color: var(--background-2);
-        border-radius: 20px;
+        border-radius: 18px;
         justify-content: space-between;
         border: solid 1px var(--background-4);
-        max-height: 20vh;
+        height: 64px;
     }
 
     .tabList > li {
