@@ -1,0 +1,30 @@
+@import url(../components/Note/NoteInput.module.css);
+@import url(../components/Quiz/QuizInput.module.css);
+@import url(../components/Source/SourceDisplay.module.css);
+@import url(../components/Course/CourseInput.module.css);
+
+.tabsContainer{
+    width: 40%;
+    margin: 40px auto;
+    border-radius: 20px;
+}
+.tabs{
+    display: flex;
+    justify-content: space-between;
+    font-size: 25px;
+    font-weight: 100;
+    font-family: var(--font-heading);
+    cursor: pointer;
+}
+
+.active{
+    font-weight: 600;
+}
+
+.cards{
+    width: 70%;
+    margin: 30px auto 100px auto;
+    padding: 40px;
+    border-radius: 20px;
+    background-color: var(--background-2);
+}

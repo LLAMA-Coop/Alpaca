@@ -313,9 +313,9 @@ export function CourseDash({ course, isLogged }) {
                 </nav>
 
                 <div className={styles.content}>
+                    <div className={styles.courseHead}>
                     <h1>{course.name}</h1>
-                    <p>{course.description}</p>
-
+                    </div>
                     <header>
                         <h3>
                             {tabs[currentTab].name}

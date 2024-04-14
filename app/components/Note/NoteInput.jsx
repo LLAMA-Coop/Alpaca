@@ -176,15 +176,19 @@ export function NoteInput({ note }) {
 
     return (
         <div className={styles.form}>
+            <div className={styles.column}>
+            <label>TITLE</label>
             <Input
                 onChange={(e) => {
                     setTitle(e.target.value);
                 }}
                 value={title}
-                label={"Title"}
                 maxLength={MAX.title}
+                placeholder="Note Title"
             />
+            </div>
 
+            <div className={styles.column}>
             <div className={styles.sources}>
                 <Label required={true} error={sourceError} label="Sources" />
 
@@ -199,11 +203,39 @@ export function NoteInput({ note }) {
                     messageIfNone="No sources added"
                 />
             </div>
+            </div>
 
+            <div className={styles.column}>
+            <Input
+                type="textarea"
+                required={true}
+                onChange={(e) => {
+                    setText(e.target.value);
+                    setTextError("");
+                }}
+                value={text}
+                error={textError}
+                label={"Text"}
+                maxLength={MAX.noteText}
+                className={styles.textarea}
+            />
+            </div>
+            <div className={styles.column}>
             <div className={styles.tags}>
                 <div>
                     <Label label="Tags" />
-
+                    <Input
+                    type="datalist"
+                    choices={availableTags}
+                    value={newTag}
+                    maxLength={MAX.tag}
+                    description="A word or phrase that could be used to search for this note"
+                    autoComplete="off"
+                    onChange={(e) => setNewTag(e.target.value)}
+                    action="Add tag"
+                    onActionTrigger={handleAddTag}
+                    placeholder="Note Tags"
+                />
                     <ul className="chipList">
                         {tags.length === 0 && <ListItem item="No tags added" />}
 
@@ -219,34 +251,13 @@ export function NoteInput({ note }) {
                         ))}
                     </ul>
                 </div>
-                <Input
-                    type="datalist"
-                    choices={availableTags}
-                    label={"Add Tag"}
-                    value={newTag}
-                    maxLength={MAX.tag}
-                    description="A word or phrase that could be used to search for this note"
-                    autoComplete="off"
-                    onChange={(e) => setNewTag(e.target.value)}
-                    action="Add tag"
-                    onActionTrigger={handleAddTag}
-                />
+            </div>
             </div>
 
-            <Input
-                type="textarea"
-                required={true}
-                onChange={(e) => {
-                    setText(e.target.value);
-                    setTextError("");
-                }}
-                value={text}
-                error={textError}
-                label={"Text"}
-                maxLength={MAX.noteText}
-            />
-
+            <div className={styles.column}>
+            <div>
             <div className={styles.courses}>
+                
                 <Label required={false} label="Courses" />
 
                 <ListAdd
@@ -258,6 +269,7 @@ export function NoteInput({ note }) {
                     type="datalist"
                     messageIfNone="Not added to any course"
                 />
+            </div>
             </div>
 
             <div className={styles.permissions}>
@@ -273,6 +285,7 @@ export function NoteInput({ note }) {
                         setter={setPermissions}
                     />
                 )}
+            </div>
             </div>
 
             <button onClick={handleSubmit} className="button submit">
