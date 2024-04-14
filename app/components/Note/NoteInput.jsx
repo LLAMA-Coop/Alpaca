@@ -177,7 +177,6 @@ export function NoteInput({ note }) {
     return (
         <div className={styles.form}>
             <div className={styles.column}>
-            <label>TITLE</label>
             <Input
                 onChange={(e) => {
                     setTitle(e.target.value);
@@ -185,6 +184,7 @@ export function NoteInput({ note }) {
                 value={title}
                 maxLength={MAX.title}
                 placeholder="Note Title"
+                label="TITLE"
             />
             </div>
 
@@ -223,9 +223,9 @@ export function NoteInput({ note }) {
             <div className={styles.column}>
             <div className={styles.tags}>
                 <div>
-                    <Label label="Tags" />
                     <Input
                     type="datalist"
+                    label="Tags"
                     choices={availableTags}
                     value={newTag}
                     maxLength={MAX.tag}
