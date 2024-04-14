@@ -4,6 +4,7 @@
 :root {
     --max-width: 1200px;
     --padding: 80px 40px;
+    --radius-1: 10px;
 
     --font-heading: "Sofia Sans", sans-serif;
     --font-body: "Inter", sans-serif;
@@ -103,6 +104,10 @@
         color-scheme: dark;
     }
 }
+
+*::-webkit-scrollbar {
+    display: none;
+  }
 
 * {
     margin: 0;
@@ -226,7 +231,7 @@ a {
     color: var(--accent-foreground);
 }
 
-.button.red:hover:not(.:disabled) {
+.button.red:hover:not(:disabled) {
     background-color: var(--error-hover);
 }
 

@@ -66,6 +66,41 @@ export function ListAdd({
     if (type === "datalist")
         return (
             <div style={{ position: "relative" }} ref={selectRef}>
+                <Input
+                    value={filter}
+                    autoComplete="off"
+                    onChange={(e) => {
+                        setFilter(e.target.value);
+                        if (e.target.value.length) {
+                            setShowSelect(true);
+                        } else {
+                            setShowSelect(false);
+                        }
+                    }}
+                    action="Add Tag"
+                    onFocus={() => setShowSelect(true)}
+                    onActionTrigger={(e) => {
+                        e.preventDefault();
+                        if (
+                            filteredChoices &&
+                            filteredChoices.length === 1 &&
+                            !listChosen.includes(filteredChoices[0])
+                        ) {
+                            listSetter([...listChosen, filteredChoices[0]]);
+                        }
+                    }}
+                />
+                {showSelect && (
+                    <Select
+                        listChoices={filteredChoices}
+                        listChosen={listChosen}
+                        listProperty={listProperty}
+                        listSetter={listSetter}
+                        createNew={createNew}
+                        disabled={disabled}
+                        onBlur={() => setShowSelect(false)}
+                    />
+                )}
                 <ol
                     className={`chipList ${disabled ? "disabled" : ""}`}
                     style={{
@@ -109,44 +144,6 @@ export function ListAdd({
                             );
                         })}
                 </ol>
-
-                <Input
-                    label={item}
-                    value={filter}
-                    autoComplete="off"
-                    onChange={(e) => {
-                        setFilter(e.target.value);
-                        if (e.target.value.length) {
-                            setShowSelect(true);
-                        } else {
-                            setShowSelect(false);
-                        }
-                    }}
-                    action="Add Tag"
-                    onFocus={() => setShowSelect(true)}
-                    onActionTrigger={(e) => {
-                        e.preventDefault();
-                        if (
-                            filteredChoices &&
-                            filteredChoices.length === 1 &&
-                            !listChosen.includes(filteredChoices[0])
-                        ) {
-                            listSetter([...listChosen, filteredChoices[0]]);
-                        }
-                    }}
-                />
-
-                {showSelect && (
-                    <Select
-                        listChoices={filteredChoices}
-                        listChosen={listChosen}
-                        listProperty={listProperty}
-                        listSetter={listSetter}
-                        createNew={createNew}
-                        disabled={disabled}
-                        onBlur={() => setShowSelect(false)}
-                    />
-                )}
             </div>
         );
 

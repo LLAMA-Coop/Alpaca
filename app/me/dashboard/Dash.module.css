@@ -1,15 +1,10 @@
 .main {
-    flex: 1;
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
+    height: max-content;
 }
 
 .main > section {
     max-width: 1700px;
-    height: calc(100vh - 80px);
-    height: calc(100dvh - 80px);
-    padding: var(--padding);
+    padding: 20px 80px;
     margin: 0 auto;
     position: relative;
     flex: 1;
@@ -20,7 +15,7 @@
 
 .tabList {
     position: absolute;
-    top: 50%;
+    top: 300px;
     left: -60px;
     transform: translateY(-50%);
     display: flex;
@@ -76,6 +71,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: max-content;
+    overflow-x: auto;
 }
 
 .content > p {
@@ -92,10 +89,6 @@
     border-radius: 10px;
     padding: 16px;
     background-color: var(--background-2);
-}
-
-.content > header {
-    overflow-x: scroll;
 }
 
 .content > header::-webkit-scrollbar {
@@ -139,6 +132,13 @@
 
 .content header > h1 > :last-child {
     margin-left: 16px;
+}
+
+.courseHead{
+    margin-bottom: 20px;
+}
+.courseHead h1{
+    font-size: 40px;
 }
 
 .browseLink {
@@ -189,13 +189,11 @@
 }
 
 .content > main {
-    background-color: var(--background-2);
     border-radius: 10px;
     padding: 24px 4px 24px 24px;
-    overflow-x: hidden;
-    overflow-y: scroll;
     flex: 1;
     min-height: 370px;
+    height: auto;
 }
 
 .empty {
