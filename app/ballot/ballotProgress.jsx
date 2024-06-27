@@ -56,6 +56,9 @@ export function BallotProgress({ questions, motions, ballots }) {
         return () => observer.disconnect();
     }, []);
 
+    console.log("Votes: ", votes);
+    console.log("Questions: ", questions);
+
     return (
         <>
             <aside className={styles.progress}>

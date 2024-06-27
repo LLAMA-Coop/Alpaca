@@ -29,6 +29,7 @@ export default async function BallotPage() {
             return {
                 motion: q.motion,
                 choices: q.choices,
+                options: q.options == undefined ? q.options : {},
                 ballot: serializeOne(ballot),
             };
         });
@@ -42,6 +43,12 @@ export default async function BallotPage() {
     });
 
     const questions = await Promise.all(questionsPromises);
+
+    const defaultOptions = {
+        numberChoices: 3,
+        voteAgainst: false,
+        canAmend: false,
+    };
 
     return (
         <main className={styles.main}>

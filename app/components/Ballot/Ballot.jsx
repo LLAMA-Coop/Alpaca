@@ -5,22 +5,14 @@ import { useAlerts, useModals } from "@/store/store";
 import styles from "./Ballot.module.css";
 import { useBallots } from "@/store/store";
 
-export function Ballot({
-    motion,
-    choices,
-    ballot,
-    options = {
-        numberChoices: 1,
-        voteAgainst: false,
-        canAmend: true,
-    },
-}) {
+export function Ballot({ motion, choices, ballot, options }) {
     const [firstChoice, setFirstChoice] = useState("");
     const [secondChoice, setSecondChoice] = useState("");
     const [thirdChoice, setThirdChoice] = useState("");
     const [voteAgainst, setVoteAgainst] = useState("");
     const [amendment, setAmendment] = useState("");
     const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const addBallot = useBallots((state) => state.addBallot);
     const editBallot = useBallots((state) => state.editBallot);
@@ -51,6 +43,8 @@ export function Ballot({
 
     async function handleSubmit(e) {
         e.preventDefault();
+
+        setLoading(true);
 
         if (!firstChoice) {
             addAlert({
@@ -111,6 +105,8 @@ export function Ballot({
                 message: json.message,
             });
         }
+
+        setLoading(false);
     }
 
     return (
@@ -257,7 +253,11 @@ export function Ballot({
                     </tbody>
                 </table>
 
-                <button className="button submit" onClick={handleSubmit}>
+                <button
+                    className="button submit"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                >
                     {submitted ? "Edit" : "Submit"} Vote
                 </button>
             </section>
