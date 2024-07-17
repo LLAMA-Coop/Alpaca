@@ -148,34 +148,6 @@ export const useStore = create((set) => ({
     },
 }));
 
-// Ballots Store
-
-export const useBallots = create()((set) => ({
-    ballots: [],
-
-    addBallot: (ballot) => {
-        return set((state) => ({
-            ballots: [...state.ballots, ballot],
-        }));
-    },
-
-    editBallot: (ballot) => {
-        return set((state) => {
-            const ballots = [...state.ballots];
-            const oldBallotIndex = ballots.findIndex(
-                (b) => b.motion === ballot.motion,
-            );
-            ballots.splice(oldBallotIndex, 1, ballot);
-
-            return {
-                ballots,
-            };
-        });
-    },
-
-    addAllBallots: (ballots) => set(() => ({ ballots })),
-}));
-
 // Daily Train Store
 
 export const useDailyTrain = create()((set) => ({
