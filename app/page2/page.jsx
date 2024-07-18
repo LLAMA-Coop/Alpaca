@@ -14,7 +14,7 @@ export default function LandingPage() {
             <section className={styles.hero}>
                 <img src="/assets/landing/llama.png" alt="Drawing of a llama" />
 
-                <h1>Welcome To Mneme!</h1>
+                <h1>Welcome To Alpaca!</h1>
                 <p>Create | Test | Learn</p>
 
                 <Link href="#grid">Discover plans</Link>
@@ -89,7 +89,7 @@ export default function LandingPage() {
             </section>
 
             <section className={styles.grid} id="grid">
-                <h3>Mneme - The New Way Of Learning</h3>
+                <h3>Alpaca - The New Way Of Learning</h3>
 
                 <div>
                     <div>

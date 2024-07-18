@@ -16,7 +16,7 @@ export async function Header() {
             <header>
                 <div>
                     <Link className={styles.link} href="/">
-                        Mneme
+                        Alpaca
                     </Link>
                 </div>
 

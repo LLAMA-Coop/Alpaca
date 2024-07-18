@@ -18,7 +18,7 @@ export default async function Home({ searchParams }) {
     return (
         <main className={styles.main}>
             <div className={styles.titleBlock}>
-                <h2>Welcome to Mneme!</h2>
+                <h2>Welcome to Alpaca!</h2>
             </div>
 
             <section id="overall" className="paragraph">
@@ -27,7 +27,7 @@ export default async function Home({ searchParams }) {
                 <p>
                     This app is intended for people who want to organize and
                     reinforce in their memory information that they want to
-                    learn. Here's how you would use Mneme:
+                    learn. Here's how you would use Alpaca:
                 </p>
 
                 <ol>
@@ -66,7 +66,7 @@ export default async function Home({ searchParams }) {
                         you are getting from the source. They can be short
                         quotes you want to highlight, a summary of long and
                         complex information, questions to later answer,
-                        observations, comments, etc. In Mneme, Notes are very
+                        observations, comments, etc. In Alpaca, Notes are very
                         simple, the simplest part of the app. You are required
                         to point the Note to at least one Source. If more than
                         one Source confirms your Note, it means your note has
@@ -110,7 +110,7 @@ export default async function Home({ searchParams }) {
                     </li>
 
                     <li>
-                        Now Mneme is ready to use for studying or organizing
+                        Now Alpaca is ready to use for studying or organizing
                         information. You can use it any way you like. Say you
                         are listening to a few interviews from someone, and you
                         want to assess and respond to how they think. You can
@@ -127,7 +127,7 @@ export default async function Home({ searchParams }) {
                 <h3>Quiz Questions</h3>
 
                 <p>
-                    Your main draw to Mneme may be its Quiz questions. You can
+                    Your main draw to Alpaca may be its Quiz questions. You can
                     use those to put together quizzes that you can share.
                 </p>
 

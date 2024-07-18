@@ -6,8 +6,8 @@ import { UserInput } from "@client";
 import Link from "next/link";
 
 export const metadata = {
-    title: "Login · Mneme",
-    description: "Log in to Mneme",
+    title: "Login · Alpaca",
+    description: "Log in to Alpaca",
 };
 
 export default async function LoginPage() {
@@ -17,7 +17,7 @@ export default async function LoginPage() {
     return (
         <main className={styles.main}>
             <section className={styles.container}>
-                <h2>Log in to Mneme</h2>
+                <h2>Log in to Alpaca</h2>
                 <UserInput isRegistering={false} />
 
                 <div>

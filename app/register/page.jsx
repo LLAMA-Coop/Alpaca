@@ -6,8 +6,8 @@ import { UserInput } from "@client";
 import Link from "next/link";
 
 export const metadata = {
-    title: "Sign up · Mneme",
-    description: "Create a Mneme account",
+    title: "Sign up · Alpaca",
+    description: "Create a Alpaca account",
 };
 
 export default async function RegisterPage() {
@@ -17,7 +17,7 @@ export default async function RegisterPage() {
     return (
         <main className={styles.main}>
             <section className={styles.container}>
-                <h2>Create a Mneme account</h2>
+                <h2>Create a Alpaca account</h2>
                 <UserInput isRegistering={true} />
 
                 <div>

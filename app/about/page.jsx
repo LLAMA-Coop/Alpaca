@@ -4,7 +4,7 @@ export default function About() {
     return (
         <main className={styles.main}>
             <div className={styles.titleBlock}>
-                <h2>About Mneme</h2>
+                <h2>About Alpaca</h2>
             </div>
 
             <section className="paragraph">
@@ -27,7 +27,7 @@ export default function About() {
 
                 <p>
                     This, along with short notes to condense information from
-                    sources, is the vision behind Mneme. It is not just for
+                    sources, is the vision behind Alpaca. It is not just for
                     taking quizzes. It's for making them easily for yourself or
                     anyone else.
                 </p>
@@ -36,12 +36,12 @@ export default function About() {
                     Named for the{" "}
                     <a
                         className="link"
-                        href="https://en.wikipedia.org/wiki/Mneme"
+                        href="https://en.wikipedia.org/wiki/Alpaca"
                         target="_blank"
                     >
                         Greek Muse for memory
                     </a>
-                    , Mneme will be a web application and API for submitting,
+                    , Alpaca will be a web application and API for submitting,
                     storing, and retrieving learning materials in a database.
                     These learning materials can be sources of information, such
                     as articles, news reports, official documents, scientific

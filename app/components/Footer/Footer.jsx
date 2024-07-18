@@ -54,7 +54,7 @@ export function Footer() {
     //             </div>
 
     //             <p>
-    //                 &copy; Mneme {new Date().getFullYear()}. All rights
+    //                 &copy; Alpaca {new Date().getFullYear()}. All rights
     //                 reserved.
     //             </p>
     //         </div>
@@ -64,7 +64,7 @@ export function Footer() {
     return (
         <footer className={styles.footer}>
             <div>
-                <Link href="/">Mneme</Link>© {new Date().getFullYear()} LLAMA
+                <Link href="/">Alpaca</Link>© {new Date().getFullYear()} LLAMA
             </div>
         </footer>
     );
@@ -90,4 +90,4 @@ export function Footer() {
                     </ol>
                 ))}
             </nav>
-*/ 
+*/
