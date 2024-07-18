@@ -26,21 +26,25 @@ export default async function QuizPage({ params }) {
 
     return (
         <main className={styles.main}>
-            <div>
+            <div className={styles.titleBlock}>
                 Created By: <UserCard user={serializeOne(quiz.createdBy)} />
+                <div>
+                    <p>Contributors:</p>
+                    <ul>
+                        {quiz.contributors.map((c) => (
+                            <li key={c._id}>{c.username}</li>
+                        ))}
+                    </ul>
+                </div>
             </div>
-            <div>
-                <p>Contributors:</p>
-                <ul>
-                    {quiz.contributors.map((c) => (
-                        <li key={c._id}>{c.username}</li>
-                    ))}
-                </ul>
-            </div>
-            <QuizDisplay quiz={serializeOne(quiz)} />
-            <Card title={"Edit Quiz Question"}>
-                <QuizInput quiz={serializeOne(quiz)} />
-            </Card>
+            <section>
+                <QuizDisplay quiz={serializeOne(quiz)} />
+            </section>
+            <section>
+                <Card title={"Edit Quiz Question"}>
+                    <QuizInput quiz={serializeOne(quiz)} />
+                </Card>
+            </section>
         </main>
     );
 }
