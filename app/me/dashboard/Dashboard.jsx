@@ -5,6 +5,7 @@ import { Avatar, Notifications, UserCard } from "@client";
 import styles from "./Dash.module.css";
 import { useState } from "react";
 import Link from "next/link";
+import QuizDisplay from "@/app/components/Quiz/QuizDisplay";
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
@@ -18,6 +19,8 @@ export function Dashboard({ more = false }) {
     const associates = useStore((state) => state.associates);
     const addAlert = useAlerts((state) => state.addAlert);
     const addAssociate = useStore((state) => state.addAssociate);
+
+    console.log("QUIZZES", quizzes);
 
     const groupsCreated = groups.filter((group) => group.owner === user.id);
     const groupsJoined = groups.filter((group) => group.owner !== user.id);
@@ -304,23 +307,18 @@ export function Dashboard({ more = false }) {
                                     <h3>Pick up where you left off</h3>
 
                                     <ul className={styles.gridList}>
-                                        {Array(5)
-                                            .fill()
-                                            .map((_, index) => (
-                                                <div
-                                                    key={"Course_" + index}
-                                                    className={styles.card}
-                                                >
-                                                    <h3>Course Name</h3>
-
-                                                    <p>
-                                                        Lorem ipsum dolor sit
-                                                        amet consectetur
-                                                        adipisicing elit.
-                                                        Quisquam, quos!
-                                                    </p>
-                                                </div>
-                                            ))}
+                                        {courses.map((c) => {
+                                            return (
+                                                <li key={c._id}>
+                                                    <Link
+                                                        href={`/courses/${c.name}`}
+                                                    >
+                                                        <h4>{c.name}</h4>
+                                                        <p>{c.description}</p>
+                                                    </Link>
+                                                </li>
+                                            );
+                                        })}
                                     </ul>
                                 </div>
 
@@ -328,23 +326,11 @@ export function Dashboard({ more = false }) {
                                     <h3>Attempt quizzes to earn XP</h3>
 
                                     <ul className={styles.gridList}>
-                                        {Array(7)
-                                            .fill()
-                                            .map((_, index) => (
-                                                <div
-                                                    key={"Quiz_" + index}
-                                                    className={styles.card}
-                                                >
-                                                    <h3>Quizz</h3>
-
-                                                    <p>
-                                                        Lorem ipsum dolor sit
-                                                        amet consectetur
-                                                        adipisicing elit.
-                                                        Quisquam, quos!
-                                                    </p>
-                                                </div>
-                                            ))}
+                                        {quizzes.map(q => {
+                                            return <li key={q._id}>
+                                                <QuizDisplay quiz={q} />
+                                            </li>
+                                        })}
                                     </ul>
                                 </div>
                             </div>
