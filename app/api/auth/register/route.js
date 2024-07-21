@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { User } from "@/app/api/models";
 import bcrypt from "bcrypt";
 import { server } from "@/lib/apiErrorResponses";
+import { db } from "@/lib/db/db";
 
 export async function POST(req) {
     // This may or may not require admin authorization
@@ -51,13 +52,26 @@ export async function POST(req) {
             );
         }
 
-        const user = new User({
-            username: username.trim(),
-            displayName: username.trim(),
-            passwordHash: await bcrypt.hash(password, 10),
-        });
+        // const user = new User({
+        //     username: username.trim(),
+        //     displayName: username.trim(),
+        //     passwordHash: await bcrypt.hash(password, 10),
+        // });
 
-        await user.save();
+        // await user.save();
+
+        const displayName = username.trim();
+        const passwordHash = await bcrypt.hash(password, 10);
+        const sql =
+            "INSERT INTO `Users` (`username`, `displayName`, `passwordHash`, `refreshTokens`) VALUES (?, ?, ?, ?)";
+        const values = [username.trim(), displayName, passwordHash, '{}'];
+        const [result, fields] = await db.promise().query(sql, values);
+        const user = {
+            id: result.insertId,
+            username,
+            displayName
+        }
+        console.log("\nUser:", user);
 
         return NextResponse.json(
             {
