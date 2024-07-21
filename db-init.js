@@ -14,7 +14,7 @@ import fs from "fs";
 
     try {
         await query(
-            `CREATE DATABASE IF NOT EXISTS ${db} DEFAULT CHARACTER SET utf8mb4 COLLATE utm8mb4_unicode_ci;`,
+            `CREATE DATABASE IF NOT EXISTS ${db} DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`,
         );
 
         await query(`USE ${db}`);
@@ -30,8 +30,6 @@ import fs from "fs";
                 console.log("\nQuery:\n", q, "\nResult:\n", result);
             }
         });
-
-        console.log("\n\nDatabase queries complete!\n");
     } catch (error) {
         console.error(error);
     } finally {

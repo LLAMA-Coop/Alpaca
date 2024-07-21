@@ -38,8 +38,8 @@ const QuizSchema = new Schema(
             {
                 type: Schema.Types.Mixed,
                 required: true,
-                minLength: MIN.quizzResponse,
-                maxLength: MAX.quizzResponse,
+                minLength: MIN.quizResponse,
+                maxLength: MAX.quizResponse,
                 validate: [
                     {
                         validator: function (value) {
@@ -61,7 +61,7 @@ const QuizSchema = new Schema(
         hints: [
             {
                 type: String,
-                minLength: MIN.quizzChoice,
+                minLength: MIN.quizChoice,
                 maxLength: MAX.quizChoice,
             },
         ],
