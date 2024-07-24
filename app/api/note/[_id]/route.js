@@ -25,10 +25,10 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        if (note.createdBy.toString() !== user._id.toString()) {
+        if (note.createdBy.toString() !== user.id.toString()) {
             return NextResponse.json(
                 {
-                    message: `User ${user._id} is not authorized to delete note ${_id}. Only the creator ${note.createdBy} is permitted`,
+                    message: `User ${user.id} is not authorized to delete note ${_id}. Only the creator ${note.createdBy} is permitted`,
                 },
                 { status: 403 },
             );

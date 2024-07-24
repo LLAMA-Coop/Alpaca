@@ -22,7 +22,7 @@ export async function POST(req) {
 
         const notifPayload = {
             recipient: recipient._id,
-            senderUser: user._id,
+            senderUser: user.id,
             responseActions: [],
         };
 
@@ -50,8 +50,8 @@ export async function POST(req) {
             }
 
             if (
-                group.owner.toString() !== user._id.toString() ||
-                !group.admins.includes(user._id)
+                group.owner.toString() !== user.id.toString() ||
+                !group.admins.includes(user.id)
             ) {
                 return new NextResponse(
                     {
@@ -102,7 +102,7 @@ export async function PATCH(req) {
         // Read all notifications
 
         const res = await Notification.updateMany(
-            { recipient: user._id },
+            { recipient: user.id },
             { $set: { read: true } },
         );
 

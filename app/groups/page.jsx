@@ -15,9 +15,9 @@ export default async function GroupPage() {
     const yourGroups = user
         ? await Group.find({
               $or: [
-                  { owner: user._id },
-                  { users: { $in: [user._id] } },
-                  { admins: { $in: [user._id] } },
+                  { owner: user.id },
+                  { users: { $in: [user.id] } },
+                  { admins: { $in: [user.id] } },
               ],
           })
         : [];

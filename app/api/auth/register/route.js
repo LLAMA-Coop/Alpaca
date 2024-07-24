@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-// import { User } from "@mneme_app/database-models";
-import { User } from "@/app/api/models";
 import bcrypt from "bcrypt";
 import { server } from "@/lib/apiErrorResponses";
 import { db } from "@/lib/db/db";
@@ -41,9 +39,11 @@ export async function POST(req) {
     }
 
     try {
-        const sameUser = await User.findOne({ username: username.trim() });
+        const [resultSameUser, fieldsSame] = await db
+            .promise()
+            .query("SELECT `id` FROM Users WHERE username = ? LIMIT 1", [username.trim()]);
 
-        if (sameUser) {
+        if (resultSameUser.length > 0) {
             return NextResponse.json(
                 {
                     message: "Username already taken",
@@ -52,25 +52,17 @@ export async function POST(req) {
             );
         }
 
-        // const user = new User({
-        //     username: username.trim(),
-        //     displayName: username.trim(),
-        //     passwordHash: await bcrypt.hash(password, 10),
-        // });
-
-        // await user.save();
-
         const displayName = username.trim();
         const passwordHash = await bcrypt.hash(password, 10);
         const sql =
             "INSERT INTO `Users` (`username`, `displayName`, `passwordHash`, `refreshTokens`) VALUES (?, ?, ?, ?)";
-        const values = [username.trim(), displayName, passwordHash, '{}'];
+        const values = [username.trim(), displayName, passwordHash, "{}"];
         const [result, fields] = await db.promise().query(sql, values);
         const user = {
             id: result.insertId,
             username,
-            displayName
-        }
+            displayName,
+        };
         console.log("\nUser:", user);
 
         return NextResponse.json(

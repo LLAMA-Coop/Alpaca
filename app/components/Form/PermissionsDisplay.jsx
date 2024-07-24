@@ -29,7 +29,7 @@ export function PermissionsDisplay({ permissions, setter }) {
                                     if (!user)
                                         return <li key={user}>Unavailable</li>;
                                     return (
-                                        <li key={user._id + "_write"}>
+                                        <li key={user.id + "_write"}>
                                             <FontAwesomeIcon icon={faUser} />
                                             <span>
                                                 {user.displayName
@@ -77,7 +77,7 @@ export function PermissionsDisplay({ permissions, setter }) {
                                     if (!user)
                                         return <li key={user}>Unavailable</li>;
                                     return (
-                                        <li key={user._id + "_read"}>
+                                        <li key={user.id + "_read"}>
                                             <FontAwesomeIcon icon={faUser} />
                                             <span>
                                                 {user.displayName

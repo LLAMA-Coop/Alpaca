@@ -16,7 +16,7 @@ import { serializeOne } from "@/lib/db";
 //         );
 //         if (
 //             !user ||
-//             (user._id !== _id && user.roles.indexOf("admin") === -1)
+//             (user.id !== _id && user.roles.indexOf("admin") === -1)
 //         ) {
 //             return unauthorized;
 //         }

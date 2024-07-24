@@ -104,8 +104,8 @@ export async function POST(req) {
             courses: courses ?? [],
             tags,
             locationTypeDefault,
-            createdBy: user._id,
-            contributors: [user._id],
+            createdBy: user.id,
+            contributors: [user.id],
         });
 
         source.permissions = buildPermissions(permissions);
@@ -201,13 +201,10 @@ export async function PUT(req) {
         if (locationTypeDefault) {
             source.locationTypeDefault = locationTypeDefault;
         }
-        if (
-            permissions &&
-            source.createdBy.toString() === user._id.toString()
-        ) {
+        if (permissions && source.createdBy.toString() === user.id.toString()) {
             source.permissions = serializeOne(permissions);
         }
-        source.updateBy = user._id;
+        source.updateBy = user.id;
 
         const content = await source.save();
         return NextResponse.json({ content });

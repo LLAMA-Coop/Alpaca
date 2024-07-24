@@ -52,7 +52,7 @@ export async function POST(req, { params }) {
             user.courses.splice(indexCourse, 1);
         }
         const indexStudent = course.students.findIndex(
-            (x) => x._id.toString() === user._id.toString(),
+            (x) => x._id.toString() === user.id.toString(),
         );
         if (indexStudent !== -1) {
             course.students.splice(indexStudent, 1);

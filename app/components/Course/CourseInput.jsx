@@ -39,7 +39,7 @@ export function CourseInput({ course }) {
     const availableNotes = useStore((state) => state.notes);
     const availableQuizzes = useStore((state) => state.quizzes);
     const user = useStore((state) => state.user);
-    const canDelete = course && user && course.createdBy === user._id;
+    const canDelete = course && user && course.createdBy === user.id;
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
@@ -285,7 +285,7 @@ export function CourseInput({ course }) {
             <div className={styles.permissions}>
                 <PermissionsDisplay permissions={permissions} />
 
-                {(!course || !user || course.createdBy === user._id) && (
+                {(!course || !user || course.createdBy === user.id) && (
                     <InputPopup
                         type="permissions"
                         resource={permissions}

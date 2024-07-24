@@ -157,8 +157,8 @@ export async function POST(req) {
             sources: sources ?? [],
             courses: courses ?? [],
             tags: tags ?? [],
-            contributors: [user._id],
-            createdBy: user._id,
+            contributors: [user.id],
+            createdBy: user.id,
         });
 
         quiz.permissions = buildPermissions(permissions);
@@ -276,15 +276,15 @@ export async function PUT(req) {
             quiz.tags = tags;
         }
 
-        if (permissions && quiz.createdBy.toString() === user._id.toString()) {
+        if (permissions && quiz.createdBy.toString() === user.id.toString()) {
             quiz.permissions = serializeOne(permissions);
         }
         console.log(quiz.permissions);
 
-        if (!quiz.contributors.includes(user._id)) {
-            quiz.contributors.push(user._id);
+        if (!quiz.contributors.includes(user.id)) {
+            quiz.contributors.push(user.id);
         }
-        quiz.updatedBy = user._id;
+        quiz.updatedBy = user.id;
 
         const content = await quiz.save();
         return NextResponse.json({ content });

@@ -30,10 +30,10 @@ export async function POST(req) {
         let isUserSender = false;
         let update;
 
-        if (notification.recipient._id.toString() === user._id.toString()) {
+        if (notification.recipient._id.toString() === user.id.toString()) {
             isUserRecipient = true;
         }
-        if (notification.senderUser._id.toString() === user._id.toString()) {
+        if (notification.senderUser._id.toString() === user.id.toString()) {
             isUserSender = true;
         }
 
@@ -43,7 +43,7 @@ export async function POST(req) {
             }
             const sender = await User.findById(notification.senderUser);
             update = {};
-            if (sender.associates.indexOf(user._id) === -1) {
+            if (sender.associates.indexOf(user.id) === -1) {
                 sender.associates.push(user.id);
                 update.sender = await sender.save();
             }
@@ -68,8 +68,8 @@ export async function POST(req) {
                 );
             }
 
-            if (group.users.indexOf(user._id) === -1) {
-                group.users.push(user._id);
+            if (group.users.indexOf(user.id) === -1) {
+                group.users.push(user.id);
             }
             if (user.groups.indexOf(group._id) === -1) {
                 user.groups.push(group._id);

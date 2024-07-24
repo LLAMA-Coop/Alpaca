@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 // import { User } from "@mneme_app/database-models";
-import { User } from "@/app/api/models";
+// import { User } from "@/app/api/models";
 import { SignJWT } from "jose";
 import bcrypt from "bcrypt";
 import { server } from "@/lib/apiErrorResponses";
+import { db } from "@/lib/db/db";
 
 export async function POST(req) {
     const { username, password } = await req.json();
@@ -18,7 +19,14 @@ export async function POST(req) {
     }
 
     try {
-        const user = await User.findOne({ username });
+        // const user = await User.findOne({ username });
+        const [users, fields] = await db
+            .promise()
+            .query(
+                "SELECT `id`, `passwordHash` FROM Users WHERE username = ? LIMIT 1",
+                [username],
+            );
+        const user = users[0];
 
         if (!user) {
             return NextResponse.json(
@@ -47,25 +55,34 @@ export async function POST(req) {
                 .setProtectedHeader({ alg: "HS256" })
                 .setIssuedAt()
                 .setExpirationTime("1h")
-                .setIssuer("mnemefeast")
-                .setAudience("mnemefeast")
+                .setIssuer("Alpaca")
+                .setAudience("Alpaca")
                 .sign(accessSecret);
 
             const refreshToken = await new SignJWT({ id: user.id })
                 .setProtectedHeader({ alg: "HS256" })
                 .setIssuedAt()
                 .setExpirationTime("1d")
-                .setIssuer("mnemefeast")
-                .setAudience("mnemefeast")
+                .setIssuer("Alpaca")
+                .setAudience("Alpaca")
                 .sign(refreshSecret);
 
+            console.log("REFRESH", refreshToken);
+
             // Save refresh token to database
-            await User.updateOne(
-                { _id: user.id },
-                {
-                    $push: { refreshTokens: refreshToken },
-                },
-            );
+            // await User.updateOne(
+            //     { _id: user.id },
+            //     {
+            //         $push: { refreshTokens: refreshToken },
+            //     },
+            // );
+            const [resultsUpdate, fieldsUpdate] = await db
+                .promise()
+                .query("UPDATE Users SET refreshToken = ? WHERE id = ?", [
+                    refreshToken,
+                    user.id,
+                ]);
+            console.log("\nUPDATE TOKENS", resultsUpdate, fieldsUpdate);
 
             return NextResponse.json(
                 {

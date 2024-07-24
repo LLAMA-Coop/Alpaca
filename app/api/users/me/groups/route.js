@@ -15,7 +15,7 @@ export async function GET(req) {
             return unauthorized;
         }
 
-        const content = await User.findOne({ _id: user._id }).populate("groups")
+        const content = await User.findOne({ _id: user.id }).populate("groups")
             .groups;
         return NextResponse.json({
             content,

@@ -5,7 +5,25 @@ CREATE TABLE IF NOT EXISTS Users (
     description VARCHAR(512),
     avatar VARCHAR(128),
     passwordHash VARCHAR(60),
-    refreshTokens json NOT NULL
+    refreshToken VARCHAR(256)
+);
+
+CREATE TABLE IF NOT EXISTS Notifications (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    type ENUM("group invitation", "associate invitation", "message"),
+    recipientId BIGINT NOT NULL,
+    senderId BIGINT NOT NULL,
+    groupId BIGINT NOT NULL,
+    subject VARCHAR(32),
+    message VARCHAR(256),
+    responseAction ENUM("Accept","Decline", "Request", "Join", "Invite", "Ignore", "Send Message", "Reply"),
+    isRead BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS Associations (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user1id BIGINT NOT NULL,
+    user2id BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Groups (

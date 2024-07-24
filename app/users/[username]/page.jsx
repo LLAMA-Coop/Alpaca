@@ -8,13 +8,13 @@ export default async function UserPage({ params: { username } }) {
     const user = await useUser({ token: cookies().get("token")?.value });
 
     if (!user) return redirect("/login");
-    const usernameDecoded = decodeURIComponent(username)
+    const usernameDecoded = decodeURIComponent(username);
     if (user.username === usernameDecoded) return redirect("/me/dashboard");
 
     const profile = serializeOne(await useUser({ username: usernameDecoded }));
     const canView =
         (profile && profile.isPublic) ||
-        (profile && profile.associates.includes(user._id.toString()));
+        (profile && profile.associates.includes(user.id.toString()));
 
     return (
         <main className={styles.main}>

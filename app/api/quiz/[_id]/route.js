@@ -112,10 +112,10 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        if (quiz.createdBy.toString() !== user._id.toString()) {
+        if (quiz.createdBy.toString() !== user.id.toString()) {
             return NextResponse.json(
                 {
-                    message: `User ${user._id} is not authorized to delete quiz with id ${_id}. Only the creator ${quiz.createdBy} is permitted`,
+                    message: `User ${user.id} is not authorized to delete quiz with id ${_id}. Only the creator ${quiz.createdBy} is permitted`,
                 },
                 { status: 403 },
             );
@@ -123,9 +123,7 @@ export async function DELETE(req, { params }) {
 
         const deletion = await Quiz.deleteOne({ _id });
         if (deletion.deletedCount === 0) {
-            console.error(
-                `Unable to delete quiz with id ${_id}`,
-            );
+            console.error(`Unable to delete quiz with id ${_id}`);
             return NextResponse.json(
                 {
                     message: `Unable to delete quiz with id ${_id}`,

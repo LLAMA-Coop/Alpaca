@@ -60,7 +60,7 @@ export function QuizInput({ quiz }) {
     const availableNotes = useStore((state) => state.notes);
 
     const user = useStore((state) => state.user);
-    const canDelete = quiz && user && quiz.createdBy === user._id;
+    const canDelete = quiz && user && quiz.createdBy === user.id;
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
@@ -528,7 +528,7 @@ export function QuizInput({ quiz }) {
             <div className={styles.permissions}>
                 <PermissionsDisplay permissions={permissions} />
 
-                {(!quiz || (user && quiz.createdBy === user._id)) && (
+                {(!quiz || (user && quiz.createdBy === user.id)) && (
                     <InputPopup
                         type="permissions"
                         resource={permissions}

@@ -53,7 +53,7 @@ export function SourceInput({ source }) {
     const availableCourses = useStore((state) => state.courses);
     const availableTags = useStore((state) => state.tags);
     const addTags = useStore((state) => state.addTags);
-    const canDelete = source && source.createdBy === user._id;
+    const canDelete = source && source.createdBy === user.id;
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
@@ -403,7 +403,7 @@ export function SourceInput({ source }) {
                 />
             </div>
 
-            {(!source || source.createdBy === user._id) && (
+            {(!source || source.createdBy === user.id) && (
                 <PermissionsInput
                     permissions={source ? source.permissions : {}}
                     setter={setPermissions}

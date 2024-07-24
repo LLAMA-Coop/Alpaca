@@ -41,7 +41,7 @@ export function NoteInput({ note }) {
     const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
 
-    const canDelete = note && user && note.createdBy === user._id;
+    const canDelete = note && user && note.createdBy === user.id;
 
     useEffect(() => {
         if (!note) return;
@@ -50,9 +50,9 @@ export function NoteInput({ note }) {
         if (note.sources && note.sources.length > 0) {
             setSources(
                 note.sources.map((srcId, index) => {
-                    const source = availableSources ? availableSources.find(
-                        (x) => x._id === srcId,
-                    ) : undefined;
+                    const source = availableSources
+                        ? availableSources.find((x) => x._id === srcId)
+                        : undefined;
                     if (!source)
                         return {
                             _id: index,
@@ -177,115 +177,120 @@ export function NoteInput({ note }) {
     return (
         <div className={styles.form}>
             <div className={styles.column}>
-            <Input
-                onChange={(e) => {
-                    setTitle(e.target.value);
-                }}
-                value={title}
-                maxLength={MAX.title}
-                placeholder="Note Title"
-                label="TITLE"
-            />
-            </div>
-
-            <div className={styles.column}>
-            <div className={styles.sources}>
-                <Label required={true} error={sourceError} label="Sources" />
-
-                <ListAdd
-                    item="Add a source"
-                    listChoices={availableSources}
-                    listChosen={sources}
-                    listProperty={"title"}
-                    listSetter={setSources}
-                    createNew={<InputPopup type="source" />}
-                    type="datalist"
-                    messageIfNone="No sources added"
+                <Input
+                    onChange={(e) => {
+                        setTitle(e.target.value);
+                    }}
+                    value={title}
+                    maxLength={MAX.title}
+                    placeholder="Note Title"
+                    label="TITLE"
                 />
             </div>
-            </div>
 
             <div className={styles.column}>
-            <Input
-                type="textarea"
-                required={true}
-                onChange={(e) => {
-                    setText(e.target.value);
-                    setTextError("");
-                }}
-                value={text}
-                error={textError}
-                label={"Text"}
-                maxLength={MAX.noteText}
-                className={styles.textarea}
-            />
-            </div>
-            <div className={styles.column}>
-            <div className={styles.tags}>
-                <div>
-                    <Input
-                    type="datalist"
-                    label="Tags"
-                    choices={availableTags}
-                    value={newTag}
-                    maxLength={MAX.tag}
-                    description="A word or phrase that could be used to search for this note"
-                    autoComplete="off"
-                    onChange={(e) => setNewTag(e.target.value)}
-                    action="Add tag"
-                    onActionTrigger={handleAddTag}
-                    placeholder="Note Tags"
-                />
-                    <ul className="chipList">
-                        {tags.length === 0 && <ListItem item="No tags added" />}
+                <div className={styles.sources}>
+                    <Label
+                        required={true}
+                        error={sourceError}
+                        label="Sources"
+                    />
 
-                        {tags.map((tag) => (
-                            <ListItem
-                                key={tag}
-                                item={tag}
-                                action={() => {
-                                    setTags(tags.filter((t) => t !== tag));
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                    </ul>
+                    <ListAdd
+                        item="Add a source"
+                        listChoices={availableSources}
+                        listChosen={sources}
+                        listProperty={"title"}
+                        listSetter={setSources}
+                        createNew={<InputPopup type="source" />}
+                        type="datalist"
+                        messageIfNone="No sources added"
+                    />
                 </div>
             </div>
+
+            <div className={styles.column}>
+                <Input
+                    type="textarea"
+                    required={true}
+                    onChange={(e) => {
+                        setText(e.target.value);
+                        setTextError("");
+                    }}
+                    value={text}
+                    error={textError}
+                    label={"Text"}
+                    maxLength={MAX.noteText}
+                    className={styles.textarea}
+                />
+            </div>
+            <div className={styles.column}>
+                <div className={styles.tags}>
+                    <div>
+                        <Input
+                            type="datalist"
+                            label="Tags"
+                            choices={availableTags}
+                            value={newTag}
+                            maxLength={MAX.tag}
+                            description="A word or phrase that could be used to search for this note"
+                            autoComplete="off"
+                            onChange={(e) => setNewTag(e.target.value)}
+                            action="Add tag"
+                            onActionTrigger={handleAddTag}
+                            placeholder="Note Tags"
+                        />
+                        <ul className="chipList">
+                            {tags.length === 0 && (
+                                <ListItem item="No tags added" />
+                            )}
+
+                            {tags.map((tag) => (
+                                <ListItem
+                                    key={tag}
+                                    item={tag}
+                                    action={() => {
+                                        setTags(tags.filter((t) => t !== tag));
+                                    }}
+                                    actionType={"delete"}
+                                />
+                            ))}
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <div className={styles.column}>
-            <div>
-            <div className={styles.courses}>
-                
-                <Label required={false} label="Courses" />
+                <div>
+                    <div className={styles.courses}>
+                        <Label required={false} label="Courses" />
 
-                <ListAdd
-                    item="Add to a course"
-                    listChoices={availableCourses}
-                    listChosen={courses}
-                    listProperty={"name"}
-                    listSetter={setCourses}
-                    type="datalist"
-                    messageIfNone="Not added to any course"
-                />
-            </div>
-            </div>
+                        <ListAdd
+                            item="Add to a course"
+                            listChoices={availableCourses}
+                            listChosen={courses}
+                            listProperty={"name"}
+                            listSetter={setCourses}
+                            type="datalist"
+                            messageIfNone="Not added to any course"
+                        />
+                    </div>
+                </div>
 
-            <div className={styles.permissions}>
-                <PermissionsDisplay
-                    permissions={permissions}
-                    setter={setPermissions}
-                />
-
-                {(!note || (user && note.createdBy === user._id)) && (
-                    <InputPopup
-                        type="permissions"
-                        resource={permissions}
+                <div className={styles.permissions}>
+                    <PermissionsDisplay
+                        permissions={permissions}
                         setter={setPermissions}
                     />
-                )}
-            </div>
+
+                    {(!note || (user && note.createdBy === user.id)) && (
+                        <InputPopup
+                            type="permissions"
+                            resource={permissions}
+                            setter={setPermissions}
+                        />
+                    )}
+                </div>
             </div>
 
             <button onClick={handleSubmit} className="button submit">

@@ -78,13 +78,13 @@ export async function POST(req) {
         }
 
         const note = new Note({
-            createdBy: user._id,
+            createdBy: user.id,
             title: title.trim(),
             text: text.trim(),
             sources: [...sources],
             courses: courses ?? [],
             tags: [...tags],
-            contributors: [user._id],
+            contributors: [user.id],
         });
 
         note.permissions = buildPermissions(permissions);
@@ -158,14 +158,14 @@ export async function PUT(req) {
             note.tags = tags;
         }
 
-        if (permissions && note.createdBy.toString() === user._id.toString()) {
+        if (permissions && note.createdBy.toString() === user.id.toString()) {
             note.permissions = serializeOne(permissions);
         }
 
-        if (!note.contributors.includes(user._id)) {
-            note.contributors.push(user._id);
+        if (!note.contributors.includes(user.id)) {
+            note.contributors.push(user.id);
         }
-        note.updateBy = user._id;
+        note.updateBy = user.id;
 
         const content = await note.save();
         return NextResponse.json({ content });

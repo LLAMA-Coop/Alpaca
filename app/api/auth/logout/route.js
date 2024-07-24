@@ -39,7 +39,7 @@ export async function POST(req) {
 
         await User.updateOne(
             {
-                _id: user._id,
+                _id: user.id,
             },
             {
                 $pull: {

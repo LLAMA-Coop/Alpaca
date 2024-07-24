@@ -82,8 +82,8 @@ export async function POST(req) {
             description,
             parentCourses,
             prerequisites,
-            createdBy: user._id,
-            contributors: [user._id],
+            createdBy: user.id,
+            contributors: [user.id],
         });
 
         course.permissions = buildPermissions(permissions);
@@ -257,13 +257,10 @@ export async function PUT(req) {
             });
         }
 
-        if (
-            permissions &&
-            course.createdBy.toString() === user._id.toString()
-        ) {
+        if (permissions && course.createdBy.toString() === user.id.toString()) {
             course.permissions = serializeOne(permissions);
         }
-        course.updatedBy = user._id;
+        course.updatedBy = user.id;
 
         const content = await course.save();
 

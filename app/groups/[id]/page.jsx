@@ -65,10 +65,8 @@ export default async function GroupPage({ params }) {
                                 <li key={user.id}>
                                     <UserCard
                                         user={user}
-                                        isOwner={user._id === group.owner}
-                                        isAdmin={group.admins.includes(
-                                            user._id,
-                                        )}
+                                        isOwner={user.id === group.owner}
+                                        isAdmin={group.admins.includes(user.id)}
                                     />
                                 </li>
                             ))}

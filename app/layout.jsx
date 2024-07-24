@@ -41,35 +41,43 @@ export default async function RootLayout({ children }) {
     // }
 
     const user = await useUser({ token: cookies().get("token")?.value });
-    user &&
-        (await user.populate(
-            "associates",
-            "id username avatar displayName description",
-        ));
-    user && (await user.populate("groups"));
-    user && (await user.populate("courses.course"));
+    console.log(user);
+    // return <html><body><h1>{user.username}</h1></body></html>;
+    // user &&
+    //     (await user.populate(
+    //         "associates",
+    //         "id username avatar displayName description",
+    //     ));
+    // user && (await user.populate("groups"));
+    // user && (await user.populate("courses.course"));
 
-    const notifications = user
-        ? serialize(await Notification.find({ recipient: user.id }))
-        : [];
+    // const notifications = user
+    //     ? serialize(await Notification.find({ recipient: user.id }))
+    //     : [];
 
     const query = queryReadableResources(user);
 
-    const sources = user
-        ? serialize(await Source.find(query))
-        : [];
-    const notes = user
-        ? serialize(await Note.find(query))
-        : [];
-    const quizzes = user
-        ? serialize(await Quiz.find(query))
-        : [];
-    const courses = user
-        ? [
-              ...serialize(await Course.find({ createdBy: user.id })),
-              ...serialize(user.courses.map((course) => course.course)),
-          ]
-        : [];
+    // const sources = user
+    //     ? serialize(await Source.find(query))
+    //     : [];
+    // const notes = user
+    //     ? serialize(await Note.find(query))
+    //     : [];
+    // const quizzes = user
+    //     ? serialize(await Quiz.find(query))
+    //     : [];
+    // const courses = user
+    //     ? [
+    //           ...serialize(await Course.find({ createdBy: user.id })),
+    //           ...serialize(user.courses.map((course) => course.course)),
+    //       ]
+    //     : [];
+
+    const sources = [];
+    const notes = [];
+    const quizzes = [];
+    const courses = [];
+    const notifications = [];
 
     return (
         <html lang="en">
@@ -81,7 +89,7 @@ export default async function RootLayout({ children }) {
                     quizzes={quizzes}
                     courses={courses}
                     groups={serialize(user.groups)}
-                    associates={serialize(user.associates)}
+                    // associates={serialize(user.associates)}
                     notifications={notifications}
                     // webSocketURL={process.env.WS_URL}
                 />
