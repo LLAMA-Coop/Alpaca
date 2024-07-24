@@ -41,7 +41,7 @@ export default async function RootLayout({ children }) {
     // }
 
     const user = await useUser({ token: cookies().get("token")?.value });
-    console.log(user);
+    console.log("USER", user);
     // return <html><body><h1>{user.username}</h1></body></html>;
     // user &&
     //     (await user.populate(
