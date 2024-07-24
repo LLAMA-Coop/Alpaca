@@ -77,7 +77,7 @@ export default async function RootLayout({ children }) {
     const notes = [];
     const quizzes = [];
     const courses = [];
-    const notifications = [];
+    const notifications = user.notifications;
 
     return (
         <html lang="en">
