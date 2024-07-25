@@ -3,9 +3,11 @@ import { ListItem, Card } from "@client";
 import { Source, User } from "@models";
 
 export async function SourceDisplay({ source }) {
-    if(!source) return;
-    const user = await User.findById(source.createdBy);
-    const dbSource = await Source.findById(source._id).populate("courses");
+    if (!source) return;
+    // const user = await User.findById(source.createdBy);
+    const user = {};
+    // const dbSource = await Source.findById(source.id).populate("courses");
+    const dbSource = {};
 
     return (
         <Card
@@ -58,7 +60,7 @@ export async function SourceDisplay({ source }) {
                     <ul>
                         {dbSource.courses.map((course) => {
                             return (
-                                <ListItem key={course._id} item={course.name} />
+                                <ListItem key={course.id} item={course.name} />
                             );
                         })}
                     </ul>

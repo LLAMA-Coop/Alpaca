@@ -139,6 +139,6 @@ CREATE TABLE IF NOT EXISTS ResourcePermissions (
     resourceType ENUM("source", "note", "quiz", "course", "user"),
     permitAll BOOLEAN DEFAULT FALSE,
     permissionType ENUM("read", "write"),
-    permittedId BIGINT NOT NULL,
+    permittedId BIGINT,
     permittedType ENUM ("user", "group")
 );

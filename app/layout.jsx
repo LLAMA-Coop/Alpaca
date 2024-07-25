@@ -41,7 +41,6 @@ export default async function RootLayout({ children }) {
     // }
 
     const user = await useUser({ token: cookies().get("token")?.value });
-    console.log("USER", user);
     // return <html><body><h1>{user.username}</h1></body></html>;
     // user &&
     //     (await user.populate(
@@ -55,7 +54,7 @@ export default async function RootLayout({ children }) {
     //     ? serialize(await Notification.find({ recipient: user.id }))
     //     : [];
 
-    const query = queryReadableResources(user);
+    // const query = queryReadableResources(user);
 
     // const sources = user
     //     ? serialize(await Source.find(query))
@@ -77,7 +76,7 @@ export default async function RootLayout({ children }) {
     const notes = [];
     const quizzes = [];
     const courses = [];
-    const notifications = user.notifications;
+    const notifications = user ? user.notifications : [];
 
     return (
         <html lang="en">

@@ -7,11 +7,12 @@ import { SourceDisplay } from "@server";
 import { cookies } from "next/headers";
 import { Source, User } from "@models";
 import Link from "next/link";
+import { getPermittedSources } from "@/lib/db/helpers";
 
 export default async function SourcesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    User.populate(user, ["groups", "associates"]);
-    const query = queryReadableResources(user);
+    // User.populate(user, ["groups", "associates"]);
+    // const query = queryReadableResources(user);
 
     const page = Number(searchParams["page"] ?? 1);
     const amount = Number(searchParams["amount"] ?? 10);
@@ -23,18 +24,21 @@ export default async function SourcesPage({ searchParams }) {
         );
     }
 
-    const sources = serialize(
-        await Source.find(query)
-            .limit(amount)
-            .skip((page - 1) * amount),
-    );
+    // const sources = serialize(
+    //     await Source.find(query)
+    //         .limit(amount)
+    //         .skip((page - 1) * amount),
+    // );
+    const sources = await getPermittedSources(user.id)
+    console.log("SOURCES", sources)
 
     const hasMore =
-        (
-            await Source.find(query)
-                .limit(1)
-                .skip((page - 1) * amount + amount)
-        )?.length > 0;
+        false;
+        // (
+        //     await Source.find(query)
+        //         .limit(1)
+        //         .skip((page - 1) * amount + amount)
+        // )?.length > 0;
 
     if (page > 1 && sources.length === 0) {
         redirect("/sources?page=1&amount=" + amount);
