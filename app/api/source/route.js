@@ -9,6 +9,7 @@ import { buildPermissions } from "@/lib/permissions";
 import { serializeOne } from "@/lib/db";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { MAX } from "@/lib/constants";
+import { getPermittedSources } from "@/lib/db/helpers";
 
 export async function GET(req) {
     try {
@@ -17,7 +18,8 @@ export async function GET(req) {
             return unauthorized;
         }
 
-        const content = await Source.find(queryReadableResources(user));
+        // const content = await Source.find(queryReadableResources(user));
+        const content = await getPermittedSources(user.id);
         return NextResponse.json({ content }, { status: 200 });
     } catch (error) {
         console.error(`[Source] GET error: ${error}`);
