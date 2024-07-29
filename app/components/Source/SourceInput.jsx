@@ -98,7 +98,7 @@ export function SourceInput({ source }) {
         e.preventDefault();
         if (!newTag || tags.includes(newTag)) return;
         setTags([...tags, newTag]);
-        if (!availableTags.includes(newTag)) {
+        if (!availableTags || !availableTags.includes(newTag)) {
             addTags(newTag);
         }
         setNewTag("");

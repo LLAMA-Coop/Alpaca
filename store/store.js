@@ -19,6 +19,7 @@ export const useStore = create((set) => ({
     groups: [],
     associates: [],
     notifications: [],
+    tags: [],
 
     setUser: (user) => {
         return set(() => ({
@@ -116,6 +117,12 @@ export const useStore = create((set) => ({
     addNotification: (notification) => {
         return set((state) => ({
             notifications: [...state.notifications, notification],
+        }));
+    },
+
+    addTags: (tag) => {
+        return set((state) => ({
+            tags: [...state.tags, tag],
         }));
     },
 
