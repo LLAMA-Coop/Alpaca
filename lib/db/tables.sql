@@ -62,7 +62,6 @@ CREATE TABLE IF NOT EXISTS Notes (
     title VARCHAR(128) NOT NULL,
     text VARCHAR(8192) NOT NULL,
     tags json NOT NULL,
-    sourceId BIGINT NOT NULL,
     createdBy BIGINT NOT NULL
 );
 

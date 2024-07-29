@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default async function Home({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    User.populate(user, ["groups", "associates"]);
+    // User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 
     const quizSample = serialize(

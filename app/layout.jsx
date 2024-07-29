@@ -8,6 +8,7 @@ import { useUser } from "@/lib/auth";
 import connectDB from "./api/db";
 import "./globals.css";
 import { queryReadableResources } from "@/lib/auth";
+import { getPermittedResources } from "@/lib/db/helpers";
 
 const connection = await connectDB();
 
@@ -72,9 +73,11 @@ export default async function RootLayout({ children }) {
     //       ]
     //     : [];
 
-    const sources = [];
-    const notes = [];
-    const quizzes = [];
+    const permittedResources = await getPermittedResources(user.id);
+
+    const sources = permittedResources.sources;
+    const notes = permittedResources.notes;
+    const quizzes = permittedResources.quizzes;
     const courses = [];
     const notifications = user ? user.notifications : [];
 
