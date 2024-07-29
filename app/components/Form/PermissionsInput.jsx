@@ -26,7 +26,7 @@ export function PermissionsInput({ permissions, setter }) {
         if (permissions.usersWrite) {
             setUsersWrite(
                 permissions.usersWrite.map((userId) =>
-                    user?.associates.find((x) => x._id === userId),
+                    user?.associates.find((x) => x.id === userId),
                 ),
             );
         }
@@ -34,7 +34,7 @@ export function PermissionsInput({ permissions, setter }) {
         if (permissions.usersRead) {
             setUsersRead(
                 permissions.usersRead.map((userId) =>
-                    user?.associates.find((x) => x._id === userId),
+                    user?.associates.find((x) => x.id === userId),
                 ),
             );
         }
@@ -42,14 +42,14 @@ export function PermissionsInput({ permissions, setter }) {
         if (permissions.groupsWrite) {
             setGroupsWrite(
                 permissions.groupsWrite.map((groupId) =>
-                    availableGroups.find((x) => x._id === groupId),
+                    availableGroups.find((x) => x.id === groupId),
                 ),
             );
         }
         if (permissions.groupsRead) {
             setGroupsRead(
                 permissions.groupsRead.map((groupId) =>
-                    availableGroups.find((x) => x._id === groupId),
+                    availableGroups.find((x) => x.id === groupId),
                 ),
             );
         }

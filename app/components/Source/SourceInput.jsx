@@ -158,8 +158,8 @@ export function SourceInput({ source }) {
             locationTypeDefault,
         };
         sourcePayload.permissions = buildPermissions(permissions);
-        if (source && source._id) {
-            sourcePayload._id = source._id;
+        if (source && source.id) {
+            sourcePayload.id = source.id;
         }
 
         setLoading(true);
@@ -167,7 +167,7 @@ export function SourceInput({ source }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/source`,
             {
-                method: source && source._id ? "PUT" : "POST",
+                method: source && source.id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },

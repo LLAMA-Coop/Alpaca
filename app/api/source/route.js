@@ -9,7 +9,7 @@ import { buildPermissions } from "@/lib/permissions";
 import { serializeOne } from "@/lib/db";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { MAX } from "@/lib/constants";
-import { getPermittedSources } from "@/lib/db/helpers";
+import { getPermittedSources, insertPermissions } from "@/lib/db/helpers";
 import { db } from "@/lib/db/db.js";
 
 export async function GET(req) {
@@ -123,105 +123,14 @@ export async function POST(req) {
             .promise()
             .query(creditsQuery, [creditInsertValues]);
 
-        const permsQuery = `INSERT INTO \`ResourcePermissions\` (resourceId, resourceType, permitAll, permissionType, permittedId, permittedType) VALUES ?`;
-        const permInsertValues = [];
-        if (permissions && permissions.allWrite) {
-            permInsertValues.push([
-                sourceId,
-                "source",
-                true,
-                "write",
-                user.id,
-                "user",
-            ]);
-        }
+        const permsInsert = await insertPermissions(
+            permissions,
+            sourceId,
+            "source",
+            user.id,
+        );
 
-        if (permissions && permissions.allRead) {
-            permInsertValues.push([
-                sourceId,
-                "source",
-                true,
-                "read",
-                user.id,
-                "user",
-            ]);
-        }
-
-        if (
-            permissions &&
-            !permissions.allWrite &&
-            permissions.usersWrite.length > 0
-        ) {
-            permInsertValues.push(
-                ...permissions.usersWrite.map((user) => [
-                    sourceId,
-                    "source",
-                    false,
-                    "write",
-                    user,
-                    "user",
-                ]),
-            );
-        }
-
-        if (
-            permissions &&
-            !permissions.allWrite &&
-            !permissions.allRead &&
-            permissions.usersRead.length > 0
-        ) {
-            permInsertValues.push(
-                ...permissions.usersWrite.map((user) => [
-                    sourceId,
-                    "source",
-                    false,
-                    "read",
-                    user,
-                    "user",
-                ]),
-            );
-        }
-
-        if (
-            permissions &&
-            !permissions.allWrite &&
-            permissions.groupsWrite.length > 0
-        ) {
-            permInsertValues.push(
-                ...permissions.usersWrite.map((group) => [
-                    sourceId,
-                    "source",
-                    false,
-                    "write",
-                    group,
-                    "group",
-                ]),
-            );
-        }
-
-        if (
-            permissions &&
-            !permissions.allWrite &&
-            !permissions.allRead &&
-            permissions.usersRead.length > 0
-        ) {
-            permInsertValues.push(
-                ...permissions.usersWrite.map((group) => [
-                    sourceId,
-                    "source",
-                    false,
-                    "read",
-                    group,
-                    "group",
-                ]),
-            );
-        }
-
-        const [permsInsert, permsFields] = await db
-            .promise()
-            .query(permsQuery, [permInsertValues]);
-
-        console.log("PERMISSIONS INSERTS", permsInsert);
+        console.log("PERMISSIONS INSERTS", permissions, permsInsert);
 
         // Next up:
         //  X SourceCredits (for authors)

@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS CourseHierarchy (
 CREATE TABLE IF NOT EXISTS ResourcePermissions (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     resourceId BIGINT NOT NULL,
-    resourceType ENUM("source", "note", "quiz", "course", "user"),
+    resourceType ENUM("source", "note", "quiz", "course", "user", "group"),
     permitAll BOOLEAN DEFAULT FALSE,
     permissionType ENUM("read", "write"),
     permittedId BIGINT,
