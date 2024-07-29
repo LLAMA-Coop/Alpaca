@@ -7,7 +7,7 @@ import { SourceDisplay } from "@server";
 import { cookies } from "next/headers";
 import { Source, User } from "@models";
 import Link from "next/link";
-import { getPermittedSources } from "@/lib/db/helpers";
+import { getPermittedSources, getPermittedResources } from "@/lib/db/helpers";
 
 export default async function SourcesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
@@ -29,8 +29,8 @@ export default async function SourcesPage({ searchParams }) {
     //         .limit(amount)
     //         .skip((page - 1) * amount),
     // );
-    const sources = await getPermittedSources(user.id)
-    console.log("SOURCES", sources)
+    const sources = await getPermittedSources(user.id) || [];
+    console.log("SOURCES", sources, user)
 
     const hasMore =
         false;

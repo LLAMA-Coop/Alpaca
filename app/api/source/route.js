@@ -10,6 +10,7 @@ import { serializeOne } from "@/lib/db";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { MAX } from "@/lib/constants";
 import { getPermittedSources } from "@/lib/db/helpers";
+import { db } from "@/lib/db/db.js";
 
 export async function GET(req) {
     try {
@@ -28,6 +29,11 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+    const baseQuery = `INSERT INTO \`Sources\`
+        (\`title\`, \`medium\`, \`url\`, \`tags\`, \`createdBy\`, \`publishedUpdated\`) VALUES
+        (?, ?, ?, ?, ?, ?)
+    `;
+
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
@@ -37,7 +43,7 @@ export async function POST(req) {
             medium,
             url,
             publishDate,
-            lastAccessed,
+            lastAccessed, // Do we want publishedUpdated to be the one date?
             authors,
             courses,
             tags,
@@ -95,24 +101,43 @@ export async function POST(req) {
                 { status: 400 },
             );
         }
+        const fieldsArray = [
+            title,
+            medium,
+            url,
+            JSON.stringify(tags),
+            user.id,
+            publishDate.split("T")[0],
+        ];
 
-        const source = new Source({
-            title: title.trim(),
-            medium: medium,
-            url: url,
-            publishedAt: publishDate,
-            lastAccessed: lastAccessed,
-            authors: authors,
-            courses: courses ?? [],
-            tags,
-            locationTypeDefault,
-            createdBy: user.id,
-            contributors: [user.id],
-        });
+        const [sourceInsert, fields] = await db
+            .promise()
+            .query(baseQuery, fieldsArray);
 
-        source.permissions = buildPermissions(permissions);
+        // Next up:
+        //  SourceCredits (for authors)
+        //  CourseResources (table not created)
+        //  Location Type Default (Page, ID, Header, Timestamp)
+        //  ResourcePermissions
 
-        const content = await source.save();
+        // const source = new Source({
+        //     title: title.trim(),
+        //     medium: medium,
+        //     url: url,
+        //     publishedAt: publishDate,
+        //     lastAccessed: lastAccessed,
+        //     authors: authors,
+        //     courses: courses ?? [],
+        //     tags,
+        //     locationTypeDefault,
+        //     createdBy: user.id,
+        //     contributors: [user.id],
+        // });
+
+        // source.permissions = buildPermissions(permissions);
+
+        // const content = await source.save();
+        const content = sourceInsert;
 
         return NextResponse.json(
             {
