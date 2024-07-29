@@ -30,7 +30,6 @@ export default async function SourcesPage({ searchParams }) {
     //         .skip((page - 1) * amount),
     // );
     const sources = await getPermittedSources(user.id) || [];
-    console.log("SOURCES", sources, user)
 
     const hasMore =
         false;

@@ -101,6 +101,7 @@ export async function POST(req) {
                 { status: 400 },
             );
         }
+
         const fieldsArray = [
             title,
             medium,
@@ -114,11 +115,120 @@ export async function POST(req) {
             .promise()
             .query(baseQuery, fieldsArray);
 
+        const sourceId = sourceInsert.insertId;
+        const creditInsertValues = authors.map((a) => [sourceId, a]);
+        const creditsQuery = `INSERT INTO \`SourceCredits\` (sourceId, name) VALUES ?`;
+
+        const [creditsInsert, fieldsCredits] = await db
+            .promise()
+            .query(creditsQuery, [creditInsertValues]);
+
+        const permsQuery = `INSERT INTO \`ResourcePermissions\` (resourceId, resourceType, permitAll, permissionType, permittedId, permittedType) VALUES ?`;
+        const permInsertValues = [];
+        if (permissions && permissions.allWrite) {
+            permInsertValues.push([
+                sourceId,
+                "source",
+                true,
+                "write",
+                user.id,
+                "user",
+            ]);
+        }
+
+        if (permissions && permissions.allRead) {
+            permInsertValues.push([
+                sourceId,
+                "source",
+                true,
+                "read",
+                user.id,
+                "user",
+            ]);
+        }
+
+        if (
+            permissions &&
+            !permissions.allWrite &&
+            permissions.usersWrite.length > 0
+        ) {
+            permInsertValues.push(
+                ...permissions.usersWrite.map((user) => [
+                    sourceId,
+                    "source",
+                    false,
+                    "write",
+                    user,
+                    "user",
+                ]),
+            );
+        }
+
+        if (
+            permissions &&
+            !permissions.allWrite &&
+            !permissions.allRead &&
+            permissions.usersRead.length > 0
+        ) {
+            permInsertValues.push(
+                ...permissions.usersWrite.map((user) => [
+                    sourceId,
+                    "source",
+                    false,
+                    "read",
+                    user,
+                    "user",
+                ]),
+            );
+        }
+
+        if (
+            permissions &&
+            !permissions.allWrite &&
+            permissions.groupsWrite.length > 0
+        ) {
+            permInsertValues.push(
+                ...permissions.usersWrite.map((group) => [
+                    sourceId,
+                    "source",
+                    false,
+                    "write",
+                    group,
+                    "group",
+                ]),
+            );
+        }
+
+        if (
+            permissions &&
+            !permissions.allWrite &&
+            !permissions.allRead &&
+            permissions.usersRead.length > 0
+        ) {
+            permInsertValues.push(
+                ...permissions.usersWrite.map((group) => [
+                    sourceId,
+                    "source",
+                    false,
+                    "read",
+                    group,
+                    "group",
+                ]),
+            );
+        }
+
+        const [permsInsert, permsFields] = await db
+            .promise()
+            .query(permsQuery, [permInsertValues]);
+
+        console.log("PERMISSIONS INSERTS", permsInsert);
+
         // Next up:
-        //  SourceCredits (for authors)
+        //  X SourceCredits (for authors)
+        //      does not have different credit types yet
         //  CourseResources (table not created)
         //  Location Type Default (Page, ID, Header, Timestamp)
-        //  ResourcePermissions
+        //  X ResourcePermissions
 
         // const source = new Source({
         //     title: title.trim(),

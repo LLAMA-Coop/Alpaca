@@ -26,8 +26,7 @@ import fs from "fs";
 
         queries.forEach(async (q) => {
             if (q.trim() !== "") {
-                const result = await query(q);
-                console.log("\nQuery:\n", q, "\nResult:\n", result);
+                await query(q);
             }
         });
     } catch (error) {
