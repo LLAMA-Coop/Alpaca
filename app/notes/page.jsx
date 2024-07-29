@@ -7,10 +7,12 @@ import { cookies } from "next/headers";
 import { NoteDisplay } from "@server";
 import { Note, User } from "@models";
 import Link from "next/link";
+import { db } from "@/lib/db/db.js";
+import { getPermittedNotes } from "@/lib/db/helpers";
 
 export default async function NotesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    User.populate(user, ["groups", "associates"]);
+    // User.populate(user, ["groups", "associates"]);
     const query = queryReadableResources(user);
 
     const page = Number(searchParams["page"] ?? 1);
@@ -23,18 +25,20 @@ export default async function NotesPage({ searchParams }) {
         );
     }
 
-    const notes = serialize(
-        await Note.find(query)
-            .limit(amount)
-            .skip((page - 1) * amount),
-    );
+    // const notes = serialize(
+    //     await Note.find(query)
+    //         .limit(amount)
+    //         .skip((page - 1) * amount),
+    // );
+    const notes = await getPermittedNotes(user.id);
+    console.log("NOTES", notes)
 
-    const hasMore =
-        (
-            await Note.find(query)
-                .limit(1)
-                .skip((page - 1) * amount + amount)
-        )?.length > 0;
+    const hasMore = false;
+    // (
+    //     await Note.find(query)
+    //         .limit(1)
+    //         .skip((page - 1) * amount + amount)
+    // )?.length > 0;
 
     if (page > 1 && notes.length === 0) {
         return redirect(`/notes?page=1&amount=${amount}`);
@@ -64,7 +68,7 @@ export default async function NotesPage({ searchParams }) {
                         {notes.map((note) => (
                             <li key={note.id}>
                                 <NoteDisplay note={note} />
-                                
+
                                 {user && canEdit(note, user) && (
                                     <InputPopup
                                         type="note"

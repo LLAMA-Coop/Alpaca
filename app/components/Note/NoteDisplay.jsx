@@ -3,10 +3,10 @@ import { Card, ListItem } from "@client";
 import { Note, User } from "@models";
 
 export async function NoteDisplay({ note }) {
-    const user = await User.findById(note.createdBy);
-    const dbNote = await Note.findById(note._id)
-        .populate("sources")
-        .populate("courses");
+    // const user = await User.findById(note.createdBy);
+    // const dbNote = await Note.findById(note._id)
+    //     .populate("sources")
+    //     .populate("courses");
 
     return (
         <Card title={note.title} description={note.text}>
@@ -22,7 +22,7 @@ export async function NoteDisplay({ note }) {
                 </section>
             )}
 
-            {dbNote?.sources?.length > 0 && (
+            {/* {dbNote?.sources?.length > 0 && (
                 <section className={styles.section}>
                     <h5>Sources linked</h5>
 
@@ -50,7 +50,7 @@ export async function NoteDisplay({ note }) {
                 </section>
             )}
 
-            <p>Created by: {user?.username ?? "Unknown"}</p>
+            <p>Created by: {user?.username ?? "Unknown"}</p> */}
         </Card>
     );
 }
