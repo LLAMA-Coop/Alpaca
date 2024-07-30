@@ -6,10 +6,13 @@ import Course from "../api/models/Course";
 import { CourseDisplay } from "../components/Course/CourseDisplay";
 import { InputPopup } from "../components/client";
 import { serializeOne } from "@/lib/db";
+import { getPermittedCourses } from "@/lib/db/helpers";
 
 export default async function CoursesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    const courses = await Course.find();
+    // const courses = await Course.find();
+    const courses = await getPermittedCourses(user.id) || [];
+    console.log("COURSES", courses);
 
     return (
         <main className={styles.main}>

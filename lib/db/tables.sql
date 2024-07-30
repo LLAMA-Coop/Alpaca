@@ -129,7 +129,8 @@ CREATE TABLE IF NOT EXISTS CourseHierarchy (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     inferiorCourse BIGINT NOT NULL,
     superiorCourse BIGINT NOT NULL,
-    relationship ENUM("prerequisite", "encompasses")
+    relationship ENUM("prerequisite", "encompasses"),
+    averageLevelRequired INT DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS ResourcePermissions (

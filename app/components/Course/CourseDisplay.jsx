@@ -2,12 +2,16 @@ import Course from "@/app/api/models/Course";
 import { User } from "@/app/api/models";
 import { Card, ListItem } from "../client";
 import styles from "../Note/NoteDisplay.module.css";
+import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 export async function CourseDisplay({ course, canRead }) {
-    const user = await User.findById(course.createdBy);
-    const dbCourse = await Course.findById(course._id)
-        .populate("parentCourses")
-        .populate("prerequisites.course");
+    // const user = await User.findById(course.createdBy);
+    // const dbCourse = await Course.findById(course._id)
+    //     .populate("parentCourses")
+    //     .populate("prerequisites.course");
+    const user = await useUser({ token: cookies().get("token")?.value });
+    const dbCourse = course;
 
     return (
         <Card
@@ -30,8 +34,8 @@ export async function CourseDisplay({ course, canRead }) {
 
                 {dbCourse.parentCourses.length > 0 ? (
                     <ol className="chipList">
-                        {dbCourse.parentCourses.map((cat) => (
-                            <ListItem key={cat._id} item={cat.name} />
+                        {dbCourse.parentCourses.map((crs) => (
+                            <ListItem key={crs.id} item={crs.name} />
                         ))}
                     </ol>
                 ) : (
@@ -52,7 +56,7 @@ export async function CourseDisplay({ course, canRead }) {
 
                             const display = `${course.name} - Average Level Required ${p.averageLevelRequired}`;
 
-                            return <ListItem key={course._id} item={display} />;
+                            return <ListItem key={course.id} item={display} />;
                         })}
                     </ol>
                 ) : (
