@@ -22,36 +22,41 @@ export function PermissionsInput({ permissions, setter }) {
 
     useEffect(() => {
         if (!permissions) return;
+        console.log(permissions);
 
         if (permissions.usersWrite) {
-            setUsersWrite(
-                permissions.usersWrite.map((userId) =>
-                    user?.associates.find((x) => x.id === userId),
-                ),
-            );
+            // setUsersWrite(
+            //     permissions.usersWrite.map((userId) =>
+            //         user?.associates.find((x) => x.id === userId),
+            //     ),
+            // );
+            setUsersWrite(permissions.usersWrite);
         }
 
         if (permissions.usersRead) {
-            setUsersRead(
-                permissions.usersRead.map((userId) =>
-                    user?.associates.find((x) => x.id === userId),
-                ),
-            );
+            // setUsersRead(
+            //     permissions.usersRead.map((userId) =>
+            //         user?.associates.find((x) => x.id === userId),
+            //     ),
+            // );
+            setUsersRead(permissions.usersRead);
         }
 
         if (permissions.groupsWrite) {
-            setGroupsWrite(
-                permissions.groupsWrite.map((groupId) =>
-                    availableGroups.find((x) => x.id === groupId),
-                ),
-            );
+            // setGroupsWrite(
+            //     permissions.groupsWrite.map((groupId) =>
+            //         availableGroups.find((x) => x.id === groupId),
+            //     ),
+            // );
+            setGroupsWrite(permissions.groupsWrite);
         }
         if (permissions.groupsRead) {
-            setGroupsRead(
-                permissions.groupsRead.map((groupId) =>
-                    availableGroups.find((x) => x.id === groupId),
-                ),
-            );
+            // setGroupsRead(
+            //     permissions.groupsRead.map((groupId) =>
+            //         availableGroups.find((x) => x.id === groupId),
+            //     ),
+            // );
+            setGroupsRead(permissions.groupsRead);
         }
     }, []);
 
@@ -80,6 +85,7 @@ export function PermissionsInput({ permissions, setter }) {
             localPerm.groupsRead = [...groupsRead];
         }
 
+        console.log(localPerm);
         setter(localPerm);
     }, [allWrite, allRead, usersWrite, usersRead, groupsWrite, groupsRead]);
 

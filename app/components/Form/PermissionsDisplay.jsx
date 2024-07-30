@@ -20,41 +20,38 @@ export function PermissionsDisplay({ permissions, setter }) {
                     (!permissions.groupsWrite ||
                         permissions.groupsWrite.length === 0) && <p>None</p>}
 
-                {permissions &&
-                    !permissions.allWrite &&
-                    permissions.usersWrite && (
-                        <ul className="chipList">
-                            {permissions.usersWrite &&
-                                permissions.usersWrite.map((user) => {
-                                    if (!user)
-                                        return <li key={user}>Unavailable</li>;
-                                    return (
-                                        <li key={user.id + "_write"}>
-                                            <FontAwesomeIcon icon={faUser} />
-                                            <span>
-                                                {user.displayName
-                                                    ? `${user.displayName} (${user.username})`
-                                                    : user.username}
-                                            </span>
-                                        </li>
-                                    );
-                                })}
-                            {permissions &&
-                                permissions.groupsWrite &&
-                                permissions.groupsWrite.map((group) => {
-                                    if (!group)
-                                        return <li key={group}>Unavailable</li>;
-                                    return (
-                                        <li key={group.id + "_write"}>
-                                            <FontAwesomeIcon
-                                                icon={faUserGroup}
-                                            />
-                                            <span>{group.name}</span>
-                                        </li>
-                                    );
-                                })}
-                        </ul>
-                    )}
+                {permissions && !permissions.allWrite && (
+                    <ul className="chipList">
+                        {permissions.usersWrite &&
+                            permissions.usersWrite.map((user, idx) => {
+                                if (!user)
+                                    return <li key={idx}>Unavailable</li>;
+                                return (
+                                    <li key={user.id + "_write"}>
+                                        <FontAwesomeIcon icon={faUser} />
+                                        <span>
+                                            {user.displayName
+                                                ? `${user.displayName} (${user.username})`
+                                                : user.username}
+                                        </span>
+                                    </li>
+                                );
+                            })}
+
+                        {permissions &&
+                            permissions.groupsWrite &&
+                            permissions.groupsWrite.map((group, idx) => {
+                                if (!group)
+                                    return <li key={idx}>Unavailable</li>;
+                                return (
+                                    <li key={group.id + "_write"}>
+                                        <FontAwesomeIcon icon={faUserGroup} />
+                                        <span>{group.name}</span>
+                                    </li>
+                                );
+                            })}
+                    </ul>
+                )}
             </div>
 
             <div>
@@ -68,40 +65,36 @@ export function PermissionsDisplay({ permissions, setter }) {
                     (!permissions.groupsRead ||
                         permissions.groupsRead.length === 0) && <p>None</p>}
 
-                {permissions &&
-                    !permissions.allRead &&
-                    permissions.usersRead && (
-                        <ul className="chipList">
-                            {permissions.usersRead &&
-                                permissions.usersRead.map((user) => {
-                                    if (!user)
-                                        return <li key={user}>Unavailable</li>;
-                                    return (
-                                        <li key={user.id + "_read"}>
-                                            <FontAwesomeIcon icon={faUser} />
-                                            <span>
-                                                {user.displayName
-                                                    ? `${user.displayName} (${user.username})`
-                                                    : user.username}
-                                            </span>
-                                        </li>
-                                    );
-                                })}
-                            {permissions.groupsRead &&
-                                permissions.groupsRead.map((group) => {
-                                    if (!group)
-                                        return <li key={group}>Unavailable</li>;
-                                    return (
-                                        <li key={group.id + "_read"}>
-                                            <FontAwesomeIcon
-                                                icon={faUserGroup}
-                                            />
-                                            <span>{group.name}</span>
-                                        </li>
-                                    );
-                                })}
-                        </ul>
-                    )}
+                {permissions && !permissions.allRead && (
+                    <ul className="chipList">
+                        {permissions.usersRead &&
+                            permissions.usersRead.map((user, idx) => {
+                                if (!user)
+                                    return <li key={idx}>Unavailable</li>;
+                                return (
+                                    <li key={user.id + "_read"}>
+                                        <FontAwesomeIcon icon={faUser} />
+                                        <span>
+                                            {user.displayName
+                                                ? `${user.displayName} (${user.username})`
+                                                : user.username}
+                                        </span>
+                                    </li>
+                                );
+                            })}
+                        {permissions.groupsRead &&
+                            permissions.groupsRead.map((group, idx) => {
+                                if (!group)
+                                    return <li key={idx}>Unavailable</li>;
+                                return (
+                                    <li key={group.id + "_read"}>
+                                        <FontAwesomeIcon icon={faUserGroup} />
+                                        <span>{group.name}</span>
+                                    </li>
+                                );
+                            })}
+                    </ul>
+                )}
             </div>
         </div>
     );
