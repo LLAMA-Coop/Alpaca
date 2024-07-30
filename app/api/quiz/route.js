@@ -9,6 +9,8 @@ import { Types } from "mongoose";
 import { buildPermissions } from "@/lib/permissions";
 import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
+import { db } from "@/lib/db/db.js";
+import { insertPermissions } from "@/lib/db/helpers";
 
 const allowedType = [
     "prompt-response",
@@ -35,6 +37,8 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+    const quizInsertQuery = `INSERT INTO \`Quizzes\` (\`type\`, \`prompt\`, \`choices\`, \`correctResponses\`, \`hints\`, \`tags\`, \`createdBy\`) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
@@ -147,24 +151,66 @@ export async function POST(req) {
             );
         }
 
-        const quiz = new Quiz({
+        // const quiz = new Quiz({
+        //     type,
+        //     prompt: prompt.trim(),
+        //     choices,
+        //     correctResponses,
+        //     hints: hints ?? [],
+        //     notes: notes ?? [],
+        //     sources: sources ?? [],
+        //     courses: courses ?? [],
+        //     tags: tags ?? [],
+        //     contributors: [user.id],
+        //     createdBy: user.id,
+        // });
+
+        // quiz.permissions = buildPermissions(permissions);
+
+        const fieldsArray = [
             type,
-            prompt: prompt.trim(),
-            choices,
-            correctResponses,
-            hints: hints ?? [],
-            notes: notes ?? [],
-            sources: sources ?? [],
-            courses: courses ?? [],
-            tags: tags ?? [],
-            contributors: [user.id],
-            createdBy: user.id,
-        });
+            prompt,
+            JSON.stringify(choices),
+            JSON.stringify(correctResponses),
+            JSON.stringify(hints),
+            JSON.stringify(tags),
+            user.id,
+        ];
 
-        quiz.permissions = buildPermissions(permissions);
+        const [quizInsert, fields] = await db
+            .promise()
+            .query(quizInsertQuery, fieldsArray);
 
-        const content = await quiz.save();
-        return NextResponse.json({ content }, { status: 201 });
+        const quizId = quizInsert.insertId;
+
+        const quizSourceQuery = `INSERT INTO \`ResourceSources\` (resourceId, resourceType, sourceId, locInSource, locType) VALUES ?`;
+
+        const quizSourceValues = sources.map((s) => [
+            quizId,
+            "quiz",
+            s,
+            "0",
+            "page",
+        ]);
+
+        const [quizSourceInserts, fieldsQS] = await db
+            .promise()
+            .query(quizSourceQuery, [quizSourceValues]);
+
+        const permInsert = await insertPermissions(
+            permissions,
+            quizId,
+            "quiz",
+            user.id,
+        );
+
+        const content = quizInsert;
+
+        // const content = await quiz.save();
+        return NextResponse.json(
+            { message: "Quiz created successfully", content },
+            { status: 201 },
+        );
     } catch (error) {
         console.error(`[Quiz] POST error: ${error}`);
         return server;

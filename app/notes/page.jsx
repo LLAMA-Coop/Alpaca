@@ -13,7 +13,7 @@ import { getPermittedNotes } from "@/lib/db/helpers";
 export default async function NotesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
     // User.populate(user, ["groups", "associates"]);
-    const query = queryReadableResources(user);
+    // const query = queryReadableResources(user);
 
     const page = Number(searchParams["page"] ?? 1);
     const amount = Number(searchParams["amount"] ?? 10);
@@ -30,8 +30,7 @@ export default async function NotesPage({ searchParams }) {
     //         .limit(amount)
     //         .skip((page - 1) * amount),
     // );
-    const notes = await getPermittedNotes(user.id);
-    console.log("NOTES", notes)
+    const notes = await getPermittedNotes(user.id) || [];
 
     const hasMore = false;
     // (

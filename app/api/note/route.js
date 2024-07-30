@@ -9,14 +9,15 @@ import { serializeOne } from "@/lib/db";
 import { cookies } from "next/headers";
 import { Types } from "mongoose";
 import { db } from "@/lib/db/db.js";
-import { insertPermissions } from "@/lib/db/helpers";
+import { getPermittedNotes, insertPermissions } from "@/lib/db/helpers";
 
 export async function GET(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const content = await Note.find(queryReadableResources(user));
+        // const content = await Note.find(queryReadableResources(user));
+        const content = await getPermittedNotes(user.id);
 
         return NextResponse.json(
             {
@@ -102,8 +103,6 @@ export async function POST(req) {
         const [noteSourceInserts, fieldsNS] = await db
             .promise()
             .query(noteSourceQuery, [noteSourceValues]);
-
-        console.log("NOTE SOURCE INSERTS", noteSourceInserts);
 
         const permInsert = await insertPermissions(
             permissions,

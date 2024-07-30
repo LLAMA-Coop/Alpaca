@@ -57,6 +57,8 @@ export function QuizInput({ quiz }) {
 
     const availableSources = useStore((state) => state.sources);
     const availableCourses = useStore((state) => state.courses);
+    const availableTags = useStore((state) => state.tags);
+    const addTags = useStore((state) => state.addTags);
     const availableNotes = useStore((state) => state.notes);
 
     const user = useStore((state) => state.user);
@@ -82,14 +84,14 @@ export function QuizInput({ quiz }) {
         if (quiz.notes) {
             setNotes(
                 quiz.notes.map((noteId) =>
-                    availableNotes.find((x) => x._id === noteId),
+                    availableNotes.find((x) => x.id === noteId),
                 ),
             );
         }
         if (quiz.courses) {
             setCourses(
                 quiz.courses.map((courseId) =>
-                    availableCourses.find((x) => x._id === courseId),
+                    availableCourses.find((x) => x.id === courseId),
                 ),
             );
         }
@@ -107,7 +109,7 @@ export function QuizInput({ quiz }) {
         ) {
             setSources(
                 quiz.sources.map((srcId) => {
-                    let source = availableSources.find((x) => x._id === srcId);
+                    let source = availableSources.find((x) => x.id === srcId);
                     if (!source) {
                         source = {
                             title: "unavailable",
@@ -178,7 +180,17 @@ export function QuizInput({ quiz }) {
         e.preventDefault();
         if (!newHint || hints.includes(newHint)) return;
         setHints([...hints, newHint]);
+        if (!availableTags.includes(newTag)) {
+            addTags(newTag);
+        }
         setNewHint("");
+    }
+
+    function handleAddTag(e) {
+        e.preventDefault();
+        if (!newTag || tags.includes(newTag)) return;
+        setTags([...tags, newTag]);
+        setNewTag("");
     }
 
     async function handleSubmit(e) {
@@ -231,13 +243,13 @@ export function QuizInput({ quiz }) {
             choices: choices,
             correctResponses: responses,
             hints: hints,
-            sources: sources.map((src) => src._id),
-            notes: notes.map((nt) => nt._id),
-            courses: courses.map((course) => course._id),
+            sources: sources.map((src) => src.id),
+            notes: notes.map((nt) => nt.id),
+            courses: courses.map((course) => course.id),
             tags,
         };
-        if (quiz && quiz._id) {
-            quizPayload._id = quiz._id;
+        if (quiz && quiz.id) {
+            quizPayload.id = quiz.id;
         }
 
         quizPayload.permissions = buildPermissions(permissions);
@@ -247,7 +259,7 @@ export function QuizInput({ quiz }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,
             {
-                method: quiz && quiz._id ? "PUT" : "POST",
+                method: quiz && quiz.id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -590,8 +602,7 @@ export function QuizInput({ quiz }) {
 
                     <Input
                         type="datalist"
-                        // choices={availableTags}
-                        choices={[]}
+                        choices={availableTags}
                         label={"Add Tag"}
                         value={newTag}
                         maxLength={MAX.tag}
@@ -599,8 +610,23 @@ export function QuizInput({ quiz }) {
                         autoComplete="off"
                         onChange={(e) => setNewTag(e.target.value)}
                         action="Add tag"
-                        // onActionTrigger={handleAddTag}
+                        onActionTrigger={handleAddTag}
+                        placeholder="Quiz Tags"
                     />
+                    <ul className="chipList">
+                        {tags.length === 0 && <ListItem item="No tags added" />}
+
+                        {tags.map((tag) => (
+                            <ListItem
+                                key={tag}
+                                item={tag}
+                                action={() => {
+                                    setTags(tags.filter((t) => t !== tag));
+                                }}
+                                actionType={"delete"}
+                            />
+                        ))}
+                    </ul>
 
                     {/* <div style={{ marginTop: "24px" }}>
                         <Label label="Tags" />
@@ -633,7 +659,7 @@ export function QuizInput({ quiz }) {
             </button>
 
             {canDelete && (
-                <DeletePopup resourceType="quiz" resourceId={quiz._id} />
+                <DeletePopup resourceType="quiz" resourceId={quiz.id} />
             )}
         </form>
     );
