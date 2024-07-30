@@ -17,6 +17,7 @@ import {
     ListAdd,
     UserInput,
 } from "@client";
+import { buildPermissions } from "@/lib/permissions";
 
 export function NoteInput({ note }) {
     const [title, setTitle] = useState("");
@@ -51,7 +52,7 @@ export function NoteInput({ note }) {
             setSources(
                 note.sources.map((srcId, index) => {
                     const source = availableSources
-                        ? availableSources.find((x) => x._id === srcId)
+                        ? availableSources.find((x) => x.id === srcId)
                         : undefined;
                     if (!source)
                         return {
@@ -66,7 +67,7 @@ export function NoteInput({ note }) {
             setCourses(
                 note.courses.map((courseId, index) => {
                     const course = availableCourses.find(
-                        (x) => x._id === courseId,
+                        (x) => x.id === courseId,
                     );
                     if (!course)
                         return {
@@ -119,13 +120,13 @@ export function NoteInput({ note }) {
         const notePayload = {
             title: title.trim(),
             text: text.trim(),
-            sources: sources.filter((s) => s).map((src) => src._id),
-            courses: courses.filter((c) => c).map((course) => course._id),
+            sources: sources.filter((s) => s).map((src) => src.id),
+            courses: courses.filter((c) => c).map((course) => course.id),
             tags,
         };
-        notePayload.permissions = permissions;
-        if (note && note._id) {
-            notePayload._id = note._id;
+        notePayload.permissions = buildPermissions(permissions);
+        if (note && note.id) {
+            notePayload.id = note.id;
         }
 
         setLoading(true);
@@ -133,7 +134,7 @@ export function NoteInput({ note }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/note`,
             {
-                method: note && note._id ? "PUT" : "POST",
+                method: note && note.id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -298,7 +299,7 @@ export function NoteInput({ note }) {
             </button>
 
             {canDelete && (
-                <DeletePopup resourceType="note" resourceId={note._id} />
+                <DeletePopup resourceType="note" resourceId={note.id} />
             )}
         </div>
     );

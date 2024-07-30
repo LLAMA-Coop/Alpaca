@@ -8,6 +8,8 @@ import { Note } from "@/app/api/models";
 import { serializeOne } from "@/lib/db";
 import { cookies } from "next/headers";
 import { Types } from "mongoose";
+import { db } from "@/lib/db/db.js";
+import { insertPermissions } from "@/lib/db/helpers";
 
 export async function GET(req) {
     try {
@@ -29,6 +31,8 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+    const noteInsertQuery = `INSERT INTO \`Notes\` (\`title\`, \`text\`, \`tags\`, \`createdBy\`) VALUES (?, ?, ?, ?)`;
+
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
@@ -77,20 +81,55 @@ export async function POST(req) {
             );
         }
 
-        const note = new Note({
-            createdBy: user.id,
-            title: title.trim(),
-            text: text.trim(),
-            sources: [...sources],
-            courses: courses ?? [],
-            tags: [...tags],
-            contributors: [user.id],
-        });
+        const fieldsArray = [title, text, JSON.stringify(tags), user.id];
 
-        note.permissions = buildPermissions(permissions);
+        const [noteInsert, fields] = await db
+            .promise()
+            .query(noteInsertQuery, fieldsArray);
 
-        const content = await note.save();
-        return NextResponse.json({ content }, { status: 201 });
+        const noteId = noteInsert.insertId;
+
+        const noteSourceQuery = `INSERT INTO \`ResourceSources\` (resourceId, resourceType, sourceId, locInSource, locType) VALUES ?`;
+
+        const noteSourceValues = sources.map((s) => [
+            noteId,
+            "note",
+            s,
+            "0",
+            "page",
+        ]);
+
+        const [noteSourceInserts, fieldsNS] = await db
+            .promise()
+            .query(noteSourceQuery, [noteSourceValues]);
+
+        console.log("NOTE SOURCE INSERTS", noteSourceInserts);
+
+        const permInsert = await insertPermissions(
+            permissions,
+            noteId,
+            "note",
+            user.id,
+        );
+
+        // const note = new Note({
+        //     createdBy: user.id,
+        //     title: title.trim(),
+        //     text: text.trim(),
+        //     sources: [...sources],
+        //     courses: courses ?? [],
+        //     tags: [...tags],
+        //     contributors: [user.id],
+        // });
+
+        // note.permissions = buildPermissions(permissions);
+
+        // const content = await note.save();
+        const content = noteInsert;
+        return NextResponse.json(
+            { message: "Note created successfully", content },
+            { status: 201 },
+        );
     } catch (error) {
         console.error(`[Note] POST error: ${error}`);
         return server;

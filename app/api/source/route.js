@@ -130,8 +130,6 @@ export async function POST(req) {
             user.id,
         );
 
-        console.log("PERMISSIONS INSERTS", permissions, permsInsert);
-
         // Next up:
         //  X SourceCredits (for authors)
         //      does not have different credit types yet
