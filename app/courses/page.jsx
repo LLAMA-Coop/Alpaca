@@ -11,8 +11,7 @@ import { getPermittedCourses } from "@/lib/db/helpers";
 export default async function CoursesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
     // const courses = await Course.find();
-    const courses = await getPermittedCourses(user.id) || [];
-    console.log("COURSES", courses);
+    const courses = user ? await getPermittedCourses(user.id) : [];
 
     return (
         <main className={styles.main}>

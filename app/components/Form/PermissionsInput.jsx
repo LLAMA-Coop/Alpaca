@@ -22,7 +22,6 @@ export function PermissionsInput({ permissions, setter }) {
 
     useEffect(() => {
         if (!permissions) return;
-        console.log(permissions);
 
         if (permissions.usersWrite) {
             // setUsersWrite(
@@ -85,7 +84,6 @@ export function PermissionsInput({ permissions, setter }) {
             localPerm.groupsRead = [...groupsRead];
         }
 
-        console.log(localPerm);
         setter(localPerm);
     }, [allWrite, allRead, usersWrite, usersRead, groupsWrite, groupsRead]);
 

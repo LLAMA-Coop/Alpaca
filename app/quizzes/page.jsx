@@ -17,7 +17,6 @@ export default async function QuizzesPage({ searchParams }) {
     if (user) {
         userQuizzes = user.quizzes;
     }
-    console.log("USER QUIZZES", userQuizzes)
 
     const page = Number(searchParams["page"] ?? 1);
     const amount = Number(searchParams["amount"] ?? 10);

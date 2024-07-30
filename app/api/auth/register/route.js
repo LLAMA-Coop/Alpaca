@@ -63,7 +63,6 @@ export async function POST(req) {
             username,
             displayName,
         };
-        console.log("\nUser:", user);
 
         return NextResponse.json(
             {

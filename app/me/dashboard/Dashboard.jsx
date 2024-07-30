@@ -20,8 +20,6 @@ export function Dashboard({ more = false }) {
     const addAlert = useAlerts((state) => state.addAlert);
     const addAssociate = useStore((state) => state.addAssociate);
 
-    console.log("QUIZZES", quizzes);
-
     const groupsCreated = groups.filter((group) => group.owner === user.id);
     const groupsJoined = groups.filter((group) => group.owner !== user.id);
 
@@ -309,7 +307,7 @@ export function Dashboard({ more = false }) {
                                     <ul className={styles.gridList}>
                                         {courses.map((c) => {
                                             return (
-                                                <li key={c._id}>
+                                                <li key={c.id}>
                                                     <Link
                                                         href={`/courses/${c.name}`}
                                                     >
@@ -327,7 +325,7 @@ export function Dashboard({ more = false }) {
 
                                     <ul className={styles.gridList}>
                                         {quizzes.map(q => {
-                                            return <li key={q._id}>
+                                            return <li key={q.id}>
                                                 <QuizDisplay quiz={q} />
                                             </li>
                                         })}

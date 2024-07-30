@@ -30,9 +30,8 @@ export async function GET(req) {
 
 export async function POST(req) {
     const baseQuery = `INSERT INTO \`Sources\`
-        (\`title\`, \`medium\`, \`url\`, \`tags\`, \`createdBy\`, \`publishedUpdated\`) VALUES
-        (?, ?, ?, ?, ?, ?)
-    `;
+        (\`title\`, \`medium\`, \`url\`, \`tags\`, \`createdBy\`, \`publishedUpdated\`) 
+        VALUES (?, ?, ?, ?, ?, ?)`;
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });

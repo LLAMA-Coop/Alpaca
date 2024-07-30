@@ -30,14 +30,15 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    console.log(user)
 
-    const permittedResources = await getPermittedResources(user.id);
+    const permittedResources = user
+        ? await getPermittedResources(user.id)
+        : { sources: [], notes: [], quizzes: [] };
 
     const sources = permittedResources.sources;
     const notes = permittedResources.notes;
     const quizzes = permittedResources.quizzes;
-    const courses = await getPermittedCourses(user.id);
+    const courses = user ? await getPermittedCourses(user.id): [];
     const notifications = user ? user.notifications : [];
 
     return (
