@@ -27,10 +27,10 @@ export function Select({
     }, []);
 
     const clickEvent = (choice) => {
-        if (!listChosen.find((x) => x ? x._id === choice._id : false)) {
+        if (!listChosen.find((x) => x ? x.id === choice.id : false)) {
             listSetter([...listChosen, choice]);
         } else {
-            listSetter(listChosen.filter((x) => x._id !== choice._id));
+            listSetter(listChosen.filter((x) => x.id !== choice.id));
         }
     };
 
@@ -55,7 +55,7 @@ export function Select({
                         const isChosen =
                             listChosen.find((x) => {
                                 if (!x) return false;
-                                return x._id === choice._id;
+                                return x.id === choice.id;
                             }) != undefined;
 
                         let prop;
@@ -68,7 +68,7 @@ export function Select({
 
                         return (
                             <div
-                                key={choice._id}
+                                key={choice.id}
                                 tabIndex={0}
                                 role="option"
                                 aria-selected={isChosen}

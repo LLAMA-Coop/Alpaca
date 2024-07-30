@@ -27,7 +27,7 @@ export function TrainSettings({ tags, courses }) {
 
     const tagOptions = tags.map((t, index) => ({ tag: t, _id: index }));
     const courseOptions = courses.map((c_id) => {
-        const course = availableCourses.find((c) => c._id === c_id);
+        const course = availableCourses.find((c) => c.id === c_id);
         return course;
     });
 
@@ -49,7 +49,7 @@ export function TrainSettings({ tags, courses }) {
 
     function setSettingCourses(coursesChosen) {
         setSelectedCourses(coursesChosen);
-        setSettings({ courses: coursesChosen.map((c) => c._id) });
+        setSettings({ courses: coursesChosen.map((c) => c.id) });
     }
 
     return (

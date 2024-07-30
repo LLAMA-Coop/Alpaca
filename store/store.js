@@ -56,7 +56,7 @@ export const useStore = create((set) => ({
 
     removeSource: (id) => {
         return set((state) => ({
-            sources: state.sources.filter((source) => source._id !== id),
+            sources: state.sources.filter((source) => source.id !== id),
         }));
     },
 
@@ -66,7 +66,7 @@ export const useStore = create((set) => ({
 
     removeNote: (id) => {
         return set((state) => ({
-            notes: state.notes.filter((note) => note._id !== id),
+            notes: state.notes.filter((note) => note.id !== id),
         }));
     },
 
@@ -76,7 +76,7 @@ export const useStore = create((set) => ({
 
     removeQuiz: (id) => {
         return set((state) => ({
-            quizzes: state.quizzes.filter((quiz) => quiz._id !== id),
+            quizzes: state.quizzes.filter((quiz) => quiz.id !== id),
         }));
     },
 
@@ -86,7 +86,7 @@ export const useStore = create((set) => ({
 
     removeCourse: (id) => {
         return set((state) => ({
-            courses: state.courses.filter((course) => course._id !== id),
+            courses: state.courses.filter((course) => course.id !== id),
         }));
     },
 
@@ -96,7 +96,7 @@ export const useStore = create((set) => ({
 
     removeGroup: (id) => {
         return set((state) => ({
-            groups: state.groups.filter((group) => group._id !== id),
+            groups: state.groups.filter((group) => group.id !== id),
         }));
     },
 
@@ -109,7 +109,7 @@ export const useStore = create((set) => ({
     removeAssociate: (id) => {
         return set((state) => ({
             associates: state.associates.filter(
-                (associate) => associate._id !== id,
+                (associate) => associate.id !== id,
             ),
         }));
     },
@@ -129,7 +129,7 @@ export const useStore = create((set) => ({
     removeNotification: (id) => {
         return set((state) => ({
             notifications: state.notifications.filter(
-                (notification) => notification._id !== id,
+                (notification) => notification.id !== id,
             ),
         }));
     },
@@ -137,7 +137,7 @@ export const useStore = create((set) => ({
     readNotification: (id) => {
         return set((state) => ({
             notifications: state.notifications.map((notification) => {
-                if (notification._id === id) {
+                if (notification.id === id) {
                     notification.read = true;
                 }
                 return notification;

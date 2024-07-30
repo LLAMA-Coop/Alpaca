@@ -45,7 +45,7 @@ export function PermissionsDisplay({ permissions, setter }) {
                                     if (!group)
                                         return <li key={group}>Unavailable</li>;
                                     return (
-                                        <li key={group._id + "_write"}>
+                                        <li key={group.id + "_write"}>
                                             <FontAwesomeIcon
                                                 icon={faUserGroup}
                                             />
@@ -92,7 +92,7 @@ export function PermissionsDisplay({ permissions, setter }) {
                                     if (!group)
                                         return <li key={group}>Unavailable</li>;
                                     return (
-                                        <li key={group._id + "_read"}>
+                                        <li key={group.id + "_read"}>
                                             <FontAwesomeIcon
                                                 icon={faUserGroup}
                                             />

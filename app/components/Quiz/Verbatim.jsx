@@ -32,9 +32,9 @@ export function Verbatim({
     const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
-        if (!quiz || !quiz._id || !userQuizzes) return;
+        if (!quiz || !quiz.id || !userQuizzes) return;
         const userQuiz = userQuizzes.find(
-            (q) => q._id.toString() === quiz._id.toString(),
+            (q) => q.id.toString() === quiz.id.toString(),
         );
         if (userQuiz) level = userQuiz.level;
     }, []);
@@ -67,7 +67,7 @@ export function Verbatim({
         } else {
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
-                    quiz._id
+                    quiz.id
                 }`,
                 {
                     method: "POST",

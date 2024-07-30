@@ -129,13 +129,13 @@ export function ListAdd({
 
                             return (
                                 <ListItem
-                                    key={choice._id ?? choice.id}
+                                    key={choice.id ?? choice.id}
                                     link={choice.url ? choice.url : undefined}
                                     item={choice[prop]}
                                     action={() => {
                                         listSetter(
                                             listChosen.filter(
-                                                (x) => x._id !== choice._id,
+                                                (x) => x.id !== choice.id,
                                             ),
                                         );
                                     }}
@@ -188,13 +188,13 @@ export function ListAdd({
 
                     return (
                         <ListItem
-                            key={choice._id}
+                            key={choice.id}
                             link={choice.url ? choice.url : undefined}
                             item={choice[prop]}
                             action={() => {
                                 listSetter(
                                     listChosen.filter(
-                                        (x) => x._id !== choice._id,
+                                        (x) => x.id !== choice.id,
                                     ),
                                 );
                             }}

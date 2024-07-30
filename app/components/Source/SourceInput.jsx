@@ -76,7 +76,7 @@ export function SourceInput({ source }) {
         if (source.courses && source.courses.length > 0) {
             setCourses(
                 source.courses.map((courseId) =>
-                    availableCourses.find((x) => x._id === courseId),
+                    availableCourses.find((x) => x.id === courseId),
                 ),
             );
         }
@@ -153,7 +153,7 @@ export function SourceInput({ source }) {
             publishDate: formatDate(publishDate),
             lastAccessed: formatDate(lastAccessed),
             authors,
-            courses: courses.map((course) => course._id),
+            courses: courses.map((course) => course.id),
             tags,
             locationTypeDefault,
         };
@@ -415,7 +415,7 @@ export function SourceInput({ source }) {
             </button>
 
             {canDelete && (
-                <DeletePopup resourceType="source" resourceId={source._id} />
+                <DeletePopup resourceType="source" resourceId={source.id} />
             )}
         </div>
     );

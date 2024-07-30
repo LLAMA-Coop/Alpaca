@@ -60,7 +60,7 @@ export function ListAnswer({
         } else {
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
-                    quiz._id
+                    quiz.id
                 }`,
                 {
                     method: "POST",

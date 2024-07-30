@@ -124,7 +124,7 @@ export function DailyTrain({ quizzes }) {
                             .map((quiz, index) => {
                                 return (
                                     <li
-                                        key={quiz._id}
+                                        key={quiz.id}
                                         style={{
                                             display: visibleSet[index]
                                                 ? "list-item"

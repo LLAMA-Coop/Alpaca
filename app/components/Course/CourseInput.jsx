@@ -50,14 +50,14 @@ export function CourseInput({ course }) {
         setDescription(course.description);
 
         setParentCourses(
-            course.parentCourses.map((catId) =>
-                availableCourses.find((x) => x._id === catId),
+            course.parentCourses.map((crsId) =>
+                availableCourses.find((x) => x.id === crsId),
             ),
         );
 
         setPrerequisites(
-            course.prerequisites.map((catId) =>
-                availableCourses.find((x) => x._id === catId),
+            course.prerequisites.map((crsId) =>
+                availableCourses.find((x) => x.id === crsId),
             ),
         );
 
@@ -95,22 +95,22 @@ export function CourseInput({ course }) {
         const crsPayload = {
             name: name.trim(),
             description,
-            parentCourses: parentCourses.map((course) => course._id),
+            parentCourses: parentCourses.map((course) => course.id),
             prerequisites: prerequisites.map((course) => ({
                 requiredAverageLevel: 1,
-                course: course._id,
+                course: course.id,
             })),
-            sources: sources.map((source) => source._id),
-            notes: notes.map((note) => note._id),
-            quizzes: quizzes.map((quiz) => quiz._id),
+            sources: sources.map((source) => source.id),
+            notes: notes.map((note) => note.id),
+            quizzes: quizzes.map((quiz) => quiz.id),
             addAllFromSources,
             addAllFromNotes,
             permissions,
         };
         crsPayload.permissions = permissions;
-        if (course && course._id) {
+        if (course && course.id) {
             // this will change to implement PATCH in /[id]/route.js
-            crsPayload._id = course._id;
+            crsPayload.id = course.id;
         }
 
         setLoading(true);
@@ -118,7 +118,7 @@ export function CourseInput({ course }) {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/course`,
             {
-                method: course && course._id ? "PUT" : "POST",
+                method: course && course.id ? "PUT" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
