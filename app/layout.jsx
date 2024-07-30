@@ -8,7 +8,7 @@ import { useUser } from "@/lib/auth";
 import connectDB from "./api/db";
 import "./globals.css";
 import { queryReadableResources } from "@/lib/auth";
-import { getPermittedResources } from "@/lib/db/helpers";
+import { getPermittedCourses, getPermittedResources } from "@/lib/db/helpers";
 
 const connection = await connectDB();
 
@@ -29,63 +29,22 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-    // if (connection === false) {
-    //     return (
-    //         <html lang="en">
-    //             <body>
-    //                 <Header />
-    //                 <DBConnectError />
-    //                 <Footer />
-    //             </body>
-    //         </html>
-    //     );
-    // }
-
     const user = await useUser({ token: cookies().get("token")?.value });
-    // return <html><body><h1>{user.username}</h1></body></html>;
-    // user &&
-    //     (await user.populate(
-    //         "associates",
-    //         "id username avatar displayName description",
-    //     ));
-    // user && (await user.populate("groups"));
-    // user && (await user.populate("courses.course"));
-
-    // const notifications = user
-    //     ? serialize(await Notification.find({ recipient: user.id }))
-    //     : [];
-
-    // const query = queryReadableResources(user);
-
-    // const sources = user
-    //     ? serialize(await Source.find(query))
-    //     : [];
-    // const notes = user
-    //     ? serialize(await Note.find(query))
-    //     : [];
-    // const quizzes = user
-    //     ? serialize(await Quiz.find(query))
-    //     : [];
-    // const courses = user
-    //     ? [
-    //           ...serialize(await Course.find({ createdBy: user.id })),
-    //           ...serialize(user.courses.map((course) => course.course)),
-    //       ]
-    //     : [];
+    console.log(user)
 
     const permittedResources = await getPermittedResources(user.id);
 
     const sources = permittedResources.sources;
     const notes = permittedResources.notes;
     const quizzes = permittedResources.quizzes;
-    const courses = [];
+    const courses = await getPermittedCourses(user.id);
     const notifications = user ? user.notifications : [];
 
     return (
         <html lang="en">
             {user && (
                 <FillStore
-                    user={serializeOne(user)}
+                    user={user}
                     sources={sources}
                     notes={notes}
                     quizzes={quizzes}
