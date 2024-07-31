@@ -16,12 +16,14 @@ import {
 } from "@client";
 import styles from "./CourseInput.module.css";
 import { PermissionsDisplay } from "../Form/PermissionsDisplay";
+import { buildPermissions } from "@/lib/permissions";
 
 export function CourseInput({ course }) {
     const [name, setName] = useState("");
     const [nameError, setNameError] = useState("");
     const [description, setDescription] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
+    const [enrollment, setEnrollment] = useState("open");
     const [permissions, setPermissions] = useState("");
 
     const [parentCourses, setParentCourses] = useState([]);
@@ -82,6 +84,15 @@ export function CourseInput({ course }) {
                 setDescriptionError,
             );
         }
+        if (!["open", "paid", "private"].includes(enrollment)) {
+            submitErrors.addMessage(
+                `Enrollment type must one of the following: ${[
+                    "open",
+                    "paid",
+                    "private",
+                ]}`,
+            );
+        }
         if (submitErrors.errors.length > 0) {
             addAlert({
                 success: false,
@@ -95,6 +106,7 @@ export function CourseInput({ course }) {
         const crsPayload = {
             name: name.trim(),
             description,
+            enrollment,
             parentCourses: parentCourses.map((course) => course.id),
             prerequisites: prerequisites.map((course) => ({
                 requiredAverageLevel: 1,
@@ -107,7 +119,7 @@ export function CourseInput({ course }) {
             addAllFromNotes,
             permissions,
         };
-        crsPayload.permissions = permissions;
+        crsPayload.permissions = buildPermissions(permissions);
         if (course && course.id) {
             // this will change to implement PATCH in /[id]/route.js
             crsPayload.id = course.id;
@@ -181,6 +193,20 @@ export function CourseInput({ course }) {
                 error={descriptionError}
                 label={"Description"}
                 maxLength={MAX.description}
+            />
+
+            <Input
+                type="select"
+                label="Enrollment Type"
+                required={true}
+                onChange={(e) => {
+                    setEnrollment(e.target.value);
+                }}
+                choices={[
+                    { value: "open", label: "Open" },
+                    { value: "paid", label: "Paid" },
+                    { value: "private", label: "Private" },
+                ]}
             />
 
             <div>

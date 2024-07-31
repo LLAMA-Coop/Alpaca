@@ -134,6 +134,14 @@ CREATE TABLE IF NOT EXISTS CourseHierarchy (
     averageLevelRequired INT DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS CourseResources (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    courseId BIGINT NOT NULL,
+    resourceId BIGINT NOT NULL,
+    resourceType ENUM("source", "note", "quiz"),
+    includeReferencingResources BOOLEAN
+);
+
 CREATE TABLE IF NOT EXISTS ResourcePermissions (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     resourceId BIGINT NOT NULL,
