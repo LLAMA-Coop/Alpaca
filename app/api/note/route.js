@@ -16,7 +16,6 @@ export async function GET(req) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        // const content = await Note.find(queryReadableResources(user));
         const content = await getPermittedNotes(user.id);
 
         return NextResponse.json(

@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import { canEdit, canRead, queryReadableResources, useUser } from "@/lib/auth";
+import { canEdit, canRead, useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import Course from "../models/Course"; // Don't forget to add this to index.js
 import { unauthorized, server } from "@/lib/apiErrorResponses";
-import { buildPermissions } from "@/lib/permissions";
 import { Types } from "mongoose";
 import { serializeOne } from "@/lib/db";
 import { MAX } from "@/lib/constants";
@@ -17,7 +16,6 @@ export async function GET(req) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        // const content = await Course.find(queryReadableResources(user));
         const content = await getPermittedCourses(user.id);
         return NextResponse.json({
             content,
@@ -53,11 +51,6 @@ export async function POST(req) {
             permissions,
         } = await req.json();
 
-        const localSources = sources ? [...sources] : [];
-        const localNotes = notes ? [...notes] : [];
-        const localQuizzes = quizzes ? [...quizzes] : [];
-        const promises = [];
-
         if (!name) {
             submitErrors.addError("Missing name");
         } else if (name.length > MAX.name) {
@@ -90,11 +83,6 @@ export async function POST(req) {
             .query(baseQuery, fieldsArray);
 
         const courseId = courseInsert.insertId;
-
-        // Next Steps:
-        // X -1. permissions
-        // X  0. add courseId and each superior courseId (with avgLevel if applc) to CourseHierarchy
-        //  1. add courseId to CourseResources table with each resource and type
 
         const permsInsert = await insertPermissions(
             permissions,
@@ -142,98 +130,6 @@ export async function POST(req) {
         const [crsResrcInserts, fieldsCrsResrc] = await db
             .promise()
             .query(crsResrcQuery, [crsResrcValues]);
-
-        // const course = new Course({
-        //     name: name.trim(),
-        //     description,
-        //     parentCourses,
-        //     prerequisites,
-        //     createdBy: user.id,
-        //     contributors: [user.id],
-        // });
-
-        // course.permissions = buildPermissions(permissions);
-
-        // const content = await course.save();
-
-        // const id = content._id.toString();
-
-        // async function addCourseToResource({
-        //     resourceId,
-        //     type,
-        //     courseId,
-        //     user,
-        // }) {
-        //     function getResource() {
-        //         if (type === "source") return Source.findById(resourceId);
-        //         if (type === "note") return Note.findById(resourceId);
-        //         if (type === "quiz") return Quiz.findById(resourceId);
-        //     }
-
-        //     const resource = await getResource();
-        //     if (!canRead(resource, user)) {
-        //         return;
-        //     }
-
-        //     if (
-        //         resource.courses.find((x) => x.toString() == courseId) ==
-        //         undefined
-        //     ) {
-        //         resource.courses.push(new Types.ObjectId(courseId));
-        //         await resource.save();
-        //     }
-
-        //     if (type === "source" && addAllFromSources) {
-        //         const quizzesFromSource = await Quiz.find({
-        //             sources: new Types.ObjectId(resourceId),
-        //         });
-        //         localQuizzes.push(
-        //             ...quizzesFromSource.map((x) => x._id.toString()),
-        //         );
-        //     }
-
-        //     if (type !== "quiz" && addAllFromNotes) {
-        //         const notesFromSource = await Note.find({
-        //             sources: new Types.ObjectId(resourceId),
-        //         });
-        //         localNotes.push(
-        //             ...notesFromSource.map((x) => x._id.toString()),
-        //         );
-        //     }
-        // }
-
-        // localSources.forEach((src) => {
-        //     promises.push(
-        //         addCourseToResource({
-        //             resourceId: src,
-        //             type: "source",
-        //             user,
-        //             courseId: id,
-        //         }),
-        //     );
-        // });
-
-        // await Promise.all(promises);
-        // localNotes.forEach((n) => {
-        //     promises.push(
-        //         addCourseToResource({
-        //             resourceId: n,
-        //             type: "note",
-        //             courseId: id,
-        //             user,
-        //         }),
-        //     );
-        // });
-
-        // await Promise.all(promises);
-        // localQuizzes.forEach((q) => {
-        //     addCourseToResource({
-        //         resourceId: q,
-        //         type: "quiz",
-        //         courseId: id,
-        //         user,
-        //     });
-        // });
 
         const content = courseInsert;
 

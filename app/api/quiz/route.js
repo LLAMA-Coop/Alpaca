@@ -10,7 +10,7 @@ import { buildPermissions } from "@/lib/permissions";
 import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { db } from "@/lib/db/db.js";
-import { insertPermissions } from "@/lib/db/helpers";
+import { getPermittedQuizzes, insertPermissions } from "@/lib/db/helpers";
 
 const allowedType = [
     "prompt-response",
@@ -26,7 +26,7 @@ export async function GET(req) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const content = await Quiz.find(queryReadableResources(user));
+        const content = await getPermittedQuizzes(user.id);
         return NextResponse.json({
             content,
         });

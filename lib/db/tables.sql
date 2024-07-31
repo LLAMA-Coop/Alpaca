@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS GroupUsers (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     groupId BIGINT NOT NULL,
     userId BIGINT NOT NULL,
-    userRole ENUM("owner", "administrator", "user")
+    userRole ENUM("owner", "administrator", "student", "user")
 );
 
 CREATE TABLE IF NOT EXISTS Sources (

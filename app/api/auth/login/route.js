@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-// import { User } from "@mneme_app/database-models";
-// import { User } from "@/app/api/models";
 import { SignJWT } from "jose";
 import bcrypt from "bcrypt";
 import { server } from "@/lib/apiErrorResponses";
@@ -69,13 +67,6 @@ export async function POST(req) {
 
             console.log("REFRESH", refreshToken);
 
-            // Save refresh token to database
-            // await User.updateOne(
-            //     { _id: user.id },
-            //     {
-            //         $push: { refreshTokens: refreshToken },
-            //     },
-            // );
             const [resultsUpdate, fieldsUpdate] = await db
                 .promise()
                 .query("UPDATE Users SET refreshToken = ? WHERE id = ?", [

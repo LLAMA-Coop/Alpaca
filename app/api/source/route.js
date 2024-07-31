@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
-import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
+import { canEdit, useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-// import { Source } from "@mneme_app/database-models";
 import { Source } from "@/app/api/models";
 import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
-import { buildPermissions } from "@/lib/permissions";
 import { serializeOne } from "@/lib/db";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { MAX } from "@/lib/constants";
@@ -19,7 +17,6 @@ export async function GET(req) {
             return unauthorized;
         }
 
-        // const content = await Source.find(queryReadableResources(user));
         const content = await getPermittedSources(user.id);
         return NextResponse.json({ content }, { status: 200 });
     } catch (error) {
