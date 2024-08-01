@@ -2,6 +2,18 @@ import mysql from "mysql2";
 import util from "util";
 import fs from "fs";
 
+if (
+    !process.env.DATABASE_HOST ||
+    !process.env.DATABASE_USER ||
+    !process.env.DATABASE_PASSWORD ||
+    !process.env.DATABASE_NAME
+) {
+    console.error(
+        "Please set DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, and DATABASE_NAME environment variables.",
+    );
+    process.exit(1);
+}
+
 (async () => {
     const conn = mysql.createConnection({
         host: process.env.DATABASE_HOST,

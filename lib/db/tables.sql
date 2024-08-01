@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS CourseUsers (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     courseId BIGINT NOT NULL,
     userId BIGINT NOT NULL,
-    userType ENUM("owner", "tutor", "student")
+    userType ENUM("owner", "tutor", "student"),
     enrollmentExpiration DATE DEFAULT (CURRENT_DATE + INTERVAL 200 YEAR)
 );
 
