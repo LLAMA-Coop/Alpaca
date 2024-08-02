@@ -1,12 +1,23 @@
+import { useUser } from "@/lib/auth";
 import styles from "./NoteDisplay.module.css";
 import { Card, ListItem } from "@client";
-import { Note, User } from "@models";
+import { cookies } from "next/headers";
+import {
+    getPermittedCourses,
+    getPermittedNote,
+    getPermittedSources,
+} from "@/lib/db/helpers";
 
 export async function NoteDisplay({ note }) {
-    // const user = await User.findById(note.createdBy);
-    // const dbNote = await Note.findById(note._id)
-    //     .populate("sources")
-    //     .populate("courses");
+    console.log("NOTE FOR NOTE DISPLAY", note)
+    const creator = await useUser({ id: note.createdBy });
+    const user = await useUser({ token: cookies().get("token")?.value });
+    const sources = (await getPermittedSources(user.id)).filter((x) =>
+        note.sources.includes(x.id),
+    );
+    const courses = (await getPermittedCourses(user.id)).filter((x) =>
+        note.courses.includes(x.id),
+    );
 
     return (
         <Card title={note.title} description={note.text}>
@@ -22,14 +33,14 @@ export async function NoteDisplay({ note }) {
                 </section>
             )}
 
-            {/* {dbNote?.sources?.length > 0 && (
+            {sources.length > 0 && (
                 <section className={styles.section}>
                     <h5>Sources linked</h5>
 
                     <ul>
-                        {dbNote.sources.map((source) => (
+                        {sources.map((source) => (
                             <ListItem
-                                key={source._id}
+                                key={source.id}
                                 item={source.title}
                                 link={source.url}
                             />
@@ -38,19 +49,19 @@ export async function NoteDisplay({ note }) {
                 </section>
             )}
 
-            {dbNote?.courses?.length > 0 && (
+            {courses?.length > 0 && (
                 <section className={styles.section}>
                     <h5>This note belongs to the following courses</h5>
 
                     <ul>
-                        {dbNote.courses.map((course) => (
-                            <ListItem key={course._id} item={course.name} />
+                        {courses.map((course) => (
+                            <ListItem key={course.id} item={course.name} />
                         ))}
                     </ul>
                 </section>
             )}
 
-            <p>Created by: {user?.username ?? "Unknown"}</p> */}
+            <p>Created by: {creator?.username ?? "Unknown"}</p>
         </Card>
     );
 }

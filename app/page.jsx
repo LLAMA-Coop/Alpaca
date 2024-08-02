@@ -1,19 +1,15 @@
-import { useUser, queryReadableResources } from "@/lib/auth";
 import { QuizInput, QuizDisplay } from "@client";
 import styles from "./page.module.css";
-import { cookies } from "next/headers";
-import { Quiz, User } from "@models";
-import { serialize } from "@/lib/db";
 import Link from "next/link";
 
 export default async function Home({ searchParams }) {
-    const user = await useUser({ token: cookies().get("token")?.value });
-    // User.populate(user, ["groups", "associates"]);
-    const query = queryReadableResources(user);
-
-    const quizSample = serialize(
-        await Quiz.aggregate([{ $match: query }, { $sample: { size: 1 } }]),
-    )[0];
+    const quizSample = {
+        id: 0,
+        type: "fill-in-the-blank",
+        prompt: "Go <blank /> or go <blank />!",
+        correctResponses: ["big", "home"],
+        hints: ["big", "home"]
+    }
 
     return (
         <main className={styles.main}>

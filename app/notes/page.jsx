@@ -1,19 +1,14 @@
-import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
-import { serialize, serializeOne } from "@/lib/db";
+import { useUser } from "@/lib/auth";
 import { NoteInput, InputPopup } from "@client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { NoteDisplay } from "@server";
-import { Note, User } from "@models";
 import Link from "next/link";
-import { db } from "@/lib/db/db.js";
 import { getPermittedNotes } from "@/lib/db/helpers";
 
 export default async function NotesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    // User.populate(user, ["groups", "associates"]);
-    // const query = queryReadableResources(user);
 
     const page = Number(searchParams["page"] ?? 1);
     const amount = Number(searchParams["amount"] ?? 10);
@@ -25,19 +20,10 @@ export default async function NotesPage({ searchParams }) {
         );
     }
 
-    // const notes = serialize(
-    //     await Note.find(query)
-    //         .limit(amount)
-    //         .skip((page - 1) * amount),
-    // );
     const notes = await getPermittedNotes(user.id) || [];
+    console.log("NTOES", notes)
 
     const hasMore = false;
-    // (
-    //     await Note.find(query)
-    //         .limit(1)
-    //         .skip((page - 1) * amount + amount)
-    // )?.length > 0;
 
     if (page > 1 && notes.length === 0) {
         return redirect(`/notes?page=1&amount=${amount}`);
@@ -68,10 +54,10 @@ export default async function NotesPage({ searchParams }) {
                             <li key={note.id}>
                                 <NoteDisplay note={note} />
 
-                                {user && canEdit(note, user) && (
+                                {user && note.permissionType === "write" && (
                                     <InputPopup
                                         type="note"
-                                        resource={serializeOne(note)}
+                                        resource={note}
                                     />
                                 )}
 

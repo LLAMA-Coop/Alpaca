@@ -5,12 +5,12 @@ import { serialize, serializeOne } from "@/lib/db";
 import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import connectDB from "./api/db";
+// import connectDB from "./api/db";
 import "./globals.css";
 import { queryReadableResources } from "@/lib/auth";
 import { getPermittedCourses, getPermittedResources } from "@/lib/db/helpers";
 
-const connection = await connectDB();
+// const connection = await connectDB();
 
 export const metadata = {
     metadataBase: new URL(metadatas.layout.url),
@@ -33,7 +33,7 @@ export default async function RootLayout({ children }) {
 
     const permittedResources = user
         ? await getPermittedResources(user.id)
-        : { sources: [], notes: [], quizzes: [] };
+        : { sources: [], notes: [], quizzes: [], notifications: [] };
 
     const sources = permittedResources.sources;
     const notes = permittedResources.notes;
@@ -50,7 +50,7 @@ export default async function RootLayout({ children }) {
                     notes={notes}
                     quizzes={quizzes}
                     courses={courses}
-                    groups={serialize(user.groups)}
+                    groups={user.groups}
                     // associates={serialize(user.associates)}
                     notifications={notifications}
                     // webSocketURL={process.env.WS_URL}

@@ -1,43 +1,50 @@
-CREATE TABLE IF NOT EXISTS Users (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(32) NOT NULL,
-    displayName VARCHAR (32),
-    description VARCHAR(512),
-    avatar VARCHAR(128),
-    passwordHash VARCHAR(60),
-    refreshToken VARCHAR(256)
+CREATE TABLE IF NOT EXISTS `Users` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `username` VARCHAR(32) NOT NULL,
+    `displayName` VARCHAR (32),
+    `description` VARCHAR(512),
+    `avatar` VARCHAR(128),
+    `passwordHash` VARCHAR(60),
+    `refreshToken` VARCHAR(256)
 );
 
-CREATE TABLE IF NOT EXISTS Notifications (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    type ENUM("group invitation", "associate invitation", "message"),
-    recipientId BIGINT NOT NULL,
-    senderId BIGINT,
-    groupId BIGINT,
-    subject VARCHAR(32),
-    message VARCHAR(256),
-    responseAction ENUM("Accept","Decline", "Request", "Join", "Invite", "Ignore", "Send Message", "Reply"),
-    isRead BOOLEAN DEFAULT FALSE
+CREATE TABLE IF NOT EXISTS `Notifications` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `recipientId` BIGINT NOT NULL,
+    `senderId` BIGINT,
+    `groupId` BIGINT,
+
+    -- Invite is for groups, request is for associates
+    `type` ENUM("invite", "request", "message", "alert"),
+    `subject` VARCHAR(32),
+    `message` VARCHAR(256),
+    `responseAction` ENUM("Accept","Decline", "Request", "Join", "Invite", "Ignore", "Send Message", "Reply"),
+    `isRead` BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE IF NOT EXISTS Associations (
+CREATE TABLE IF NOT EXISTS `Associates` (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user1id BIGINT NOT NULL,
-    user2id BIGINT NOT NULL
+    `A` BIGINT NOT NULL,
+    `B` BIGINT NOT NULL,
+
+    UNIQUE KEY `associates_AB_idx` (`A`, `B`),
+    UNIQUE KEY `associates_BA_idx` (`B`, `A`)
 );
 
-CREATE TABLE IF NOT EXISTS Groups (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(128) NOT NULL,
-    description VARCHAR(512),
-    isPublic BOOLEAN NOT NULL DEFAULT FALSE
+CREATE TABLE IF NOT EXISTS `Groups` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `name` VARCHAR(128) NOT NULL,
+    -- public ID is for the URL
+    `publicId` CHAR(12),
+    `description` VARCHAR(512),
+    `isPublic` BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE IF NOT EXISTS GroupUsers (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    groupId BIGINT NOT NULL,
-    userId BIGINT NOT NULL,
-    userRole ENUM("owner", "administrator", "student", "user")
+CREATE TABLE IF NOT EXISTS `Members` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `groupId` BIGINT NOT NULL,
+    `userId` BIGINT NOT NULL,
+    `role` ENUM("owner", "administrator", "student", "user")
 );
 
 CREATE TABLE IF NOT EXISTS Sources (
