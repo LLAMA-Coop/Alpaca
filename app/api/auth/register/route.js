@@ -55,7 +55,7 @@ export async function POST(req) {
         const displayName = username.trim();
         const passwordHash = await bcrypt.hash(password, 10);
         const sql =
-            "INSERT INTO `Users` (`username`, `displayName`, `passwordHash`, `refreshTokens`) VALUES (?, ?, ?, ?)";
+            "INSERT INTO `Users` (`username`, `displayName`, `passwordHash`, `refreshToken`) VALUES (?, ?, ?, ?)";
         const values = [username.trim(), displayName, passwordHash, "{}"];
         const [result, fields] = await db.promise().query(sql, values);
         const user = {
