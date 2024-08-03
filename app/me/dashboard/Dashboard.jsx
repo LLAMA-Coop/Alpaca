@@ -1,9 +1,9 @@
 "use client";
 
-import { useAlerts, useModals, useStore } from "@/store/store";
+import { useAlerts, useStore } from "@/store/store";
 import { Avatar, Notifications, UserCard } from "@client";
 import styles from "./Dash.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import QuizDisplay from "@/app/components/Quiz/QuizDisplay";
 
@@ -26,9 +26,17 @@ export function Dashboard({ more = false }) {
     const [associate, setAssociate] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const [currentTab, setCurrentTab] = useState(
-        parseInt(localStorage ? localStorage.getItem("currentTab") || 0 : 0),
-    );
+    const [currentTab, setCurrentTab] = useState();
+
+    useEffect(() => {
+        if (typeof window !== undefined) {
+            setCurrentTab(
+                parseInt(
+                    localStorage ? localStorage.getItem("currentTab") || 0 : 0,
+                ),
+            );
+        }
+    }, []);
 
     const tabs = [
         {
@@ -168,15 +176,20 @@ export function Dashboard({ more = false }) {
                                 }
                                 onClick={() => {
                                     setCurrentTab(index);
-                                    localStorage.setItem("currentTab", index);
-                                }}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        setCurrentTab(index);
+                                    if (typeof window != undefined)
                                         localStorage.setItem(
                                             "currentTab",
                                             index,
                                         );
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        setCurrentTab(index);
+                                        if (typeof window != undefined)
+                                            localStorage.setItem(
+                                                "currentTab",
+                                                index,
+                                            );
                                     }
                                 }}
                             >
@@ -324,10 +337,12 @@ export function Dashboard({ more = false }) {
                                     <h3>Attempt quizzes to earn XP</h3>
 
                                     <ul className={styles.gridList}>
-                                        {quizzes.map(q => {
-                                            return <li key={q.id}>
-                                                <QuizDisplay quiz={q} />
-                                            </li>
+                                        {quizzes.map((q) => {
+                                            return (
+                                                <li key={q.id}>
+                                                    <QuizDisplay quiz={q} />
+                                                </li>
+                                            );
                                         })}
                                     </ul>
                                 </div>

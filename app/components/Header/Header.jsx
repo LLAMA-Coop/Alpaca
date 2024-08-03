@@ -7,9 +7,7 @@ import { DynamicNav } from "@server";
 import Link from "next/link";
 
 export async function Header() {
-    const user = serializeOne(
-        await useUser({ token: cookies().get("token")?.value }),
-    );
+    const user = await useUser({ token: cookies().get("token")?.value });
 
     return (
         <div className={styles.header}>

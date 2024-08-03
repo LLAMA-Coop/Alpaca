@@ -1,13 +1,9 @@
-import { Source, Note, Quiz, Notification, Course } from "@models";
 import { FillStore, Timer, Alerts, Modals, Menu } from "@client";
 import { Header, Footer, DBConnectError } from "@server";
-import { serialize, serializeOne } from "@/lib/db";
 import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-// import connectDB from "./api/db";
 import "./globals.css";
-import { queryReadableResources } from "@/lib/auth";
 import { getPermittedCourses, getPermittedResources } from "@/lib/db/helpers";
 
 // const connection = await connectDB();
