@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 // import { User } from "@mneme_app/database-models";
 import { User } from "@/app/api/models";
 import { server } from "@/lib/apiErrorResponses";
+import { useUser } from "@/lib/auth";
 
 export async function POST(req) {
     const token = cookies().get("token")?.value;
@@ -18,9 +19,10 @@ export async function POST(req) {
     }
 
     try {
-        const user = await User.findOne({
-            refreshTokens: token,
-        });
+        // const user = await User.findOne({
+        //     refreshTokens: token,
+        // });
+        const user = await useUser({ token });
 
         if (!user) {
             return NextResponse.json(
@@ -37,16 +39,12 @@ export async function POST(req) {
             );
         }
 
-        await User.updateOne(
-            {
-                _id: user.id,
-            },
-            {
-                $pull: {
-                    refreshTokens: token,
-                },
-            },
-        );
+        await db
+            .promise()
+            .query(
+                "UPDATE `Users` SET `refreshToken` = '' WHERE `id` = ?",
+                user.id,
+            );
 
         return NextResponse.json(
             {

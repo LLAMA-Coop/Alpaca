@@ -26,7 +26,7 @@ export function Dashboard({ more = false }) {
     const [associate, setAssociate] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const [currentTab, setCurrentTab] = useState();
+    const [currentTab, setCurrentTab] = useState(0);
 
     useEffect(() => {
         if (typeof window !== undefined) {

@@ -17,7 +17,6 @@ export async function POST(req) {
     }
 
     try {
-        // const user = await User.findOne({ username });
         const [users, fields] = await db
             .promise()
             .query(
