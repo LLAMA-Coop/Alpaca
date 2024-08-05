@@ -147,8 +147,14 @@ export function Profile({ user, size = 44 }) {
                     {
                         name: "See all notifications",
                         onClick: () => {
+                            console.log(
+                                path,
+                                localStorage.getItem("currentTab"),
+                            );
                             localStorage.setItem("currentTab", 0);
-                            router.push("/me/dashboard");
+                            if (path != "/me/dashboard") {
+                                router.push("/me/dashboard");
+                            }
                         },
                     },
                     {
