@@ -31,7 +31,7 @@ export function InviteUser({ publicUsers, groupId }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    input: userId,
+                    userId,
                 }),
             }).then((res) => res.json());
 

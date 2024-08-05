@@ -43,7 +43,7 @@ export async function POST(req) {
             .promise()
             .query(
                 "UPDATE `Users` SET `refreshToken` = '' WHERE `id` = ?",
-                user.id,
+                [user.id],
             );
 
         return NextResponse.json(

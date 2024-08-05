@@ -26,7 +26,7 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
     async function requestAssociate(userId) {
         const response = await fetch(`${basePath}/api/associates`, {
             method: "POST",
-            body: JSON.stringify({ input: userId }),
+            body: JSON.stringify({ userId }),
         }).then((res) => res.json());
 
         if (response.associate) {

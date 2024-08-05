@@ -141,7 +141,7 @@ export function Dashboard({ more = false }) {
 
         const response = await fetch(`${basePath}/api/associates`, {
             method: "POST",
-            body: JSON.stringify({ input: associate }),
+            body: JSON.stringify({ username }),
         }).then((res) => res.json());
 
         if (response.success) {
