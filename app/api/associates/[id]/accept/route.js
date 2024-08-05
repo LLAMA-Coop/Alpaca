@@ -1,8 +1,9 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
-import { User, Notification } from "@models";
+// import { User, Notification } from "@models";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db.js";
 
 export async function POST(req, { params }) {
     const { id } = params;
@@ -11,9 +12,14 @@ export async function POST(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const notification = await Notification.findOne({
-            _id: id,
-        });
+        // const notification = await Notification.findOne({
+        //     _id: id,
+        // });
+        const [notificationResult, fields] = await db
+            .promise()
+            .query("SELECT * from `Notifications` WHERE id = ?", [id]);
+        const notification =
+            notificationResult.length > 0 ? notificationResult[0] : undefined;
 
         if (!notification) {
             return NextResponse.json(
@@ -35,9 +41,17 @@ export async function POST(req, { params }) {
             );
         }
 
-        const associate = await User.findOne({
-            _id: notification.sender,
-        });
+        // const associate = await User.findOne({
+        //     _id: notification.sender,
+        // });
+        const [assocResult, fieldsAssoc] = await db
+            .promise()
+            .query(
+                "SELECT `id`, `username`, `displayName`, `description`, `avatar`, `isPublic` FROM `Users` WHERE `id` = ?",
+                [id],
+            );
+
+        const associate = assocResult.length > 0 ? assocResult[0] : undefined;
 
         if (!associate) {
             return NextResponse.json(
@@ -49,7 +63,7 @@ export async function POST(req, { params }) {
             );
         }
 
-        if (user.associates.includes(associate.id)) {
+        if (user.associates.find((x) => x.id === associate.id) != undefined) {
             return NextResponse.json(
                 {
                     success: false,
@@ -67,13 +81,22 @@ export async function POST(req, { params }) {
             );
         }
 
-        user.associates.push(associate.id);
-        associate.associates.push(user.id);
+        // user.associates.push(associate.id);
+        // associate.associates.push(user.id);
 
-        await user.save();
-        await associate.save();
+        // await user.save();
+        // await associate.save();
+        await db
+            .promise()
+            .query("INSERT INTO `Associates` (`A`, `B`) VALUES (?, ?)", [
+                user.id,
+                associate.id,
+            ]);
 
-        await Notification.deleteOne({ _id: notification.id });
+        // await Notification.deleteOne({ _id: notification.id });
+        await db
+            .promise()
+            .query("DELETE FROM `Notifications` WHERE `id` = ?", [id]);
 
         return NextResponse.json(
             {
