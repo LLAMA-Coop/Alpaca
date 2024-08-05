@@ -7,7 +7,11 @@ import { Types } from "mongoose";
 import { serializeOne } from "@/lib/db";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { MAX } from "@/lib/constants";
-import { getPermittedSources, insertPermissions } from "@/lib/db/helpers";
+import {
+    getPermittedSources,
+    insertPermissions,
+    sqlDate,
+} from "@/lib/db/helpers";
 import { db } from "@/lib/db/db.js";
 
 export async function GET(req) {
@@ -181,7 +185,7 @@ export async function PUT(req) {
             );
         }
 
-        if (source.permissonType !== "write") {
+        if (source.permissionType !== "write") {
             return NextResponse.json(
                 {
                     message: `You are not permitted to edit source ${id}`,
@@ -222,15 +226,21 @@ export async function PUT(req) {
         if (tags) {
             // source.tags = [...tags];
             // B/c `tags` is JSON/LONGTEXT, need to overwrite either way
-            columns.push({ name: "tags", value: tags });
+            columns.push({ name: "tags", value: JSON.stringify(tags) });
         }
         if (publishDate) {
             // source.publishDate = publishDate;
-            columns.push({ name: "publishedUpdated", value: publishDate });
+            columns.push({
+                name: "publishedUpdated",
+                value: sqlDate(publishDate),
+            });
         }
         if (lastAccessed) {
             // source.lastAccessed = lastAccessed;
-            columns.push({ name: "lastAccessed", value: lastAccessed });
+            columns.push({
+                name: "lastAccessed",
+                value: sqlDate(lastAccessed),
+            });
         }
         // if (locationTypeDefault) {
         //     source.locationTypeDefault = locationTypeDefault;

@@ -16,7 +16,9 @@ import {
     PermissionsInput,
     ListAdd,
     UserInput,
+    InputPopup,
 } from "@client";
+import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 
 export function SourceInput({ source }) {
     const [title, setTitle] = useState("");
@@ -40,7 +42,7 @@ export function SourceInput({ source }) {
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
 
-    const [locationTypeDefault, setLocationTypeDefault] = useState("page");
+    // const [locationTypeDefault, setLocationTypeDefault] = useState("page");
 
     const [loading, setLoading] = useState(false);
     const [permissions, setPermissions] = useState({});
@@ -53,13 +55,14 @@ export function SourceInput({ source }) {
     const availableCourses = useStore((state) => state.courses);
     const availableTags = useStore((state) => state.tags);
     const addTags = useStore((state) => state.addTags);
-    const canDelete = source && source.createdBy === user.id;
+    const canDelete = source && source.createdBy === user?.id;
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
+        console.log(source)
         if (!source) {
             setLastAccessed(new Date().toISOString().split("T")[0]);
             return;
@@ -71,7 +74,7 @@ export function SourceInput({ source }) {
         if (source.tags && source.tags.length > 0) setTags([...source.tags]);
         if (source.medium) setMedium(source.medium);
         if (source.url) setUrl(source.url);
-        if (source.publishedAt) setPublishDate(htmlDate(source.publishedAt));
+        if (source.publishedUpdated) setPublishDate(htmlDate(source.publishedUpdated));
         if (source.lastAccessed) setLastAccessed(htmlDate(source.lastAccessed));
         if (source.courses && source.courses.length > 0) {
             setCourses(
@@ -80,9 +83,9 @@ export function SourceInput({ source }) {
                 ),
             );
         }
-        if (source.locationTypeDefault) {
-            setLocationTypeDefault(source.locationTypeDefault);
-        }
+        // if (source.locationTypeDefault) {
+        //     setLocationTypeDefault(source.locationTypeDefault);
+        // }
         if (source.permissions)
             setPermissions(serializeOne(source.permissions));
     }, []);
@@ -155,7 +158,7 @@ export function SourceInput({ source }) {
             authors,
             courses: courses.map((course) => course.id),
             tags,
-            locationTypeDefault,
+            // locationTypeDefault,
         };
         sourcePayload.permissions = buildPermissions(permissions);
         if (source && source.id) {
@@ -375,7 +378,7 @@ export function SourceInput({ source }) {
                 />
             </div>
 
-            <div>
+            {/* <div>
                 <Input
                     type={"select"}
                     label={"Location Type Default"}
@@ -401,14 +404,21 @@ export function SourceInput({ source }) {
                     value={locationTypeDefault}
                     onChange={(e) => setLocationTypeDefault(e.target.value)}
                 />
-            </div>
+            </div> */}
 
-            {(!source || source.createdBy === user.id) && (
-                <PermissionsInput
-                    permissions={source ? source.permissions : {}}
+            <div>
+                <PermissionsDisplay
+                    permissions={permissions}
                     setter={setPermissions}
                 />
-            )}
+                {(!source || source.createdBy === user?.id) && (
+                    <InputPopup
+                        type="permissions"
+                        resource={permissions}
+                        setter={setPermissions}
+                    />
+                )}
+            </div>
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Source"}
