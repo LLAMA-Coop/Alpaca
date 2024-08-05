@@ -112,6 +112,8 @@ export async function POST(req) {
             .query(baseQuery, fieldsArray);
 
         const sourceId = sourceInsert.insertId;
+
+        // Replace below with insertSourceCredits call
         const creditInsertValues = authors.map((a) => [sourceId, a]);
         const creditsQuery = `INSERT INTO \`SourceCredits\` (sourceId, name) VALUES ?`;
 
@@ -127,29 +129,7 @@ export async function POST(req) {
         );
 
         // Next up:
-        //  X SourceCredits (for authors)
-        //      does not have different credit types yet
-        //  CourseResources (table not created)
-        //  Location Type Default (Page, ID, Header, Timestamp)
-        //  X ResourcePermissions
-
-        // const source = new Source({
-        //     title: title.trim(),
-        //     medium: medium,
-        //     url: url,
-        //     publishedAt: publishDate,
-        //     lastAccessed: lastAccessed,
-        //     authors: authors,
-        //     courses: courses ?? [],
-        //     tags,
-        //     locationTypeDefault,
-        //     createdBy: user.id,
-        //     contributors: [user.id],
-        // });
-
-        // source.permissions = buildPermissions(permissions);
-
-        // const content = await source.save();
+        //  CourseResources (table created)
         const content = sourceInsert;
 
         return NextResponse.json(
@@ -173,8 +153,10 @@ export async function PUT(req) {
             return unauthorized;
         }
 
+        const sources = await getPermittedSources(user.id);
+
         const {
-            _id,
+            id,
             title,
             medium,
             url,
@@ -187,67 +169,112 @@ export async function PUT(req) {
             permissions,
         } = await req.json();
 
-        const source = await Source.findById(_id);
+        // const source = await Source.findById(_id);
+        const source = sources.find((x) => x.id === id);
+
         if (!source) {
             return NextResponse.json(
                 {
-                    message: `No source found with id ${_id}`,
+                    message: `No source found with id ${id}`,
                 },
                 { status: 404 },
             );
         }
 
-        if (!canEdit(source, user)) {
+        if (source.permissonType !== "write") {
             return NextResponse.json(
                 {
-                    message: `You are not permitted to edit source ${_id}`,
+                    message: `You are not permitted to edit source ${id}`,
                 },
                 { status: 403 },
             );
         }
 
+        const columns = [];
+
         if (title) {
-            source.title = title.trim();
+            // source.title = title.trim();
+            columns.push({ name: "title", value: title.trim() });
         }
         if (medium) {
-            source.medium = medium;
+            // source.medium = medium;
+            if (
+                [
+                    "book",
+                    "article",
+                    "video",
+                    "podcast",
+                    "website",
+                    "audio",
+                ].includes(medium)
+            ) {
+                columns.push({ name: "medium", value: medium });
+            } else {
+                console.error(`The medium ${medium} is not recognized`);
+                columns.push({ name: "medium", value: null });
+            }
         }
         if (url) {
-            source.url = url;
-        }
-        if (publishDate) {
-            source.publishDate = publishDate;
-        }
-        if (lastAccessed) {
-            source.lastAccessed = lastAccessed;
-        }
-        if (authors) {
-            source.authors = [...authors];
-        }
-        if (courses) {
-            courses.forEach((courseId_req) => {
-                if (
-                    !source.courses.find(
-                        (course) => course._id.toString() === courseId_req,
-                    )
-                ) {
-                    source.courses.push(new Types.ObjectId(courseId_req));
-                }
-            });
+            // source.url = url;
+            // Can set up regex to verify proper URL
+            columns.push({ name: "url", value: url });
         }
         if (tags) {
-            source.tags = [...tags];
+            // source.tags = [...tags];
+            // B/c `tags` is JSON/LONGTEXT, need to overwrite either way
+            columns.push({ name: "tags", value: tags });
         }
-        if (locationTypeDefault) {
-            source.locationTypeDefault = locationTypeDefault;
+        if (publishDate) {
+            // source.publishDate = publishDate;
+            columns.push({ name: "publishedUpdated", value: publishDate });
         }
-        if (permissions && source.createdBy.toString() === user.id.toString()) {
-            source.permissions = serializeOne(permissions);
+        if (lastAccessed) {
+            // source.lastAccessed = lastAccessed;
+            columns.push({ name: "lastAccessed", value: lastAccessed });
         }
-        source.updateBy = user.id;
+        // if (locationTypeDefault) {
+        //     source.locationTypeDefault = locationTypeDefault;
+        // }
+        // No longer used
+        // Taken care of with ResourceSources table, for each resource that cites a source
 
-        const content = await source.save();
-        return NextResponse.json({ content });
+        const setClause = columns.map((col) => `${col.name} = ?`).join(", ");
+        const query = `UPDATE Sources SET ${setClause} WHERE \`id\` = ?`;
+
+        const [sourceResults, sourceFields] = await db
+            .promise()
+            .query(query, [...columns.map((x) => x.value), id]);
+
+        if (authors) {
+            // source.authors = [...authors];
+            // This updates SourceCredits
+        }
+
+        if (courses) {
+            // courses.forEach((courseId_req) => {
+            //     if (
+            //         !source.courses.find(
+            //             (course) => course._id.toString() === courseId_req,
+            //         )
+            //     ) {
+            //         source.courses.push(new Types.ObjectId(courseId_req));
+            //     }
+            // });
+            // This updates CourseResources
+            // Use updateCourseResources
+        }
+
+        if (permissions && source.createdBy.toString() === user.id.toString()) {
+            // source.permissions = serializeOne(permissions);
+            // This updates ResourcePermissions
+            // Use updatePermissions
+        }
+
+        // source.updateBy = user.id;
+        // Use resourceContribution
+
+        // const content = await source.save();
+        return NextResponse.json({ content: { sourceResults, query } });
     } catch (error) {
         console.error(`[Source] PUT error: ${error}`);
         return server;

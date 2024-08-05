@@ -48,113 +48,114 @@ CREATE TABLE IF NOT EXISTS `Members` (
 );
 
 CREATE TABLE IF NOT EXISTS Sources (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(128) NOT NULL,
-    medium ENUM("book", "article", "video", "podcast", "website", "audio"),
-    url VARCHAR(128),
-    tags json NOT NULL,
-    createdBy BIGINT NOT NULL,
-    publishedUpdated DATE NULL
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `title` VARCHAR(128) NOT NULL,
+    `medium` ENUM("book", "article", "video", "podcast", "website", "audio"),
+    `url` VARCHAR(128),
+    `tags` JSON NOT NULL,
+    `createdBy` BIGINT NOT NULL,
+    `publishedUpdated` DATE NULL,
+    `lastAccessed` DATE NULL
 );
 
 CREATE TABLE IF NOT EXISTS SourceCredits (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    sourceId BIGINT NOT NULL,
-    name VARCHAR(64),
-    type VARCHAR(32) DEFAULT "Author"
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `sourceId` BIGINT NOT NULL,
+    `name` VARCHAR(64),
+    `type` VARCHAR(32) DEFAULT "Author"
 );
 
 CREATE TABLE IF NOT EXISTS Notes (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(128) NOT NULL,
-    text VARCHAR(8192) NOT NULL,
-    tags json NOT NULL,
-    createdBy BIGINT NOT NULL
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `title` VARCHAR(128) NOT NULL,
+    `text` VARCHAR(8192) NOT NULL,
+    `tags` JSON NOT NULL,
+    `createdBy` BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Quizzes (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    type ENUM("prompt-response", "multiple-choice", "fill-in-the-blank", "ordered-list-answer", "unordered-list-answer", "verbatim"),
-    prompt VARCHAR(256),
-    choices json NULL,
-    correctResponses json NOT NULL,
-    hints json NOT NULL,
-    tags json NOT NULL,
-    createdBy BIGINT NOT NULL
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `type` ENUM("prompt-response", "multiple-choice", "fill-in-the-blank", "ordered-list-answer", "unordered-list-answer", "verbatim"),
+    `prompt` VARCHAR(256),
+    `choices` JSON NULL,
+    `correctResponses` JSON NOT NULL,
+    `hints` JSON NOT NULL,
+    `tags` JSON NOT NULL,
+    `createdBy` BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS UserQuizzes (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    userId BIGINT NOT NULL,
-    quizId BIGINT NOT NULL,
-    lastCorrect DATE DEFAULT CURRENT_DATE,
-    level INT DEFAULT 0,
-    hiddenUntil DATE DEFAULT CURRENT_DATE,
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `userId` BIGINT NOT NULL,
+    `quizId` BIGINT NOT NULL,
+    `lastCorrect` DATE DEFAULT CURRENT_DATE,
+    `level` INT DEFAULT 0,
+    `hiddenUntil` DATE DEFAULT CURRENT_DATE,
     UNIQUE KEY userQuizCombo (userId, quizId)
 );
 
 CREATE TABLE IF NOT EXISTS QuizNotes (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    quizId BIGINT NOT NULL,
-    noteId BIGINT NOT NULL
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `quizId` BIGINT NOT NULL,
+    `noteId` BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS ResourceContributors (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    resourceId BIGINT NOT NULL,
-    resourceType ENUM("note", "quiz"),
-    userId BIGINT NOT NULL,
-    date DATE DEFAULT CURRENT_DATE
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `resourceId` BIGINT NOT NULL,
+    `resourceType` ENUM("source", "note", "quiz"),
+    `userId` BIGINT NOT NULL,
+    `date` DATE DEFAULT CURRENT_DATE
 );
 
 CREATE TABLE IF NOT EXISTS ResourceSources (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    resourceId BIGINT NOT NULL,
-    resourceType ENUM("note", "quiz"),
-    sourceId BIGINT NOT NULL,
-    locInSource VARCHAR(32),
-    locType ENUM("page", "id reference", "section", "timestamp")
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `resourceId` BIGINT NOT NULL,
+    `resourceType` ENUM("note", "quiz"),
+    `sourceId` BIGINT NOT NULL,
+    `locInSource` VARCHAR(32),
+    `locType` ENUM("page", "id reference", "section", "timestamp", "url")
 );
 
 CREATE TABLE IF NOT EXISTS Courses (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(128),
-    description VARCHAR(512),
-    enrollment ENUM("open", "paid", "private"),
-    createdBy BIGINT NOT NULL,
-    createdDate DATE DEFAULT CURRENT_DATE
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `name` VARCHAR(128),
+    `description` VARCHAR(512),
+    `enrollment` ENUM("open", "paid", "private"),
+    `createdBy` BIGINT NOT NULL,
+    `createdDate` DATE DEFAULT CURRENT_DATE
 );
 
 CREATE TABLE IF NOT EXISTS CourseUsers (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    courseId BIGINT NOT NULL,
-    userId BIGINT NOT NULL,
-    userType ENUM("owner", "tutor", "student"),
-    enrollmentExpiration DATE DEFAULT (CURRENT_DATE + INTERVAL 200 YEAR)
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `courseId` BIGINT NOT NULL,
+    `userId` BIGINT NOT NULL,
+    `userType` ENUM("owner", "tutor", "student"),
+    `enrollmentExpiration` DATE DEFAULT (CURRENT_DATE + INTERVAL 200 YEAR)
 );
 
 CREATE TABLE IF NOT EXISTS CourseHierarchy (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    inferiorCourse BIGINT NOT NULL,
-    superiorCourse BIGINT NOT NULL,
-    relationship ENUM("prerequisite", "encompasses"),
-    averageLevelRequired INT DEFAULT 0
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `inferiorCourse` BIGINT NOT NULL,
+    `superiorCourse` BIGINT NOT NULL,
+    `relationship` ENUM("prerequisite", "encompasses"),
+    `averageLevelRequired` INT DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS CourseResources (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    courseId BIGINT NOT NULL,
-    resourceId BIGINT NOT NULL,
-    resourceType ENUM("source", "note", "quiz"),
-    includeReferencingResources BOOLEAN
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `courseId` BIGINT NOT NULL,
+    `resourceId` BIGINT NOT NULL,
+    `resourceType` ENUM("source", "note", "quiz"),
+    `includeReferencingResources` BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS ResourcePermissions (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    resourceId BIGINT NOT NULL,
-    resourceType ENUM("source", "note", "quiz", "course", "user", "group"),
-    permitAll BOOLEAN DEFAULT FALSE,
-    permissionType ENUM("read", "write"),
-    permittedId BIGINT,
-    permittedType ENUM ("user", "group")
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `resourceId` BIGINT NOT NULL,
+    `resourceType` ENUM("source", "note", "quiz", "course", "user", "group"),
+    `permitAll` BOOLEAN DEFAULT FALSE,
+    `permissionType` ENUM("read", "write"),
+    `permittedId` BIGINT,
+    `permittedType` ENUM ("user", "group")
 );
