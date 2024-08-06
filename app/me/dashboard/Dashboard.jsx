@@ -141,7 +141,11 @@ export function Dashboard({ more = false }) {
 
         const response = await fetch(`${basePath}/api/associates`, {
             method: "POST",
-            body: JSON.stringify({ username }),
+            body: JSON.stringify(
+                isNaN(associate)
+                    ? { username: associate }
+                    : { userId: associate },
+            ),
         }).then((res) => res.json());
 
         if (response.success) {

@@ -15,10 +15,10 @@ CREATE TABLE IF NOT EXISTS `Notifications` (
     `groupId` BIGINT,
 
     -- Invite is for groups, request is for associates
-    `type` ENUM("invite", "request", "message", "alert"),
+    `type` ENUM('invite', 'request', 'message', 'alert'),
     `subject` VARCHAR(32),
     `message` VARCHAR(256),
-    `responseAction` ENUM("Accept","Decline", "Request", "Join", "Invite", "Ignore", "Send Message", "Reply"),
+    `responseAction` ENUM('Accept','Decline', 'Request', 'Join', 'Invite', 'Ignore', 'Send Message', 'Reply'),
     `isRead` BOOLEAN DEFAULT FALSE
 );
 
@@ -37,20 +37,21 @@ CREATE TABLE IF NOT EXISTS `Groups` (
     -- public ID is for the URL
     `publicId` CHAR(12),
     `description` VARCHAR(512),
-    `isPublic` BOOLEAN NOT NULL DEFAULT FALSE
+    `isPublic` BOOLEAN NOT NULL DEFAULT FALSE,
+    `avatar` VARCHAR(128)
 );
 
 CREATE TABLE IF NOT EXISTS `Members` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `groupId` BIGINT NOT NULL,
     `userId` BIGINT NOT NULL,
-    `role` ENUM("owner", "administrator", "student", "user")
+    `role` ENUM('owner', 'administrator', 'student', 'user')
 );
 
 CREATE TABLE IF NOT EXISTS Sources (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `title` VARCHAR(128) NOT NULL,
-    `medium` ENUM("book", "article", "video", "podcast", "website", "audio"),
+    `medium` ENUM('book', 'article', 'video', 'podcast', 'website', 'audio'),
     `url` VARCHAR(128),
     `tags` JSON NOT NULL,
     `createdBy` BIGINT NOT NULL,
@@ -62,7 +63,7 @@ CREATE TABLE IF NOT EXISTS SourceCredits (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `sourceId` BIGINT NOT NULL,
     `name` VARCHAR(64),
-    `type` VARCHAR(32) DEFAULT "Author"
+    `type` VARCHAR(32) DEFAULT 'Author'
 );
 
 CREATE TABLE IF NOT EXISTS Notes (
@@ -75,7 +76,7 @@ CREATE TABLE IF NOT EXISTS Notes (
 
 CREATE TABLE IF NOT EXISTS Quizzes (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `type` ENUM("prompt-response", "multiple-choice", "fill-in-the-blank", "ordered-list-answer", "unordered-list-answer", "verbatim"),
+    `type` ENUM('prompt-response', 'multiple-choice', 'fill-in-the-blank', 'ordered-list-answer', 'unordered-list-answer', 'verbatim'),
     `prompt` VARCHAR(256),
     `choices` JSON NULL,
     `correctResponses` JSON NOT NULL,
@@ -103,7 +104,7 @@ CREATE TABLE IF NOT EXISTS QuizNotes (
 CREATE TABLE IF NOT EXISTS ResourceContributors (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `resourceId` BIGINT NOT NULL,
-    `resourceType` ENUM("source", "note", "quiz"),
+    `resourceType` ENUM('source', 'note', 'quiz'),
     `userId` BIGINT NOT NULL,
     `date` DATE DEFAULT CURRENT_DATE
 );
@@ -111,17 +112,17 @@ CREATE TABLE IF NOT EXISTS ResourceContributors (
 CREATE TABLE IF NOT EXISTS ResourceSources (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `resourceId` BIGINT NOT NULL,
-    `resourceType` ENUM("note", "quiz"),
+    `resourceType` ENUM('note', 'quiz'),
     `sourceId` BIGINT NOT NULL,
     `locInSource` VARCHAR(32),
-    `locType` ENUM("page", "id reference", "section", "timestamp", "url")
+    `locType` ENUM('page', 'id reference', 'section', 'timestamp', 'url')
 );
 
 CREATE TABLE IF NOT EXISTS Courses (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(128),
     `description` VARCHAR(512),
-    `enrollment` ENUM("open", "paid", "private"),
+    `enrollment` ENUM('open', 'paid', 'private'),
     `createdBy` BIGINT NOT NULL,
     `createdDate` DATE DEFAULT CURRENT_DATE
 );
@@ -130,7 +131,7 @@ CREATE TABLE IF NOT EXISTS CourseUsers (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `courseId` BIGINT NOT NULL,
     `userId` BIGINT NOT NULL,
-    `userType` ENUM("owner", "tutor", "student"),
+    `userType` ENUM('owner', 'tutor', 'student'),
     `enrollmentExpiration` DATE DEFAULT (CURRENT_DATE + INTERVAL 200 YEAR)
 );
 
@@ -138,7 +139,7 @@ CREATE TABLE IF NOT EXISTS CourseHierarchy (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `inferiorCourse` BIGINT NOT NULL,
     `superiorCourse` BIGINT NOT NULL,
-    `relationship` ENUM("prerequisite", "encompasses"),
+    `relationship` ENUM('prerequisite', 'encompasses'),
     `averageLevelRequired` INT DEFAULT 0
 );
 
@@ -146,16 +147,16 @@ CREATE TABLE IF NOT EXISTS CourseResources (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `courseId` BIGINT NOT NULL,
     `resourceId` BIGINT NOT NULL,
-    `resourceType` ENUM("source", "note", "quiz"),
+    `resourceType` ENUM('source', 'note', 'quiz'),
     `includeReferencingResources` BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS ResourcePermissions (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `resourceId` BIGINT NOT NULL,
-    `resourceType` ENUM("source", "note", "quiz", "course", "user", "group"),
+    `resourceType` ENUM('source', 'note', 'quiz', 'course', 'user', 'group'),
     `permitAll` BOOLEAN DEFAULT FALSE,
-    `permissionType` ENUM("read", "write"),
+    `permissionType` ENUM('read', 'write'),
     `permittedId` BIGINT,
-    `permittedType` ENUM ("user", "group")
+    `permittedType` ENUM ('user', 'group')
 );

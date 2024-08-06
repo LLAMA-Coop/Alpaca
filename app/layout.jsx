@@ -47,7 +47,7 @@ export default async function RootLayout({ children }) {
                     quizzes={quizzes}
                     courses={courses}
                     groups={user.groups}
-                    // associates={serialize(user.associates)}
+                    associates={user.associates}
                     notifications={notifications}
                     // webSocketURL={process.env.WS_URL}
                 />

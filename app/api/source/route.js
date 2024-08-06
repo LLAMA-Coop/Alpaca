@@ -169,7 +169,7 @@ export async function PUT(req) {
             authors,
             courses,
             tags,
-            locationTypeDefault,
+            // locationTypeDefault,
             permissions,
         } = await req.json();
 
@@ -258,6 +258,7 @@ export async function PUT(req) {
         if (authors) {
             // source.authors = [...authors];
             // This updates SourceCredits
+            // Use updateSourceCredits
         }
 
         if (courses) {

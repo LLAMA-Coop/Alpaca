@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 // import { User } from "@mneme_app/database-models";
-import { User } from "@/app/api/models";
+// import { User } from "@/app/api/models";
 import { server } from "@/lib/apiErrorResponses";
 import { useUser } from "@/lib/auth";
 

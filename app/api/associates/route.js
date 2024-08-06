@@ -19,7 +19,7 @@ export async function POST(req) {
             const [associateResult, fields] = await db
                 .promise()
                 .query(
-                    "SELECT `id`, `username`, `displayName`, `description`, `avatar`, `isPublic` FROM `Users` WHERE `id` = ?",
+                    "SELECT `id`, `username`, `displayName`, `description`, `avatar` FROM `Users` WHERE `id` = ?",
                     [userId],
                 );
             associate = associateResult.length > 0 ? associateResult[0] : false;
@@ -28,7 +28,7 @@ export async function POST(req) {
             const [associateResult, fields] = await db
                 .promise()
                 .query(
-                    "SELECT `id`, `username`, `displayName`, `description`, `avatar`, `isPublic` FROM `Users` WHERE `username` = ?",
+                    "SELECT `id`, `username`, `displayName`, `description`, `avatar` FROM `Users` WHERE `username` = ?",
                     [username],
                 );
             associate = associateResult.length > 0 ? associateResult[0] : false;
@@ -165,7 +165,6 @@ export async function POST(req) {
                           displayName: associate.displayName,
                           description: associate.description,
                           avatar: associate.avatar,
-                          isPublic: associate.isPublic,
                       }
                     : null,
             },

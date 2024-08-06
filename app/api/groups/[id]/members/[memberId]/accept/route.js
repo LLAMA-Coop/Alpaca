@@ -1,8 +1,9 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
-import { User, Notification, Group } from "@models";
+// import { User, Notification, Group } from "@models";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db.js";
 
 export async function POST(req, { params }) {
     const { id, memberId } = params;
@@ -11,13 +12,19 @@ export async function POST(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const notification = await Notification.findOneAndDelete({
-            type: 2,
-            recipient: memberId,
-            group: id,
-        });
+        // const notification = await Notification.findOneAndDelete({
+        //     type: 2,
+        //     recipient: memberId,
+        //     group: id,
+        // });
+        const [notifResult, deleteFields] = await db
+            .promise()
+            .query(
+                "DELETE FROM `Notifications` WHERE `type` = 'invite' AND `recipientId` = ? AND `groupId` = ?",
+                [memberId, id],
+            );
 
-        if (!notification) {
+        if (notifResult.affectedRows === 0) {
             return NextResponse.json(
                 {
                     success: false,
@@ -27,10 +34,18 @@ export async function POST(req, { params }) {
             );
         }
 
-        const group = await Group.findOne({ _id: id });
-        const member = await User.findOne({ _id: memberId });
+        // const group = await Group.findOne({ _id: id });
+        // const member = await User.findOne({ _id: memberId });
+        const [memberResults, fields] = await db
+            .promise()
+            .query(
+                "SELECT `Groups`.`id`, `Groups`.`name`, `Groups`.`description`, `Groups`.`isPublic`, `Groups`.`avatar`, EXISTS (SELECT 1 FROM `Users` WHERE `id` = ?) AS `user_exists`, EXISTS (SELECT 1 FROM `Members` WHERE `groupId` = ? AND userId = ?) AS membership_exists FROM `Groups` WHERE `Groups`.`id` = ?",
+                [memberId, id, memberId, id],
+            );
 
-        if (!group || !member || group.users.includes(member.id)) {
+        const result = memberResults.length > 0 ? memberResults[0] : false;
+
+        if (!result || result.membership_exists) {
             return NextResponse.json(
                 {
                     success: false,
@@ -39,22 +54,22 @@ export async function POST(req, { params }) {
                 { status: 404 },
             );
         } else {
-            group.users.push(member.id);
-            member.groups.push(group.id);
+            // group.users.push(member.id);
+            // member.groups.push(group.id);
 
-            await group.save();
-            await member.save();
+            // await group.save();
+            // await member.save();
 
             return NextResponse.json(
                 {
                     success: true,
                     message: "Successfully joined group.",
                     group: {
-                        id: group.id,
-                        name: group.name,
-                        description: group.description,
-                        avatar: group.avatar,
-                        isPublic: group.isPublic,
+                        id: result.id,
+                        name: result.name,
+                        description: result.description,
+                        avatar: result.avatar,
+                        isPublic: result.isPublic,
                     },
                 },
                 { status: 200 },
