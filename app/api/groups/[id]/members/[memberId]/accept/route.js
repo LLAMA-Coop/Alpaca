@@ -1,5 +1,4 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
-// import { User, Notification, Group } from "@models";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -12,11 +11,6 @@ export async function POST(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        // const notification = await Notification.findOneAndDelete({
-        //     type: 2,
-        //     recipient: memberId,
-        //     group: id,
-        // });
         const [notifResult, deleteFields] = await db
             .promise()
             .query(
@@ -54,12 +48,6 @@ export async function POST(req, { params }) {
                 { status: 404 },
             );
         } else {
-            // group.users.push(member.id);
-            // member.groups.push(group.id);
-
-            // await group.save();
-            // await member.save();
-
             return NextResponse.json(
                 {
                     success: true,

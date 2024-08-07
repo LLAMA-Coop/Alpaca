@@ -1,5 +1,4 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
-// import { User, Notification } from "@models";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -12,9 +11,6 @@ export async function POST(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        // const notification = await Notification.findOne({
-        //     _id: id,
-        // });
         const [notificationResult, fields] = await db
             .promise()
             .query("SELECT * from `Notifications` WHERE id = ?", [id]);
@@ -31,7 +27,7 @@ export async function POST(req, { params }) {
             );
         }
 
-        if (notification.recipient.toString() !== user.id.toString()) {
+        if (notification.recipientId !== user.id) {
             return NextResponse.json(
                 {
                     success: false,
@@ -41,14 +37,11 @@ export async function POST(req, { params }) {
             );
         }
 
-        // const associate = await User.findOne({
-        //     _id: notification.sender,
-        // });
         const [assocResult, fieldsAssoc] = await db
             .promise()
             .query(
-                "SELECT `id`, `username`, `displayName`, `description`, `avatar`, `isPublic` FROM `Users` WHERE `id` = ?",
-                [id],
+                "SELECT `id`, `username`, `displayName`, `description`, `avatar` FROM `Users` WHERE `id` = ?",
+                [notification.senderId],
             );
 
         const associate = assocResult.length > 0 ? assocResult[0] : undefined;
@@ -80,12 +73,7 @@ export async function POST(req, { params }) {
                 { status: 400 },
             );
         }
-
-        // user.associates.push(associate.id);
-        // associate.associates.push(user.id);
-
-        // await user.save();
-        // await associate.save();
+        
         await db
             .promise()
             .query("INSERT INTO `Associates` (`A`, `B`) VALUES (?, ?)", [
@@ -93,7 +81,6 @@ export async function POST(req, { params }) {
                 associate.id,
             ]);
 
-        // await Notification.deleteOne({ _id: notification.id });
         await db
             .promise()
             .query("DELETE FROM `Notifications` WHERE `id` = ?", [id]);
@@ -108,7 +95,6 @@ export async function POST(req, { params }) {
                     displayName: associate.displayName,
                     description: associate.description,
                     avatar: associate.avatar,
-                    isPublic: associate.isPublic,
                 },
             },
             { status: 200 },

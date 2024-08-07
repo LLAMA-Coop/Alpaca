@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `Notifications` (
     `type` ENUM('invite', 'request', 'message', 'alert'),
     `subject` VARCHAR(32),
     `message` VARCHAR(256),
-    `responseAction` ENUM('Accept','Decline', 'Request', 'Join', 'Invite', 'Ignore', 'Send Message', 'Reply'),
+    `responseAction` ENUM('Accept','Decline', 'Request', 'Join', 'Invite', 'Ignore', 'Send Message', 'Reply', 'Delete'),
     `isRead` BOOLEAN DEFAULT FALSE
 );
 

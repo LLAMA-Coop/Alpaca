@@ -4,9 +4,10 @@ import { cookies } from "next/headers";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 // import { Group } from "@mneme_app/database-models";
 // import User from "@mneme_app/database-models";
-import { User, Group } from "@/app/api/models";
+// import { User, Group } from "@/app/api/models";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { MAX } from "@/lib/constants";
+import { db } from "@/lib/db/db.js";
 
 export async function POST(req) {
     try {
@@ -17,7 +18,7 @@ export async function POST(req) {
 
         const submitErrors = new SubmitErrors();
 
-        const { name, description, icon } = await req.json();
+        const { name, description, isPublic, avatar } = await req.json();
 
         if (!name) {
             submitErrors.addError("Missing name");
@@ -26,9 +27,12 @@ export async function POST(req) {
                 `The following group name is not 2 to ${MAX.name} characters in length:\n ${name}`,
             );
         }
-        const sameName = await Group.findOne({ name });
+        // const sameName = await Group.findOne({ name });
+        const [sameName, sameNameFields] = await db
+            .promise()
+            .query("SELECT `id` FROM `Groups` WHERE `name` = ?", [name.trim()]);
 
-        if (sameName) {
+        if (sameName.length > 0) {
             submitErrors.addError(`The group name ${name} already exists`);
         }
 
@@ -48,25 +52,39 @@ export async function POST(req) {
             );
         }
 
-        const group = new Group({
-            name: name.trim(),
-            description: description.length > 0 ? description : null,
-            icon: icon,
-            owner: user.id,
-            users: [user.id],
-            admins: [user.id],
-        });
+        // const group = new Group({
+        //     name: name.trim(),
+        //     description: description.length > 0 ? description : null,
+        //     icon: icon,
+        //     owner: user.id,
+        //     users: [user.id],
+        //     admins: [user.id],
+        // });
 
-        const content = await group.save();
+        const [group, groupFields] = await db
+            .promise()
+            .query(
+                "INSERT INTO `Groups` (`name`, `description`, `isPublic`, `avatar`) VALUES (?, ?, ?, ?)",
+                [name, description, isPublic, avatar],
+            );
 
-        await User.updateOne(
-            { _id: user.id },
-            {
-                $push: {
-                    groups: content.id,
-                },
-            },
-        );
+        // await User.updateOne(
+        //     { _id: user.id },
+        //     {
+        //         $push: {
+        //             groups: content.id,
+        //         },
+        //     },
+        // );
+
+        const [member, memberFields] = await db
+            .promise()
+            .query(
+                "INSERT INTO `Members` (`groupId`, `userId`, `role`) VALUES (?, ?, 'owner')",
+                [group.insertId, user.id],
+            );
+
+        const content = { group, member };
 
         return NextResponse.json(
             {

@@ -1,11 +1,11 @@
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { Notification, User, Group } from "@models";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db.js";
 
-export async function POST(req) {
-    const notificationId = req.nextUrl.pathname.split("/")[3];
+export async function POST(req, { params }) {
+    const { id } = params;
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
 
@@ -13,81 +13,151 @@ export async function POST(req) {
             return unauthorized;
         }
 
-        const notification = await Notification.findById(notificationId);
+        const [notifResult, notifFields] = await db
+            .promise()
+            .query(
+                "SELECT `recipientId`, `senderId`, `groupId`, `subject` FROM `Notifications` WHERE `id` = ?",
+                [id],
+            );
+
+        const notification = notifResult.length > 0 ? notifResult[0] : false;
 
         if (!notification) {
             console.error("no notification");
             return new NextResponse(
                 {
-                    message: `The notification ${notificationId} is no longer available. It may have been deleted by the sender.`,
+                    message: `The notification ${id} is no longer available. It may have been deleted by the sender.`,
                 },
                 { status: 404 },
             );
         }
 
-        const { action } = await req.json();
+        const { action, message } = await req.json();
         let isUserRecipient = false;
         let isUserSender = false;
         let update;
 
-        if (notification.recipient._id.toString() === user.id.toString()) {
+        if (notification.recipientId === user.id) {
             isUserRecipient = true;
         }
-        if (notification.senderUser._id.toString() === user.id.toString()) {
+        if (notification.senderId === user.id) {
             isUserSender = true;
         }
 
-        if (action === "accept association") {
+        if (action === "Accept") {
             if (!isUserRecipient) {
                 return unauthorized;
             }
-            const sender = await User.findById(notification.senderUser);
-            update = {};
-            if (sender.associates.indexOf(user.id) === -1) {
-                sender.associates.push(user.id);
-                update.sender = await sender.save();
-            }
-            if (user.associates.indexOf(sender._id) === -1) {
-                user.associates.push(sender._id);
-                update.recipient = await user.save();
-            }
+            
+            const [association, assocFields] = await db
+                .promise()
+                .query("INSERT INTO `Associates` (`A`, `B`) VALUES (?, ?)", [
+                    notification.senderId,
+                    notification.recipientId,
+                ]);
+            update = association;
         }
 
-        if (action === "join group") {
-            const sender = await User.findById(notification.senderUser);
-            const group = await Group.findById(notification.senderGroup);
+        if (action === "Decline") {
+            update = `The action ${action} is not yet implemented`;
+        }
+
+        if(action === "Request"){
+            update = `The action ${action} is not yet implemented`;
+        }
+
+        if (action === "Join") {
+            
+            const [memberResults, memberFields] = await db
+                .promise()
+                .query(
+                    "SELECT `id`, `groupId`, `userId`, `role` FROM `Members` WHERE `groupId` = ? OR `userId` = ? OR `userId` = ?",
+                    [
+                        notification.groupId,
+                        notification.senderId,
+                        notification.recipientId,
+                    ],
+                );
+            let sender;
+            let recipient;
+            memberResults.forEach((x) => {
+                if (x.userId === notification.senderId) {
+                    sender = x;
+                }
+                if (x.userId === notification.recipientId) {
+                    recipient = x;
+                }
+            });
             if (
-                group.owner.toString() !== sender._id.toString() ||
-                !group.admins.includes(sender._id)
+                !sender ||
+                (sender.role !== "owner" && sender.role !== "administrator")
             ) {
                 return new NextResponse(
                     {
-                        message: `The user ${sender.username} was not authorized to invite you to group ${group.name}`,
+                        message: `The user ID ${notification.senderId} was not authorized to invite you to group ID ${notification.groupId}`,
                     },
                     { status: 401 },
                 );
             }
 
-            if (group.users.indexOf(user.id) === -1) {
-                group.users.push(user.id);
+            if (!recipient) {
+                const [newMemRes, memFields] = await db
+                    .promise()
+                    .query(
+                        "INSERT INTO `Members` (`groupId`, `userId`, `role`) VALUES (?, ?, 'student')",
+                        [notification.groupId, notification.recipientId],
+                    );
             }
-            if (user.groups.indexOf(group._id) === -1) {
-                user.groups.push(group._id);
-            }
+            
             update = {
-                group: await group.save(),
-                user: await user.save(),
+                results, newMemRes,
+                group: notification.groupId,
+                sender: notification.senderId,
+                new_member: notification.recipientId,
             };
         }
 
-        if (action === "reply") {
+        if(action === "Invite"){
+            update = `The action ${action} is not yet implemented`;
         }
 
-        if (action === "delete notification") {
+        if(action === "Ignore"){
+            update = `The action ${action} is not yet implemented`;
+        }
+
+        if(action === "Send Message"){
+            update = `The action ${action} is not yet implemented`;
+        }
+
+        if (action === "Reply" && message) {
+            const [messageResults, messageFields] = await db
+                .promise()
+                .query(
+                    "INSERT INTO `Notifications` (`recipientId`, `senderId`, `groupId`, `type`, `subject`, `message`) VALUES (?, ?, ?, 'message', ?, ?)",
+                    [
+                        notification.senderId,
+                        notification.recipientId,
+                        notification.groupId,
+                        `Re: ${notification.subject}`,
+                        message,
+                    ],
+                );
+            update = messageResults;
+        }
+
+        if (action === "Reply" && !message) {
+            update = `The action ${action} without a message is not yet implemented`;
+        }
+
+        if (action === "Delete") {
             if (!isUserSender && !isUserRecipient) {
                 return unauthorized;
             }
-            update = await Notification.findByIdAndDelete(notificationId);
+            
+            const [deletion, deletionFields] = await db
+                .promise()
+                .query("DELETE FROM `Notifications` WHERE `id` = ?", [id]);
+            update = deletion;
         }
 
         if (update === undefined) {
@@ -100,8 +170,10 @@ export async function POST(req) {
                     status: 404,
                 },
             );
-        } else {
-            await Notification.findByIdAndDelete(notificationId);
+        } else if (action !== "Delete") {
+            const [deletion, deletionFields] = await db
+                .promise()
+                .query("DELETE FROM `Notifications` WHERE `id` = ?", [id]);
         }
 
         return new NextResponse(
@@ -112,10 +184,7 @@ export async function POST(req) {
             { status: 200 },
         );
     } catch (error) {
-        console.error(
-            `POST error for notification ID ${notificationId}`,
-            error,
-        );
+        console.error(`POST error for notification ID ${id}`, error);
         return server;
     }
 }
@@ -126,10 +195,12 @@ export async function DELETE(req, { params }) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
+        
+        // Need to verify that notification exists
+        // and that user authorized to delete
+        // then delete it
 
-        const notification = await Notification.findOneAndDelete({
-            _id: id,
-        });
+        let notification;
 
         if (!notification) {
             return NextResponse.json(

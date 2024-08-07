@@ -1,22 +1,39 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
-import { User, Notification, Group } from "@models";
+import { Notification, Group } from "@models";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db.js";
 
 export async function POST(req, { params }) {
     const { input } = await req.json();
-    const { id } = params;
+    const { userId, username } = params;
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const isId = input.match(/^[0-9a-fA-F]{24}$/);
+        // const isId = input.match(/^[0-9a-fA-F]{24}$/);
 
-        const member = await User.findOne({
-            [isId ? "_id" : "username"]: input,
-        });
+        // const member = await User.findOne({
+        //     [isId ? "id" : "username"]: input,
+        // });
+
+        let member;
+        if (userId) {
+            const [memberResults, memberFields] = await db
+                .promise()
+                .query("SELECT `id` FROM `Users` WHERE `id` = ?", [userId]);
+            member = memberResults.length > 0 ? memberResults[0] : false;
+        }
+        if (username) {
+            const [memberResults, memberFields] = await db
+                .promise()
+                .query("SELECT `id` FROM `Users` WHERE `username` = ?", [
+                    username,
+                ]);
+            member = memberResults.length > 0 ? memberResults[0] : false;
+        }
 
         if (!member) {
             return NextResponse.json(
@@ -28,6 +45,7 @@ export async function POST(req, { params }) {
             );
         }
 
+        // NEED TO REMOVE Group AND Notification MODELS
         const group = await Group.findOne({ _id: id });
 
         if (!group) {
