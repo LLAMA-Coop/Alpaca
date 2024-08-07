@@ -9,13 +9,12 @@ import {
 } from "@/lib/db/helpers";
 
 export async function NoteDisplay({ note }) {
-    console.log("NOTE FOR NOTE DISPLAY", note)
     const creator = await useUser({ id: note.createdBy });
     const user = await useUser({ token: cookies().get("token")?.value });
-    const sources = (await getPermittedSources(user.id)).filter((x) =>
-        note.sources.includes(x.id),
-    );
-    const courses = (await getPermittedCourses(user.id)).filter((x) =>
+    const sources = (
+        await getPermittedSources(user ? user.id : undefined)
+    ).filter((x) => note.sources.includes(x.id));
+    const courses = (await getPermittedCourses(user ? user.id : undefined)).filter((x) =>
         note.courses.includes(x.id),
     );
 

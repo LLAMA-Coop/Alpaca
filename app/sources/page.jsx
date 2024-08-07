@@ -20,8 +20,10 @@ export default async function SourcesPage({ searchParams }) {
         );
     }
 
-    const sources = (await getPermittedSources(user.id)) || [];
-    console.log("SOURCES", sources)
+    const sources = user
+        ? await getPermittedSources(user.id)
+        : await getPermittedSources();
+    console.log("SOURCES", sources);
 
     const hasMore = false;
 

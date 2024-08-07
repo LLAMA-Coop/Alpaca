@@ -20,8 +20,10 @@ export default async function NotesPage({ searchParams }) {
         );
     }
 
-    const notes = await getPermittedNotes(user.id) || [];
-    console.log("NTOES", notes)
+    const notes = user
+        ? await getPermittedNotes(user.id)
+        : await getPermittedNotes();
+    console.log("NTOES", notes);
 
     const hasMore = false;
 
@@ -55,10 +57,7 @@ export default async function NotesPage({ searchParams }) {
                                 <NoteDisplay note={note} />
 
                                 {user && note.permissionType === "write" && (
-                                    <InputPopup
-                                        type="note"
-                                        resource={note}
-                                    />
+                                    <InputPopup type="note" resource={note} />
                                 )}
 
                                 <Link href={`/notes/${note.id}`}>

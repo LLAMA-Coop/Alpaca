@@ -1,13 +1,16 @@
+import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 import styles from "./SourceDisplay.module.css";
 import { ListItem, Card } from "@client";
-import { Source, User } from "@models";
+import { getPermittedCourses } from "@/lib/db/helpers.js";
 
 export async function SourceDisplay({ source }) {
     if (!source) return;
-    // const user = await User.findById(source.createdBy);
-    const user = {};
-    // const dbSource = await Source.findById(source.id).populate("courses");
-    const dbSource = {};
+    const user = await useUser({ token: cookies().get("token")?.value });
+    const addedBy = await useUser({ id: source.createdBy });
+    const courses = (await getPermittedCourses(user ? user.id : undefined)).filter((x) =>
+        source.courses.includes(x.id),
+    );
 
     return (
         <Card
@@ -56,9 +59,9 @@ export async function SourceDisplay({ source }) {
 
             <div className={styles.tags}>
                 <h5>This note belongs to the following courses</h5>
-                {dbSource.courses && dbSource.courses.length > 0 ? (
+                {courses && courses.length > 0 ? (
                     <ul>
-                        {dbSource.courses.map((course) => {
+                        {courses.map((course) => {
                             return (
                                 <ListItem key={course.id} item={course.name} />
                             );
@@ -69,7 +72,7 @@ export async function SourceDisplay({ source }) {
                 )}
             </div>
 
-            <p>Added by: {user?.username ?? "Unknown"}</p>
+            <p>Added by: {addedBy?.username ?? "Unknown"}</p>
         </Card>
     );
 }
