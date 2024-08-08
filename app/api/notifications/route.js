@@ -1,5 +1,5 @@
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { User, Group, Notification } from "@/app/api/models";
+import { Group, Notification } from "@/app/api/models";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -10,14 +10,14 @@ export async function POST(req) {
         if (!user) return unauthorized;
 
         const { action, recipientId, groupId } = await req.json();
-        let recipient = await User.findById(recipientId);
+        let recipient = await useUser({ id: recipientId });
 
         if (!recipient) {
             console.error(
                 `${user.username} sent a message to user id ${recipientId}, which does not exist`,
             );
 
-            recipient = await User.find({ username: "crash test dummy" });
+            recipient = await useUser({ username: "crash test dummy" });
         }
 
         const notifPayload = {

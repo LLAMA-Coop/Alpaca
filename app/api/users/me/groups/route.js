@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-// import { User } from "@mneme_app/database-models";
-import { User } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { getUserGroups } from "@/lib/db/helpers";
 
@@ -16,8 +14,6 @@ export async function GET(req) {
             return unauthorized;
         }
 
-        // const content = await User.findOne({ _id: user.id }).populate("groups")
-        //     .groups;
         const content = await getUserGroups(user.id);
         return NextResponse.json({
             content,
