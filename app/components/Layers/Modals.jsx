@@ -123,8 +123,8 @@ export function Modal({ modal, index, length, buttonTexts }) {
                     {modal.content === "Confirm Password" ? (
                         <div>
                             <p style={{ marginBottom: "24px" }}>
-                                Changing your username requires you to confirm
-                                your password.
+                                These changes require you to confirm your
+                                current password.
                             </p>
 
                             <Input
