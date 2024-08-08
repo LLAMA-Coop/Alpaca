@@ -1,4 +1,4 @@
-import { Source, Note, Quiz, Group, User } from "@models";
+import { Source, Note, Quiz, Group } from "@models";
 import { NoteDisplay, SourceDisplay } from "@server";
 import { serialize, serializeOne } from "@/lib/db";
 import { QuizDisplay, UserCard } from "@client";
@@ -27,13 +27,6 @@ export default async function GroupPage({ params }) {
             { "permissions.groupsWrite": { $in: [group._id] } },
         ],
     };
-
-    const publicUsers = serialize(
-        await User.find({
-            isPublic: true,
-            _id: { $ne: user.id, $nin: group.users.map((u) => u._id) },
-        }),
-    );
 
     const quizzes = serialize(await Quiz.find(permissionsQuery));
     const notes = serialize(await Note.find(permissionsQuery));
@@ -77,7 +70,7 @@ export default async function GroupPage({ params }) {
                 {user &&
                     (user.id === group.owner ||
                         group.admins.includes(user.id)) && (
-                        <InviteUser publicUsers={publicUsers} groupId={id} />
+                        <InviteUser groupId={id} />
                     )}
             </section>
 

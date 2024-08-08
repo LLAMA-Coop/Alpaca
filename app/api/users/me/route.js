@@ -25,21 +25,6 @@ export async function PATCH(req) {
         });
         if (!user) return unauthorized;
 
-        // const passwordsMatch = await bcrypt.compare(
-        //     password,
-        //     user.passwordHash,
-        // );
-
-        // if (!passwordsMatch) {
-        //     return NextResponse.json(
-        //         {
-        //             success: false,
-        //             message: "Incorrect password",
-        //         },
-        //         { status: 401 },
-        //     );
-        // }
-
         const submitErrors = new SubmitErrors();
 
         if (newPassword && newPassword !== password) {
@@ -71,49 +56,10 @@ export async function PATCH(req) {
             } else {
                 setValues.push({ name: "username", value: username });
             }
-
-            // if (await User.exists({ username })) {
-            //     return NextResponse.json(
-            //         {
-            //             success: false,
-            //             message: "Username already exists",
-            //         },
-            //         { status: 409 },
-            //     );
-            // }
-
-            // const passwordsMatch = await bcrypt.compare(
-            //     password,
-            //     user.passwordHash,
-            // );
-
-            // if (!passwordsMatch) {
-            //     return NextResponse.json(
-            //         {
-            //             success: false,
-            //             message: "Incorrect password",
-            //         },
-            //         { status: 401 },
-            //     );
-            // }
-
-            // await User.findByIdAndUpdate(user.id, {
-            //     username,
-            // });
         }
 
         if (avatar && avatar !== user.avatar) {
             setValues.push({ name: "avatar", value: avatar });
-            // if ((avatar || avatar === "") && user.avatar) {
-            //     // Remove old avatar
-            //     await removeImageFromCDN(user.avatar);
-            // }
-
-            // await User.findByIdAndUpdate(user.id, {
-            //     displayName: displayName || user.displayName,
-            //     description: description || user.description,
-            //     avatar: avatar || (avatar === "" ? null : user.avatar),
-            // });
         }
 
         if (displayName && displayName !== user.displayName) {

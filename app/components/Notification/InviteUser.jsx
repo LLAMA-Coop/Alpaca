@@ -7,8 +7,9 @@ import { useState } from "react";
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
-export function InviteUser({ publicUsers, groupId }) {
-    const [userId, setUserId] = useState(publicUsers[0]?.id ?? "");
+export function InviteUser({ groupId }) {
+    // const [userId, setUserId] = useState(publicUsers[0]?.id ?? "");
+    const [userId, setUserId] = useState("");
     const [loading, setLoading] = useState(false);
 
     const removeModal = useModals((state) => state.removeModal);
@@ -62,7 +63,7 @@ export function InviteUser({ publicUsers, groupId }) {
 
     return (
         <form className={styles.form}>
-            <div>
+            {/* <div>
                 <Input
                     type="select"
                     label="Select from Public Users"
@@ -81,7 +82,7 @@ export function InviteUser({ publicUsers, groupId }) {
                     you will need to get their user ID then enter the user ID in
                     the input below.
                 </p>
-            </div>
+            </div> */}
 
             <div>
                 <Input
