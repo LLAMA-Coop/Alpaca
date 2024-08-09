@@ -155,7 +155,7 @@ export function GroupInput({ group }) {
 
                 <div>
                     <div className={styles.image}>
-                        <Image
+                        {/* <Image
                             src={
                                 icon
                                     ? URL.createObjectURL(icon)
@@ -165,7 +165,7 @@ export function GroupInput({ group }) {
                             width={44}
                             height={44}
                             onClick={() => inputRef.current.click()}
-                        />
+                        /> */}
 
                         {!icon && <div />}
                     </div>

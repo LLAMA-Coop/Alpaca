@@ -1,36 +1,36 @@
-import { Source, Note, Quiz, Group } from "@models";
 import { NoteDisplay, SourceDisplay } from "@server";
-import { serialize, serializeOne } from "@/lib/db";
 import { QuizDisplay, UserCard } from "@client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { InviteUser } from "@client";
 import { useUser } from "@/lib/auth";
+import {
+    getGroup,
+    getPermittedNotes,
+    getPermittedQuizzes,
+    getPermittedSources,
+} from "@/lib/db/helpers";
 
 export default async function GroupPage({ params }) {
     const { id } = params;
+    const user = await useUser({ token: cookies().get("token")?.value });
 
-    const group = serializeOne(await Group.findById(id).populate("users"));
+    const group = await getGroup({ id, userId: user.id });
     if (!group) return redirect("/groups");
+    const groupUser = group.members.find((x) => x.id === user.id);
+    user.role = groupUser ? groupUser.role : undefined;
 
-    const user = serializeOne(
-        await useUser({ token: cookies().get("token")?.value }),
-    );
-    if (!group.isPublic && !user?.groups?.includes(id)) {
+    if (
+        !group.isPublic &&
+        group.members.find((x) => x.id === user.id) == undefined
+    ) {
         return redirect("/groups");
     }
 
-    const permissionsQuery = {
-        $or: [
-            { "permissions.groupsRead": { $in: [group._id] } },
-            { "permissions.groupsWrite": { $in: [group._id] } },
-        ],
-    };
-
-    const quizzes = serialize(await Quiz.find(permissionsQuery));
-    const notes = serialize(await Note.find(permissionsQuery));
-    const sources = serialize(await Source.find(permissionsQuery));
+    const quizzes = await getPermittedQuizzes(user.id);
+    const notes = await getPermittedNotes(user.id);
+    const sources = await getPermittedSources(user.id);
 
     return (
         <main className={styles.main}>
@@ -52,14 +52,14 @@ export default async function GroupPage({ params }) {
                 </div>
 
                 <div>
-                    {group.users.length > 0 && (
+                    {group.members.length > 0 && (
                         <ol className={styles.listGrid}>
-                            {group.users.map((user) => (
+                            {group.members.map((user) => (
                                 <li key={user.id}>
                                     <UserCard
                                         user={user}
-                                        isOwner={user.id === group.owner}
-                                        isAdmin={group.admins.includes(user.id)}
+                                        isOwner={user.role === "owner"}
+                                        isAdmin={user.role === "administrator"}
                                     />
                                 </li>
                             ))}
@@ -68,8 +68,8 @@ export default async function GroupPage({ params }) {
                 </div>
 
                 {user &&
-                    (user.id === group.owner ||
-                        group.admins.includes(user.id)) && (
+                    (user.role === "owner" ||
+                        user.role === "administrator") && (
                         <InviteUser groupId={id} />
                     )}
             </section>

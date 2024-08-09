@@ -149,13 +149,12 @@ export async function POST(req) {
 export async function PUT(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) return unauthorized;
 
-        if (!user) {
-            return unauthorized;
-        }
+        const submitErrors = new SubmitErrors();
 
         const {
-            _id,
+            id,
             name,
             description,
             parentCourses,
@@ -168,11 +167,11 @@ export async function PUT(req) {
             permissions,
         } = await req.json();
 
-        const course = await Course.findById(_id);
+        const course = await Course.findById(id);
         if (!course) {
             return NextResponse.json(
                 {
-                    message: `No course found with id ${_id}`,
+                    message: `No course found with id ${id}`,
                 },
                 { status: 404 },
             );
@@ -181,7 +180,7 @@ export async function PUT(req) {
         if (!canEdit(course, user)) {
             return NextResponse.json(
                 {
-                    message: `You are not permitted to edit course ${_id}`,
+                    message: `You are not permitted to edit course ${id}`,
                 },
                 { status: 403 },
             );
@@ -228,7 +227,7 @@ export async function PUT(req) {
 
         const content = await course.save();
 
-        const id = content._id.toString();
+        // const id = content._id.toString();
 
         async function addCourseToResource({
             resourceId,

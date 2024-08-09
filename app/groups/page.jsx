@@ -2,25 +2,31 @@ import { Card, GroupInput } from "@client";
 import styles from "@/app/page.module.css";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { Group } from "@models";
+import { getPermittedGroups } from "@/lib/db/helpers";
 
 export default async function GroupPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
 
-    const groups = await Group.find({
-        isPublic: true,
-        ...(user ? { _id: { $nin: user.groups } } : {}),
-    });
+    // const groups = await Group.find({
+    //     isPublic: true,
+    //     ...(user ? { _id: { $nin: user.groups } } : {}),
+    // });
+    const groups = await getPermittedGroups(user.id);
 
-    const yourGroups = user
-        ? await Group.find({
-              $or: [
-                  { owner: user.id },
-                  { users: { $in: [user.id] } },
-                  { admins: { $in: [user.id] } },
-              ],
-          })
-        : [];
+    // const yourGroups = user
+    //     ? await Group.find({
+    //           $or: [
+    //               { owner: user.id },
+    //               { users: { $in: [user.id] } },
+    //               { admins: { $in: [user.id] } },
+    //           ],
+    //       })
+    //     : [];
+    const yourGroups = groups.filter((x) => {
+        const you = x.members.find((m) => m.id === user.id);
+        if (you) return true;
+        return false;
+    });
 
     return (
         <main className={styles.main}>
