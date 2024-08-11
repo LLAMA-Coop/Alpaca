@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `Members` (
     `role` ENUM('owner', 'administrator', 'student', 'user')
 );
 
-CREATE TABLE IF NOT EXISTS Sources (
+CREATE TABLE IF NOT EXISTS `Sources` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `title` VARCHAR(128) NOT NULL,
     `medium` ENUM('book', 'article', 'video', 'podcast', 'website', 'audio'),
@@ -59,14 +59,14 @@ CREATE TABLE IF NOT EXISTS Sources (
     `lastAccessed` DATE NULL
 );
 
-CREATE TABLE IF NOT EXISTS SourceCredits (
+CREATE TABLE IF NOT EXISTS `SourceCredits` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `sourceId` BIGINT NOT NULL,
     `name` VARCHAR(64),
     `type` VARCHAR(32) DEFAULT 'Author'
 );
 
-CREATE TABLE IF NOT EXISTS Notes (
+CREATE TABLE IF NOT EXISTS `Notes` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `title` VARCHAR(128) NOT NULL,
     `text` VARCHAR(8192) NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS Notes (
     `createdBy` BIGINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Quizzes (
+CREATE TABLE IF NOT EXISTS `Quizzes` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `type` ENUM('prompt-response', 'multiple-choice', 'fill-in-the-blank', 'ordered-list-answer', 'unordered-list-answer', 'verbatim'),
     `prompt` VARCHAR(256),
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS Quizzes (
     `createdBy` BIGINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS UserQuizzes (
+CREATE TABLE IF NOT EXISTS `UserQuizzes` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `userId` BIGINT NOT NULL,
     `quizId` BIGINT NOT NULL,
@@ -95,13 +95,13 @@ CREATE TABLE IF NOT EXISTS UserQuizzes (
     UNIQUE KEY userQuizCombo (userId, quizId)
 );
 
-CREATE TABLE IF NOT EXISTS QuizNotes (
+CREATE TABLE IF NOT EXISTS `QuizNotes` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `quizId` BIGINT NOT NULL,
     `noteId` BIGINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS ResourceContributors (
+CREATE TABLE IF NOT EXISTS `ResourceContributors` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `resourceId` BIGINT NOT NULL,
     `resourceType` ENUM('source', 'note', 'quiz'),
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS ResourceContributors (
     `date` DATE DEFAULT CURRENT_DATE
 );
 
-CREATE TABLE IF NOT EXISTS ResourceSources (
+CREATE TABLE IF NOT EXISTS `ResourceSources` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `resourceId` BIGINT NOT NULL,
     `resourceType` ENUM('note', 'quiz'),
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS ResourceSources (
     `locType` ENUM('page', 'id reference', 'section', 'timestamp', 'url')
 );
 
-CREATE TABLE IF NOT EXISTS Courses (
+CREATE TABLE IF NOT EXISTS `Courses` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(128),
     `description` VARCHAR(512),
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS Courses (
     `createdDate` DATE DEFAULT CURRENT_DATE
 );
 
-CREATE TABLE IF NOT EXISTS CourseUsers (
+CREATE TABLE IF NOT EXISTS `CourseUsers` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `courseId` BIGINT NOT NULL,
     `userId` BIGINT NOT NULL,
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS CourseUsers (
     `enrollmentExpiration` DATE DEFAULT (CURRENT_DATE + INTERVAL 200 YEAR)
 );
 
-CREATE TABLE IF NOT EXISTS CourseHierarchy (
+CREATE TABLE IF NOT EXISTS `CourseHierarchy` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `inferiorCourse` BIGINT NOT NULL,
     `superiorCourse` BIGINT NOT NULL,
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS CourseHierarchy (
     `averageLevelRequired` INT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS CourseResources (
+CREATE TABLE IF NOT EXISTS `CourseResources` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `courseId` BIGINT NOT NULL,
     `resourceId` BIGINT NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS CourseResources (
     `includeReferencingResources` BOOLEAN
 );
 
-CREATE TABLE IF NOT EXISTS ResourcePermissions (
+CREATE TABLE IF NOT EXISTS `ResourcePermissions` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `resourceId` BIGINT NOT NULL,
     `resourceType` ENUM('source', 'note', 'quiz', 'course', 'user', 'group'),
