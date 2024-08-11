@@ -1,23 +1,17 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
-import { Notification, Group } from "@models";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
+import { getGroup } from "@/lib/db/helpers";
 
 export async function POST(req, { params }) {
-    const { input } = await req.json();
-    const { userId, username } = params;
+    const { id } = params;
+    const { userId, username } = await req.json();
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
-
-        // const isId = input.match(/^[0-9a-fA-F]{24}$/);
-
-        // const member = await User.findOne({
-        //     [isId ? "id" : "username"]: input,
-        // });
 
         let member;
         if (userId) {
@@ -45,8 +39,7 @@ export async function POST(req, { params }) {
             );
         }
 
-        // NEED TO REMOVE Group AND Notification MODELS
-        const group = await Group.findOne({ _id: id });
+        const group = await getGroup({ id });
 
         if (!group) {
             return NextResponse.json(
@@ -58,7 +51,8 @@ export async function POST(req, { params }) {
             );
         }
 
-        if (group.users.includes(member.id)) {
+        const checkMember = group.members.find((x) => x.id === member.id);
+        if (checkMember) {
             return NextResponse.json(
                 {
                     success: false,
@@ -68,26 +62,20 @@ export async function POST(req, { params }) {
             );
         }
 
-        const alreadySent = await Notification.findOne({
-            type: 2,
-            recipient: member.id,
-            group: group.id,
-        });
+        const [alreadySent, fields] = await db
+            .promise()
+            .query(
+                "SELECT `id` FROM `Notifications` WHERE `type` = 'invite' AND `recipientId` = ? AND `groupId` = ?",
+                [member.id, id],
+            );
 
-        if (!alreadySent) {
-            const notification = await Notification.create({
-                type: 2,
-                sender: user.id,
-                recipient: member.id,
-                group: group.id,
-                subject: "Group Invite",
-                message: `You have been invited by ${user.username} to join ${group.name}.`,
-            });
-
-            await notification.save();
-
-            member.notifications.push(notification.id);
-            await member.save();
+        if (alreadySent.length === 0) {
+            const [notification, notifFields] = await db
+                .promise()
+                .query(
+                    `INSERT INTO \`Notifications\` (\`type\`, \`senderId\`, \`recipientId\`, \`groupId\`, \`subject\`, \`message\`) VALUES ('invite', ?, ?, ?, 'Group Invite', 'You have been invited by ${user.username} to join ${group.name}.')`,
+                    [user.id, member.id, id],
+                );
         }
 
         return NextResponse.json(

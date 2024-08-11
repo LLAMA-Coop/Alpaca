@@ -8,7 +8,6 @@ import { useState } from "react";
 const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
 export function InviteUser({ groupId }) {
-    // const [userId, setUserId] = useState(publicUsers[0]?.id ?? "");
     const [userId, setUserId] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -31,9 +30,13 @@ export function InviteUser({ groupId }) {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    userId,
-                }),
+                body: JSON.stringify(
+                    isNaN(userId)
+                        ? {
+                              username: userId,
+                          }
+                        : { userId },
+                ),
             }).then((res) => res.json());
 
             if (response.success) {

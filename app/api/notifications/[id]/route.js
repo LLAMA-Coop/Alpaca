@@ -48,7 +48,7 @@ export async function POST(req, { params }) {
             if (!isUserRecipient) {
                 return unauthorized;
             }
-            
+
             const [association, assocFields] = await db
                 .promise()
                 .query("INSERT INTO `Associates` (`A`, `B`) VALUES (?, ?)", [
@@ -62,12 +62,11 @@ export async function POST(req, { params }) {
             update = `The action ${action} is not yet implemented`;
         }
 
-        if(action === "Request"){
+        if (action === "Request") {
             update = `The action ${action} is not yet implemented`;
         }
 
         if (action === "Join") {
-            
             const [memberResults, memberFields] = await db
                 .promise()
                 .query(
@@ -108,24 +107,25 @@ export async function POST(req, { params }) {
                         [notification.groupId, notification.recipientId],
                     );
             }
-            
+
             update = {
-                results, newMemRes,
+                results,
+                newMemRes,
                 group: notification.groupId,
                 sender: notification.senderId,
                 new_member: notification.recipientId,
             };
         }
 
-        if(action === "Invite"){
+        if (action === "Invite") {
             update = `The action ${action} is not yet implemented`;
         }
 
-        if(action === "Ignore"){
+        if (action === "Ignore") {
             update = `The action ${action} is not yet implemented`;
         }
 
-        if(action === "Send Message"){
+        if (action === "Send Message") {
             update = `The action ${action} is not yet implemented`;
         }
 
@@ -153,7 +153,7 @@ export async function POST(req, { params }) {
             if (!isUserSender && !isUserRecipient) {
                 return unauthorized;
             }
-            
+
             const [deletion, deletionFields] = await db
                 .promise()
                 .query("DELETE FROM `Notifications` WHERE `id` = ?", [id]);
@@ -195,14 +195,24 @@ export async function DELETE(req, { params }) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
-        
+
         // Need to verify that notification exists
         // and that user authorized to delete
         // then delete it
 
-        let notification;
+        const [deletion, fields] = db
+            .promise()
+            .query("DELETE FROM `Notifications` WHERE `id` = ?", [id]);
 
-        if (!notification) {
+        if (deletion.affectedRows === 1) {
+            return NextResponse.json(
+                {
+                    success: true,
+                    message: "Successfully removed notification.",
+                },
+                { status: 200 },
+            );
+        } else if (deletion.affectedRows === 0) {
             return NextResponse.json(
                 {
                     success: false,
@@ -210,15 +220,16 @@ export async function DELETE(req, { params }) {
                 },
                 { status: 404 },
             );
+        } else if (deletion.affectedRows > 1) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message:
+                        "Don't know how, but you deleted more than one notification.",
+                },
+                { status: 400 },
+            );
         }
-
-        return NextResponse.json(
-            {
-                success: true,
-                message: "Successfully removed notification.",
-            },
-            { status: 200 },
-        );
     } catch (error) {
         console.error("[ERROR] /api/notifications/id:DELETE ", error);
         return NextResponse.json(
@@ -228,5 +239,32 @@ export async function DELETE(req, { params }) {
             },
             { status: 500 },
         );
+    }
+}
+
+export async function PATCH(req, { params }) {
+    const { id } = params;
+
+    try {
+        const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) return unauthorized;
+
+        const [update, fields] = await db
+            .promise()
+            .query("UPDATE `Notifications` SET `isRead` = 1 WHERE `id` = ?", [
+                id,
+            ]);
+
+        if (update.affectedRows === 1) {
+            return NextResponse.json(
+                {
+                    success: true,
+                    message: "Successfully marked notification as read.",
+                },
+                { status: 200 },
+            );
+        }
+    } catch (error) {
+        console.error(error);
     }
 }

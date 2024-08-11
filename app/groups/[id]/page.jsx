@@ -15,6 +15,9 @@ import {
 export default async function GroupPage({ params }) {
     const { id } = params;
     const user = await useUser({ token: cookies().get("token")?.value });
+    if (!user) {
+        redirect("/groups/");
+    }
 
     const group = await getGroup({ id, userId: user.id });
     if (!group) return redirect("/groups");

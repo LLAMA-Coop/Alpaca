@@ -1,8 +1,8 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
-import { Notification } from "@models";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db.js";
 
 export async function POST(req, { params }) {
     const { id, memberId } = params;
@@ -10,12 +10,14 @@ export async function POST(req, { params }) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
+        const [decline, fields] = await db
+            .promise()
+            .query(
+                "DELETE FROM `Notifications` WHERE `type` = 'invite' AND `recipientId` = ? AND `groupId` = ?",
+                [user.id, id],
+            );
 
-        await Notification.findOneAndDelete({
-            type: 2,
-            recipient: memberId,
-            group: id,
-        });
+        console.log(decline)
 
         return NextResponse.json(
             {
