@@ -1,8 +1,11 @@
+import { getQuizzesById } from "@/lib/db/helpers";
 import styles from "./Landing.module.css";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+    const quizzes = await getQuizzesById({ ids: [1, 2, 3] });
+    const quiz = (await getQuizzesById({ id: 1 }))[0];
     return (
         <main className={styles.container}>
             <span className={styles.orb} />
@@ -124,6 +127,13 @@ export default function LandingPage() {
                         <p>React course</p>
                     </div>
                 </div>
+            </section>
+
+            <section className={styles.section}>
+                {quizzes.map((x) => (
+                    <p key={x.id}>{x.prompt}</p>
+                ))}
+                <p>{quiz.id}</p>
             </section>
         </main>
     );

@@ -10,7 +10,12 @@ import { buildPermissions } from "@/lib/permissions";
 import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { db } from "@/lib/db/db.js";
-import { getPermittedQuizzes, insertPermissions } from "@/lib/db/helpers";
+import {
+    getPermittedQuizzes,
+    getQuizzesById,
+    insertPermissions,
+    updateQuiz,
+} from "@/lib/db/helpers";
 
 const allowedType = [
     "prompt-response",
@@ -151,22 +156,6 @@ export async function POST(req) {
             );
         }
 
-        // const quiz = new Quiz({
-        //     type,
-        //     prompt: prompt.trim(),
-        //     choices,
-        //     correctResponses,
-        //     hints: hints ?? [],
-        //     notes: notes ?? [],
-        //     sources: sources ?? [],
-        //     courses: courses ?? [],
-        //     tags: tags ?? [],
-        //     contributors: [user.id],
-        //     createdBy: user.id,
-        // });
-
-        // quiz.permissions = buildPermissions(permissions);
-
         const fieldsArray = [
             type,
             prompt,
@@ -206,7 +195,6 @@ export async function POST(req) {
 
         const content = quizInsert;
 
-        // const content = await quiz.save();
         return NextResponse.json(
             { message: "Quiz created successfully", content },
             { status: 201 },
@@ -226,7 +214,7 @@ export async function PUT(req) {
         }
 
         const {
-            _id,
+            id,
             type,
             prompt,
             choices,
@@ -239,99 +227,117 @@ export async function PUT(req) {
             permissions,
         } = await req.json();
 
-        const quiz = await Quiz.findById(_id);
+        // const quiz = await Quiz.findById(_id);
+        const quiz = (await getPermittedQuizzes(user.id)).find(
+            (x) => x.id === id,
+        );
+
+        console.log(quiz);
         if (!quiz) {
             return NextResponse.json(
                 {
-                    message: `No quiz found with id ${_id}`,
+                    message: `No quiz found with id ${id}`,
                 },
                 { status: 404 },
             );
         }
 
-        if (!canEdit(quiz, user)) {
+        if (quiz.permissionType !== "write") {
             return NextResponse.json(
                 {
-                    message: `You are not permitted to edit quiz ${_id}`,
+                    message: `You are not permitted to edit quiz ${id}`,
                 },
                 { status: 403 },
             );
         }
 
-        if (type && !allowedType.includes(type)) {
-            return NextResponse.json(
-                {
-                    message: "Invalid type submitted",
-                },
-                { status: 400 },
-            );
-        }
+        const content = await updateQuiz({
+            id,
+            type,
+            prompt,
+            choices,
+            correctResponses,
+            hints,
+            sources,
+            notes,
+            courses,
+            tags,
+            permissions,
+            contributorId: user.id,
+        });
 
-        if (type) {
-            quiz.type = type;
-        }
-        if (prompt) {
-            quiz.prompt = prompt.trim();
-        }
-        if (choices) {
-            quiz.choices = [...choices];
-        }
-        if (correctResponses) {
-            quiz.correctResponses = [...correctResponses];
-        }
-        if (hints) {
-            quiz.hints = [...hints];
-        }
+        // if (type && !allowedType.includes(type)) {
+        //     return NextResponse.json(
+        //         {
+        //             message: "Invalid type submitted",
+        //         },
+        //         { status: 400 },
+        //     );
+        // }
 
-        if (sources) {
-            sources.forEach((sourceId_req, index) => {
-                if (
-                    !quiz.sources.find(
-                        (srcId) => srcId.toString() == sourceId_req,
-                    )
-                ) {
-                    quiz.sources.push(new Types.ObjectId(sourceId_req));
-                }
-            });
-        }
-        if (notes) {
-            notes.forEach((noteId_req) => {
-                if (
-                    !quiz.notes.find(
-                        (noteId) => noteId.toString() === noteId_req,
-                    )
-                ) {
-                    quiz.notes.push(new Types.ObjectId(noteId_req));
-                }
-            });
-        }
+        // if (type) {
+        //     quiz.type = type;
+        // }
+        // if (prompt) {
+        //     quiz.prompt = prompt.trim();
+        // }
+        // if (choices) {
+        //     quiz.choices = [...choices];
+        // }
+        // if (correctResponses) {
+        //     quiz.correctResponses = [...correctResponses];
+        // }
+        // if (hints) {
+        //     quiz.hints = [...hints];
+        // }
 
-        if (courses) {
-            courses.forEach((courseId_req) => {
-                if (
-                    !quiz.courses.find(
-                        (course) => course._id.toString() === courseId_req,
-                    )
-                ) {
-                    quiz.courses.push(new Types.ObjectId(courseId_req));
-                }
-            });
-        }
+        // if (sources) {
+        //     sources.forEach((sourceId_req, index) => {
+        //         if (
+        //             !quiz.sources.find(
+        //                 (srcId) => srcId.toString() == sourceId_req,
+        //             )
+        //         ) {
+        //             quiz.sources.push(new Types.ObjectId(sourceId_req));
+        //         }
+        //     });
+        // }
+        // if (notes) {
+        //     notes.forEach((noteId_req) => {
+        //         if (
+        //             !quiz.notes.find(
+        //                 (noteId) => noteId.toString() === noteId_req,
+        //             )
+        //         ) {
+        //             quiz.notes.push(new Types.ObjectId(noteId_req));
+        //         }
+        //     });
+        // }
 
-        if (tags) {
-            quiz.tags = tags;
-        }
+        // if (courses) {
+        //     courses.forEach((courseId_req) => {
+        //         if (
+        //             !quiz.courses.find((course) => course.id === courseId_req)
+        //         ) {
+        //             quiz.courses.push(new Types.ObjectId(courseId_req));
+        //         }
+        //     });
+        // }
 
-        if (permissions && quiz.createdBy.toString() === user.id.toString()) {
-            quiz.permissions = serializeOne(permissions);
-        }
+        // if (tags) {
+        //     quiz.tags = tags;
+        // }
 
-        if (!quiz.contributors.includes(user.id)) {
-            quiz.contributors.push(user.id);
-        }
-        quiz.updatedBy = user.id;
+        // if (permissions && quiz.createdBy.toString() === user.id.toString()) {
+        //     quiz.permissions = serializeOne(permissions);
+        // }
 
-        const content = await quiz.save();
+        // if (!quiz.contributors.includes(user.id)) {
+        //     quiz.contributors.push(user.id);
+        // }
+        // quiz.updatedBy = user.id;
+
+        // const content = await quiz.save();
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Quiz] PUT error: ${error}`);

@@ -95,6 +95,13 @@ export function QuizInput({ quiz }) {
                 ),
             );
         }
+        if (quiz.sources) {
+            setSources(
+                quiz.sources.map((sourceId) =>
+                    availableSources.find((x) => x.id === sourceId),
+                ),
+            );
+        }
         if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
             setPermissions(serializeOne(quiz.permissions));

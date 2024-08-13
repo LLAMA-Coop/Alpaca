@@ -8,7 +8,6 @@ import {
     Card,
 } from "@/app/components/client";
 import { canRead, useUser } from "@/lib/auth";
-import { serializeOne } from "@/lib/db";
 import { getQuizzesById } from "@/lib/db/helpers";
 
 export default async function QuizPage({ params }) {
@@ -35,11 +34,11 @@ export default async function QuizPage({ params }) {
                 </div>
             </div>
             <section>
-                <QuizDisplay quiz={serializeOne(quiz)} />
+                <QuizDisplay quiz={quiz} />
             </section>
             <section>
                 <Card title={"Edit Quiz Question"}>
-                    <QuizInput quiz={serializeOne(quiz)} />
+                    <QuizInput quiz={quiz} />
                 </Card>
             </section>
         </main>
