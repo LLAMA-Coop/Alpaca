@@ -48,24 +48,30 @@ export function CourseInput({ course }) {
 
     useEffect(() => {
         if (!course) return;
+        console.log(course, availableCourses)
+
         setName(course.name);
         setDescription(course.description);
 
         setParentCourses(
-            course.parentCourses.map((crsId) =>
-                availableCourses.find((x) => x.id === crsId),
+            course.parentCourses.map((crs) =>
+                availableCourses.find((x) => x.id === crs.id),
             ),
         );
 
         setPrerequisites(
-            course.prerequisites.map((crsId) =>
-                availableCourses.find((x) => x.id === crsId),
+            course.prerequisites.map((prereq) =>
+                availableCourses.find((x) => x.id === prereq.course.id),
             ),
         );
 
         if (course.permissions)
             setPermissions(serializeOne(course.permissions));
     }, []);
+
+    useEffect(() => {
+        console.log(parentCourses)
+    }, [parentCourses])
 
     async function handleSubmit(e) {
         e.preventDefault();

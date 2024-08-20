@@ -170,7 +170,10 @@ export async function PUT(req) {
             permissions,
         } = await req.json();
 
-        const course = await Course.findById(id);
+        // const course = await Course.findById(id);
+        const course = (await getPermittedCourses(user.id)).find(
+            (x) => x.id === id,
+        );
         if (!course) {
             return NextResponse.json(
                 {
@@ -180,7 +183,8 @@ export async function PUT(req) {
             );
         }
 
-        if (!canEdit(course, user)) {
+        // if (!canEdit(course, user)) {
+        if (course.permissionType !== "write") {
             return NextResponse.json(
                 {
                     message: `You are not permitted to edit course ${id}`,
@@ -200,14 +204,12 @@ export async function PUT(req) {
         if (description) {
             course.description = description;
         }
+
+        // This will need fixing
         if (parentCourses) {
-            parentCourses.forEach((catId_req) => {
-                if (
-                    !course.parentCourses.find(
-                        (catId) => catId.toString() == catId_req,
-                    )
-                ) {
-                    course.parentCourses.push(new Types.ObjectId(catId_req));
+            parentCourses.forEach((parent) => {
+                if (!course.parentCourses.find((crs) => crs.id == parent.id)) {
+                    course.parentCourses.push(new Types.ObjectId(parent));
                 }
             });
         }
@@ -240,12 +242,19 @@ export async function PUT(req) {
                 if (type === "source") return Source.findById(resourceId);
                 if (type === "note") return Note.findById(resourceId);
                 if (type === "quiz") {
-                    return await getQuizzesById({ id: resourceId });
+                    return await getQuizzesById({
+                        id: resourceId,
+                        userId: user.id,
+                    });
                 }
             }
 
             const resource = await getResource();
-            if (!canRead(resource, user)) {
+            // if (!canRead(resource, user)) {
+            if (
+                resource.permissionType !== "read" ||
+                resource.permissionType !== "write"
+            ) {
                 return;
             }
 
@@ -295,6 +304,7 @@ export async function PUT(req) {
             );
         });
 
+        // Is it necessary to await twice?
         await Promise.all(promises);
         localQuizzes.forEach((q) => {
             addCourseToResource({

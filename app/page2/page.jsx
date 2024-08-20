@@ -2,9 +2,12 @@ import { getQuizzesById } from "@/lib/db/helpers";
 import styles from "./Landing.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 export default async function LandingPage() {
-    const quizzes = await getQuizzesById({ ids: [1, 2, 3] });
+    const user = await useUser({ token: cookies().get("token")?.value })
+    const quizzes = await getQuizzesById({ ids: [1, 2, 3], userId: user.id });
     const quiz = (await getQuizzesById({ id: 1 }))[0];
     return (
         <main className={styles.container}>

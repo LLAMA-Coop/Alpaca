@@ -17,6 +17,7 @@ export async function POST(req, { params }) {
         const { userResponse } = await req.json();
 
         const quiz = (await getQuizzesById({ id: _id }))[0];
+        
         if (!quiz) {
             return NextResponse.json(
                 {
