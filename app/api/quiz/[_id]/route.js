@@ -2,9 +2,11 @@ import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import stringCompare from "@/lib/stringCompare";
 import { NextResponse } from "next/server";
-import { Quiz } from "@/app/api/models";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { getQuizzesById, getUserQuizzes } from "@/lib/db/helpers";
+import { db } from "@/lib/db/db.js";
+import htmlDate from "@/lib/htmlDate.js";
 
 export async function POST(req, { params }) {
     try {
@@ -14,7 +16,7 @@ export async function POST(req, { params }) {
         const { _id } = params;
         const { userResponse } = await req.json();
 
-        const quiz = await Quiz.findById(_id);
+        const quiz = (await getQuizzesById({ id: _id }))[0];
         if (!quiz) {
             return NextResponse.json(
                 {
@@ -50,9 +52,10 @@ export async function POST(req, { params }) {
             isCorrect = incorrectIndexes.length === 0;
         }
 
-        let quizInUser = user.quizzes.find(
-            (q) => q.quizId.toString() === quiz.id.toString(),
+        let quizInUser = (await getUserQuizzes(user.id)).find(
+            (x) => x.quizId === quiz.id,
         );
+        console.log("USER QUIZ", quizInUser);
         let canProgressLevel = false;
         if (!quizInUser) {
             canProgressLevel = true;
@@ -61,7 +64,6 @@ export async function POST(req, { params }) {
                 level: 0,
                 hiddenUntil: new Date(),
             };
-            user.quizzes.push(quizInUser);
         } else {
             canProgressLevel = Date.now() > quizInUser.hiddenUntil.getTime();
         }
@@ -79,7 +81,38 @@ export async function POST(req, { params }) {
             quizInUser.level = quizInUser.level > 0 ? quizInUser.level - 1 : 0;
         }
 
-        await user.save();
+        if (quizInUser.id) {
+            const [results, fields] = await db
+                .promise()
+                .query(
+                    "UPDATE `UserQuizzes` SET `lastCorrect` = ?, `level` = ?, `hiddenUntil` = ? WHERE `id` = ?",
+                    [
+                        quizInUser.lastCorrect === "Not yet"
+                            ? null
+                            : htmlDate(quizInUser.lastCorrect),
+                        quizInUser.level,
+                        htmlDate(quizInUser.hiddenUntil),
+                        quizInUser.id,
+                    ],
+                );
+
+            console.log("RESULTS", results)
+        } else {
+            await db
+                .promise()
+                .query(
+                    "INSERT INTO UserQuizzes (`userId`, `quizId`, `lastCorrect`, `level`, `hiddenUntil`) VALUES (?, ?, ?, ?, ?)",
+                    [
+                        user.id,
+                        quiz.id,
+                        quizInUser.lastCorrect === "Not yet"
+                            ? null
+                            : htmlDate(quizInUser.lastCorrect),
+                        quizInUser.level,
+                        htmlDate(quizInUser.hiddenUntil),
+                    ],
+                );
+        }
 
         return NextResponse.json({
             message: {
@@ -102,7 +135,7 @@ export async function DELETE(req, { params }) {
 
         const { _id } = params;
 
-        const quiz = await Quiz.findById(_id);
+        const quiz = (await getQuizzesById({ id: _id }))[0];
         if (!quiz) {
             return NextResponse.json(
                 {
@@ -121,8 +154,10 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        const deletion = await Quiz.deleteOne({ _id });
-        if (deletion.deletedCount === 0) {
+        const [deletion, fields] = await db
+            .promise()
+            .query("DELETE FROM `Quizzes` WHERE `id` = ?", [_id]);
+        if (deletion.affectedRows === 0) {
             console.error(`Unable to delete quiz with id ${_id}`);
             return NextResponse.json(
                 {

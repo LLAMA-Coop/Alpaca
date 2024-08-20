@@ -1,17 +1,13 @@
-import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
+import { useUser } from "@/lib/auth";
 import { QuizInput, InputPopup, UserStats, QuizDisplay } from "@client";
-import { serialize, serializeOne } from "@/lib/db";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-// import { Quiz, User } from "@models";
 import Link from "next/link";
 import { getPermittedQuizzes } from "@/lib/db/helpers";
 
 export default async function QuizzesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    // User.populate(user, ["groups", "associates"]);
-    // const query = queryReadableResources(user);
 
     let userQuizzes;
     if (user) {
@@ -28,20 +24,9 @@ export default async function QuizzesPage({ searchParams }) {
         );
     }
 
-    // const quizzes = serialize(
-    //     await Quiz.find(query)
-    //         .limit(amount)
-    //         .skip((page - 1) * amount),
-    // );
     const quizzes = await getPermittedQuizzes(user?.id);
-    console.log("QUIZZES IN QUIZ PAGE", quizzes);
 
     const hasMore = false;
-    // (
-    //     await Quiz.find(query)
-    //         .limit(1)
-    //         .skip((page - 1) * amount + amount)
-    // )?.length > 0;
 
     if (page > 1 && quizzes.length === 0) {
         return redirect("/quizzes?page=1&amount=" + amount);

@@ -7,8 +7,13 @@ import { Types } from "mongoose";
 import { serializeOne } from "@/lib/db";
 import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
-import { Source, Note, Quiz } from "../models";
-import { getPermittedCourses, insertPermissions } from "@/lib/db/helpers";
+import { Source, Note } from "../models";
+import {
+    getPermittedCourses,
+    getPermittedQuizzes,
+    getQuizzesById,
+    insertPermissions,
+} from "@/lib/db/helpers";
 import { db } from "@/lib/db/db";
 
 export async function GET(req) {
@@ -151,8 +156,6 @@ export async function PUT(req) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const submitErrors = new SubmitErrors();
-
         const {
             id,
             name,
@@ -227,18 +230,18 @@ export async function PUT(req) {
 
         const content = await course.save();
 
-        // const id = content._id.toString();
-
         async function addCourseToResource({
             resourceId,
             type,
             courseId,
             user,
         }) {
-            function getResource() {
+            async function getResource() {
                 if (type === "source") return Source.findById(resourceId);
                 if (type === "note") return Note.findById(resourceId);
-                if (type === "quiz") return Quiz.findById(resourceId);
+                if (type === "quiz") {
+                    return await getQuizzesById({ id: resourceId });
+                }
             }
 
             const resource = await getResource();
@@ -255,21 +258,17 @@ export async function PUT(req) {
             }
 
             if (type === "source" && addAllFromSources) {
-                const quizzesFromSource = await Quiz.find({
-                    sources: new Types.ObjectId(resourceId),
-                });
-                localQuizzes.push(
-                    ...quizzesFromSource.map((x) => x._id.toString()),
-                );
+                const quizzesFromSource = (
+                    await getPermittedQuizzes(user.id)
+                ).filter((x) => x.sources.includes(resourceId));
+                localQuizzes.push(...quizzesFromSource.map((x) => x.id));
             }
 
             if (type !== "quiz" && addAllFromNotes) {
                 const notesFromSource = await Note.find({
                     sources: new Types.ObjectId(resourceId),
                 });
-                localNotes.push(
-                    ...notesFromSource.map((x) => x._id.toString()),
-                );
+                localNotes.push(...notesFromSource.map((x) => x.id));
             }
         }
 
