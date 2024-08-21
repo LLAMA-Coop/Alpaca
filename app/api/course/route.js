@@ -263,7 +263,7 @@ export async function PUT(req) {
             const resource = await getResource();
             // if (!canRead(resource, user)) {
             if (
-                resource.permissionType !== "read" ||
+                resource.permissionType !== "read" &&
                 resource.permissionType !== "write"
             ) {
                 return;

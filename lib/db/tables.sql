@@ -115,7 +115,9 @@ CREATE TABLE IF NOT EXISTS `ResourceSources` (
     `resourceType` ENUM('note', 'quiz'),
     `sourceId` BIGINT NOT NULL,
     `locInSource` VARCHAR(32),
-    `locType` ENUM('page', 'id reference', 'section', 'timestamp', 'url')
+    `locType` ENUM('page', 'id reference', 'section', 'timestamp', 'url'),
+
+    UNIQUE KEY `sourceInfo` (`resourceId`, `resourceType`, `sourceId`)
 );
 
 CREATE TABLE IF NOT EXISTS `Courses` (
@@ -148,7 +150,9 @@ CREATE TABLE IF NOT EXISTS `CourseResources` (
     `courseId` BIGINT NOT NULL,
     `resourceId` BIGINT NOT NULL,
     `resourceType` ENUM('source', 'note', 'quiz'),
-    `includeReferencingResources` BOOLEAN
+    `includeReferencingResources` BOOLEAN,
+
+    UNIQUE KEY `resourceInfo` (`courseId`, `resourceId`, `resourceType`)
 );
 
 CREATE TABLE IF NOT EXISTS `ResourcePermissions` (

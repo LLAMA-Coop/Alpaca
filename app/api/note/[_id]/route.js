@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-// import { Note } from "@mneme_app/database-models";
-import { Note } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
+import { getNotesById } from "@/lib/db/helpers.js";
+import { db } from "@/lib/db/db.js";
 
 export async function DELETE(req, { params }) {
     try {
@@ -15,7 +15,8 @@ export async function DELETE(req, { params }) {
 
         const { _id } = params;
 
-        const note = await Note.findById(_id);
+        // const note = await Note.findById(_id);
+        const note = (await getNotesById({ id: _id, userId: user.id }))[0];
         if (!note) {
             return NextResponse.json(
                 {
@@ -25,7 +26,7 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        if (note.createdBy.toString() !== user.id.toString()) {
+        if (note.creator.id !== user.id) {
             return NextResponse.json(
                 {
                     message: `User ${user.id} is not authorized to delete note ${_id}. Only the creator ${note.createdBy} is permitted`,
@@ -34,8 +35,11 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        const deletion = await Note.deleteOne({ _id });
-        if (deletion.deletedCount === 0) {
+        // const deletion = await Note.deleteOne({ _id });
+        const [deletion, fields] = await db
+            .promise()
+            .query("DELETE FROM `Notes` WHERE `id` = ?", [_id]);
+        if (deletion.affectedRows === 0) {
             console.error(`Unable to delete note ${_id}`);
             return NextResponse.json(
                 {
