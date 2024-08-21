@@ -225,7 +225,6 @@ export async function PUT(req) {
             (x) => x.id === id,
         );
 
-        console.log(quiz);
         if (!quiz) {
             return NextResponse.json(
                 {

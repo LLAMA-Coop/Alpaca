@@ -1,6 +1,5 @@
 import { getQuizzesById, getSourcesById, getNotesById } from "@/lib/db/helpers";
 import styles from "./Landing.module.css";
-import Image from "next/image";
 import Link from "next/link";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";

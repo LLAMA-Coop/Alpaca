@@ -4,12 +4,18 @@ import { buildPermissions } from "@/lib/permissions";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { NextResponse } from "next/server";
 import { MIN, MAX } from "@/lib/constants";
+// Need to fix how note PUT edits
 import { Note } from "@/app/api/models";
 import { serializeOne } from "@/lib/db";
 import { cookies } from "next/headers";
 import { Types } from "mongoose";
 import { db } from "@/lib/db/db.js";
-import { getPermittedNotes, insertPermissions } from "@/lib/db/helpers";
+import {
+    getNotesById,
+    getPermittedNotes,
+    insertPermissions,
+    updateNote,
+} from "@/lib/db/helpers";
 
 export async function GET(req) {
     try {
@@ -139,72 +145,39 @@ export async function PUT(req) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const { _id, title, text, sources, courses, tags, permissions } =
+        const { id, title, text, sources, courses, tags, permissions } =
             await req.json();
 
-        const note = await Note.findById(_id);
+        const note = (await getNotesById({ id: id, userId: user.id }))[0];
         if (!note) {
             return NextResponse.json(
                 {
-                    message: `No note found with id ${_id}`,
+                    message: `No note found with id ${id}`,
                 },
                 { status: 404 },
             );
         }
 
-        if (!canEdit(note, user)) {
+        if (note.permissionType !== "write") {
             return NextResponse.json(
                 {
-                    message: `You are not permitted to edit note ${_id}`,
+                    message: `You are not permitted to edit note ${id}`,
                 },
                 { status: 403 },
             );
         }
 
-        if (title) {
-            note.title = title.trim();
-        }
-        if (text) {
-            note.text = text.trim();
-        }
-        if (sources) {
-            sources.forEach((sourceId_req) => {
-                if (
-                    !note.sources.find(
-                        (srcId) => srcId.toString() == sourceId_req,
-                    )
-                ) {
-                    note.sources.push(new Types.ObjectId(sourceId_req));
-                }
-            });
-        }
+        const content = await updateNote({
+            id,
+            title,
+            text,
+            sources,
+            courses,
+            tags,
+            permissions,
+            contributorId: user.id
+        });
 
-        if (courses) {
-            courses.forEach((courseId_req) => {
-                if (
-                    !note.courses.find(
-                        (course) => course._id.toString() === courseId_req,
-                    )
-                ) {
-                    note.courses.push(new Types.ObjectId(courseId_req));
-                }
-            });
-        }
-
-        if (tags) {
-            note.tags = tags;
-        }
-
-        if (permissions && note.createdBy.toString() === user.id.toString()) {
-            note.permissions = serializeOne(permissions);
-        }
-
-        if (!note.contributors.includes(user.id)) {
-            note.contributors.push(user.id);
-        }
-        note.updateBy = user.id;
-
-        const content = await note.save();
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Note] PUT error: ${error}`);
