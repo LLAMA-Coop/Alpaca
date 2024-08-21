@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { getQuizzesById, getUserQuizzes } from "@/lib/db/helpers";
 import { db } from "@/lib/db/db.js";
-import htmlDate from "@/lib/htmlDate.js";
+import { htmlDate } from "@/lib/date";
 
 export async function POST(req, { params }) {
     try {

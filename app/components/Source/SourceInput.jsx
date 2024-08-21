@@ -5,7 +5,7 @@ import { buildPermissions } from "@/lib/permissions";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { useState, useEffect } from "react";
 import { serializeOne } from "@/lib/db";
-import htmlDate from "@/lib/htmlDate";
+import { htmlDate } from "@/lib/date";
 import { MAX } from "@/lib/constants";
 import {
     Input,

@@ -6,10 +6,11 @@ import SubmitErrors from "@/lib/SubmitErrors";
 import { MAX } from "@/lib/constants";
 import {
     getPermittedSources,
+    getSourcesById,
     insertPermissions,
-    sqlDate,
 } from "@/lib/db/helpers";
 import { db } from "@/lib/db/db.js";
+import { sqlDate } from "@/lib/date";
 
 export async function GET(req) {
     try {
@@ -154,7 +155,7 @@ export async function PUT(req) {
             return unauthorized;
         }
 
-        const sources = await getPermittedSources(user.id);
+        // const sources = await getPermittedSources(user.id);
 
         const {
             id,
@@ -166,12 +167,12 @@ export async function PUT(req) {
             authors,
             courses,
             tags,
-            // locationTypeDefault,
             permissions,
         } = await req.json();
 
         // const source = await Source.findById(_id);
-        const source = sources.find((x) => x.id === id);
+        // const source = sources.find((x) => x.id === id);
+        const source = await getSourcesById({ id, userId: user.id });
 
         if (!source) {
             return NextResponse.json(
