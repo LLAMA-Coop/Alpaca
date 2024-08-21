@@ -126,7 +126,6 @@ export async function POST(req) {
         const permsInsert = await insertPermissions(
             permissions,
             sourceId,
-            "source",
             user.id,
         );
 

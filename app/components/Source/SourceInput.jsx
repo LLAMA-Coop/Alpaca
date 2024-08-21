@@ -62,7 +62,7 @@ export function SourceInput({ source }) {
     const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
-        console.log(source)
+        console.log(source);
         if (!source) {
             setLastAccessed(new Date().toISOString().split("T")[0]);
             return;
@@ -74,7 +74,8 @@ export function SourceInput({ source }) {
         if (source.tags && source.tags.length > 0) setTags([...source.tags]);
         if (source.medium) setMedium(source.medium);
         if (source.url) setUrl(source.url);
-        if (source.publishedUpdated) setPublishDate(htmlDate(source.publishedUpdated));
+        if (source.publishedUpdated)
+            setPublishDate(htmlDate(source.publishedUpdated));
         if (source.lastAccessed) setLastAccessed(htmlDate(source.lastAccessed));
         if (source.courses && source.courses.length > 0) {
             setCourses(
@@ -158,9 +159,12 @@ export function SourceInput({ source }) {
             authors,
             courses: courses.map((course) => course.id),
             tags,
-            // locationTypeDefault,
         };
-        sourcePayload.permissions = buildPermissions(permissions);
+        sourcePayload.permissions = buildPermissions(
+            permissions,
+            source ? source.id : null,
+            "source",
+        );
         if (source && source.id) {
             sourcePayload.id = source.id;
         }

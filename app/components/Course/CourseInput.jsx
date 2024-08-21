@@ -48,7 +48,7 @@ export function CourseInput({ course }) {
 
     useEffect(() => {
         if (!course) return;
-        console.log(course, availableCourses)
+        console.log(course, availableCourses);
 
         setName(course.name);
         setDescription(course.description);
@@ -70,8 +70,8 @@ export function CourseInput({ course }) {
     }, []);
 
     useEffect(() => {
-        console.log(parentCourses)
-    }, [parentCourses])
+        console.log(parentCourses);
+    }, [parentCourses]);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -125,7 +125,11 @@ export function CourseInput({ course }) {
             addAllFromNotes,
             permissions,
         };
-        crsPayload.permissions = buildPermissions(permissions);
+        crsPayload.permissions = buildPermissions(
+            permissions,
+            course ? course.id : null,
+            "course",
+        );
         if (course && course.id) {
             // this will change to implement PATCH in /[id]/route.js
             crsPayload.id = course.id;

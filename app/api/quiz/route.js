@@ -183,7 +183,6 @@ export async function POST(req) {
         const permInsert = await insertPermissions(
             permissions,
             quizId,
-            "quiz",
             user.id,
         );
 

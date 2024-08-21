@@ -1,6 +1,5 @@
-import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
+import { useUser } from "@/lib/auth";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { buildPermissions } from "@/lib/permissions";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { NextResponse } from "next/server";
 import { MIN, MAX } from "@/lib/constants";
@@ -112,7 +111,6 @@ export async function POST(req) {
         const permInsert = await insertPermissions(
             permissions,
             noteId,
-            "note",
             user.id,
         );
 

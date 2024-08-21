@@ -158,9 +158,18 @@ CREATE TABLE IF NOT EXISTS `CourseResources` (
 CREATE TABLE IF NOT EXISTS `ResourcePermissions` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `resourceId` BIGINT NOT NULL,
-    `resourceType` ENUM('source', 'note', 'quiz', 'course', 'user', 'group'),
+    `resourceType` ENUM('source', 'note', 'quiz', 'course', 'user', 'group') NOT NULL,
     `permitAll` BOOLEAN DEFAULT FALSE,
-    `permissionType` ENUM('read', 'write'),
-    `permittedId` BIGINT,
-    `permittedType` ENUM ('user', 'group')
+    `permissionType` ENUM('read', 'write', 'none') DEFAULT 'read',
+    `permittedId` BIGINT DEFAULT NULL,
+    `permittedType` ENUM ('user', 'group') DEFAULT NULL,
+
+    UNIQUE KEY `uniquePermission` (
+        `resourceId`, `resourceType`, `permittedId`, `permittedType`
+    ),
+    CHECK (
+        (`permitAll` = TRUE AND `permittedId` IS NULL AND `permittedType` IS NULL)
+        OR
+        (`permitAll` = FALSE AND `permittedId` IS NOT NULL AND `permittedType` IS NOT NULL)
+    )
 );

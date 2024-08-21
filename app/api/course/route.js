@@ -93,7 +93,6 @@ export async function POST(req) {
         const permsInsert = await insertPermissions(
             permissions,
             courseId,
-            "course",
             user.id,
         );
 
@@ -171,7 +170,7 @@ export async function PUT(req) {
             permissions,
         } = await req.json();
 
-        // const course = await Course.findById(id);
+        // Switch to getCoursesById({ id, userId: user.id })
         const course = (await getPermittedCourses(user.id)).find(
             (x) => x.id === id,
         );
@@ -184,8 +183,10 @@ export async function PUT(req) {
             );
         }
 
+        console.log("\nCOURSE\n", course);
+
         // if (!canEdit(course, user)) {
-        if (course.permissionType !== "write") {
+        if (course.permissionType !== "write" && course.createdBy !== user.id) {
             return NextResponse.json(
                 {
                     message: `You are not permitted to edit course ${id}`,
@@ -207,27 +208,28 @@ export async function PUT(req) {
         }
 
         // This will need fixing
-        if (parentCourses) {
-            parentCourses.forEach((parent) => {
-                if (!course.parentCourses.find((crs) => crs.id == parent.id)) {
-                    course.parentCourses.push(new Types.ObjectId(parent));
-                }
-            });
-        }
-        if (prerequisites) {
-            prerequisites.forEach((catId_req) => {
-                if (
-                    !course.prerequisites.find(
-                        (catId) => catId.toString() == catId_req,
-                    )
-                ) {
-                    course.prerequisites.push(new Types.ObjectId(catId_req));
-                }
-            });
-        }
+        // if (parentCourses) {
+        //     parentCourses.forEach((parent) => {
+        //         if (!course.parentCourses.find((crs) => crs.id == parent.id)) {
+        //             course.parentCourses.push(new Types.ObjectId(parent));
+        //         }
+        //     });
+        // }
+        // if (prerequisites) {
+        //     prerequisites.forEach((prereq) => {
+        //         if (
+        //             !course.prerequisites.find(
+        //                 (catId) => catId == prereq,
+        //             )
+        //         ) {
+        //             course.prerequisites.push(new Types.ObjectId(prereq));
+        //         }
+        //     });
+        // }
 
-        if (permissions && course.createdBy.toString() === user.id.toString()) {
-            course.permissions = serializeOne(permissions);
+        // Need to fix
+        if (permissions && course.createdBy === user.id) {
+            course.permissions = permissions;
         }
         course.updatedBy = user.id;
 
@@ -269,13 +271,14 @@ export async function PUT(req) {
                 return;
             }
 
-            if (resource.courses.find((x) => x.id == courseId) == undefined) {
+            if (resource.courses.find((x) => x == courseId) == undefined) {
                 console.error("Not yet implemented PUT / addCourseToResource");
                 // No, we need to add to the CourseResources table
                 // resource.courses.push(new Types.ObjectId(courseId));
                 // await resource.save();
             }
 
+            // This is where you add to CourseResources all quizzes that point to source
             if (type === "source" && addAllFromSources) {
                 const quizzesFromSource = (
                     await getPermittedQuizzes(user.id)
@@ -286,6 +289,7 @@ export async function PUT(req) {
                 localQuizzes.push(...quizzesFromSource.map((x) => x.id));
             }
 
+            // This is where you add to CourseResources all quizzes AND notes that point to source
             if (type !== "quiz" && addAllFromNotes) {
                 // const notesFromSource = await Note.find({
                 //     sources: new Types.ObjectId(resourceId),
@@ -311,7 +315,7 @@ export async function PUT(req) {
             );
         });
 
-        await Promise.all(promises);
+        // await Promise.all(promises);
         localNotes.forEach((n) => {
             promises.push(
                 addCourseToResource({
@@ -324,15 +328,19 @@ export async function PUT(req) {
         });
 
         // Is it necessary to await twice?
-        await Promise.all(promises);
+        // await Promise.all(promises);
         localQuizzes.forEach((q) => {
-            addCourseToResource({
-                resourceId: q,
-                type: "quiz",
-                courseId: id,
-                user,
-            });
+            promises.push(
+                addCourseToResource({
+                    resourceId: q,
+                    type: "quiz",
+                    courseId: id,
+                    user,
+                }),
+            );
         });
+
+        await Promise.all(promises);
 
         return NextResponse.json({ content });
     } catch (error) {

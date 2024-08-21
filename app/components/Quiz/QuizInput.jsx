@@ -112,7 +112,7 @@ export function QuizInput({ quiz }) {
         }
         if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
-            setPermissions(serializeOne(quiz.permissions));
+            setPermissions(quiz.permissions);
         }
     }, []);
 
@@ -272,7 +272,11 @@ export function QuizInput({ quiz }) {
             quizPayload.id = quiz.id;
         }
 
-        quizPayload.permissions = buildPermissions(permissions);
+        quizPayload.permissions = buildPermissions(
+            permissions,
+            quiz ? quiz.id : null,
+            "quiz",
+        );
 
         setLoading(true);
 
