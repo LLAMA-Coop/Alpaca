@@ -1,4 +1,4 @@
-import { getQuizzesById } from "@/lib/db/helpers";
+import { getQuizzesById, getSourcesById, getNotesById } from "@/lib/db/helpers";
 import styles from "./Landing.module.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,8 +7,8 @@ import { cookies } from "next/headers";
 
 export default async function LandingPage() {
     const user = await useUser({ token: cookies().get("token")?.value })
-    const quizzes = await getQuizzesById({ ids: [1, 2, 3], userId: user.id });
-    const quiz = (await getQuizzesById({ id: 1 }))[0];
+    const notes = await getNotesById({ ids: [1, 2, 3], userId: user.id });
+    const note = (await getNotesById({ id: 1 }))[0];
     return (
         <main className={styles.container}>
             <span className={styles.orb} />
@@ -133,10 +133,10 @@ export default async function LandingPage() {
             </section>
 
             <section className={styles.section}>
-                {quizzes.map((x) => (
-                    <p key={x.id}>{x.prompt}</p>
+                {notes.map((x) => (
+                    <p key={x.id}>{x.id} {x.title}; {x.text}; {x.creator.username}; {x.permissionType}</p>
                 ))}
-                <p>{quiz.id}</p>
+                <p>{note.id}</p>
             </section>
         </main>
     );

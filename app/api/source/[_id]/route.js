@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-// import { Source } from "@mneme_app/database-models";
-import { Source } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
+import { getSourcesById } from "@/lib/db/helpers.js";
+import { db } from "@/lib/db/db.js";
 
 export async function DELETE(req, { params }) {
     try {
@@ -15,7 +15,8 @@ export async function DELETE(req, { params }) {
 
         const { _id } = params;
 
-        const source = await Source.findById(_id);
+        // const source = await Source.findById(_id);
+        const source = await getSourcesById({ id: _id, userId: user.id });
         if (!source) {
             return NextResponse.json(
                 {
@@ -25,7 +26,7 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        if (source.createdBy.toString() !== user.id.toString()) {
+        if (source.creator.id !== user.id) {
             return NextResponse.json(
                 {
                     message: `User ${user.id} is not authorized to delete source ${_id}. Only the creator ${source.createdBy} is permitted`,
@@ -34,8 +35,11 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        const deletion = await Source.deleteOne({ _id });
-        if (deletion.deletedCount === 0) {
+        // const deletion = await Source.deleteOne({ _id });
+        const [deletion, fields] = await db
+            .promise()
+            .query("DELETE FROM `Sources` WHERE `id` = ?", [_id]);
+        if (deletion.affectedRows === 0) {
             console.error(`Unable to delete source ${_id}`);
             return NextResponse.json(
                 {

@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
-import { canEdit, useUser } from "@/lib/auth";
+import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import { Source } from "@/app/api/models";
 import { unauthorized, server } from "@/lib/apiErrorResponses";
-import { Types } from "mongoose";
-import { serializeOne } from "@/lib/db";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { MAX } from "@/lib/constants";
 import {

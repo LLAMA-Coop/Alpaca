@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
-import { canEdit, canRead, useUser } from "@/lib/auth";
+import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import Course from "../models/Course"; // Don't forget to add this to index.js
 import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { Types } from "mongoose";
 import { serializeOne } from "@/lib/db";
 import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
-import { Source, Note } from "../models";
 import {
+    getNotesById,
     getPermittedCourses,
+    getPermittedNotes,
     getPermittedQuizzes,
     getQuizzesById,
+    getSourcesById,
     insertPermissions,
 } from "@/lib/db/helpers";
 import { db } from "@/lib/db/db";
@@ -239,8 +240,18 @@ export async function PUT(req) {
             user,
         }) {
             async function getResource() {
-                if (type === "source") return Source.findById(resourceId);
-                if (type === "note") return Note.findById(resourceId);
+                if (type === "source") {
+                    return await getSourcesById({
+                        id: resourceId,
+                        userId: user.id,
+                    });
+                }
+                if (type === "note") {
+                    return await getNotesById({
+                        id: resourceId,
+                        userId: user.id,
+                    });
+                }
                 if (type === "quiz") {
                     return await getQuizzesById({
                         id: resourceId,
@@ -258,25 +269,33 @@ export async function PUT(req) {
                 return;
             }
 
-            if (
-                resource.courses.find((x) => x.toString() == courseId) ==
-                undefined
-            ) {
-                resource.courses.push(new Types.ObjectId(courseId));
-                await resource.save();
+            if (resource.courses.find((x) => x.id == courseId) == undefined) {
+                console.error("Not yet implemented PUT / addCourseToResource");
+                // No, we need to add to the CourseResources table
+                // resource.courses.push(new Types.ObjectId(courseId));
+                // await resource.save();
             }
 
             if (type === "source" && addAllFromSources) {
                 const quizzesFromSource = (
                     await getPermittedQuizzes(user.id)
-                ).filter((x) => x.sources.includes(resourceId));
+                ).filter(
+                    (x) =>
+                        x.sources.find((x) => x.id === resourceId) != undefined,
+                );
                 localQuizzes.push(...quizzesFromSource.map((x) => x.id));
             }
 
             if (type !== "quiz" && addAllFromNotes) {
-                const notesFromSource = await Note.find({
-                    sources: new Types.ObjectId(resourceId),
-                });
+                // const notesFromSource = await Note.find({
+                //     sources: new Types.ObjectId(resourceId),
+                // });
+                const notesFromSource = (
+                    await getPermittedNotes(user.id)
+                ).filter(
+                    (x) =>
+                        x.sources.find((x) => x.id === resourceId) != undefined,
+                );
                 localNotes.push(...notesFromSource.map((x) => x.id));
             }
         }
