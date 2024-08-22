@@ -17,6 +17,7 @@ export const useStore = create((set) => ({
     quizzes: [],
     courses: [],
     groups: [],
+    users: [],
     associates: [],
     notifications: [],
     tags: [],

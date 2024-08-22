@@ -18,44 +18,73 @@ export function PermissionsInput({ permissions, setter }) {
 
     const user = useStore((state) => state.user);
     const availableGroups = useStore((state) => state.groups);
+    const availableUsers = useStore((state) => state.users);
     const addModal = useModals((state) => state.addModal);
 
     useEffect(() => {
         if (!permissions) return;
 
         if (permissions.usersWrite) {
-            // setUsersWrite(
-            //     permissions.usersWrite.map((userId) =>
-            //         user?.associates.find((x) => x.id === userId),
-            //     ),
-            // );
-            setUsersWrite(permissions.usersWrite);
+            setUsersWrite(
+                permissions.usersWrite.map((userId) => {
+                    let thisUser = user.associates.find((x) => x.id === userId);
+                    if (!thisUser) {
+                        thisUser = {
+                            id: userId,
+                            username: "unknown",
+                        };
+                    }
+                    return thisUser;
+                }),
+            );
+            // setUsersWrite(permissions.usersWrite);
         }
 
         if (permissions.usersRead) {
-            // setUsersRead(
-            //     permissions.usersRead.map((userId) =>
-            //         user?.associates.find((x) => x.id === userId),
-            //     ),
-            // );
-            setUsersRead(permissions.usersRead);
+            setUsersRead(
+                permissions.usersRead.map((userId) => {
+                    let thisUser = user.associates.find((x) => x.id === userId);
+                    if (!thisUser) {
+                        thisUser = {
+                            id: userId,
+                            username: "unknown",
+                        };
+                    }
+                    return thisUser;
+                }),
+            );
+            // setUsersRead(permissions.usersRead);
         }
 
         if (permissions.groupsWrite) {
-            // setGroupsWrite(
-            //     permissions.groupsWrite.map((groupId) =>
-            //         availableGroups.find((x) => x.id === groupId),
-            //     ),
-            // );
-            setGroupsWrite(permissions.groupsWrite);
+            setGroupsWrite(
+                permissions.groupsWrite.map((groupId) => {
+                    let group = availableGroups.find((x) => x.id === groupId);
+                    if (!group) {
+                        group = {
+                            id: groupId,
+                            name: "Unknown",
+                        };
+                    }
+                    return group;
+                }),
+            );
+            // setGroupsWrite(permissions.groupsWrite);
         }
         if (permissions.groupsRead) {
-            // setGroupsRead(
-            //     permissions.groupsRead.map((groupId) =>
-            //         availableGroups.find((x) => x.id === groupId),
-            //     ),
-            // );
-            setGroupsRead(permissions.groupsRead);
+            setGroupsRead(
+                permissions.groupsRead.map((groupId) => {
+                    let group = availableGroups.find((x) => x.id === groupId);
+                    if (!group) {
+                        group = {
+                            id: groupId,
+                            name: "Unknown",
+                        };
+                    }
+                    return group;
+                }),
+            );
+            // setGroupsRead(permissions.groupsRead);
         }
     }, []);
 

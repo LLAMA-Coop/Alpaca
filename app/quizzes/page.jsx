@@ -61,10 +61,7 @@ export default async function QuizzesPage({ searchParams }) {
 
                             return (
                                 <li key={quiz.id}>
-                                    <QuizDisplay
-                                        quiz={quiz}
-                                        canClientCheck={user ? false : true}
-                                    />
+                                    <QuizDisplay quiz={quiz} />
 
                                     {quizInUser && (
                                         <UserStats userQuizInfo={quizInUser} />

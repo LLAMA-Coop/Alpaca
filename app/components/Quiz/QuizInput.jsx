@@ -3,11 +3,10 @@
 import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { DeletePopup } from "../DeletePopup/DeletePopup";
-import { buildPermissions } from "@/lib/permissions";
+import { buildPermissions, permissionsListToObject } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
 import SubmitErrors from "@/lib/SubmitErrors";
 import styles from "./QuizInput.module.css";
-import { serializeOne } from "@/lib/db";
 import { MAX } from "@/lib/constants";
 import {
     Input,
@@ -62,14 +61,22 @@ export function QuizInput({ quiz }) {
     const availableNotes = useStore((state) => state.notes);
 
     const user = useStore((state) => state.user);
-    const canDelete = quiz && user && quiz.createdBy === user.id;
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
 
+    const canDelete =
+        quiz &&
+        user &&
+        (quiz.createdBy === user.id || quiz.creator?.id === user.id);
+    const canChangePermissions =
+        !quiz ||
+        (user && (quiz.createdBy === user.id || quiz.creator?.id === user.id));
+
     useEffect(() => {
         if (!quiz) return;
+        // console.log("QWIZ", quiz);
         if (quiz.type) setType(quiz.type);
         if (quiz.prompt) setPrompt(quiz.prompt);
         if (quiz.choices) {
@@ -112,7 +119,7 @@ export function QuizInput({ quiz }) {
         }
         if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
-            setPermissions(quiz.permissions);
+            setPermissions(permissionsListToObject(quiz.permissions));
         }
     }, []);
 
@@ -564,7 +571,7 @@ export function QuizInput({ quiz }) {
             <div className={styles.permissions}>
                 <PermissionsDisplay permissions={permissions} />
 
-                {(!quiz || (user && quiz.createdBy === user.id)) && (
+                {canChangePermissions && (
                     <InputPopup
                         type="permissions"
                         resource={permissions}
