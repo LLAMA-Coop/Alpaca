@@ -2,7 +2,7 @@
 
 import { Input, Label, ListAdd } from "@client";
 import { useState, useEffect } from "react";
-import { useStore, useModals } from "@/store/store";
+import { useStore } from "@/store/store";
 
 export function PermissionsInput({ permissions, setter }) {
     const [allWrite, setAllWrite] = useState(
@@ -18,8 +18,6 @@ export function PermissionsInput({ permissions, setter }) {
 
     const user = useStore((state) => state.user);
     const availableGroups = useStore((state) => state.groups);
-    const availableUsers = useStore((state) => state.users);
-    const addModal = useModals((state) => state.addModal);
 
     useEffect(() => {
         if (!permissions) return;
@@ -27,7 +25,10 @@ export function PermissionsInput({ permissions, setter }) {
         if (permissions.usersWrite) {
             setUsersWrite(
                 permissions.usersWrite.map((userId) => {
-                    let thisUser = user.associates.find((x) => x.id === userId);
+                    let thisUser =
+                        typeof userId === "object"
+                            ? userId
+                            : user.associates.find((x) => x.id === userId);
                     if (!thisUser) {
                         thisUser = {
                             id: userId,
@@ -37,13 +38,15 @@ export function PermissionsInput({ permissions, setter }) {
                     return thisUser;
                 }),
             );
-            // setUsersWrite(permissions.usersWrite);
         }
 
         if (permissions.usersRead) {
             setUsersRead(
                 permissions.usersRead.map((userId) => {
-                    let thisUser = user.associates.find((x) => x.id === userId);
+                    let thisUser =
+                        typeof userId === "object"
+                            ? userId
+                            : user.associates.find((x) => x.id === userId);
                     if (!thisUser) {
                         thisUser = {
                             id: userId,
@@ -53,38 +56,41 @@ export function PermissionsInput({ permissions, setter }) {
                     return thisUser;
                 }),
             );
-            // setUsersRead(permissions.usersRead);
         }
 
         if (permissions.groupsWrite) {
             setGroupsWrite(
                 permissions.groupsWrite.map((groupId) => {
-                    let group = availableGroups.find((x) => x.id === groupId);
-                    if (!group) {
-                        group = {
+                    let thisGroup =
+                        typeof groupId === "object"
+                            ? groupId
+                            : availableGroups.find((x) => x.id === groupId);
+                    if (!thisGroup) {
+                        thisGroup = {
                             id: groupId,
                             name: "Unknown",
                         };
                     }
-                    return group;
+                    return thisGroup;
                 }),
             );
-            // setGroupsWrite(permissions.groupsWrite);
         }
         if (permissions.groupsRead) {
             setGroupsRead(
                 permissions.groupsRead.map((groupId) => {
-                    let group = availableGroups.find((x) => x.id === groupId);
-                    if (!group) {
-                        group = {
+                    let thisGroup =
+                        typeof groupId === "object"
+                            ? groupId
+                            : availableGroups.find((x) => x.id === groupId);
+                    if (!thisGroup) {
+                        thisGroup = {
                             id: groupId,
                             name: "Unknown",
                         };
                     }
-                    return group;
+                    return thisGroup;
                 }),
             );
-            // setGroupsRead(permissions.groupsRead);
         }
     }, []);
 
