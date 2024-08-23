@@ -63,7 +63,9 @@ CREATE TABLE IF NOT EXISTS `SourceCredits` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `sourceId` BIGINT NOT NULL,
     `name` VARCHAR(64),
-    `type` VARCHAR(32) DEFAULT 'Author'
+    `type` VARCHAR(32) DEFAULT 'Author',
+
+    CONSTRAINT UNIQUE (`sourceId`, `name`, `type`)
 );
 
 CREATE TABLE IF NOT EXISTS `Notes` (
@@ -92,13 +94,15 @@ CREATE TABLE IF NOT EXISTS `UserQuizzes` (
     `lastCorrect` DATE DEFAULT CURRENT_DATE,
     `level` INT DEFAULT 0,
     `hiddenUntil` DATE DEFAULT CURRENT_DATE,
-    UNIQUE KEY userQuizCombo (userId, quizId)
+    UNIQUE KEY userQuizCombo (`userId`, `quizId`)
 );
 
 CREATE TABLE IF NOT EXISTS `QuizNotes` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `quizId` BIGINT NOT NULL,
-    `noteId` BIGINT NOT NULL
+    `noteId` BIGINT NOT NULL,
+
+    CONSTRAINT UNIQUE (`quizId`, `noteId`)
 );
 
 CREATE TABLE IF NOT EXISTS `ResourceContributors` (
