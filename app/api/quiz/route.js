@@ -233,7 +233,12 @@ export async function PUT(req) {
             );
         }
 
-        if (quiz.permissionType !== "write") {
+        const isCreator =
+            (quiz.createdBy && quiz.createdBy === user.id) ||
+            (quiz.creator && quiz.creator.id === user.id);
+        const canEdit = isCreator || quiz.permissionType === "write";
+
+        if (!canEdit) {
             return NextResponse.json(
                 {
                     message: `You are not permitted to edit quiz ${id}`,
@@ -253,10 +258,10 @@ export async function PUT(req) {
             notes,
             courses,
             tags,
-            permissions,
+            permissions: isCreator ? permissions : [],
             contributorId: user.id,
         });
-        
+
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Quiz] PUT error: ${error}`);
