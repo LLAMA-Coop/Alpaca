@@ -23,7 +23,6 @@ export default async function NotesPage({ searchParams }) {
     const notes = user
         ? await getPermittedNotes(user.id)
         : await getPermittedNotes();
-    console.log("NTOES", notes);
 
     const hasMore = false;
 

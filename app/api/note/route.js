@@ -3,11 +3,7 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { NextResponse } from "next/server";
 import { MIN, MAX } from "@/lib/constants";
-// Need to fix how note PUT edits
-import { Note } from "@/app/api/models";
-import { serializeOne } from "@/lib/db";
 import { cookies } from "next/headers";
-import { Types } from "mongoose";
 import { db } from "@/lib/db/db.js";
 import {
     getNotesById,
@@ -114,19 +110,6 @@ export async function POST(req) {
             user.id,
         );
 
-        // const note = new Note({
-        //     createdBy: user.id,
-        //     title: title.trim(),
-        //     text: text.trim(),
-        //     sources: [...sources],
-        //     courses: courses ?? [],
-        //     tags: [...tags],
-        //     contributors: [user.id],
-        // });
-
-        // note.permissions = buildPermissions(permissions);
-
-        // const content = await note.save();
         const content = noteInsert;
         return NextResponse.json(
             { message: "Note created successfully", content },
@@ -156,7 +139,12 @@ export async function PUT(req) {
             );
         }
 
-        if (note.permissionType !== "write") {
+        const isCreator =
+            (note.createdBy && note.createdBy === user.id) ||
+            (note.creator && note.creator.id === user.id);
+        const canEdit = isCreator || note.permissionType === "write";
+
+        if (!canEdit) {
             return NextResponse.json(
                 {
                     message: `You are not permitted to edit note ${id}`,
@@ -172,8 +160,8 @@ export async function PUT(req) {
             sources,
             courses,
             tags,
-            permissions,
-            contributorId: user.id
+            permissions: isCreator ? permissions : [],
+            contributorId: user.id,
         });
 
         return NextResponse.json({ content });

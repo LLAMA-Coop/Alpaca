@@ -115,7 +115,8 @@ export function CourseInput({ course }) {
             enrollment,
             parentCourses: parentCourses.map((course) => course.id),
             prerequisites: prerequisites.map((course) => ({
-                requiredAverageLevel: 1,
+                averageLevelRequired: 1,
+                minimumLevelRequired: 1,
                 course: course.id,
             })),
             sources: sources.map((source) => source.id),

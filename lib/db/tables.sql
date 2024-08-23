@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `QuizNotes` (
 CREATE TABLE IF NOT EXISTS `ResourceContributors` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `resourceId` BIGINT NOT NULL,
-    `resourceType` ENUM('source', 'note', 'quiz'),
+    `resourceType` ENUM('source', 'note', 'quiz', 'course'),
     `userId` BIGINT NOT NULL,
     `date` DATE DEFAULT CURRENT_DATE
 );
@@ -146,7 +146,10 @@ CREATE TABLE IF NOT EXISTS `CourseHierarchy` (
     `inferiorCourse` BIGINT NOT NULL,
     `superiorCourse` BIGINT NOT NULL,
     `relationship` ENUM('prerequisite', 'encompasses'),
-    `averageLevelRequired` INT DEFAULT 0
+    `averageLevelRequired` INT DEFAULT 0,
+    `minimumLevelRequired` INT DEFAULT 0,
+
+    CONSTRAINT UNIQUE (`inferiorCourse`, `superiorCourse`, `relationship`)
 );
 
 CREATE TABLE IF NOT EXISTS `CourseResources` (
