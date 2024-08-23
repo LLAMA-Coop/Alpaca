@@ -11,7 +11,6 @@ import {
     updateSource,
 } from "@/lib/db/helpers";
 import { db } from "@/lib/db/db.js";
-import { sqlDate } from "@/lib/date";
 
 export async function GET(req) {
     try {
@@ -168,10 +167,10 @@ export async function PUT(req) {
             permissions,
         } = await req.json();
 
-        const source = (await getSourcesById({ id, userId: user.id }))[0];
-        const isCreator =
-            source.createdBy == user.id || source.creator?.id == user.id;
-        const canEdit = isCreator || source.permissionType === "write";
+        // const source = (await getSourcesById({ id, userId: user.id }))[0];
+        const source = (await getPermittedSources(user.id)).find(
+            (x) => x.id == id,
+        );
 
         if (!source) {
             return NextResponse.json(
@@ -181,6 +180,10 @@ export async function PUT(req) {
                 { status: 404 },
             );
         }
+
+        const isCreator =
+            source.createdBy == user.id || source.creator?.id == user.id;
+        const canEdit = isCreator || source.permissionType === "write";
 
         if (!canEdit) {
             return NextResponse.json(
