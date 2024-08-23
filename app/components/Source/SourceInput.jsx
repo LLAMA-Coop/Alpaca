@@ -1,10 +1,9 @@
 "use client";
 
 import { useStore, useModals, useAlerts } from "@/store/store";
-import { buildPermissions } from "@/lib/permissions";
+import { buildPermissions, permissionsListToObject } from "@/lib/permissions";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { useState, useEffect } from "react";
-import { serializeOne } from "@/lib/db";
 import { htmlDate } from "@/lib/date";
 import { MAX } from "@/lib/constants";
 import {
@@ -13,7 +12,6 @@ import {
     ListItem,
     Spinner,
     DeletePopup,
-    PermissionsInput,
     ListAdd,
     UserInput,
     InputPopup,
@@ -42,8 +40,6 @@ export function SourceInput({ source }) {
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
 
-    // const [locationTypeDefault, setLocationTypeDefault] = useState("page");
-
     const [loading, setLoading] = useState(false);
     const [permissions, setPermissions] = useState({});
 
@@ -55,14 +51,18 @@ export function SourceInput({ source }) {
     const availableCourses = useStore((state) => state.courses);
     const availableTags = useStore((state) => state.tags);
     const addTags = useStore((state) => state.addTags);
-    const canDelete = source && source.createdBy === user?.id;
+
+    const canDelete = source && user && source.createdBy === user.id;
+    const canChangePermissions =
+        !source ||
+        (user &&
+            (source.createdBy === user.id || source.creator?.id === user.id));
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
-        console.log(source);
         if (!source) {
             setLastAccessed(new Date().toISOString().split("T")[0]);
             return;
@@ -84,11 +84,9 @@ export function SourceInput({ source }) {
                 ),
             );
         }
-        // if (source.locationTypeDefault) {
-        //     setLocationTypeDefault(source.locationTypeDefault);
-        // }
-        if (source.permissions)
-            setPermissions(serializeOne(source.permissions));
+        if (source.permissions) {
+            setPermissions(permissionsListToObject(source.permissions));
+        }
     }, []);
 
     function handleAddAuthor(e) {
@@ -411,11 +409,9 @@ export function SourceInput({ source }) {
             </div> */}
 
             <div>
-                <PermissionsDisplay
-                    permissions={permissions}
-                    setter={setPermissions}
-                />
-                {(!source || source.createdBy === user?.id) && (
+                <PermissionsDisplay permissions={permissions} />
+
+                {canChangePermissions && (
                     <InputPopup
                         type="permissions"
                         resource={permissions}
