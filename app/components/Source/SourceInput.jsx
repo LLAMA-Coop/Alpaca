@@ -124,7 +124,7 @@ export function SourceInput({ source }) {
             submitErrors.addMessage("Invalid URL", setUrlError);
         }
 
-        if (!accessedRegex.test(lastAccessed)) {
+        if (lastAccessed && !accessedRegex.test(lastAccessed)) {
             submitErrors.addMessage("Invalid Date", setLastAccessedError);
         }
 
