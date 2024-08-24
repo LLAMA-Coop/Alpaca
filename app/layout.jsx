@@ -4,7 +4,7 @@ import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import "./globals.css";
-import { getPermittedCourses, getPermittedResources } from "@/lib/db/helpers";
+import { getPermittedCourses, getPermittedNotes, getPermittedQuizzes, getPermittedResources, getPermittedSources } from "@/lib/db/helpers";
 
 // const connection = await connectDB();
 
@@ -31,10 +31,10 @@ export default async function RootLayout({ children }) {
         ? await getPermittedResources(user.id)
         : { sources: [], notes: [], quizzes: [], notifications: [] };
 
-    const sources = permittedResources.sources;
-    const notes = permittedResources.notes;
-    const quizzes = permittedResources.quizzes;
-    const courses = user ? await getPermittedCourses(user.id): [];
+    const sources = await getPermittedSources(user.id);
+    const notes = await getPermittedNotes(user.id);
+    const quizzes = await getPermittedQuizzes(user.id);
+    const courses = await getPermittedCourses(user.id);
     const notifications = user ? user.notifications : [];
 
     return (

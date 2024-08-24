@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation";
-import { Course } from "@/app/api/models";
 import { cookies } from "next/headers";
-import { canRead, useUser } from "@/lib/auth";
+import { useUser } from "@/lib/auth";
 import { CourseDash } from "./CourseDash";
-import { serializeOne } from "@/lib/db";
+import { getPermittedCourses } from "@/lib/db/helpers";
 
 export default async function CoursePage({ params }) {
     const user = await useUser({ token: cookies().get("token")?.value });
@@ -11,11 +10,11 @@ export default async function CoursePage({ params }) {
     const { name } = params;
     const nameDecoded = decodeURIComponent(name);
 
-    const course = await Course.findOne({ name: nameDecoded })
-        .populate("prerequisites.course")
-        .populate("parentCourses");
+    const course = (await getPermittedCourses(user.id)).find(
+        (x) => x.name === nameDecoded,
+    );
 
-    if (!course || !canRead(course, user)) return redirect("/courses");
+    if (!course) return redirect("/courses");
 
-    return <CourseDash course={serializeOne(course)} isLogged={user ? true : false} />;
+    return <CourseDash course={course} isLogged={user ? true : false} />;
 }

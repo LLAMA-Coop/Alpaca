@@ -7,5 +7,3 @@ import Quiz from "./Quiz";
 import User from "./User";
 
 export { Source, Note, Quiz, User, Group, Notification, Course };
-
-// To do: Course

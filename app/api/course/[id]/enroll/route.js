@@ -2,8 +2,8 @@ import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { Course } from "@models";
 import { doesUserMeetPrerequisites } from "@/lib/permissions";
+import { getPermittedCourses } from "@/lib/db/helpers";
 
 export async function POST(req, { params }) {
     const { id } = params;
@@ -14,7 +14,9 @@ export async function POST(req, { params }) {
         });
         if (!user) return unauthorized;
 
-        const course = await Course.findById(id);
+        const course = (await getPermittedCourses(user.id)).find(
+            (x) => x.id === id,
+        );
         if (!course) {
             return NextResponse.json(
                 {
