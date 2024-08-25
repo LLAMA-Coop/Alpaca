@@ -31,10 +31,10 @@ export default async function RootLayout({ children }) {
         ? await getPermittedResources(user.id)
         : { sources: [], notes: [], quizzes: [], notifications: [] };
 
-    const sources = await getPermittedSources(user.id);
-    const notes = await getPermittedNotes(user.id);
-    const quizzes = await getPermittedQuizzes(user.id);
-    const courses = await getPermittedCourses(user.id);
+    const sources = await getPermittedSources(user?.id);
+    const notes = await getPermittedNotes(user?.id);
+    const quizzes = await getPermittedQuizzes(user?.id);
+    const courses = await getPermittedCourses(user?.id);
     const notifications = user ? user.notifications : [];
 
     return (

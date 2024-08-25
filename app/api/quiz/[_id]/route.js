@@ -17,7 +17,7 @@ export async function POST(req, { params }) {
         const { userResponse } = await req.json();
 
         const quiz = (await getQuizzesById({ id: _id }))[0];
-        
+
         if (!quiz) {
             return NextResponse.json(
                 {
@@ -97,7 +97,7 @@ export async function POST(req, { params }) {
                     ],
                 );
 
-            console.log("RESULTS", results)
+            console.log("RESULTS", results);
         } else {
             await db
                 .promise()
@@ -125,6 +125,7 @@ export async function POST(req, { params }) {
         });
     } catch (error) {
         console.error(`[Quiz] POST error:\n ${error}`);
+        addError(error, "/api/quiz/[_id]: POST");
         return server;
     }
 }
@@ -160,6 +161,14 @@ export async function DELETE(req, { params }) {
             .query("DELETE FROM `Quizzes` WHERE `id` = ?", [_id]);
         if (deletion.affectedRows === 0) {
             console.error(`Unable to delete quiz with id ${_id}`);
+            addError(
+                {
+                    stack: deletion,
+                    message: `Unable to delete quiz with id ${_id}`,
+                },
+                "/api/quiz/[_id]: POST",
+            );
+
             return NextResponse.json(
                 {
                     message: `Unable to delete quiz with id ${_id}`,
@@ -170,6 +179,7 @@ export async function DELETE(req, { params }) {
         return new NextResponse(null, { status: 204 });
     } catch (error) {
         console.error(`[Quiz] DELETE error:\n ${error}`);
+        addError(error, "/api/quiz/[_id]: DELETE");
         return server;
     }
 }

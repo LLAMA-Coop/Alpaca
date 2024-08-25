@@ -31,6 +31,7 @@ export async function GET(req) {
         });
     } catch (error) {
         console.error(`[Quiz] GET error: ${error}`);
+        addError(error, "/api/quiz: GET");
         return server;
     }
 }
@@ -194,6 +195,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[Quiz] POST error: ${error}`);
+        addError(error, "/api/quiz: POST");
         return server;
     }
 }
@@ -265,6 +267,7 @@ export async function PUT(req) {
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Quiz] PUT error: ${error}`);
+        addError(error, "/api/quiz: PUT");
         return server;
     }
 }

@@ -180,3 +180,13 @@ CREATE TABLE IF NOT EXISTS `ResourcePermissions` (
         (`permitAll` = FALSE AND `permittedId` IS NOT NULL AND `permittedType` IS NOT NULL)
     )
 );
+
+CREATE TABLE IF NOT EXISTS `ErrorsBugs` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `function` VARCHAR(128),
+    `name` VARCHAR(128),
+    `message` VARCHAR(1024),
+    `code` VARCHAR(128),
+    `stack` VARCHAR(1024),
+    `time` DATETIME DEFAULT CURRENT_TIMESTAMP
+);

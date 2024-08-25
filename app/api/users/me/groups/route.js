@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { getUserGroups } from "@/lib/db/helpers";
+import { addError, getUserGroups } from "@/lib/db/helpers";
 
 export async function GET(req) {
     const userId = req.nextUrl.pathname.split("/")[3];
@@ -20,6 +20,7 @@ export async function GET(req) {
         });
     } catch (error) {
         console.error(`[${userId}/me] GET error: ${error}`);
+        addError(error, "/api/users/me/groups: GET");
         return server;
     }
 }

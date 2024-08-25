@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { server } from "@/lib/apiErrorResponses";
 import { db } from "@/lib/db/db";
+import { addError } from "@/lib/db/helpers";
 
 export async function POST(req) {
     // This may or may not require admin authorization
@@ -41,7 +42,9 @@ export async function POST(req) {
     try {
         const [resultSameUser, fieldsSame] = await db
             .promise()
-            .query("SELECT `id` FROM Users WHERE username = ? LIMIT 1", [username.trim()]);
+            .query("SELECT `id` FROM Users WHERE username = ? LIMIT 1", [
+                username.trim(),
+            ]);
 
         if (resultSameUser.length > 0) {
             return NextResponse.json(
@@ -72,6 +75,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[REGISTER] POST error: ${error}`);
+        addError(error, "/api/auth/register: POST");
         return server;
     }
 }

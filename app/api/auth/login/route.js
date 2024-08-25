@@ -3,6 +3,7 @@ import { SignJWT } from "jose";
 import bcrypt from "bcrypt";
 import { server } from "@/lib/apiErrorResponses";
 import { db } from "@/lib/db/db";
+import { addError } from "@/lib/db/helpers";
 
 export async function POST(req) {
     const { username, password } = await req.json();
@@ -96,6 +97,7 @@ export async function POST(req) {
         }
     } catch (error) {
         console.error(error);
+        addError(error, "/api/auth/login: POST");
         return server;
     }
 }

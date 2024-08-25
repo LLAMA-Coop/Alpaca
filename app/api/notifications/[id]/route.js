@@ -185,6 +185,7 @@ export async function POST(req, { params }) {
         );
     } catch (error) {
         console.error(`POST error for notification ID ${id}`, error);
+        addError(error, '/api/notifications/[id]: POST')
         return server;
     }
 }
@@ -232,6 +233,7 @@ export async function DELETE(req, { params }) {
         }
     } catch (error) {
         console.error("[ERROR] /api/notifications/id:DELETE ", error);
+        addError(error, '/api/notifications/[id]: DELETE')
         return NextResponse.json(
             {
                 success: false,
@@ -266,5 +268,6 @@ export async function PATCH(req, { params }) {
         }
     } catch (error) {
         console.error(error);
+        addError(error, '/api/notifications/[id]: PATCH')
     }
 }

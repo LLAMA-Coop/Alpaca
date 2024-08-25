@@ -8,6 +8,7 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { MAX } from "@/lib/constants";
 import { db } from "@/lib/db/db.js";
+import { addError } from "@/lib/db/helpers";
 
 export async function POST(req) {
     try {
@@ -95,6 +96,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[Group] POST error: ${error}`);
+        addError(error, "/api/groups: POST");
         return server;
     }
 }

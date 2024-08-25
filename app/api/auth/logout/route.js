@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { server } from "@/lib/apiErrorResponses";
 import { useUser } from "@/lib/auth";
+import { addError } from "@/lib/db/helpers";
 
 export async function POST(req) {
     const token = cookies().get("token")?.value;
@@ -36,10 +37,9 @@ export async function POST(req) {
 
         await db
             .promise()
-            .query(
-                "UPDATE `Users` SET `refreshToken` = '' WHERE `id` = ?",
-                [user.id],
-            );
+            .query("UPDATE `Users` SET `refreshToken` = '' WHERE `id` = ?", [
+                user.id,
+            ]);
 
         return NextResponse.json(
             {
@@ -55,6 +55,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[LOGOUT] POST error: ${error}`);
+        addError(error, "/api/auth/logout: POST");
         return server;
     }
 }

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
+import { addError } from "@/lib/db/helpers";
 
 export async function POST(req, { params }) {
     const { id, memberId } = params;
@@ -65,6 +66,7 @@ export async function POST(req, { params }) {
         }
     } catch (error) {
         console.error("[ERROR] /api/groups/id/members/id/accept:POST ", error);
+        addError(error, "/api/groups/[id]/members/[memberId]/accept: POST");
         return NextResponse.json(
             {
                 success: false,

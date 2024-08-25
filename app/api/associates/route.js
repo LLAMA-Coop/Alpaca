@@ -1,9 +1,9 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
-// import { User, Notification } from "@models";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
+import { addError } from "@/lib/db/helpers";
 
 export async function POST(req) {
     const { userId, username } = await req.json();
@@ -60,16 +60,6 @@ export async function POST(req) {
                 },
                 { status: 400 },
             );
-
-            // else if (!associate.isPublic) {
-            //     return NextResponse.json(
-            //         {
-            //             success: false,
-            //             message: "User is not public.",
-            //         },
-            //         { status: 400 },
-            //     );
-            // }
         } else {
             // Add associate to user and create notification
             const [checkNotifs, fieldsNotifs] = await db
@@ -79,22 +69,10 @@ export async function POST(req) {
                     [associate.id, user.id, user.id, associate.id],
                 );
 
-            // const alreadySent = await Notification.findOne({
-            //     type: 1,
-            //     recipient: associate.id,
-            //     sender: user.id,
-            // });
-
             const alreadySent = checkNotifs.find(
                 (x) =>
                     x.recipientId === associate.id && x.sender.id === user.id,
             );
-
-            // const alreadyReceived = await Notification.findOne({
-            //     type: 1,
-            //     recipient: user.id,
-            //     sender: associate.id,
-            // });
 
             const alreadyReceived = checkNotifs.find(
                 (x) =>
@@ -110,7 +88,6 @@ export async function POST(req) {
                 await user.save();
                 await associate.save();
 
-                // await Notification.deleteOne({ _id: alreadyReceived.id });
                 await db
                     .promise()
                     .query("DELETE FROM `Notifications` WHERE `id` = ?", [
@@ -120,17 +97,6 @@ export async function POST(req) {
                 isAdded = true;
             } else if (!alreadySent) {
                 // Request association
-                // const notification = new Notification({
-                //     type: 1,
-                //     recipient: associate.id,
-                //     sender: user.id,
-                //     subject: "Associate Request",
-                //     message: `${user.username} has requested to be your associate.`,
-                //     responseActions: ["Accept", "Ignore"],
-                // });
-
-                // await notification.save();
-
                 await db
                     .promise()
                     .query(
@@ -143,12 +109,6 @@ export async function POST(req) {
                             `${user.username} has requested to be your associate`,
                         ],
                     );
-
-                // user.notifications.push(notification.id);
-                // associate.notifications.push(notification.id);
-
-                // await user.save();
-                // await associate.save();
             }
         }
 
@@ -172,6 +132,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error("[ERROR] /api/associates:POST ", error);
+        addError(error, '/api/associates: POST');
         return NextResponse.json(
             {
                 success: false,

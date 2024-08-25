@@ -5,6 +5,7 @@ import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
 import {
+    addError,
     getNotesById,
     getPermittedCourses,
     getPermittedNotes,
@@ -26,6 +27,7 @@ export async function GET(req) {
         });
     } catch (error) {
         console.error(`[Course] GET error: ${error}`);
+        addError(error, "/api/course: GET");
         return server;
     }
 }
@@ -145,6 +147,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[Course] POST error: ${error}`);
+        addError(error, "/api/course: POST");
         return server;
     }
 }
@@ -221,6 +224,7 @@ export async function PUT(req) {
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Course] PUT error: ${error}`);
+        addError(error, "/api/course: PUT");
         return server;
     }
 }

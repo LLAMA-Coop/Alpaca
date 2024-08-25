@@ -1,3 +1,4 @@
+import { addError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 
 const webhookUrl = process.env.DISCORD_ERRORS_WEBHOOK;
@@ -41,6 +42,7 @@ export async function POST(req) {
             console.error(
                 `[Error] POST error: ${response.status} ${response.statusText}`,
             );
+            addError({ stack: response }, "/api/error: POST");
 
             return NextResponse.json(
                 {
@@ -53,6 +55,7 @@ export async function POST(req) {
         }
     } catch {
         console.error(`[Error] POST error: ${error}`);
+        addError(error, "/api/error: POST");
         return NextResponse.json(
             {
                 error: "Failed to send error to Discord",

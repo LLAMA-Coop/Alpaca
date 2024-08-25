@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { getSourcesById } from "@/lib/db/helpers.js";
+import { addError, getSourcesById } from "@/lib/db/helpers.js";
 import { db } from "@/lib/db/db.js";
 
 export async function DELETE(req, { params }) {
@@ -41,6 +41,10 @@ export async function DELETE(req, { params }) {
             .query("DELETE FROM `Sources` WHERE `id` = ?", [_id]);
         if (deletion.affectedRows === 0) {
             console.error(`Unable to delete source ${_id}`);
+            addError({
+                stack: deletion,
+                message: `Unable to delete source ${_id}`,
+            });
             return NextResponse.json(
                 {
                     message: `Unable to delete source ${_id}`,
@@ -51,6 +55,7 @@ export async function DELETE(req, { params }) {
         return new NextResponse(null, { status: 204 });
     } catch (error) {
         console.error(`[Source] DELETE error:\n ${error}`);
+        addError(error, "/api/source/[_id]: DELETE");
         return server;
     }
 }

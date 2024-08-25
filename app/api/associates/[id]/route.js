@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 // import { User } from "@models";
 import { db } from "@/lib/db/db.js";
+import { addError } from "@/lib/db/helpers";
 
 export async function DELETE(req, { params }) {
     const { id } = params;
@@ -62,6 +63,8 @@ export async function DELETE(req, { params }) {
         );
     } catch (error) {
         console.error("[ERROR] /api/associates/id:DELETE ", error);
+        addError(error, '/api/associates/id: DELETE')
+
         return NextResponse.json(
             {
                 success: false,

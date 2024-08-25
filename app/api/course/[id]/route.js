@@ -2,7 +2,7 @@ import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { getPermittedCourses } from "@/lib/db/helpers.js";
+import { addError, getPermittedCourses } from "@/lib/db/helpers.js";
 import { db } from "@/lib/db/db.js";
 
 export async function DELETE(req, { params }) {
@@ -38,6 +38,10 @@ export async function DELETE(req, { params }) {
             .query("DELETE FROM `Courses` WHERE `id` = ?", [id]);
         if (deletion.affectedRows === 0) {
             console.error(`Unable to delete course with id ${id}`);
+            addError(
+                { name: "Unable to Delete Course", stack: deletion },
+                `Unable to delete course with id ${id}`,
+            );
             return NextResponse.json(
                 { message: `Unable to delete course ${id}` },
                 { status: 500 },
@@ -47,6 +51,7 @@ export async function DELETE(req, { params }) {
         return new NextResponse(null, { status: 204 });
     } catch (error) {
         console.error(`[Course] DELETE error:\n ${error}`);
+        addError(error, "/api/course/[id]: DELETE");
         return server;
     }
 }
