@@ -1,5 +1,5 @@
 import styles from "./UserStats.module.css";
-import htmlDate from "@/lib/htmlDate";
+import { htmlDate } from "@/lib/date";
 
 export function UserStats({ userQuizInfo }) {
     const canLevel = new Date(userQuizInfo.hiddenUntil) < Date.now();

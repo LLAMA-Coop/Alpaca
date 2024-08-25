@@ -30,7 +30,8 @@ export function DailyTrain({ quizzes }) {
     useEffect(() => {
         let presentTags = [];
         let presentCourses = [];
-        quizzes.forEach((q) => {
+        if(quizzes) quizzes.forEach((q) => {
+            console.log("THE QUIZ", q)
             q.tags.forEach((t) => {
                 if (!presentTags.includes(t)) {
                     presentTags.push(t);

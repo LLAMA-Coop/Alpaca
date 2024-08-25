@@ -1,47 +1,46 @@
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { User, Group, Notification } from "@/app/api/models";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { getGroup } from "@/lib/db/helpers.js";
+import { db } from "@/lib/db/db.js";
 
 export async function POST(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const { action, recipientId, groupId } = await req.json();
-        let recipient = await User.findById(recipientId);
+        const { action, recipientId, groupId, message, subject } =
+            await req.json();
+        let recipient = await useUser({ id: recipientId });
 
         if (!recipient) {
             console.error(
                 `${user.username} sent a message to user id ${recipientId}, which does not exist`,
             );
 
-            recipient = await User.find({ username: "crash test dummy" });
+            recipient = await useUser({ username: "crash test dummy" });
         }
 
-        const notifPayload = {
-            recipient: recipient._id,
-            senderUser: user.id,
-            responseActions: [],
+        const notif = {
+            recipientId: recipient.id,
+            senderId: user.id,
         };
 
-        if (action === "request association") {
-            notifPayload.subject = "A user wants to be your associate";
-            notifPayload.message = `A user ${
+        if (action === "Request") {
+            notif.subject = "A user wants to be your associate";
+            notif.message = `A user ${
                 user.username === user.displayName
                     ? user.username
                     : `${user.displayName} (${user.username})`
             } is asking to be your associate. This will allow you two to share resources, either to read or to edit. If you accept, they will see your username and display name.`;
-            notifPayload.responseActions.push(
-                "accept association",
-                "delete notification",
-                "ignore",
-            );
+
+            notif.type = "request";
         }
 
-        if (action === "invite to group") {
-            const group = await Group.findById(groupId);
+        if (action === "Invite") {
+            const group = await getGroup({ id: groupId });
+
             if (!group) {
                 return new NextResponse(
                     { message: `Unable to find group with ID ${groupId}` },
@@ -49,9 +48,11 @@ export async function POST(req) {
                 );
             }
 
+            const memberStatus = group.members.find((x) => x.id === user.id);
+
             if (
-                group.owner.toString() !== user.id.toString() ||
-                !group.admins.includes(user.id)
+                memberStatus.role !== "owner" ||
+                memberStatus.role !== "administrator"
             ) {
                 return new NextResponse(
                     {
@@ -61,23 +62,30 @@ export async function POST(req) {
                 );
             }
 
-            notifPayload.senderGroup = groupId;
+            notif.groupId = groupId;
+            notif.type = "invite";
 
-            notifPayload.subject = "A group is inviting you to join them!";
-            notifPayload.message = `${user.username} is inviting you to join the group ${group.name}. Here's is what the group says about themselves:\n  ${group.description}`;
-
-            notifPayload.responseActions.push(
-                "join group",
-                "delete notification",
-                "ignore",
-            );
+            notif.subject = "A group is inviting you to join them!";
+            notif.message = `${user.username} is inviting you to join the group ${group.name}. Here's is what the group says about themselves:\n  ${group.description}`;
         }
 
-        if (action === "send message") {
+        if (action === "Send Message") {
+            notif.type = "message";
+            notif.subject = subject;
+            notif.message = message;
         }
 
-        const notification = new Notification(notifPayload);
-        const update = await notification.save();
+        const update = await db.promise.query(
+            "INSERT INTO `Notifications` (`recipientId`, `senderId`, `groupId`, `type`, `subject`, `message`) VALUES (?, ?, ?, ?, ?, ?)",
+            [
+                notif.recipientId,
+                notif.senderId,
+                notif.groupId,
+                notif.type,
+                notif.subject,
+                notif.message,
+            ],
+        );
 
         return new NextResponse(
             {
@@ -100,16 +108,17 @@ export async function PATCH(req) {
         if (!user) return unauthorized;
 
         // Read all notifications
-
-        const res = await Notification.updateMany(
-            { recipient: user.id },
-            { $set: { read: true } },
-        );
+        const res = await db
+            .promise()
+            .query(
+                "UPDATE `Notifications` SET `isRead` = 1 WHERE `recipientId = ?`",
+                [user.id],
+            );
 
         return new NextResponse(
             {
-                success: res.nModified > 0,
-                message: `Read ${res.nModified ?? "no"} notifications`,
+                success: res.affectedRows > 0,
+                message: `Read ${res.affectedRows ?? "no"} notifications`,
             },
             {
                 status: 200,

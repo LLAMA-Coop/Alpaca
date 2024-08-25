@@ -1,4 +1,4 @@
-import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
+import { useUser } from "@/lib/auth";
 import { InputPopup, SourceInput } from "@client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
@@ -48,7 +48,7 @@ export default async function SourcesPage({ searchParams }) {
                 </p>
             </div>
 
-            {sources.length > 0 && (
+            {sources && sources.length > 0 && (
                 <section>
                     <h3>Available Sources</h3>
 
@@ -56,7 +56,8 @@ export default async function SourcesPage({ searchParams }) {
                         {sources.map((src) => (
                             <li key={src.id}>
                                 <SourceDisplay source={src} />
-                                {user && src.permissionType === "write" && (
+                                {((user && src.permissionType === "write") ||
+                                    (user && src.createdBy === user.id)) && (
                                     <InputPopup type="source" resource={src} />
                                 )}
                                 <Link href={`/sources/${src.id}`}>

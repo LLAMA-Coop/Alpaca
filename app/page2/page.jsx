@@ -1,8 +1,21 @@
+import {
+    getQuizzesById,
+    getSourcesById,
+    getNotesById,
+    getPermittedQuizzes,
+} from "@/lib/db/helpers";
 import styles from "./Landing.module.css";
-import Image from "next/image";
 import Link from "next/link";
+import { useUser } from "@/lib/auth";
+import { cookies } from "next/headers";
+import QuizDisplay from "../components/Quiz/QuizDisplay";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+    const user = await useUser({ token: cookies().get("token")?.value });
+    const notes = await getNotesById({ ids: [1, 2, 3], userId: user.id });
+    const note = (await getNotesById({ id: 1 }))[0];
+    const quizzes = await getPermittedQuizzes();
+
     return (
         <main className={styles.container}>
             <span className={styles.orb} />
@@ -124,6 +137,20 @@ export default function LandingPage() {
                         <p>React course</p>
                     </div>
                 </div>
+            </section>
+
+            <section className={styles.section}>
+                {notes.map((x) => (
+                    <p key={x.id}>
+                        {x.id} {x.title}; {x.text}; {x.creator.username};{" "}
+                        {x.permissionType}
+                    </p>
+                ))}
+                <p>{note.id}</p>
+
+                {quizzes.map((q) => (
+                    <QuizDisplay key={q.id} quiz={q} />
+                ))}
             </section>
         </main>
     );

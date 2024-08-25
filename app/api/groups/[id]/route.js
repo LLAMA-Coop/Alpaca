@@ -8,3 +8,16 @@ export function PUT(req){
 }
 
 export function DELETE(){}
+
+export async function GET(req, { params }) {
+    const { id } = params;
+    console.log(`You have reached the route for Group ${id}`);
+    
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Successfully invited user to group.",
+        },
+        { status: 200 },
+    );
+}

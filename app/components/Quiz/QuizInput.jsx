@@ -3,11 +3,10 @@
 import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { DeletePopup } from "../DeletePopup/DeletePopup";
-import { buildPermissions } from "@/lib/permissions";
+import { buildPermissions, permissionsListToObject } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
 import SubmitErrors from "@/lib/SubmitErrors";
 import styles from "./QuizInput.module.css";
-import { serializeOne } from "@/lib/db";
 import { MAX } from "@/lib/constants";
 import {
     Input,
@@ -62,11 +61,19 @@ export function QuizInput({ quiz }) {
     const availableNotes = useStore((state) => state.notes);
 
     const user = useStore((state) => state.user);
-    const canDelete = quiz && user && quiz.createdBy === user.id;
 
     const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
+
+    const canDelete =
+        quiz &&
+        user &&
+        (quiz.createdBy === user.id || quiz.creator?.id === user.id);
+    const canChangePermissions =
+        !quiz ||
+        (user && 
+            (quiz.createdBy === user.id || quiz.creator?.id === user.id));
 
     useEffect(() => {
         if (!quiz) return;
@@ -95,26 +102,42 @@ export function QuizInput({ quiz }) {
                 ),
             );
         }
+        if (quiz.sources) {
+            setSources(
+                quiz.sources.map((src) => {
+                    const source = availableSources.find(
+                        (x) => x.id === src.id,
+                    );
+                    return {
+                        id: src.id,
+                        title: source.title,
+                        locInSource: src.locInSource,
+                        locType: src.locType,
+                    };
+                }),
+            );
+        }
         if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
-            setPermissions(serializeOne(quiz.permissions));
+            const settingPermissions = permissionsListToObject(quiz.permissions);
+            console.log("SETTING PERMISSIONS", settingPermissions);
+            setPermissions(settingPermissions);
         }
     }, []);
 
     useEffect(() => {
-        if (!quiz) return;
+        if (!quiz || sources.length === 0) return;
         if (
             quiz.sources &&
             !(quiz.sourceReferences && quiz.sourceReferences.length)
         ) {
             setSources(
-                quiz.sources.map((srcId) => {
-                    let source = availableSources.find((x) => x.id === srcId);
+                quiz.sources.map((src) => {
+                    let source = availableSources.find((x) => x.id === src);
                     if (!source) {
                         source = {
                             title: "unavailable",
-                            _id: srcId,
-                            locationTypeDefault: "page",
+                            id: src.id,
                         };
                     }
                     return source;
@@ -243,7 +266,13 @@ export function QuizInput({ quiz }) {
             choices: choices,
             correctResponses: responses,
             hints: hints,
-            sources: sources.map((src) => src.id),
+            sources: sources.map((src) => ({
+                resourceId: quiz.id ? quiz.id : undefined,
+                resourceType: "quiz",
+                sourceId: src.id,
+                locInSource: "unknown",
+                locType: "page",
+            })),
             notes: notes.map((nt) => nt.id),
             courses: courses.map((course) => course.id),
             tags,
@@ -252,7 +281,11 @@ export function QuizInput({ quiz }) {
             quizPayload.id = quiz.id;
         }
 
-        quizPayload.permissions = buildPermissions(permissions);
+        quizPayload.permissions = buildPermissions(
+            permissions,
+            quiz ? quiz.id : null,
+            "quiz",
+        );
 
         setLoading(true);
 
@@ -540,7 +573,7 @@ export function QuizInput({ quiz }) {
             <div className={styles.permissions}>
                 <PermissionsDisplay permissions={permissions} />
 
-                {(!quiz || (user && quiz.createdBy === user.id)) && (
+                {canChangePermissions && (
                     <InputPopup
                         type="permissions"
                         resource={permissions}

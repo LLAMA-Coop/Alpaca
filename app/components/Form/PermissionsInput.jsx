@@ -2,7 +2,7 @@
 
 import { Input, Label, ListAdd } from "@client";
 import { useState, useEffect } from "react";
-import { useStore, useModals } from "@/store/store";
+import { useStore } from "@/store/store";
 
 export function PermissionsInput({ permissions, setter }) {
     const [allWrite, setAllWrite] = useState(
@@ -18,44 +18,79 @@ export function PermissionsInput({ permissions, setter }) {
 
     const user = useStore((state) => state.user);
     const availableGroups = useStore((state) => state.groups);
-    const addModal = useModals((state) => state.addModal);
 
     useEffect(() => {
         if (!permissions) return;
 
         if (permissions.usersWrite) {
-            // setUsersWrite(
-            //     permissions.usersWrite.map((userId) =>
-            //         user?.associates.find((x) => x.id === userId),
-            //     ),
-            // );
-            setUsersWrite(permissions.usersWrite);
+            setUsersWrite(
+                permissions.usersWrite.map((userId) => {
+                    let thisUser =
+                        typeof userId === "object"
+                            ? userId
+                            : user.associates.find((x) => x.id === userId);
+                    if (!thisUser) {
+                        thisUser = {
+                            id: userId,
+                            username: "unknown",
+                        };
+                    }
+                    return thisUser;
+                }),
+            );
         }
 
         if (permissions.usersRead) {
-            // setUsersRead(
-            //     permissions.usersRead.map((userId) =>
-            //         user?.associates.find((x) => x.id === userId),
-            //     ),
-            // );
-            setUsersRead(permissions.usersRead);
+            setUsersRead(
+                permissions.usersRead.map((userId) => {
+                    let thisUser =
+                        typeof userId === "object"
+                            ? userId
+                            : user.associates.find((x) => x.id === userId);
+                    if (!thisUser) {
+                        thisUser = {
+                            id: userId,
+                            username: "unknown",
+                        };
+                    }
+                    return thisUser;
+                }),
+            );
         }
 
         if (permissions.groupsWrite) {
-            // setGroupsWrite(
-            //     permissions.groupsWrite.map((groupId) =>
-            //         availableGroups.find((x) => x.id === groupId),
-            //     ),
-            // );
-            setGroupsWrite(permissions.groupsWrite);
+            setGroupsWrite(
+                permissions.groupsWrite.map((groupId) => {
+                    let thisGroup =
+                        typeof groupId === "object"
+                            ? groupId
+                            : availableGroups.find((x) => x.id === groupId);
+                    if (!thisGroup) {
+                        thisGroup = {
+                            id: groupId,
+                            name: "Unknown",
+                        };
+                    }
+                    return thisGroup;
+                }),
+            );
         }
         if (permissions.groupsRead) {
-            // setGroupsRead(
-            //     permissions.groupsRead.map((groupId) =>
-            //         availableGroups.find((x) => x.id === groupId),
-            //     ),
-            // );
-            setGroupsRead(permissions.groupsRead);
+            setGroupsRead(
+                permissions.groupsRead.map((groupId) => {
+                    let thisGroup =
+                        typeof groupId === "object"
+                            ? groupId
+                            : availableGroups.find((x) => x.id === groupId);
+                    if (!thisGroup) {
+                        thisGroup = {
+                            id: groupId,
+                            name: "Unknown",
+                        };
+                    }
+                    return thisGroup;
+                }),
+            );
         }
     }, []);
 

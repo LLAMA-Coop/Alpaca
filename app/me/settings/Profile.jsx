@@ -26,6 +26,7 @@ export function Profile({ user }) {
     const [description, setDescription] = useState(user.description);
     const [email, setEmail] = useState(user.email);
     const [password, setPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const addAlert = useAlerts((state) => state.addAlert);
@@ -35,6 +36,7 @@ export function Profile({ user }) {
     const hasChanged =
         avatar !== user.avatar ||
         username !== user.username ||
+        newPassword ||
         displayName !== user.displayName ||
         description !== user.description ||
         email !== user.email;
@@ -52,7 +54,9 @@ export function Profile({ user }) {
         setIsLoading(true);
         let avatarUrl = "";
 
-        if (user.username !== username && !password) {
+        console.log(password);
+
+        if (!password) {
             setIsLoading(false);
             return addModal({
                 title: "Confirm Password",
@@ -85,6 +89,8 @@ export function Profile({ user }) {
                     body: JSON.stringify({
                         // avatar: user.avatar !== avatar ? avatarUrl : null,
                         username: user.username !== username ? username : null,
+                        newPassword:
+                            newPassword !== password ? newPassword : null,
                         displayName:
                             user.displayName !== displayName
                                 ? displayName
@@ -102,7 +108,7 @@ export function Profile({ user }) {
             if (response.success) {
                 window.location.reload();
             } else {
-                setPassword("");
+                setNewPassword("");
             }
 
             addAlert({
@@ -111,7 +117,7 @@ export function Profile({ user }) {
             });
         } catch (err) {
             console.error(err);
-            setPassword("");
+            setNewPassword("");
 
             if (avatarUrl) {
                 await removeImageFromCDN(avatarUrl);
@@ -133,6 +139,13 @@ export function Profile({ user }) {
                     label="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                />
+
+                <Input
+                    label="New Password"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                 />
 
                 <Input

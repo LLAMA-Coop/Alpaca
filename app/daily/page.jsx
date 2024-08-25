@@ -1,29 +1,25 @@
-import { useUser, queryReadableResources } from "@/lib/auth";
+import { useUser } from "@/lib/auth";
 import shuffleArray from "@/lib/shuffleArray";
 import styles from "@/app/page.module.css";
 import { cookies } from "next/headers";
-import { Quiz, User } from "@models";
-import { serialize } from "@/lib/db";
 import { DailyTrain } from "@client";
+import { getPermittedQuizzes, getUserQuizzes } from "@/lib/db/helpers";
 
 export default async function DailyPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    User.populate(user, ["groups", "associates"]);
-    const query = queryReadableResources(user);
-
-    const userQuizzes = user?.quizzes;
-    const allQuizzes = await Quiz.find(query);
+    
+    const userQuizzes = await getUserQuizzes(user.id);
+    const allQuizzes = await getPermittedQuizzes(user.id);
+    console.log("ALL PERM QUIZZES", allQuizzes, userQuizzes)
     const quizzes = shuffleArray(
-        serialize(
-            allQuizzes.filter((q) => {
-                const quizInUser = userQuizzes?.find(
-                    (quiz) => quiz.quizId.toString() === q._id.toString(),
-                );
-                if (!quizInUser) return true;
-                const hidden = new Date(quizInUser.hiddenUntil);
-                return hidden.getTime() <= Date.now();
-            }),
-        ),
+        allQuizzes.filter((q) => {
+            const quizInUser = userQuizzes?.find(
+                (quiz) => quiz.quizId === q.id,
+            );
+            if (!quizInUser) return true;
+            const hidden = new Date(quizInUser.hiddenUntil);
+            return hidden.getTime() <= Date.now();
+        }),
     );
 
     return (

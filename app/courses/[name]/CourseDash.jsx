@@ -11,7 +11,6 @@ import {
 import styles from "@/app/me/dashboard/Dash.module.css";
 import { useAlerts, useStore } from "@/store/store";
 import { useState } from "react";
-// import { canEdit } from "@/lib/auth";
 import { CourseInput } from "@/app/components/Course/CourseInput";
 
 const tabs = [
@@ -192,9 +191,9 @@ export function CourseDash({ course, isLogged }) {
 
         try {
             const response = await fetch(
-                `${basePath}/api/course/${course.id}`,
+                `${basePath}/api/course`,
                 {
-                    method: "PATCH",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -233,9 +232,9 @@ export function CourseDash({ course, isLogged }) {
 
         try {
             const response = await fetch(
-                `${basePath}/api/course/${course.id}`,
+                `${basePath}/api/course`,
                 {
-                    method: "PATCH",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },

@@ -41,8 +41,8 @@ export function Notifications() {
 
     async function decline(notification) {
         let url = `/api/associates/${notification.id}/decline`;
-        if (notification.type === 2) {
-            url = `/api/groups/${notification.group}/members/${notification.recipient}/decline`;
+        if (notification.type === "invite") {
+            url = `/api/groups/${notification.groupId}/members/${notification.recipientId}/decline`;
         }
 
         const response = await fetch(`${basePath}${url}`, {

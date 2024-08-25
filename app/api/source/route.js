@@ -7,8 +7,9 @@ import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 import {
     getPermittedSources,
+    getSourcesById,
     insertPermissions,
-    sqlDate,
+    updateSource,
 } from "@/lib/db/helpers";
 import { validation } from "@/lib/validation";
 
@@ -96,7 +97,6 @@ export async function POST(req) {
         const permsInsert = await insertPermissions(
             permissions,
             sourceId,
-            "source",
             user.id,
         );
 
@@ -125,8 +125,6 @@ export async function PUT(req) {
             return unauthorized;
         }
 
-        const sources = await getPermittedSources(user.id);
-
         const {
             id,
             title,
@@ -137,12 +135,13 @@ export async function PUT(req) {
             authors,
             courses,
             tags,
-            // locationTypeDefault,
             permissions,
         } = await req.json();
 
-        // const source = await Source.findById(_id);
-        const source = sources.find((x) => x.id === id);
+        // const source = (await getSourcesById({ id, userId: user.id }))[0];
+        const source = (await getPermittedSources(user.id)).find(
+            (x) => x.id == id,
+        );
 
         if (!source) {
             return NextResponse.json(
@@ -153,7 +152,11 @@ export async function PUT(req) {
             );
         }
 
-        if (source.permissionType !== "write") {
+        const isCreator =
+            source.createdBy == user.id || source.creator?.id == user.id;
+        const canEdit = isCreator || source.permissionType === "write";
+
+        if (!canEdit) {
             return NextResponse.json(
                 {
                     message: `You are not permitted to edit source ${id}`,
@@ -162,98 +165,21 @@ export async function PUT(req) {
             );
         }
 
-        const columns = [];
+        const content = updateSource({
+            id,
+            title,
+            medium,
+            url,
+            tags,
+            publishedUpdated: publishDate,
+            lastAccessed,
+            authors,
+            courses,
+            permissions: isCreator ? permissions : [],
+            contributorId: user.id,
+        });
 
-        if (title) {
-            // source.title = title.trim();
-            columns.push({ name: "title", value: title.trim() });
-        }
-        if (medium) {
-            // source.medium = medium;
-            if (
-                [
-                    "book",
-                    "article",
-                    "video",
-                    "podcast",
-                    "website",
-                    "audio",
-                ].includes(medium)
-            ) {
-                columns.push({ name: "medium", value: medium });
-            } else {
-                console.error(`The medium ${medium} is not recognized`);
-                columns.push({ name: "medium", value: null });
-            }
-        }
-        if (url) {
-            // source.url = url;
-            // Can set up regex to verify proper URL
-            columns.push({ name: "url", value: url });
-        }
-        if (tags) {
-            // source.tags = [...tags];
-            // B/c `tags` is JSON/LONGTEXT, need to overwrite either way
-            columns.push({ name: "tags", value: JSON.stringify(tags) });
-        }
-        if (publishDate) {
-            // source.publishDate = publishDate;
-            columns.push({
-                name: "publishedUpdated",
-                value: sqlDate(publishDate),
-            });
-        }
-        if (lastAccessed) {
-            // source.lastAccessed = lastAccessed;
-            columns.push({
-                name: "lastAccessed",
-                value: sqlDate(lastAccessed),
-            });
-        }
-        // if (locationTypeDefault) {
-        //     source.locationTypeDefault = locationTypeDefault;
-        // }
-        // No longer used
-        // Taken care of with ResourceSources table, for each resource that cites a source
-
-        const setClause = columns.map((col) => `${col.name} = ?`).join(", ");
-        const query = `UPDATE Sources SET ${setClause} WHERE \`id\` = ?`;
-
-        const [sourceResults, sourceFields] = await db
-            .promise()
-            .query(query, [...columns.map((x) => x.value), id]);
-
-        if (authors) {
-            // source.authors = [...authors];
-            // This updates SourceCredits
-            // Use updateSourceCredits
-        }
-
-        if (courses) {
-            // courses.forEach((courseId_req) => {
-            //     if (
-            //         !source.courses.find(
-            //             (course) => course._id.toString() === courseId_req,
-            //         )
-            //     ) {
-            //         source.courses.push(new Types.ObjectId(courseId_req));
-            //     }
-            // });
-            // This updates CourseResources
-            // Use updateCourseResources
-        }
-
-        if (permissions && source.createdBy.toString() === user.id.toString()) {
-            // source.permissions = serializeOne(permissions);
-            // This updates ResourcePermissions
-            // Use updatePermissions
-        }
-
-        // source.updateBy = user.id;
-        // Use resourceContribution
-
-        // const content = await source.save();
-        return NextResponse.json({ content: { sourceResults, query } });
+        return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Source] PUT error: ${error}`);
         return server;

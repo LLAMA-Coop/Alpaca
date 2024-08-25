@@ -1,16 +1,15 @@
 import { NextResponse } from "next/server";
-// import { Quiz } from "@mneme_app/database-models";
-import { Quiz } from "@/app/api/models";
-import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
+import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import { serializeOne } from "@/lib/db";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { Types } from "mongoose";
-import { buildPermissions } from "@/lib/permissions";
 import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
 import { db } from "@/lib/db/db.js";
-import { getPermittedQuizzes, insertPermissions } from "@/lib/db/helpers";
+import {
+    getPermittedQuizzes,
+    insertPermissions,
+    updateQuiz,
+} from "@/lib/db/helpers";
 
 const allowedType = [
     "prompt-response",
@@ -151,22 +150,6 @@ export async function POST(req) {
             );
         }
 
-        // const quiz = new Quiz({
-        //     type,
-        //     prompt: prompt.trim(),
-        //     choices,
-        //     correctResponses,
-        //     hints: hints ?? [],
-        //     notes: notes ?? [],
-        //     sources: sources ?? [],
-        //     courses: courses ?? [],
-        //     tags: tags ?? [],
-        //     contributors: [user.id],
-        //     createdBy: user.id,
-        // });
-
-        // quiz.permissions = buildPermissions(permissions);
-
         const fieldsArray = [
             type,
             prompt,
@@ -200,13 +183,11 @@ export async function POST(req) {
         const permInsert = await insertPermissions(
             permissions,
             quizId,
-            "quiz",
             user.id,
         );
 
         const content = quizInsert;
 
-        // const content = await quiz.save();
         return NextResponse.json(
             { message: "Quiz created successfully", content },
             { status: 201 },
@@ -226,7 +207,7 @@ export async function PUT(req) {
         }
 
         const {
-            _id,
+            id,
             type,
             prompt,
             choices,
@@ -239,99 +220,48 @@ export async function PUT(req) {
             permissions,
         } = await req.json();
 
-        const quiz = await Quiz.findById(_id);
+        const quiz = (await getPermittedQuizzes(user.id)).find(
+            (x) => x.id === id,
+        );
+
         if (!quiz) {
             return NextResponse.json(
                 {
-                    message: `No quiz found with id ${_id}`,
+                    message: `No quiz found with id ${id}`,
                 },
                 { status: 404 },
             );
         }
 
-        if (!canEdit(quiz, user)) {
+        const isCreator =
+            (quiz.createdBy && quiz.createdBy === user.id) ||
+            (quiz.creator && quiz.creator.id === user.id);
+        const canEdit = isCreator || quiz.permissionType === "write";
+
+        if (!canEdit) {
             return NextResponse.json(
                 {
-                    message: `You are not permitted to edit quiz ${_id}`,
+                    message: `You are not permitted to edit quiz ${id}`,
                 },
                 { status: 403 },
             );
         }
 
-        if (type && !allowedType.includes(type)) {
-            return NextResponse.json(
-                {
-                    message: "Invalid type submitted",
-                },
-                { status: 400 },
-            );
-        }
+        const content = await updateQuiz({
+            id,
+            type,
+            prompt,
+            choices,
+            correctResponses,
+            hints,
+            sources,
+            notes,
+            courses,
+            tags,
+            permissions: isCreator ? permissions : [],
+            contributorId: user.id,
+        });
 
-        if (type) {
-            quiz.type = type;
-        }
-        if (prompt) {
-            quiz.prompt = prompt.trim();
-        }
-        if (choices) {
-            quiz.choices = [...choices];
-        }
-        if (correctResponses) {
-            quiz.correctResponses = [...correctResponses];
-        }
-        if (hints) {
-            quiz.hints = [...hints];
-        }
-
-        if (sources) {
-            sources.forEach((sourceId_req, index) => {
-                if (
-                    !quiz.sources.find(
-                        (srcId) => srcId.toString() == sourceId_req,
-                    )
-                ) {
-                    quiz.sources.push(new Types.ObjectId(sourceId_req));
-                }
-            });
-        }
-        if (notes) {
-            notes.forEach((noteId_req) => {
-                if (
-                    !quiz.notes.find(
-                        (noteId) => noteId.toString() === noteId_req,
-                    )
-                ) {
-                    quiz.notes.push(new Types.ObjectId(noteId_req));
-                }
-            });
-        }
-
-        if (courses) {
-            courses.forEach((courseId_req) => {
-                if (
-                    !quiz.courses.find(
-                        (course) => course._id.toString() === courseId_req,
-                    )
-                ) {
-                    quiz.courses.push(new Types.ObjectId(courseId_req));
-                }
-            });
-        }
-
-        if (tags) {
-            quiz.tags = tags;
-        }
-
-        if (permissions && quiz.createdBy.toString() === user.id.toString()) {
-            quiz.permissions = serializeOne(permissions);
-        }
-
-        if (!quiz.contributors.includes(user.id)) {
-            quiz.contributors.push(user.id);
-        }
-        quiz.updatedBy = user.id;
-
-        const content = await quiz.save();
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Quiz] PUT error: ${error}`);

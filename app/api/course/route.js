@@ -1,22 +1,26 @@
 import { NextResponse } from "next/server";
-import { canEdit, canRead, useUser } from "@/lib/auth";
+import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import Course from "../models/Course"; // Don't forget to add this to index.js
 import { unauthorized, server } from "@/lib/apiErrorResponses";
-import { Types } from "mongoose";
-import { serializeOne } from "@/lib/db";
 import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
-import { Source, Note, Quiz } from "../models";
-import { getPermittedCourses, insertPermissions } from "@/lib/db/helpers";
+import {
+    getNotesById,
+    getPermittedCourses,
+    getPermittedNotes,
+    getPermittedQuizzes,
+    getQuizzesById,
+    getSourcesById,
+    insertPermissions,
+    updateCourse,
+} from "@/lib/db/helpers";
 import { db } from "@/lib/db/db";
 
 export async function GET(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
-        if (!user) return unauthorized;
 
-        const content = await getPermittedCourses(user.id);
+        const content = await getPermittedCourses(user?.id);
         return NextResponse.json({
             content,
         });
@@ -87,7 +91,6 @@ export async function POST(req) {
         const permsInsert = await insertPermissions(
             permissions,
             courseId,
-            "course",
             user.id,
         );
 
@@ -149,15 +152,13 @@ export async function POST(req) {
 export async function PUT(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
-
-        if (!user) {
-            return unauthorized;
-        }
+        if (!user) return unauthorized;
 
         const {
-            _id,
+            id,
             name,
             description,
+            enrollment,
             parentCourses,
             prerequisites,
             sources,
@@ -168,29 +169,31 @@ export async function PUT(req) {
             permissions,
         } = await req.json();
 
-        const course = await Course.findById(_id);
+        const course = (await getPermittedCourses(user.id)).find(
+            (x) => x.id === id,
+        );
         if (!course) {
             return NextResponse.json(
                 {
-                    message: `No course found with id ${_id}`,
+                    message: `No course found with id ${id}`,
                 },
                 { status: 404 },
             );
         }
 
-        if (!canEdit(course, user)) {
+        const isCreator =
+            (course.createdBy && course.createdBy === user.id) ||
+            (course.creator && course.creator.id === user.id);
+        const canEdit = isCreator || course.permissionType === "write";
+
+        if (!canEdit) {
             return NextResponse.json(
                 {
-                    message: `You are not permitted to edit course ${_id}`,
+                    message: `You are not permitted to edit course ${id}`,
                 },
                 { status: 403 },
             );
         }
-
-        const localSources = sources ? [...sources] : [];
-        const localNotes = notes ? [...notes] : [];
-        const localQuizzes = quizzes ? [...quizzes] : [];
-        const promises = [];
 
         if (name) {
             course.name = name.trim();
@@ -198,113 +201,21 @@ export async function PUT(req) {
         if (description) {
             course.description = description;
         }
-        if (parentCourses) {
-            parentCourses.forEach((catId_req) => {
-                if (
-                    !course.parentCourses.find(
-                        (catId) => catId.toString() == catId_req,
-                    )
-                ) {
-                    course.parentCourses.push(new Types.ObjectId(catId_req));
-                }
-            });
-        }
-        if (prerequisites) {
-            prerequisites.forEach((catId_req) => {
-                if (
-                    !course.prerequisites.find(
-                        (catId) => catId.toString() == catId_req,
-                    )
-                ) {
-                    course.prerequisites.push(new Types.ObjectId(catId_req));
-                }
-            });
-        }
 
-        if (permissions && course.createdBy.toString() === user.id.toString()) {
-            course.permissions = serializeOne(permissions);
-        }
-        course.updatedBy = user.id;
-
-        const content = await course.save();
-
-        const id = content._id.toString();
-
-        async function addCourseToResource({
-            resourceId,
-            type,
-            courseId,
-            user,
-        }) {
-            function getResource() {
-                if (type === "source") return Source.findById(resourceId);
-                if (type === "note") return Note.findById(resourceId);
-                if (type === "quiz") return Quiz.findById(resourceId);
-            }
-
-            const resource = await getResource();
-            if (!canRead(resource, user)) {
-                return;
-            }
-
-            if (
-                resource.courses.find((x) => x.toString() == courseId) ==
-                undefined
-            ) {
-                resource.courses.push(new Types.ObjectId(courseId));
-                await resource.save();
-            }
-
-            if (type === "source" && addAllFromSources) {
-                const quizzesFromSource = await Quiz.find({
-                    sources: new Types.ObjectId(resourceId),
-                });
-                localQuizzes.push(
-                    ...quizzesFromSource.map((x) => x._id.toString()),
-                );
-            }
-
-            if (type !== "quiz" && addAllFromNotes) {
-                const notesFromSource = await Note.find({
-                    sources: new Types.ObjectId(resourceId),
-                });
-                localNotes.push(
-                    ...notesFromSource.map((x) => x._id.toString()),
-                );
-            }
-        }
-
-        localSources.forEach((src) => {
-            promises.push(
-                addCourseToResource({
-                    resourceId: src,
-                    type: "source",
-                    user,
-                    courseId: id,
-                }),
-            );
-        });
-
-        await Promise.all(promises);
-        localNotes.forEach((n) => {
-            promises.push(
-                addCourseToResource({
-                    resourceId: n,
-                    type: "note",
-                    courseId: id,
-                    user,
-                }),
-            );
-        });
-
-        await Promise.all(promises);
-        localQuizzes.forEach((q) => {
-            addCourseToResource({
-                resourceId: q,
-                type: "quiz",
-                courseId: id,
-                user,
-            });
+        const content = await updateCourse({
+            id,
+            name,
+            description,
+            enrollment,
+            parentCourses,
+            prerequisites,
+            sources,
+            notes,
+            quizzes,
+            addAllFromSources,
+            addAllFromNotes,
+            permissions: isCreator ? permissions : [],
+            contributorId: user.id,
         });
 
         return NextResponse.json({ content });

@@ -124,7 +124,11 @@ export function NoteInput({ note }) {
             courses: courses.filter((c) => c).map((course) => course.id),
             tags,
         };
-        notePayload.permissions = buildPermissions(permissions);
+        notePayload.permissions = buildPermissions(
+            permissions,
+            note ? note.id : null,
+            "note",
+        );
         if (note && note.id) {
             notePayload.id = note.id;
         }

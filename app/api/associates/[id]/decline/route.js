@@ -1,8 +1,8 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
-import { Notification } from "@models";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db.js";
 
 export async function POST(req, { params }) {
     const { id } = params;
@@ -11,9 +11,9 @@ export async function POST(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        await Notification.findOneAndDelete({
-            _id: id,
-        });
+        const [decline, fields] = await db
+            .promise()
+            .query("DELETE FROM `Notifications` WHERE `id` = ?", [id]);
 
         return NextResponse.json(
             {
