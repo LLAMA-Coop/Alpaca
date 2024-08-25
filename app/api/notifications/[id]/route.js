@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
+import { addError } from "@/lib/db/helpers.js";
 
 export async function POST(req, { params }) {
     const { id } = params;
@@ -201,7 +202,7 @@ export async function DELETE(req, { params }) {
         // and that user authorized to delete
         // then delete it
 
-        const [deletion, fields] = db
+        const [deletion, fields] = await db
             .promise()
             .query("DELETE FROM `Notifications` WHERE `id` = ?", [id]);
 

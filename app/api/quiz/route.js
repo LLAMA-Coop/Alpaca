@@ -9,6 +9,7 @@ import {
     getPermittedQuizzes,
     insertPermissions,
     updateQuiz,
+    addError,
 } from "@/lib/db/helpers";
 
 const allowedType = [

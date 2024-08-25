@@ -4,7 +4,7 @@ import stringCompare from "@/lib/stringCompare";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { getQuizzesById, getUserQuizzes } from "@/lib/db/helpers";
+import { getQuizzesById, getUserQuizzes, addError } from "@/lib/db/helpers";
 import { db } from "@/lib/db/db.js";
 import { htmlDate } from "@/lib/date";
 
@@ -88,11 +88,13 @@ export async function POST(req, { params }) {
                 .query(
                     "UPDATE `UserQuizzes` SET `lastCorrect` = ?, `level` = ?, `hiddenUntil` = ? WHERE `id` = ?",
                     [
-                        quizInUser.lastCorrect === "Not yet"
-                            ? null
+                        htmlDate(quizInUser.lastCorrect) === "Not yet"
+                            ? 0
                             : htmlDate(quizInUser.lastCorrect),
                         quizInUser.level,
-                        htmlDate(quizInUser.hiddenUntil),
+                        htmlDate(quizInUser.hiddenUntil) === "Not yet"
+                            ? 0
+                            : htmlDate(quizInUser.hiddenUntil),
                         quizInUser.id,
                     ],
                 );
@@ -106,11 +108,13 @@ export async function POST(req, { params }) {
                     [
                         user.id,
                         quiz.id,
-                        quizInUser.lastCorrect === "Not yet"
-                            ? null
+                        htmlDate(quizInUser.lastCorrect) === "Not yet"
+                            ? 0
                             : htmlDate(quizInUser.lastCorrect),
                         quizInUser.level,
-                        htmlDate(quizInUser.hiddenUntil),
+                        htmlDate(quizInUser.hiddenUntil) === "Not yet"
+                            ? 0
+                            : htmlDate(quizInUser.hiddenUntil),
                     ],
                 );
         }

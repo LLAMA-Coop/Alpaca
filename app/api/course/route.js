@@ -6,12 +6,7 @@ import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
 import {
     addError,
-    getNotesById,
     getPermittedCourses,
-    getPermittedNotes,
-    getPermittedQuizzes,
-    getQuizzesById,
-    getSourcesById,
     insertPermissions,
     updateCourse,
 } from "@/lib/db/helpers";
