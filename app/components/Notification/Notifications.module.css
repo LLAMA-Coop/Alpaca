@@ -2,7 +2,7 @@
     max-width: 100%;
     width: 100%;
     margin-bottom: 40px;
-    background-color: var(--background-2);
+    background-color: var(--bg-2);
 }
 
 .container > h3 {
@@ -21,7 +21,7 @@
     width: 22px;
     height: 22px;
     border-radius: 1000px;
-    color: var(--foreground-1);
+    color: var(--fg-1);
     background-color: var(--accent-1);
     font-size: 15px;
     font-weight: 700;
@@ -47,7 +47,7 @@
     gap: 12px;
     padding: 16px;
     border-radius: 6px;
-    background-color: var(--background-1);
+    background-color: var(--bg-1);
     max-width: 360px;
     height: fit-content;
 }
@@ -68,7 +68,7 @@
     font-weight: 500;
     line-height: 1.2;
     margin-bottom: 8px;
-    color: var(--foreground-3);
+    color: var(--fg-3);
     display: -webkit-box;
     -webkit-line-clamp: 4;
     line-clamp: 4;
@@ -90,8 +90,8 @@
     gap: 12px;
     padding: 6px;
     border-radius: 50%;
-    background-color: var(--background-3);
-    color: var(--foreground-3);
+    background-color: var(--bg-3);
+    color: var(--fg-3);
     font-size: 13px;
     font-weight: 500;
     border: 0px;
@@ -101,16 +101,16 @@
 
 .notification > .actions > button:hover,
 .notification > .actions > button:focus-visible {
-    background-color: var(--background-4);
+    background-color: var(--bg-4);
 }
 
 .notification > .actions > button:active {
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
 }
 
 .notification > .actions > button:first-child {
     background-color: var(--success);
-    color: var(--foreground-1);
+    color: var(--fg-1);
 }
 
 .notification > .actions > button:first-child:hover,
@@ -133,8 +133,8 @@
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background-color: var(--background-3);
-    color: var(--foreground-3);
+    background-color: var(--bg-3);
+    color: var(--fg-3);
     border: 0px;
     cursor: pointer;
     transition:
@@ -148,18 +148,18 @@
 
 .removeButton:hover,
 .removeButton:focus-visible {
-    color: var(--error-hover);
+    color: var(--danger-hover);
 }
 
 .readButton:hover,
 .readButton:focus-visible {
-    color: var(--foreground-2);
+    color: var(--fg-2);
 }
 
 .removeButton:active {
-    color: var(--error-active);
+    color: var(--danger-active);
 }
 
 .readButton:active {
-    color: var(--foreground-1);
+    color: var(--fg-1);
 }

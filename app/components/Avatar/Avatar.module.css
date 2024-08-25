@@ -6,7 +6,7 @@
     border-radius: 50%;
     user-select: none;
     outline: 0px solid var(--accent-1);
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
 }
 
 .container:focus-visible {

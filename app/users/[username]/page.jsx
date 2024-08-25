@@ -5,7 +5,10 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 
 export default async function UserPage({ params: { username } }) {
-    const user = await useUser({ token: cookies().get("token")?.value });
+    const user = await useUser({
+        token: cookies().get("token")?.value,
+        select: ["id", "username"],
+    });
 
     if (!user) return redirect("/login");
     const usernameDecoded = decodeURIComponent(username);

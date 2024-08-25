@@ -9,13 +9,13 @@
     flex-direction: column;
     max-height: 250px;
     overflow: hidden auto;
-    background-color: var(--background-2);
-    border: 1px solid var(--background-3);
+    background-color: var(--bg-2);
+    border: 1px solid var(--bg-3);
     box-shadow: var(--boxshadow-dark);
 }
 
 .picker::-webkit-scrollbar-thumb {
-    border-color: var(--background-2);
+    border-color: var(--bg-2);
 }
 
 .item {
@@ -25,12 +25,12 @@
     line-height: 20px;
     padding: 6px 12px;
     justify-content: space-between;
-    color: var(--foreground-1);
+    color: var(--fg-1);
     cursor: pointer;
 }
 
 .item:hover {
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
 }
 
 .item:active {
@@ -39,7 +39,7 @@
 
 .item:focus-visible {
     outline: none;
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
 }
 
 .item.disabled {
@@ -61,13 +61,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--foreground-1);
-    background-color: var(--background-3);
+    color: var(--fg-1);
+    background-color: var(--bg-3);
 }
 
 .item:hover > .checkbox,
 .item:focus-visible > .checkbox {
-    background-color: var(--background-2);
+    background-color: var(--bg-2);
 }
 
 .item > .checkbox > svg {
@@ -76,10 +76,10 @@
 }
 
 [data-theme="light"] .picker {
-    background-color: var(--background-1);
-    border: 1px solid var(--foreground-3);
+    background-color: var(--bg-1);
+    border: 1px solid var(--fg-3);
 }
 
 [data-theme="light"] .checkbox {
-    border: 1px solid var(--foreground-3);
+    border: 1px solid var(--fg-3);
 }

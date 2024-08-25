@@ -1,33 +1,16 @@
-import { NextResponse } from "next/server";
-import { canEdit, useUser } from "@/lib/auth";
-import { cookies } from "next/headers";
-import { Source } from "@/app/api/models";
 import { unauthorized, server } from "@/lib/apiErrorResponses";
-import { Types } from "mongoose";
-import { serializeOne } from "@/lib/db";
 import SubmitErrors from "@/lib/SubmitErrors";
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { MAX } from "@/lib/constants";
+import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db.js";
 import {
     getPermittedSources,
     insertPermissions,
     sqlDate,
 } from "@/lib/db/helpers";
-import { db } from "@/lib/db/db.js";
-
-export async function GET(req) {
-    try {
-        const user = await useUser({ token: cookies().get("token")?.value });
-        if (!user) {
-            return unauthorized;
-        }
-
-        const content = await getPermittedSources(user.id);
-        return NextResponse.json({ content }, { status: 200 });
-    } catch (error) {
-        console.error(`[Source] GET error: ${error}`);
-        return server;
-    }
-}
+import { validation } from "@/lib/validation";
 
 export async function POST(req) {
     const baseQuery = `INSERT INTO \`Sources\`
@@ -53,47 +36,32 @@ export async function POST(req) {
 
         const submitErrors = new SubmitErrors();
 
-        if (!title) {
-            submitErrors.addError("Missing title");
-        } else if (title.length > MAX.title) {
-            submitErrors.addError(
-                `The following title is longer than the maximum permitted, which is ${MAX.title} characters:\n ${title}`,
-            );
+        if (
+            title?.length < 1 ||
+            title?.length > validation.source.title.maxLength
+        ) {
+            submitErrors.addError("Title must be between 1 and 100 characters");
         }
 
         if (!medium) {
-            submitErrors.addError("Missing medium");
+            submitErrors.addError("A medium is required");
         } else if (medium === "website" && !url) {
-            submitErrors.addError("A website requires a URL");
+            submitErrors.addError("A URL is required for a website source");
         }
 
-        authors.forEach((author) => {
-            if (typeof author !== "string") {
-                submitErrors.addError(
-                    `The following author is not valid:\n  ${author.toString()}`,
-                );
-                return;
-            }
-            if (author.length > MAX.name) {
-                submitErrors.addError(
-                    `The following author name is longer than the maximum permitted, which is ${MAX.name} characters: \n ${author}`,
-                );
-            }
-        });
+        const validAuthors = (authors || []).filter(
+            (a) =>
+                typeof a === "string" &&
+                a.length >= validation.source.author.name.minLength &&
+                a.length <= validation.source.author.name.maxLength,
+        );
 
-        tags.forEach((tag) => {
-            if (typeof tag !== "string") {
-                submitErrors.addError(
-                    `The following tag is not valid:\n ${tag.toString()}`,
-                );
-                return;
-            }
-            if (tag.length > MAX.tag) {
-                submitErrors.addError(
-                    `The following tag is longer than the maximum permitted, which is ${MAX.tag} characters: \n ${tag}`,
-                );
-            }
-        });
+        const validTags = (tags || []).filter(
+            (t) =>
+                typeof t === "string" &&
+                t.length >= validation.tag.minLength &&
+                t.length <= validation.tag.maxLength,
+        );
 
         if (submitErrors.cannotSend) {
             return NextResponse.json(

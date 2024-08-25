@@ -1,19 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import styles from "./page.module.css";
+import styles from "./Error.module.css";
+import { useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
 export default function Error({ error, reset }) {
-    const [showDetails, setShowDetails] = useState(false);
-
     useEffect(() => {
-        console.error(
-            `Error at ${new Date().toISOString()} \n\n${error.stack}`,
-        );
-
-        if (process.env.NODE_ENV === "production" && url) {
+        if (process.env.NODE_ENV === "production") {
             fetch(`${basePath}/api/error`, {
                 method: "POST",
                 headers: {
@@ -22,6 +18,7 @@ export default function Error({ error, reset }) {
                 body: JSON.stringify({
                     message: error.message,
                     stack: error.stack,
+                    isClient: true,
                     userInfo: {
                         userAgent: navigator.userAgent,
                         language: navigator.language,
@@ -31,7 +28,6 @@ export default function Error({ error, reset }) {
                         maxTouchPoints: navigator.maxTouchPoints,
                         isOnline: navigator.onLine,
                     },
-                    isClient: true,
                 }),
             });
         }
@@ -39,32 +35,27 @@ export default function Error({ error, reset }) {
 
     return (
         <main className={styles.main}>
-            <div className={styles.titleBlock}>
-                <h2>Something went wrong!</h2>
+            <section className={styles.hero}>
+                <h1>Something went wrong!</h1>
+                <p>Don't worry though, we're on it!</p>
 
                 <div className={styles.buttons}>
-                    <button className="button" onClick={() => reset()}>
+                    <button className="button round" onClick={() => reset()}>
                         Try again
                     </button>
 
-                    <button
-                        className="button"
-                        onClick={() => setShowDetails((prev) => !prev)}
-                    >
-                        {showDetails ? "Hide" : "Show"} details
-                    </button>
+                    <Link className="button round" href="/">
+                        Go back home
+                    </Link>
                 </div>
-            </div>
 
-            <div
-                className={styles.details}
-                style={{ visibility: showDetails ? "visible" : "hidden" }}
-            >
-                <div>
-                    <h2>{error.message}</h2>
-                    <p className={styles.paragraph}>{error.stack}</p>
-                </div>
-            </div>
+                <Image
+                    src="/assets/error-page.svg"
+                    height={400}
+                    width={400}
+                    alt="Error"
+                />
+            </section>
         </main>
     );
 }

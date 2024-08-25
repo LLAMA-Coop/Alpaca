@@ -25,17 +25,17 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-    const user = await useUser({ token: cookies().get("token")?.value });
+    const user = await useUser({
+        token: cookies().get("token")?.value,
+        select: ["id", "username", "displayName", "avatar"],
+        takeAssociates: true,
+        takeCourses: true,
+        takeNotifications: true,
+    });
 
-    const permittedResources = user
-        ? await getPermittedResources(user.id)
-        : { sources: [], notes: [], quizzes: [], notifications: [] };
-
-    const sources = permittedResources.sources;
-    const notes = permittedResources.notes;
-    const quizzes = permittedResources.quizzes;
-    const courses = user ? await getPermittedCourses(user.id): [];
-    const notifications = user ? user.notifications : [];
+    const permittedResources = await getPermittedResources(user?.id);
+    const { sources, notes, quizzes } = permittedResources;
+    const courses = await getPermittedCourses(user?.id);
 
     return (
         <html lang="en">
@@ -48,16 +48,17 @@ export default async function RootLayout({ children }) {
                     courses={courses}
                     groups={user.groups}
                     associates={user.associates}
-                    notifications={notifications}
+                    notifications={user.notifications}
                     // webSocketURL={process.env.WS_URL}
                 />
             )}
 
             <body>
-                <Header />
+                <Header user={user} />
                 {children}
                 <Footer />
 
+                {/* Layers */}
                 <Timer />
                 <Alerts />
                 <Modals />

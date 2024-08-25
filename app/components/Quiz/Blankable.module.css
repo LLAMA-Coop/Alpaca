@@ -6,8 +6,8 @@
     padding: 10px;
     font-size: 16px;
     line-height: 20px;
-    background-color: var(--background-2);
-    color: var(--foreground-1);
+    background-color: var(--bg-2);
+    color: var(--fg-1);
     outline-color: var(--accent-primary-outline);
     transition: outline 0.1s ease-in-out;
 }

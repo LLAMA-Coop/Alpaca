@@ -8,8 +8,8 @@ export default async function Home({ searchParams }) {
         type: "fill-in-the-blank",
         prompt: "Go <blank /> or go <blank />!",
         correctResponses: ["big", "home"],
-        hints: ["big", "home"]
-    }
+        hints: ["big", "home"],
+    };
 
     return (
         <main className={styles.main}>
@@ -154,7 +154,7 @@ export default async function Home({ searchParams }) {
 
                 <div
                     style={{
-                        border: "1px solid var(--background-3)",
+                        border: "1px solid var(--bg-3)",
                         padding: "1rem",
                         margin: "40px 0",
                     }}

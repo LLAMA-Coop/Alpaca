@@ -32,7 +32,7 @@
 .inputContainer {
     position: relative;
     border-radius: 4px;
-    background-color: var(--background-2);
+    background-color: var(--bg-2);
     border: 1px solid var(--border-color);
 }
 
@@ -47,7 +47,7 @@
     padding: 10px;
     font-size: 16px;
     background-color: transparent;
-    color: var(--foreground-1);
+    color: var(--fg-1);
     outline-color: var(--accent-1);
 }
 
@@ -95,8 +95,8 @@
 }
 
 .inputContainer > select > option {
-    background-color: var(--background-2);
-    color: var(--foreground-1);
+    background-color: var(--bg-2);
+    color: var(--fg-1);
     font-size: 16px;
 }
 
@@ -150,11 +150,11 @@
 }
 
 .labelContainer > label > span {
-    color: var(--error);
+    color: var(--danger);
 }
 
 .labelContainer > span {
-    color: var(--error);
+    color: var(--danger);
     font-size: 14px;
     margin-left: 4px;
     font-style: italic;
@@ -207,7 +207,7 @@
     max-height: 200px;
     overflow-y: auto;
     border-radius: 4px;
-    background-color: var(--background-2);
+    background-color: var(--bg-2);
     border: 1px solid var(--border-color);
     z-index: 100;
 }
@@ -223,12 +223,12 @@
 }
 
 .dropdown > li:hover {
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
 }
 
 .dropdown > li:focus-visible {
     outline: none;
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
 }
 
 .inputContainer .incorrect {

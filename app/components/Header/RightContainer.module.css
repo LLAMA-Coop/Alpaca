@@ -5,7 +5,12 @@
 }
 
 .container > :first-child {
-    display: block;
+    display: flex;
+}
+
+.container > a {
+    font-weight: 700;
+    font-size: 16px;
 }
 
 .button {
@@ -14,7 +19,7 @@
     background: transparent;
     padding: 10px;
     cursor: pointer;
-    color: var(--foreground-2);
+    color: var(--fg-2);
     border-radius: 8px;
     margin-right: -10px;
     position: relative;
@@ -22,32 +27,7 @@
 }
 
 .button:hover {
-    color: var(--foreground-1);
-}
-
-.container > a {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 999px;
-    padding: 10px 24px;
-    font-weight: 700;
-    color: var(--accent-foreground);
-    background-color: var(--accent-1);
-    transition:
-        background-color 0.1s ease-in-out,
-        color 0.1s ease-in-out;
-}
-
-.container > a:hover,
-.profile > a:hover {
-    background-color: var(--accent-1-hover);
-}
-
-.container > a:active,
-.profile > a:active {
-    background-color: var(--accent-1-active);
+    color: var(--fg-1);
 }
 
 .menu {
@@ -58,7 +38,7 @@
     min-height: 100dvh;
     min-width: 100vw;
     min-width: 100dvw;
-    background-color: var(--background-1);
+    background-color: var(--bg-1);
     z-index: 100;
     display: none;
     animation: rightToLeft 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -68,7 +48,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--foreground-2);
+    color: var(--fg-2);
     background: transparent;
     border: none;
     position: absolute;
@@ -79,7 +59,7 @@
 }
 
 .menu > button:hover {
-    color: var(--foreground-1);
+    color: var(--fg-1);
 }
 
 .menu > nav {
@@ -97,7 +77,7 @@
 }
 
 .menu ul a {
-    color: var(--foreground-2);
+    color: var(--fg-2);
 }
 
 .menu ul a:hover {

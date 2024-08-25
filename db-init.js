@@ -32,7 +32,7 @@ if (
         await query(`USE ${db}`);
 
         const queries = fs
-            .readFileSync("./lib/db/tables.sql")
+            .readFileSync("./lib/db/tables2.sql")
             .toString()
             .split(";");
 

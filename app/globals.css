@@ -1,56 +1,55 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap");
 
-:root {
-    --max-width: 1200px;
-    --padding: 80px 40px;
+:root,
+[data-theme="light"] {
+    --max-width: 1100px;
+    --padding: 120px 40px;
     --radius-1: 10px;
 
     --font-heading: "Sofia Sans", sans-serif;
     --font-body: "Inter", sans-serif;
     --font-mono: Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace;
 
-    --background-1: #f8fafc;
-    --background-2: #f1f5f9;
-    --background-3: #e2e8f0;
-    --background-4: #cbd5e1;
+    --bg-1: #f8fafc;
+    --bg-2: #f1f5f9;
+    --bg-3: #e2e8f0;
+    --bg-4: #cbd5e1;
 
-    --foreground-1: #020617;
-    --foreground-2: #0f172a;
-    --foreground-3: #1e293b;
+    --fg-1: #020617;
+    --fg-2: #0f172a;
+    --fg-3: #1e293b;
 
     --accent-1: #10b981;
-    --accent-1-hover: #059669;
-    --accent-1-active: #047857;
-    --accent-1-light: #4ade80;
-    --accent-1-transparent: #10b98133;
+    --accent-1-50: #10b9810d;
+    --accent-1-20: #10b98133;
+    --accent-1-08: #10b98114;
+    --accent-1-fg: #000000;
 
     --accent-2: #38bdf8;
-    --accent-2-hover: #0ea5e9;
-    --accent-2-active: #0284c7;
-    --accent-2-light: #7dd3fc;
-    --accent-2-transparent: #38bdf833;
+    --accent-2-50: #38bdf80d;
+    --accent-2-20: #38bdf833;
+    --accent-2-08: #38bdf814;
+    --accent-2-fg: #22543d;
 
     --accent-3: #8b5cf6;
-    --accent-3-hover: #7c3aed;
-    --accent-3-active: #6d28d9;
-    --accent-3-light: #a78bfa;
-    --accent-3-transparent: #8b5cf620;
+    --accent-3-50: #8b5cf60d;
+    --accent-3-20: #8b5cf633;
+    --accent-3-08: #8b5cf614;
+    --accent-3-fg: #f0f4f8;
 
     --success: #4ade80;
-    --success-hover: #22c55e;
-    --success-active: #16a34a;
-    --success-light: #86efac;
-    --success-transparent: #4ade8033;
+    --success-50: #4ade800d;
+    --success-20: #4ade8033;
+    --success-08: #4ade8014;
+    --success-fg: #000000;
 
-    --error: #e11d48;
-    --error-hover: #be123c;
-    --error-active: #9f1239;
-    --error-light: #fb7185;
-    --error-transparent: #e11d4833;
+    --danger: #e11d48;
+    --danger-50: #e11d480d;
+    --danger-20: #e11d4833;
+    --danger-08: #e11d4814;
+    --danger-fg: #ffffff;
 
-    --accent-foreground: #020617;
-    --anchor-foreground: #3182ce;
     --border-color: hsl(227, 15%, 18%);
 
     --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
@@ -60,60 +59,35 @@
 
 @media screen and (prefers-color-scheme: dark) {
     :root {
-        --background-1: #020617;
-        --background-2: #0f172a;
-        --background-3: #1e293b;
-        --background-4: #334155;
+        --bg-1: #020617;
+        --bg-2: #0f172a;
+        --bg-3: #1e293b;
+        --bg-4: #334155;
 
-        --foreground-1: #f8fafc;
-        --foreground-2: #e2e8f0;
-        --foreground-3: #cbd5e1;
-    }
+        --fg-1: #f8fafc;
+        --fg-2: #e2e8f0;
+        --fg-3: #cbd5e1;
 
-    html {
-        color-scheme: dark;
-    }
-}
-
-[data-theme="light"] {
-    --background-1: #f8fafc;
-    --background-2: #f1f5f9;
-    --background-3: #e2e8f0;
-    --background-4: #cbd5e1;
-
-    --foreground-1: #020617;
-    --foreground-2: #0f172a;
-    --foreground-3: #1e293b;
-
-    html {
-        color-scheme: light;
+        --border-color: hsl(0, 0%, 22%);
     }
 }
 
 [data-theme="dark"] {
-    --background-1: #020617;
-    --background-2: #0f172a;
-    --background-3: #1e293b;
-    --background-4: #334155;
+    --bg-1: #020617;
+    --bg-2: #0f172a;
+    --bg-3: #1e293b;
+    --bg-4: #334155;
 
-    --foreground-1: #f8fafc;
-    --foreground-2: #e2e8f0;
-    --foreground-3: #cbd5e1;
+    --fg-1: #f8fafc;
+    --fg-2: #e2e8f0;
+    --fg-3: #cbd5e1;
 
-    html {
-        color-scheme: dark;
-    }
+    --border-color: hsl(0, 0%, 22%);
 }
 
-*::-webkit-scrollbar {
-    display: none;
-  }
-
-*::-webkit-scrollbar {
-    display: none;
-  }
-
 * {
+    color: inherit;
+    text-decoration: none;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -123,34 +97,24 @@
 
 html,
 body {
-    margin: 0;
-    padding: 0;
+    font-size: 16px;
     min-height: 100vh;
     min-height: 100dvh;
-    font-size: 16px;
-    font-family: var(--font-body);
+    color: var(--fg-1);
     scroll-behavior: smooth;
-    color: var(--foreground-1);
-    background-color: var(--background-1);
+    color-scheme: light dark;
+    font-family: var(--font-body);
+    background-color: var(--bg-1);
 }
 
 body {
     display: flex;
     flex-direction: column;
-    --scrollbar-width: calc(100vw - 100%);
-    --scrollbar-width: calc(100dvw - 100%);
-    padding-left: var(--scrollbar-width);
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
 }
 
 .link {
     font-weight: 500;
-    text-decoration: none;
-    color: var(--anchor-foreground);
+    color: var(--accent-3);
 }
 
 .link:hover {
@@ -164,26 +128,26 @@ a {
 
 .scrollbar::-webkit-scrollbar-track {
     border-radius: 1000px;
-    border: 6px var(--background-2) solid;
-    background-color: var(--background-3);
+    border: 6px var(--bg-2) solid;
+    background-color: var(--bg-3);
     background-clip: padding-box;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
     border-radius: 1000px;
-    border: 6px var(--background-3) solid;
+    border: 6px var(--bg-3) solid;
     border-color: transparent;
-    background-color: var(--background-1);
+    background-color: var(--bg-1);
     background-clip: padding-box;
 }
 
 .button {
-    height: 32px;
+    height: 36px;
     display: flex;
     gap: 8px;
     align-items: center;
     justify-content: center;
-    padding: 2px 16px;
+    padding: 0 20px;
     border: none;
     border-radius: 3px;
     font-size: 14px;
@@ -191,62 +155,47 @@ a {
     font-weight: 600;
     cursor: pointer;
     user-select: none;
-    color: var(--accent-foreground);
+    color: var(--accent-1-fg);
     background-color: var(--accent-1);
     transition:
-        background-color 0.1s ease-in-out,
-        color 0.1s ease-in-out,
-        box-shadow 0.1s ease-in-out;
+        background-color 0.15s ease,
+        color 0.15s ease,
+        box-shadow 0.15s ease,
+        filter 0.15s ease;
 }
 
-.button:not(.submit) {
-    width: fit-content;
+.button:hover:not(:disabled) {
+    filter: brightness(1.1);
 }
 
-.button:hover:not(:disabled):not(:disabled) {
-    background-color: var(--accent-1-hover);
+.button:active:not(:disabled) {
+    filter: brightness(1.2);
 }
 
-.button:active:not(:disabled):not(:disabled) {
-    background-color: var(--accent-1-active);
+.button.round {
+    height: 38px;
+    padding: 0 24px;
+    border-radius: 1000px;
 }
 
 .button.submit {
     height: 44px;
-    height: 44px;
     font-size: 16px;
-    line-height: 24px;
 }
 
-.button.green {
+.button.success {
+    color: var(--success-fg);
     background-color: var(--success);
-    color: var(--accent-foreground);
 }
 
-.button.green:hover:not(:disabled):not(:disabled) {
-    background-color: var(--success-hover);
-}
-
-.button.green:active:not(:disabled):not(:disabled) {
-    background-color: var(--success-active);
-}
-
-.button.red {
-    background-color: var(--error);
-    color: var(--accent-foreground);
-}
-
-.button.red:hover:not(.:disabled):not(:disabled) {
-    background-color: var(--error-hover);
-}
-
-.button.red:active:not(:disabled) {
-    background-color: var(--error-active);
+.button.danger {
+    color: var(--danger-fg);
+    background-color: var(--danger);
 }
 
 .button.transparent {
+    color: var(--fg-1);
     background-color: transparent;
-    color: var(--foreground-1);
 }
 
 ul,
@@ -287,7 +236,7 @@ input[type="date"] {
 
 .thinScroller::-webkit-scrollbar-thumb {
     background: var(--accent-1);
-    border: 3px solid var(--background-1);
+    border: 3px solid var(--bg-1);
     border-radius: 100vw;
 }
 
@@ -333,7 +282,7 @@ input[type="date"] {
     line-height: 1.5;
     font-weight: 300;
     margin-bottom: 24px;
-    color: var(--foreground-2);
+    color: var(--fg-2);
 }
 
 .paragraph > ul {
@@ -374,30 +323,6 @@ h4 {
     display: flex;
     flex-direction: column;
     gap: 12px;
-}
-
-svg:not(.base),
-path:not(.base) {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2px;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-svg.fill,
-path.fill {
-    fill: currentColor;
-}
-
-svg.noStroke,
-path.noStroke {
-    stroke: none;
-}
-
-svg.stroke0,
-path.stroke0 {
-    stroke-width: 0;
 }
 
 @media screen and (max-width: 1024px) {

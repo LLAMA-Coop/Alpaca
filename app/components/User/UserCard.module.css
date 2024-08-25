@@ -5,7 +5,7 @@
     gap: 16px;
     padding: 16px 24px 16px 16px;
     border-radius: 6px;
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
     max-width: 360px;
     cursor: pointer;
     transition:
@@ -18,7 +18,7 @@
 .container:focus-within,
 .container.active {
     transform: translate(2px, -2px);
-    box-shadow: -3px 3px 0px var(--background-4);
+    box-shadow: -3px 3px 0px var(--bg-4);
 }
 
 .container > div {
@@ -33,7 +33,7 @@
     font-size: 20px;
     line-height: 24px;
     margin-bottom: 8px;
-    color: var(--foreground-1);
+    color: var(--fg-1);
     display: flex;
     gap: 8px;
 }
@@ -44,7 +44,7 @@
 }
 
 .container > div > p {
-    color: var(--foreground-3);
+    color: var(--fg-3);
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 4;
@@ -63,9 +63,9 @@
     width: 32px;
     height: 32px;
     border-radius: 5px;
-    border: 1px solid var(--background-4);
-    background-color: var(--background-3);
-    color: var(--foreground-2);
+    border: 1px solid var(--bg-4);
+    background-color: var(--bg-3);
+    color: var(--fg-2);
     cursor: pointer;
     transition:
         background-color 0.1s ease-in-out,
@@ -75,6 +75,6 @@
 .container > button:hover,
 .container > button:focus-visible,
 .container > button.active {
-    background-color: var(--background-4);
-    color: var(--foreground-1);
+    background-color: var(--bg-4);
+    color: var(--fg-1);
 }

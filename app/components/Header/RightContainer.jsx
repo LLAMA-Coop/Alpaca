@@ -49,7 +49,9 @@ export function RightContainer({ user }) {
             {user ? (
                 <Profile user={user} size={44} />
             ) : (
-                <Link href="/login">Login</Link>
+                <Link className="button round" href="/login">
+                    Login
+                </Link>
             )}
 
             {open && (

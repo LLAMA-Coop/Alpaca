@@ -1,0 +1,45 @@
+.main {
+    width: 100%;
+    margin: 0 auto;
+    padding: var(--padding);
+    max-width: var(--max-width);
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero > h1 {
+    margin-bottom: 12px;
+    font-size: 48px;
+    line-height: 1.2;
+    font-weight: 700;
+    text-align: center;
+}
+
+.hero > p {
+    font-size: 20px;
+    line-height: 1.5;
+    font-weight: 300;
+    text-align: center;
+    color: var(--fg-2);
+}
+
+.buttons {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.hero > img {
+    display: block;
+    margin-top: 40px;
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    user-select: none;
+    pointer-events: none;
+}

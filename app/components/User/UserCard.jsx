@@ -66,7 +66,7 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                     src={user.avatar}
                     username={user.username}
                     size={80}
-                    background="var(--background-2)"
+                    background="var(--bg-2)"
                 />
             </div>
 

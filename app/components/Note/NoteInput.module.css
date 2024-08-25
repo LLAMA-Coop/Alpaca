@@ -14,25 +14,25 @@
     flex-basis: 50%;
 }
 
-.column{
+.column {
     margin: 20px 0px;
     width: 100%;
 }
 
 .column Input {
-    background-color: var(--background-1);
+    background-color: var(--bg-1);
     border-radius: var(--radius-1);
     border: none;
     padding: 0px 15px;
-    background-color: var(--background-1);
+    background-color: var(--bg-1);
 }
 
-.column Input::placeholder{
-    color: var(--foreground-1);
+.column Input::placeholder {
+    color: var(--fg-1);
     font-size: 14px;
     font-weight: 100;
 }
-.column label{
+.column label {
     font-size: 25px;
     font-family: var(--font-heading);
     font-weight: 600;
@@ -60,11 +60,11 @@
     padding: 4px 8px;
     height: 48px;
     margin-top: 6px;
-    color: var(--foreground-1);
-    background-color: var(--background-2);
+    color: var(--fg-1);
+    background-color: var(--bg-2);
     text-transform: capitalize;
 }
 
 .sourceLink:hover {
-    background-color: var(--background-1);
+    background-color: var(--bg-1);
 }

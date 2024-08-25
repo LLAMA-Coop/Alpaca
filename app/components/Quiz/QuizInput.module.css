@@ -43,9 +43,9 @@
 
 .blankBank {
     flex-basis: 100%;
-    background-color: var(--background-2);
-    border: 1px solid var(--background-3);
-    color: var(--foreground-3);
+    background-color: var(--bg-2);
+    border: 1px solid var(--bg-3);
+    color: var(--fg-3);
     padding: 10px;
     font-size: 1.2rem;
     border-radius: 4px;
@@ -63,8 +63,8 @@
     margin-right: 6px;
     padding: 2px 8px;
     border-radius: 4px;
-    background-color: var(--background-3);
-    color: var(--foreground-3);
+    background-color: var(--bg-3);
+    color: var(--fg-3);
     font-size: 1rem;
     cursor: pointer;
     user-select: none;

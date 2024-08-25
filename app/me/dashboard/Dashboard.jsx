@@ -146,19 +146,29 @@ export function Dashboard({ more = false }) {
                     ? { username: associate }
                     : { userId: associate },
             ),
-        }).then((res) => res.json());
+        });
 
-        if (response.success) {
+        let data = {
+            message: "Something went wrong, please try again later.",
+        };
+
+        try {
+            data = await response.json();
+        } catch (e) {
+            console.error(e);
+        }
+
+        if (response.ok) {
             setAssociate("");
 
-            if (response.associate) {
+            if (data.associate) {
                 addAssociate(response.associate);
             }
         }
 
         addAlert({
-            success: response.success,
-            message: response.message,
+            success: !!response.ok,
+            message: data.message,
         });
 
         setIsLoading(false);
@@ -530,7 +540,7 @@ export function Dashboard({ more = false }) {
                                     </div>
 
                                     <ul className={styles.gridList}>
-                                        {associates.map((user) => (
+                                        {(associates || []).map((user) => (
                                             <li key={user.id}>
                                                 <UserCard user={user} />
                                             </li>

@@ -20,9 +20,10 @@ export default async function SourcesPage({ searchParams }) {
         );
     }
 
-    const sources = user
-        ? await getPermittedSources(user.id)
-        : await getPermittedSources();
+    const sources =
+        (user
+            ? await getPermittedSources(user.id)
+            : await getPermittedSources()) ?? [];
     console.log("SOURCES", sources);
 
     const hasMore = false;
@@ -39,8 +40,7 @@ export default async function SourcesPage({ searchParams }) {
                 <p>
                     A source is a record of a resource such as a book, website,
                     or video tutorial, that you can cite for your notes or quiz
-                    questions.
-                    <br />
+                    questions.{` `}
                     {user
                         ? `These are the sources that are publicly viewable, as well as the ones you made.`
                         : `You are only viewing the publicly available sources.

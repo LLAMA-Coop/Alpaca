@@ -33,14 +33,14 @@ export default async function QuizzesPage({ searchParams }) {
     //         .limit(amount)
     //         .skip((page - 1) * amount),
     // );
-    const quizzes = await getPermittedQuizzes(user.id) || [];
+    const quizzes = user ? (await getPermittedQuizzes(user.id)) || [] : [];
 
     const hasMore = false;
-        // (
-        //     await Quiz.find(query)
-        //         .limit(1)
-        //         .skip((page - 1) * amount + amount)
-        // )?.length > 0;
+    // (
+    //     await Quiz.find(query)
+    //         .limit(1)
+    //         .skip((page - 1) * amount + amount)
+    // )?.length > 0;
 
     if (page > 1 && quizzes.length === 0) {
         return redirect("/quizzes?page=1&amount=" + amount);
@@ -91,7 +91,9 @@ export default async function QuizzesPage({ searchParams }) {
                                                 resource={serializeOne(quiz)}
                                             />
                                         )}
-                                    <Link href={`/quizzes/${quiz.id}`}>Go to Quiz Page</Link>
+                                    <Link href={`/quizzes/${quiz.id}`}>
+                                        Go to Quiz Page
+                                    </Link>
                                 </li>
                             );
                         })}

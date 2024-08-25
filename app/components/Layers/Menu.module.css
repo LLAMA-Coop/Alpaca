@@ -4,7 +4,7 @@
     border-radius: 6px;
     position: fixed;
     border: 1px solid var(--border-color);
-    background-color: var(--background-2);
+    background-color: var(--bg-2);
     z-index: 100;
 }
 
@@ -42,7 +42,7 @@
 
 .container > ul > li:hover,
 .container > ul > li:focus-visible {
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
     outline: none;
 }
 

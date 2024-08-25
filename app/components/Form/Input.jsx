@@ -133,7 +133,7 @@ export function Input({
                     style={{
                         backgroundColor: value
                             ? "var(--accent-3-light)"
-                            : "var(--background-3)",
+                            : "var(--bg-3)",
                     }}
                 >
                     <svg

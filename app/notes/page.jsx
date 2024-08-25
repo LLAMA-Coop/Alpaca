@@ -1,17 +1,18 @@
-import { useUser } from "@/lib/auth";
+import { getPermittedNotes } from "@/lib/db/helpers";
 import { NoteInput, InputPopup } from "@client";
 import styles from "@/app/page.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { NoteDisplay } from "@server";
+import { useUser } from "@/lib/auth";
 import Link from "next/link";
-import { getPermittedNotes } from "@/lib/db/helpers";
 
 export default async function NotesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
 
     const page = Number(searchParams["page"] ?? 1);
     const amount = Number(searchParams["amount"] ?? 10);
+
     if (page < 1 || amount < 1) {
         return redirect(
             `/notes?page=${page < 1 ? 1 : page}&amount=${
@@ -21,9 +22,8 @@ export default async function NotesPage({ searchParams }) {
     }
 
     const notes = user
-        ? await getPermittedNotes(user.id)
-        : await getPermittedNotes();
-    console.log("NTOES", notes);
+        ? (await getPermittedNotes(user.id)) || []
+        : (await getPermittedNotes()) || [];
 
     const hasMore = false;
 

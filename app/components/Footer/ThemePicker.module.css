@@ -21,14 +21,14 @@
     user-select: none;
     border: 1px solid transparent;
     background-color: transparent;
-    color: var(--foreground-2);
+    color: var(--fg-2);
 }
 
 .themeContainer > div > button:hover,
 .themeContainer > div > button:focus-visible,
 .themeContainer > div > button.active {
-    background-color: var(--background-2);
-    color: var(--foreground-1);
+    background-color: var(--bg-2);
+    color: var(--fg-1);
 }
 
 .themeContainer > div > button > div {

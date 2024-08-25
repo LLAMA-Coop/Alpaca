@@ -30,7 +30,7 @@
 }
 
 .link {
-    color: var(--foreground-3);
+    color: var(--fg-3);
     border-radius: 2px;
     outline-offset: 2px;
     border-radius: 2px;
@@ -38,12 +38,12 @@
 }
 
 .link:hover:not(.disabled) {
-    color: var(--foreground-1);
+    color: var(--fg-1);
     text-decoration: underline;
 }
 
 .link.disabled {
-    color: var(--foreground-3);
+    color: var(--fg-3);
     cursor: not-allowed;
 }
 
@@ -53,7 +53,7 @@
     align-items: center;
     font-size: 14px;
     font-weight: 600;
-    color: var(--foreground-3);
+    color: var(--fg-3);
 }
 
 .footer > div > a {

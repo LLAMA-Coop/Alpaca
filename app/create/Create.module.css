@@ -3,12 +3,12 @@
 @import url(../components/Source/SourceDisplay.module.css);
 @import url(../components/Course/CourseInput.module.css);
 
-.tabsContainer{
+.tabsContainer {
     width: 40%;
     margin: 40px auto;
     border-radius: 20px;
 }
-.tabs{
+.tabs {
     display: flex;
     justify-content: space-between;
     font-size: 25px;
@@ -17,14 +17,14 @@
     cursor: pointer;
 }
 
-.active{
+.active {
     font-weight: 600;
 }
 
-.cards{
+.cards {
     width: 70%;
     margin: 30px auto 100px auto;
     padding: 40px;
     border-radius: 20px;
-    background-color: var(--background-2);
+    background-color: var(--bg-2);
 }

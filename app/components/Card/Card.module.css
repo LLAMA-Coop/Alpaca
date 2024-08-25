@@ -75,12 +75,12 @@
     bottom: 2px;
     left: 2px;
     border-radius: 8px;
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
     z-index: 2;
 }
 
 .container:hover > .content {
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
 }
 
 .textContent {
