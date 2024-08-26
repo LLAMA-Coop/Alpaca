@@ -173,7 +173,7 @@ export async function POST(req) {
         const quizSourceValues = sources.map((s) => [
             quizId,
             "quiz",
-            s,
+            s.sourceId,
             "0",
             "page",
         ]);
