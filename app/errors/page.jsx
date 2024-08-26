@@ -6,7 +6,7 @@ import styles from "@/app/page.module.css";
 
 export default async function ErrorsBugsPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
-    const devIDs = process.env.DEVELOPERS.split(",");
+    const devIDs = process.env.DEVELOPERS?.split(",");
 
     if (!user || !devIDs.includes(user.id)) {
         return redirect("/");
