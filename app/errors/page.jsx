@@ -47,6 +47,7 @@ export default async function ErrorsBugsPage() {
                                 <h3>
                                     {err.name} for {err.function}
                                 </h3>
+                                <h4>Error #{err.id}</h4>
                                 <p style={{ margin: "1rem" }}>{err.message}</p>
                                 <code
                                     style={{ display: "block", margin: "1rem" }}
