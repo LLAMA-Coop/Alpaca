@@ -267,7 +267,7 @@ export function QuizInput({ quiz }) {
             correctResponses: responses,
             hints: hints,
             sources: sources.map((src) => ({
-                resourceId: quiz.id ? quiz.id : undefined,
+                resourceId: quiz ? quiz.id : undefined,
                 resourceType: "quiz",
                 sourceId: src.id,
                 locInSource: "unknown",
