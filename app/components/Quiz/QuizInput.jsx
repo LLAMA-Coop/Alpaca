@@ -72,8 +72,7 @@ export function QuizInput({ quiz }) {
         (quiz.createdBy === user.id || quiz.creator?.id === user.id);
     const canChangePermissions =
         !quiz ||
-        (user && 
-            (quiz.createdBy === user.id || quiz.creator?.id === user.id));
+        (user && (quiz.createdBy === user.id || quiz.creator?.id === user.id));
 
     useEffect(() => {
         if (!quiz) return;
@@ -119,7 +118,9 @@ export function QuizInput({ quiz }) {
         }
         if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
-            const settingPermissions = permissionsListToObject(quiz.permissions);
+            const settingPermissions = permissionsListToObject(
+                quiz.permissions,
+            );
             console.log("SETTING PERMISSIONS", settingPermissions);
             setPermissions(settingPermissions);
         }

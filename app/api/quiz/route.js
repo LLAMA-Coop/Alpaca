@@ -182,13 +182,9 @@ export async function POST(req) {
             .promise()
             .query(quizSourceQuery, [quizSourceValues]);
 
-        const permInsert = await insertPermissions(
-            permissions,
-            quizId,
-            user.id,
-        );
+        const permInsert = await insertPermissions(permissions, quizId);
 
-        const content = quizInsert;
+        const content = { quizInsert, permInsert, quizSourceInserts };
 
         return NextResponse.json(
             { message: "Quiz created successfully", content },
