@@ -24,7 +24,11 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        if (course.createdBy !== user.id) {
+        const isCreator =
+            (course.createdBy && course.createdBy == user.id) ||
+            (course.creator && course.creator.id == user.id);
+
+        if (!isCreator) {
             return NextResponse.json(
                 {
                     message: "You are not authorized to delete this course",

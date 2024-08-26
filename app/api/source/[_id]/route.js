@@ -26,10 +26,18 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        if (source.creator.id !== user.id) {
+        const isCreator =
+            (source.createdBy && source.createdBy == user.id) ||
+            (source.creator && source.creator.id == user.id);
+
+        if (!isCreator) {
             return NextResponse.json(
                 {
-                    message: `User ${user.id} is not authorized to delete source ${_id}. Only the creator ${source.createdBy} is permitted`,
+                    message: `User ${
+                        user.id
+                    } is not authorized to delete source ${_id}. Only the creator ${
+                        source.createdBy ? source.createdBy : source.creator.id
+                    } is permitted`,
                 },
                 { status: 403 },
             );

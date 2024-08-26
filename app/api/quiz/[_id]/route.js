@@ -151,10 +151,14 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        if (quiz.createdBy.toString() !== user.id.toString()) {
+        const isCreator =
+            (quiz.createdBy && quiz.createdBy == user.id) ||
+            (quiz.creator && quiz.creator.id == user.id);
+
+        if (!isCreator) {
             return NextResponse.json(
                 {
-                    message: `User ${user.id} is not authorized to delete quiz with id ${_id}. Only the creator ${quiz.createdBy} is permitted`,
+                    message: `User ${user.id} is not authorized to delete quiz with id ${_id}. Only the creator ${quiz.creator.id} is permitted`,
                 },
                 { status: 403 },
             );

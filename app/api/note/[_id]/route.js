@@ -25,7 +25,11 @@ export async function DELETE(req, { params }) {
             );
         }
 
-        if (note.creator.id !== user.id) {
+        const isCreator =
+            (note.createdBy && note.createdBy == user.id) ||
+            (note.creator && note.creator.id == user.id);
+
+        if (!isCreator) {
             return NextResponse.json(
                 {
                     message: `User ${user.id} is not authorized to delete note ${_id}. Only the creator ${note.createdBy} is permitted`,
