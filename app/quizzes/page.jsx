@@ -59,6 +59,15 @@ export default async function QuizzesPage({ searchParams }) {
                                     q.quizId.toString() === quiz._id.toString(),
                             );
 
+                            const isCreator =
+                                user &&
+                                ((quiz.createdBy &&
+                                    quiz.createdBy === user.id) ||
+                                    (quiz.creator &&
+                                        quiz.creator.id === user.id));
+                            const canEdit =
+                                isCreator || quiz.permissionType === "write";
+
                             return (
                                 <li key={quiz.id}>
                                     <QuizDisplay quiz={quiz} />
@@ -67,8 +76,7 @@ export default async function QuizzesPage({ searchParams }) {
                                         <UserStats userQuizInfo={quizInUser} />
                                     )}
 
-                                    {user &&
-                                        quiz.permissionType === "write" && (
+                                    {canEdit && (
                                             <InputPopup
                                                 type="quiz"
                                                 resource={quiz}

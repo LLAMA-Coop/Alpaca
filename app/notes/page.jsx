@@ -51,19 +51,33 @@ export default async function NotesPage({ searchParams }) {
                     <h3>Available Notes</h3>
 
                     <ol className={styles.listGrid}>
-                        {notes.map((note) => (
-                            <li key={note.id}>
-                                <NoteDisplay note={note} />
+                        {notes.map((note) => {
+                            const isCreator =
+                                user &&
+                                ((note.createdBy &&
+                                    note.createdBy === user.id) ||
+                                    (note.creator &&
+                                        note.creator.id === user.id));
+                            const canEdit =
+                                isCreator || note.permissionType === "write";
 
-                                {user && note.permissionType === "write" && (
-                                    <InputPopup type="note" resource={note} />
-                                )}
+                            return (
+                                <li key={note.id}>
+                                    <NoteDisplay note={note} />
 
-                                <Link href={`/notes/${note.id}`}>
-                                    Go to Note Page
-                                </Link>
-                            </li>
-                        ))}
+                                    {canEdit && (
+                                            <InputPopup
+                                                type="note"
+                                                resource={note}
+                                            />
+                                        )}
+
+                                    <Link href={`/notes/${note.id}`}>
+                                        Go to Note Page
+                                    </Link>
+                                </li>
+                            );
+                        })}
                     </ol>
 
                     <div className={styles.paginationButtons}>
