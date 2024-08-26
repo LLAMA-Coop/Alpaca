@@ -5,8 +5,6 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { addError, getUserGroups } from "@/lib/db/helpers";
 
 export async function GET(req) {
-    const userId = req.nextUrl.pathname.split("/")[3];
-
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
 
@@ -19,7 +17,6 @@ export async function GET(req) {
             content,
         });
     } catch (error) {
-        console.error(`[${userId}/me] GET error: ${error}`);
         addError(error, "/api/users/me/groups: GET");
         return server;
     }
