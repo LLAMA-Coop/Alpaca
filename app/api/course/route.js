@@ -108,9 +108,10 @@ export async function POST(req) {
             ]);
         });
 
-        const [hierInserts, fieldsHier] = await db
-            .promise()
-            .query(hierQuery, [hierValues]);
+        const [hierInserts, fieldsHier] =
+            hierValues.length > 0
+                ? await db.promise().query(hierQuery, [hierValues])
+                : [[], undefined];
 
         const crsResrcQuery = `INSERT INTO \`CourseResources\` 
             (\`courseId\`, \`resourceId\`, \`resourceType\`, \`includeReferencingResources\`)
