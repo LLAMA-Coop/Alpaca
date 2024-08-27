@@ -6,7 +6,8 @@ import { addError, getUserGroups } from "@/lib/db/helpers";
 
 export async function GET(req) {
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const token = cookies().get("token")?.value
+        const user = await useUser({ token });
 
         if (!user) {
             return unauthorized;
