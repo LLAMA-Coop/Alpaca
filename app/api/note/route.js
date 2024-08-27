@@ -132,7 +132,9 @@ export async function PUT(req) {
         const { id, title, text, sources, courses, tags, permissions } =
             await req.json();
 
-        const note = (await getNotesById({ id: id, userId: user.id }))[0];
+        const note = (await getPermittedNotes({ userId: user.id })).find(
+            (x) => x.id === id,
+        );
         if (!note) {
             return NextResponse.json(
                 {

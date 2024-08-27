@@ -53,7 +53,7 @@ export async function POST(req) {
         } else {
             return NextResponse.json({ success: true });
         }
-    } catch {
+    } catch (error) {
         console.error(`[Error] POST error: ${error}`);
         addError(error, "/api/error: POST");
         return NextResponse.json(
