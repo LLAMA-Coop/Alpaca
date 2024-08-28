@@ -1,7 +1,7 @@
 import { addError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 
-const webhookUrl = process.env.DISCORD_ERRORS_WEBHOOK;
+// const webhookUrl = process.env.DISCORD_ERRORS_WEBHOOK;
 
 export async function POST(req) {
     const { message, stack, url, userInfo, isClient, report } =
@@ -30,15 +30,26 @@ export async function POST(req) {
 
         console.log(embed);
 
-        const response = await fetch(`${webhookUrl}?wait=true`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ embeds: [embed] }),
-        });
+        // const response = await fetch(`${webhookUrl}?wait=true`, {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({ embeds: [embed] }),
+        // });
 
-        if (!response.ok) {
+        const response = await addError(
+            {
+                name: message,
+                message: embed.title,
+                code: `UserInfo: ${JSON.stringify(userInfo)}`,
+                stack: embed.description,
+            },
+            url,
+        );
+
+        // if (!response.ok) {
+        if (response.affectedRows === 0) {
             console.error(
                 `[Error] POST error: ${response.status} ${response.statusText}`,
             );
@@ -58,7 +69,8 @@ export async function POST(req) {
         addError(error, "/api/error: POST");
         return NextResponse.json(
             {
-                error: "Failed to send error to Discord",
+                // error: "Failed to send error to Discord",
+                error: "Failed to log error",
             },
             { status: 500 },
         );
