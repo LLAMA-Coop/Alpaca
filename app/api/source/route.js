@@ -107,7 +107,7 @@ export async function POST(req) {
             url,
             JSON.stringify(tags),
             user.id,
-            publishDate.split("T")[0],
+            publishDate ? publishDate.split("T")[0] : null,
         ];
 
         const [sourceInsert, fields] = await db
