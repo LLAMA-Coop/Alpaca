@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
 import styles from "@/app/page.module.css";
+import ErrorBug from "./ErrorBug";
 
 export default async function ErrorsBugsPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
@@ -44,29 +45,7 @@ export default async function ErrorsBugsPage() {
                                     borderRadius: "0.5rem",
                                 }}
                             >
-                                <h3>
-                                    {err.name} for {err.function}
-                                </h3>
-                                <h4>Error #{err.id}</h4>
-                                <p style={{ margin: "1rem" }}>{err.message}</p>
-                                <code
-                                    style={{ display: "block", margin: "1rem" }}
-                                >
-                                    {err.code}
-                                </code>
-                                <code
-                                    style={{
-                                        display: "block",
-                                        margin: "1rem",
-                                        wordWrap: "break-word",
-                                        whiteSpace: "pre-wrap",
-                                    }}
-                                >
-                                    {err.stack}
-                                </code>
-                                <p className={styles.paragraph}>
-                                    Occurred at {err.time.toString()}
-                                </p>
+                                <ErrorBug error={err} />
                             </li>
                         ))}
                     </ul>
