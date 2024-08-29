@@ -5,9 +5,9 @@ import { useStore, useModals, useAlerts } from "@/store/store";
 import { DeletePopup } from "../DeletePopup/DeletePopup";
 import { buildPermissions, permissionsListToObject } from "@/lib/permissions";
 import { useEffect, useState, useRef } from "react";
-import SubmitErrors from "@/lib/SubmitErrors";
+import { Validator } from "@/lib/validation";
 import styles from "./QuizInput.module.css";
-import { MAX } from "@/lib/constants";
+import { validation } from "@/lib/validation";
 import {
     Input,
     Label,
@@ -20,38 +20,24 @@ import {
 } from "@client";
 
 export function QuizInput({ quiz }) {
+    const [errors, setErrors] = useState({});
+
     const [type, setType] = useState("prompt-response");
-    const [typeError, setTypeError] = useState("");
-
     const [prompt, setPrompt] = useState("");
-    const [promptError, setPromptError] = useState("");
-
     const [responses, setResponses] = useState([]);
     const [newResponse, setNewResponse] = useState("");
-    const [responsesError, setResponsesError] = useState("");
-
     const [choices, setChoices] = useState([]);
     const [newChoice, setNewChoice] = useState("");
-    const [choicesError, setChoicesError] = useState("");
-
     const [hints, setHints] = useState([]);
     const [newHint, setNewHint] = useState([]);
-
     const [courses, setCourses] = useState([]);
-
     const [tags, setTags] = useState([]);
     const [newTag, setNewTag] = useState("");
-
     const [permissions, setPermissions] = useState({});
-
     const [sources, setSources] = useState([]);
-    const [sourcesError, setSourcesError] = useState("");
     const [notes, setNotes] = useState([]);
-    const [notesError, setNotesError] = useState("");
-
     const [isSourceSelectOpen, setIsSourceSelectOpen] = useState(false);
     const [isNoteSelectOpen, setIsNoteSelectOpen] = useState(false);
-
     const [loading, setLoading] = useState(false);
 
     const availableSources = useStore((state) => state.sources);
@@ -72,8 +58,7 @@ export function QuizInput({ quiz }) {
         (quiz.createdBy === user.id || quiz.creator?.id === user.id);
     const canChangePermissions =
         !quiz ||
-        (user && 
-            (quiz.createdBy === user.id || quiz.creator?.id === user.id));
+        (user && (quiz.createdBy === user.id || quiz.creator?.id === user.id));
 
     useEffect(() => {
         if (!quiz) return;
@@ -119,7 +104,9 @@ export function QuizInput({ quiz }) {
         }
         if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
         if (quiz.permissions) {
-            const settingPermissions = permissionsListToObject(quiz.permissions);
+            const settingPermissions = permissionsListToObject(
+                quiz.permissions,
+            );
             console.log("SETTING PERMISSIONS", settingPermissions);
             setPermissions(settingPermissions);
         }
@@ -175,8 +162,11 @@ export function QuizInput({ quiz }) {
 
     useEffect(() => {
         if (sources.length > 0 || notes.length > 0) {
-            setSourcesError("");
-            setNotesError("");
+            setErrors((prev) => ({
+                ...prev,
+                sources: "",
+                notes: "",
+            }));
         }
     }, [sources, notes]);
 
@@ -219,45 +209,55 @@ export function QuizInput({ quiz }) {
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
-        const submitErrors = new SubmitErrors();
 
-        if (!types.find((x) => x.value === type)) {
-            submitErrors.addMessage("Invalid type selected", setTypeError);
-        }
+        const validator = new Validator();
 
-        if (prompt === "") {
-            submitErrors.addMessage("Prompt cannot be empty", setPromptError);
-        }
+        validator.validateAll([
+            {
+                field: "type",
+                value: type,
+                type: "quiz",
+            },
+            {
+                field: "prompt",
+                value: prompt,
+                type: "quiz",
+            },
+        ]);
 
         if (responses.length === 0) {
-            submitErrors.addMessage(
-                "Need at least one answer",
-                setResponsesError,
-            );
+            validator.addError({
+                field: "answers",
+                message: "Need at least one answer",
+            });
         }
 
         if (sources.length === 0 && notes.length === 0) {
-            submitErrors.addMessage("Need one note or source", [
-                setSourcesError,
-                setNotesError,
-            ]);
+            validator.addError({
+                field: "sources",
+                message: "Need one note or source",
+            });
+
+            validator.addError({
+                field: "notes",
+                message: "Need one note or source",
+            });
         }
 
         if (type === "multiple-choice" && choices.length === 0) {
-            submitErrors.addMessage(
-                "Need at least one choice",
-                setChoicesError,
-            );
-        }
-
-        if (submitErrors.errors.length > 0) {
-            addAlert({
-                success: false,
-                message: submitErrors.displayErrors(),
+            validator.addError({
+                field: "choices",
+                message: "Need at least one choice",
             });
         }
-        if (submitErrors.cannotSend) {
-            return;
+
+        if (!validator.isValid) {
+            setErrors(validator.errors);
+
+            return addAlert({
+                success: false,
+                message: validator.getErrorsAsString(),
+            });
         }
 
         const quizPayload = {
@@ -277,6 +277,7 @@ export function QuizInput({ quiz }) {
             courses: courses.map((course) => course.id),
             tags,
         };
+
         if (quiz && quiz.id) {
             quizPayload.id = quiz.id;
         }
@@ -303,23 +304,15 @@ export function QuizInput({ quiz }) {
         setLoading(false);
 
         if (response.status === 201) {
-            setTypeError("");
-
             setPrompt("");
-            setPromptError("");
-
             setResponses([]);
             setNewResponse("");
-            setResponsesError("");
 
             setChoices([]);
             setNewChoice("");
-            setChoicesError("");
 
             setSources([]);
             setNotes([]);
-            setSourcesError("");
-            setNotesError("");
 
             addAlert({
                 success: true,
@@ -357,14 +350,12 @@ export function QuizInput({ quiz }) {
         }
 
         if (type === "verbatim") {
-            setResponses(newResponse.split(" "));
-            setResponsesError("");
-            return;
+            return setResponses(newResponse.split(" "));
         }
 
         setResponses([...responses, answer]);
         setNewResponse("");
-        setResponsesError("");
+        setErrors((prev) => ({ ...prev, answers: "" }));
     }
 
     function handleAddChoice(e) {
@@ -377,7 +368,7 @@ export function QuizInput({ quiz }) {
 
         setChoices([...choices, choice]);
         setNewChoice("");
-        setChoicesError("");
+        setErrors((prev) => ({ ...prev, choices: "" }));
     }
 
     return (
@@ -389,7 +380,7 @@ export function QuizInput({ quiz }) {
                 description={"Type of quiz question"}
                 required={true}
                 value={type}
-                error={typeError}
+                error={errors.type}
                 onChange={(e) => setType(e.target.value)}
             />
 
@@ -397,8 +388,7 @@ export function QuizInput({ quiz }) {
                 <BlankableInput
                     prompt={prompt}
                     setPrompt={setPrompt}
-                    promptError={promptError}
-                    setPromptError={setPromptError}
+                    promptError={errors.prompt}
                     responses={responses}
                     setResponses={setResponses}
                 />
@@ -411,11 +401,11 @@ export function QuizInput({ quiz }) {
                     }
                     required={true}
                     value={prompt}
-                    maxLength={MAX.prompt}
-                    error={promptError}
+                    maxLength={validation.quiz.prompt.maxLength}
+                    error={errors.prompt}
                     onChange={(e) => {
                         setPrompt(e.target.value);
-                        setPromptError("");
+                        setErrors((prev) => ({ ...prev, prompt: "" }));
                     }}
                 />
             )}
@@ -426,10 +416,10 @@ export function QuizInput({ quiz }) {
                         label="Add new choice"
                         description={"Add a new choice. Press enter to add"}
                         value={newChoice}
-                        maxLength={MAX.response}
+                        maxLength={validation.quiz.choice.maxLength}
                         required={choices.length < 1}
                         onSubmit={handleAddChoice}
-                        error={choicesError}
+                        error={errors.choices}
                         onChange={(e) => setNewChoice(e.target.value)}
                         action="Add new choice"
                         onActionTrigger={handleAddChoice}
@@ -471,11 +461,13 @@ export function QuizInput({ quiz }) {
                         description={"Add a new answer. Press enter to add"}
                         value={newResponse}
                         maxLength={
-                            type !== "verbatim" ? MAX.response : MAX.description
+                            type !== "verbatim"
+                                ? validation.quiz.choice
+                                : validation.quiz.prompt
                         }
                         required={responses.length === 0}
                         onSubmit={handleAddResponse}
-                        error={responsesError}
+                        error={errors.answers}
                         onChange={(e) => {
                             setNewResponse(e.target.value);
                             if (type === "multiple-choice") {
@@ -520,7 +512,7 @@ export function QuizInput({ quiz }) {
                 <div className={styles.sources}>
                     <Label
                         required={true}
-                        error={sourcesError}
+                        error={errors.sources}
                         label="Related Sources"
                     />
 
@@ -539,7 +531,7 @@ export function QuizInput({ quiz }) {
                 <div className={styles.notes}>
                     <Label
                         required={true}
-                        error={notesError}
+                        error={errors.notes}
                         label="Related Notes"
                     />
 
@@ -607,7 +599,7 @@ export function QuizInput({ quiz }) {
                     <Input
                         label={"Add Hint"}
                         value={newHint}
-                        maxLength={MAX.response}
+                        maxLength={validation.quiz.hint.maxLength}
                         description="A hint that may help the user remember the correct answer"
                         onChange={(e) => setNewHint(e.target.value)}
                         action="Add hint"
@@ -638,7 +630,7 @@ export function QuizInput({ quiz }) {
                         choices={availableTags}
                         label={"Add Tag"}
                         value={newTag}
-                        maxLength={MAX.tag}
+                        maxLength={validation.misc.tag.maxLength}
                         description="A word or phrase that could be used to search for this note"
                         autoComplete="off"
                         onChange={(e) => setNewTag(e.target.value)}

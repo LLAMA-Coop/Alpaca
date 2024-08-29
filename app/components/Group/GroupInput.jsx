@@ -3,11 +3,10 @@
 import { Label, Input, Spinner, UserInput } from "@client";
 import { useModals, useAlerts } from "@/store/store";
 import { useState, useRef, useEffect } from "react";
-import SubmitErrors from "@/lib/SubmitErrors";
+import { Validator } from "@/lib/validation";
 import filetypeinfo from "magic-bytes.js";
 import styles from "./Group.module.css";
-import { MAX } from "@/lib/constants";
-import Image from "next/image";
+import { validation } from "@/lib/validation";
 
 export function GroupInput({ group }) {
     const [name, setName] = useState("");
@@ -36,33 +35,27 @@ export function GroupInput({ group }) {
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
-        const submitErrors = new SubmitErrors();
 
-        if (name.length < 1 || name.length > MAX.name) {
-            submitErrors.addMessage(
-                `Name must be between 1 and ${MAX.name} characters.`,
-                setNameError,
-            );
-        }
+        const validator = new Validator();
 
-        if (
-            description.length > 0 &&
-            (description.length < 2 || description.length > 512)
-        ) {
-            submitErrors.addMessage(
-                "Description must be between 2 and 512 characters.",
-                setDescriptionError,
-            );
-        }
+        validator.validateAll([
+            {
+                field: "name",
+                value: name,
+                type: "group",
+            },
+            {
+                field: "description",
+                value: description,
+                type: "group",
+            },
+        ]);
 
-        if (submitErrors.errors.length > 0) {
-            addAlert({
+        if (!validator.isValid) {
+            return addAlert({
                 success: false,
-                message: submitErrors.displayErrors(),
+                message: validator.getErrorsAsString(),
             });
-        }
-        if (submitErrors.cannotSend) {
-            return;
         }
 
         setLoading(true);
@@ -131,7 +124,7 @@ export function GroupInput({ group }) {
                 label={"Group Name"}
                 error={nameError}
                 minLength={1}
-                maxLength={MAX.name}
+                maxLength={validation.group.name.maxLength}
                 onChange={(e) => {
                     setName(e.target.value);
                     setNameError("");
@@ -143,7 +136,7 @@ export function GroupInput({ group }) {
                 label={"Group Description"}
                 error={descriptionError}
                 minLength={2}
-                maxLength={MAX.description}
+                maxLength={validation.group.description.maxLength}
                 onChange={(e) => {
                     setDescription(e.target.value);
                     setDescriptionError("");

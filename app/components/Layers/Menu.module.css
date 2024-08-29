@@ -1,63 +1,53 @@
 .container {
-    min-width: 100%;
-    padding: 4px 0;
-    border-radius: 6px;
-    position: fixed;
+    padding: 4px;
+    border-radius: 4px;
+    min-width: 170px;
     border: 1px solid var(--border-color);
     background-color: var(--bg-2);
-    z-index: 100;
 }
 
-.container.fit {
-    min-width: fit-content;
-}
-
-.container > ul > hr {
+.container > hr {
     border: 0;
     border-top: 1px solid var(--border-color);
+    border-radius: 1000px;
     margin: 4px 0;
 }
 
-.container > ul > li {
-    position: relative;
+.container > li {
+    border-radius: 3px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     font-size: 14px;
+    font-weight: 400;
     line-height: 20px;
-    padding: 6px 12px;
+    padding: 8px;
     user-select: none;
     cursor: pointer;
-    transition: all 0.01s ease-in-out;
-    white-space: nowrap;
+    color: var(--fg-2);
 }
 
-.container > ul > li.icon {
-    padding-left: 36px;
+.container > li.danger {
+    color: var(--danger);
 }
 
-.container > ul > li.danger {
-    color: rgb(240, 33, 33);
-}
-
-.container > ul > li:hover,
-.container > ul > li:focus-visible {
-    background-color: var(--bg-3);
+.container > li:hover,
+.container > li:focus-visible {
     outline: none;
+    color: var(--fg-1);
+    background-color: var(--bg-3);
 }
 
-.container > ul > li:active {
-    opacity: 0.8;
+.container > li.danger:hover,
+.container > li.danger:focus-visible {
+    color: var(--danger);
 }
 
-.container > ul > li > div {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
+.container > li:active {
+    filter: brightness(1.3);
+}
+
+.container > li > svg {
     width: 16px;
     height: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-right: 8px;
 }

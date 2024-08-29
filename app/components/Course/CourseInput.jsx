@@ -3,8 +3,8 @@
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { useEffect, useState } from "react";
 import { serializeOne } from "@/lib/db";
-import { MAX } from "@/lib/constants";
-import SubmitErrors from "@/lib/SubmitErrors";
+import { validation } from "@/lib/validation";
+import { Validator } from "@/lib/validation";
 import {
     Input,
     InputPopup,
@@ -76,37 +76,32 @@ export function CourseInput({ course }) {
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
-        const submitErrors = new SubmitErrors();
 
-        if (name.length === 0) {
-            submitErrors.addMessage(
-                `Course name must be between 1 and ${MAX.name} characters`,
-                setNameError,
-            );
-        }
-        if (description.length === 0) {
-            submitErrors.addMessage(
-                `Course description must be between 1 and ${MAX.description} characters`,
-                setDescriptionError,
-            );
-        }
-        if (!["open", "paid", "private"].includes(enrollment)) {
-            submitErrors.addMessage(
-                `Enrollment type must one of the following: ${[
-                    "open",
-                    "paid",
-                    "private",
-                ]}`,
-            );
-        }
-        if (submitErrors.errors.length > 0) {
-            addAlert({
+        const validator = new Validator();
+
+        validator.validateAll([
+            {
+                field: "name",
+                value: name,
+                type: "course",
+            },
+            {
+                field: "description",
+                value: description,
+                type: "course",
+            },
+            {
+                field: "enrollment",
+                value: enrollment,
+                type: "course",
+            },
+        ]);
+
+        if (!validator.isValid) {
+            return addAlert({
                 success: false,
-                message: submitErrors.displayErrors(),
+                message: validator.getErrorsAsString(),
             });
-        }
-        if (submitErrors.cannotSend) {
-            return;
         }
 
         const crsPayload = {
@@ -191,7 +186,7 @@ export function CourseInput({ course }) {
                 value={name}
                 error={nameError}
                 label={"Name"}
-                maxLength={MAX.title}
+                maxLength={validation.course.name.maxLength}
             />
 
             <Input
@@ -203,7 +198,7 @@ export function CourseInput({ course }) {
                 value={description}
                 error={descriptionError}
                 label={"Description"}
-                maxLength={MAX.description}
+                maxLength={validation.course.description.maxLength}
             />
 
             <Input

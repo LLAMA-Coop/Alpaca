@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./QuizInput.module.css";
 import { Input } from "@client";
-import { MAX } from "@/lib/constants";
+import { validation } from "@/lib/validation";
 
 export function BlankableInput({
     prompt,
@@ -160,7 +160,7 @@ export function BlankableInput({
                 description={"Question prompt. Can be a question or statement"}
                 required={true}
                 value={promptInput}
-                maxLength={MAX.prompt}
+                maxLength={validation.quiz.prompt.maxLength}
                 error={promptError}
                 onChange={handleChangePrompt}
             />

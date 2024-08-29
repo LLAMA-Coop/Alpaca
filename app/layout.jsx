@@ -11,6 +11,19 @@ import {
     getPermittedResources,
     getPermittedSources,
 } from "@/lib/db/helpers";
+import { Inter, Sofia_Sans } from "next/font/google";
+
+const inter = Inter({
+    subsets: ["latin"],
+    variable: "--font-body",
+    display: "swap",
+});
+
+const sofia = Sofia_Sans({
+    subsets: ["latin"],
+    variable: "--font-heading",
+    display: "swap",
+});
 
 // const connection = await connectDB();
 
@@ -39,14 +52,14 @@ export default async function RootLayout({ children }) {
         takeNotifications: true,
     });
 
-    const sources = await getPermittedSources(user.id);
-    const notes = await getPermittedNotes(user.id);
-    const quizzes = await getPermittedQuizzes(user.id);
-    const courses = await getPermittedCourses(user.id);
+    const sources = (await getPermittedSources(user?.id)) || [];
+    const notes = (await getPermittedNotes(user?.id)) || [];
+    const quizzes = (await getPermittedQuizzes(user?.id)) || [];
+    const courses = (await getPermittedCourses(user?.id)) || [];
     const notifications = user ? user.notifications : [];
 
     return (
-        <html lang="en">
+        <html lang="en" className={`${inter.variable} ${sofia.variable}`}>
             {user && (
                 <FillStore
                     user={user}
@@ -62,6 +75,9 @@ export default async function RootLayout({ children }) {
             )}
 
             <body>
+                {/* So Firefox displays page after css has loaded */}
+                <script>0</script>
+
                 <Header user={user} />
                 {children}
                 <Footer />

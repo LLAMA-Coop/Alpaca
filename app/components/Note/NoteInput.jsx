@@ -2,11 +2,11 @@
 
 import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 import { useStore, useModals, useAlerts } from "@/store/store";
-import SubmitErrors from "@/lib/SubmitErrors";
+import { Validator } from "@/lib/validation";
 import styles from "./NoteInput.module.css";
 import { useEffect, useState } from "react";
 import { serializeOne } from "@/lib/db";
-import { MAX } from "@/lib/constants";
+import { validation } from "@/lib/validation";
 import {
     Label,
     Input,
@@ -94,27 +94,30 @@ export function NoteInput({ note }) {
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
-        const submitErrors = new SubmitErrors();
 
-        if (text.length === 0) {
-            submitErrors.addMessage("Text cannot be empty", setTextError);
-        }
+        const validator = new Validator();
+
+        validator.validateAll([
+            {
+                field: "text",
+                value: text,
+                type: "note",
+            },
+            {},
+        ]);
 
         if (sources.length === 0) {
-            submitErrors.addMessage(
-                "You must add at least one source",
-                setSourceError,
-            );
-        }
-
-        if (submitErrors.errors.length > 0) {
-            addAlert({
-                success: false,
-                message: submitErrors.displayErrors(),
+            validator.addError({
+                field: "sources",
+                message: "You must add at least one source",
             });
         }
-        if (submitErrors.cannotSend) {
-            return;
+
+        if (!validator.isValid) {
+            return addAlert({
+                success: false,
+                message: validator.getErrorsAsString(),
+            });
         }
 
         const notePayload = {
@@ -124,11 +127,13 @@ export function NoteInput({ note }) {
             courses: courses.filter((c) => c).map((course) => course.id),
             tags,
         };
+
         notePayload.permissions = buildPermissions(
             permissions,
             note ? note.id : null,
             "note",
         );
+
         if (note && note.id) {
             notePayload.id = note.id;
         }
@@ -187,7 +192,7 @@ export function NoteInput({ note }) {
                         setTitle(e.target.value);
                     }}
                     value={title}
-                    maxLength={MAX.title}
+                    maxLength={validation.note.title.maxLength}
                     placeholder="Note Title"
                     label="TITLE"
                 />
@@ -225,7 +230,7 @@ export function NoteInput({ note }) {
                     value={text}
                     error={textError}
                     label={"Text"}
-                    maxLength={MAX.noteText}
+                    maxLength={validation.note.text.maxLength}
                     className={styles.textarea}
                 />
             </div>
@@ -237,7 +242,7 @@ export function NoteInput({ note }) {
                             label="Tags"
                             choices={availableTags}
                             value={newTag}
-                            maxLength={MAX.tag}
+                            maxLength={validation.tag.maxLength}
                             description="A word or phrase that could be used to search for this note"
                             autoComplete="off"
                             onChange={(e) => setNewTag(e.target.value)}

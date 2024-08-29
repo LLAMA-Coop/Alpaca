@@ -47,10 +47,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: 62px;
+    height: 62px;
     background: var(--bg-2);
     border-radius: 50%;
+}
+
+.tabList > li > div > svg {
+    width: 24px;
+    height: 24px;
 }
 
 .tabList > li:hover > div,
@@ -157,6 +162,11 @@
 .browseLink:focus-visible {
     background-color: var(--bg-3);
     color: var(--fg-1);
+}
+
+.browseLink > svg {
+    width: 20px;
+    height: 20px;
 }
 
 .content > header > .summaries {
@@ -523,11 +533,6 @@
 
     .tabList > li > span {
         font-size: 12px;
-    }
-
-    .tabList > li > div > svg {
-        width: 25px;
-        height: 25px;
     }
 }
 

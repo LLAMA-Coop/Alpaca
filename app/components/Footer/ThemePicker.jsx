@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import { palettes } from "@/app/data/palettes";
 import styles from "./ThemePicker.module.css";
-import { useMenu } from "@/store/store";
 
 const paletteAttributes = [
     "--accent-1",
@@ -25,9 +24,6 @@ const paletteAttributes = [
 export function ThemePicker() {
     const [activeTheme, setActiveTheme] = useState(2);
     const [activePalette, setActivePalette] = useState(0);
-
-    const setMenu = useMenu((state) => state.setMenu);
-    const menu = useMenu((state) => state.menu);
 
     const activeIcon = <path d="M5 12l5 5l10 -10" />;
     const paletteButton = useRef(null);
@@ -128,30 +124,25 @@ export function ThemePicker() {
                     aria-haspopup="true"
                     aria-label="Change theme"
                     aria-controls="theme-popup"
-                    aria-expanded={themeButton === menu?.element}
-                    className={
-                        themeButton.current === menu?.element
-                            ? styles.active
-                            : ""
-                    }
+                    aria-expanded={false}
+                    className={false ? styles.active : ""}
                     onClick={(e) => {
-                        if (menu?.element !== e.currentTarget) {
-                            setMenu({
-                                element: e.currentTarget,
-                                items: lightModes.map((mode) => ({
-                                    name: mode,
-                                    onClick: () => {
-                                        setTheme(lightModes.indexOf(mode));
-                                    },
-                                })),
-                                active: activePalette,
-                                activeIcon: activeIcon,
-                                keepOpen: true,
-                                top: true,
-                                right: true,
-                            });
+                        if (false) {
+                            // setMenu({
+                            //     element: e.currentTarget,
+                            //     items: lightModes.map((mode) => ({
+                            //         name: mode,
+                            //         onClick: () => {
+                            //             setTheme(lightModes.indexOf(mode));
+                            //         },
+                            //     })),
+                            //     active: activePalette,
+                            //     activeIcon: activeIcon,
+                            //     keepOpen: true,
+                            //     top: true,
+                            //     right: true,
+                            // });
                         } else {
-                            setMenu(null);
                         }
                     }}
                 >
@@ -179,30 +170,25 @@ export function ThemePicker() {
                     aria-haspopup="true"
                     aria-controls="palettes"
                     aria-label="Color palette"
-                    aria-expanded={paletteButton === menu?.element}
-                    className={
-                        paletteButton.current === menu?.element
-                            ? styles.active
-                            : ""
-                    }
+                    aria-expanded={false}
+                    className={false ? styles.active : ""}
                     onClick={(e) => {
-                        if (menu?.element !== e.currentTarget) {
-                            setMenu({
-                                element: e.currentTarget,
-                                items: palettes.map((palette) => ({
-                                    name: palette.name,
-                                    onClick: () => {
-                                        setPalette(palettes.indexOf(palette));
-                                    },
-                                })),
-                                active: activePalette,
-                                activeIcon: activeIcon,
-                                keepOpen: true,
-                                top: true,
-                                right: true,
-                            });
+                        if (false) {
+                            // setMenu({
+                            //     element: e.currentTarget,
+                            //     items: palettes.map((palette) => ({
+                            //         name: palette.name,
+                            //         onClick: () => {
+                            //             setPalette(palettes.indexOf(palette));
+                            //         },
+                            //     })),
+                            //     active: activePalette,
+                            //     activeIcon: activeIcon,
+                            //     keepOpen: true,
+                            //     top: true,
+                            //     right: true,
+                            // });
                         } else {
-                            setMenu(null);
                         }
                     }}
                 >

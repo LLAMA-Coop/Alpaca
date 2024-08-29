@@ -233,17 +233,3 @@ export const useModals = create()((set) => ({
         }));
     },
 }));
-
-// Menu Store
-
-export const useMenu = create()((set) => ({
-    menu: null,
-    setMenu: (menu) => set(() => ({ menu })),
-}));
-
-// Tooltip Store
-
-export const useTooltip = create()((set) => ({
-    tooltip: null,
-    setTooltip: (tooltip) => set(() => ({ tooltip })),
-}));

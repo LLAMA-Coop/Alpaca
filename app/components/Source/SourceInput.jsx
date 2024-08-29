@@ -2,10 +2,10 @@
 
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { buildPermissions, permissionsListToObject } from "@/lib/permissions";
-import SubmitErrors from "@/lib/SubmitErrors";
+import { Validator } from "@/lib/validation";
 import { useState, useEffect } from "react";
 import { htmlDate } from "@/lib/date";
-import { MAX } from "@/lib/constants";
+import { validation } from "@/lib/validation";
 import {
     Input,
     Label,
@@ -19,20 +19,13 @@ import {
 import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 
 export function SourceInput({ source }) {
+    const [errors, setErrors] = useState({});
+
     const [title, setTitle] = useState("");
-    const [titleError, setTitleError] = useState("");
-
     const [medium, setMedium] = useState("article");
-    const [mediumError, setMediumError] = useState("");
-
     const [url, setUrl] = useState("");
-    const [urlError, setUrlError] = useState("");
-
     const [lastAccessed, setLastAccessed] = useState();
-    const [lastAccessedError, setLastAccessedError] = useState("");
-
     const [publishDate, setPublishDate] = useState();
-    const [publishDateError, setPublishDateError] = useState("");
 
     const [authors, setAuthors] = useState([]);
     const [newAuthor, setNewAuthor] = useState("");
@@ -109,37 +102,48 @@ export function SourceInput({ source }) {
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
-        const submitErrors = new SubmitErrors();
 
-        if (!title) {
-            submitErrors.addMessage("Title is required", setTitleError);
-        } else if (title.length > MAX.title) {
-            submitErrors.addMessage(
-                `Title must be ${MAX.title} characters or fewer`,
-                setTitleError,
-            );
-        }
+        const validator = new Validator();
+
+        validator.validateAll([
+            {
+                field: "title",
+                value: title,
+                type: "source",
+            },
+            {
+                field: "medium",
+                value: medium,
+                type: "source",
+            },
+        ]);
 
         if (medium === "website" && !urlRegex.test(url)) {
-            submitErrors.addMessage("Invalid URL", setUrlError);
+            validator.addError({
+                field: "url",
+                message: "Invalid URL",
+            });
         }
 
         if (lastAccessed && !accessedRegex.test(lastAccessed)) {
-            submitErrors.addMessage("Invalid Date", setLastAccessedError);
+            validator.addError({
+                field: "lastAccessed",
+                message: "Invalid date",
+            });
         }
 
         if (publishDate && !publishRegex.test(publishDate)) {
-            submitErrors.addMessage("Invalid Date", setPublishDateError);
-        }
-
-        if (submitErrors.errors.length > 0) {
-            addAlert({
-                success: false,
-                message: submitErrors.displayErrors(),
+            validator.addError({
+                field: "publishDate",
+                message: "Invalid date",
             });
         }
-        if (submitErrors.cannotSend) {
-            return;
+
+        if (!validator.isValid) {
+            return addAlert({
+                success: false,
+                message: validator.getErrorsAsString(),
+            });
         }
 
         function formatDate(htmlDate) {
@@ -158,11 +162,13 @@ export function SourceInput({ source }) {
             courses: courses.map((course) => course.id),
             tags,
         };
+
         sourcePayload.permissions = buildPermissions(
             permissions,
             source ? source.id : null,
             "source",
         );
+
         if (source && source.id) {
             sourcePayload.id = source.id;
         }
@@ -199,11 +205,7 @@ export function SourceInput({ source }) {
             setPublishDate("");
             setNewAuthor("");
             setAuthors([]);
-            setTitleError("");
-            setMediumError("");
-            setUrlError("");
-            setLastAccessedError("");
-            setPublishDateError("");
+            setErrors({});
         } else if (response.status === 401) {
             addAlert({
                 success: false,
@@ -235,14 +237,14 @@ export function SourceInput({ source }) {
             <Input
                 label={"Title"}
                 value={title}
-                maxLength={MAX.title}
+                maxLength={validation.source.title.maxLength}
                 description="The title of the source"
                 autoComplete="off"
                 required={true}
-                error={titleError}
+                error={errors.title}
                 onChange={(e) => {
                     setTitle(e.target.value);
-                    setTitleError("");
+                    setErrors((prev) => ({ ...prev, title: "" }));
                 }}
             />
 
@@ -253,10 +255,10 @@ export function SourceInput({ source }) {
                 required={true}
                 label={"Medium"}
                 value={medium}
-                error={mediumError}
+                error={errors.medium}
                 onChange={(e) => {
                     setMedium(e.target.value);
-                    setMediumError("");
+                    setErrors((prev) => ({ ...prev, medium: "" }));
                 }}
             />
 
@@ -266,11 +268,11 @@ export function SourceInput({ source }) {
                 required={medium === "website"}
                 label={"URL of Source"}
                 value={url}
-                error={urlError}
+                error={errors.url}
                 minLength={8}
                 onChange={(e) => {
                     setUrl(e.target.value);
-                    setUrlError("");
+                    setErrors((prev) => ({ ...prev, url: "" }));
                 }}
             />
 
@@ -279,10 +281,10 @@ export function SourceInput({ source }) {
                 label={"Publication Date"}
                 value={publishDate}
                 description="The date the source was published"
-                error={publishDateError}
+                error={errors.publishDate}
                 onChange={(e) => {
                     setPublishDate(e.target.value);
-                    setPublishDateError("");
+                    setErrors((prev) => ({ ...prev, publishDate: "" }));
                 }}
             />
 
@@ -291,10 +293,10 @@ export function SourceInput({ source }) {
                 label={"Last Accessed"}
                 value={lastAccessed}
                 description="The date you last accessed the source"
-                error={lastAccessedError}
+                error={errors.lastAccessed}
                 onChange={(e) => {
                     setLastAccessed(e.target.value);
-                    setLastAccessedError("");
+                    setErrors((prev) => ({ ...prev, lastAccessed: "" }));
                 }}
             />
 
@@ -302,7 +304,7 @@ export function SourceInput({ source }) {
                 <Input
                     label={"Add Author"}
                     value={newAuthor}
-                    maxLength={MAX.name}
+                    maxLength={validation.source.author.maxLength}
                     description="People who contributed to the source"
                     autoComplete="off"
                     onChange={(e) => setNewAuthor(e.target.value)}
@@ -371,7 +373,7 @@ export function SourceInput({ source }) {
                     choices={availableTags}
                     label={"Add Tag"}
                     value={newTag}
-                    maxLength={MAX.tag}
+                    maxLength={validation.tag.maxLength}
                     description="A word or phrase that could be used to search for this source"
                     autoComplete="off"
                     onChange={(e) => setNewTag(e.target.value)}

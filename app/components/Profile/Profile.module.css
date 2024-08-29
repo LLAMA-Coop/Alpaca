@@ -3,12 +3,13 @@
     width: fit-content;
 }
 
-.avatarContainer {
+.container > button {
     cursor: pointer;
     border-radius: 50%;
+    border: none;
 }
 
-.avatarContainer > sub {
+.notification {
     height: 20px;
     min-width: 20px;
     display: flex;
