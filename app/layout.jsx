@@ -4,7 +4,14 @@ import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import "./globals.css";
-import { getPermittedCourses, getPermittedNotes, getPermittedQuizzes, getPermittedResources, getPermittedSources } from "@/lib/db/helpers";
+import {
+    getPermittedCourses,
+    getPermittedNotes,
+    getPermittedQuizzes,
+    getPermittedResources,
+    getPermittedSources,
+} from "@/lib/db/helpers";
+import { db } from "@/lib/db/db";
 
 // const connection = await connectDB();
 
@@ -30,6 +37,12 @@ export default async function RootLayout({ children }) {
     const permittedResources = user
         ? await getPermittedResources(user.id)
         : { sources: [], notes: [], quizzes: [], notifications: [] };
+
+    const [userQuizzes, fields] = await db
+        .promise()
+        .query("SELECT * FROM `UserQuizzes` WHERE `userId` = ?", [user.id]);
+
+    user.quizzes = userQuizzes;
 
     const sources = await getPermittedSources(user?.id);
     const notes = await getPermittedNotes(user?.id);

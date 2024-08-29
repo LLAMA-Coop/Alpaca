@@ -14,7 +14,7 @@ export function Dashboard({ more = false }) {
     const notes = useStore((state) => state.notes);
     const sources = useStore((state) => state.sources);
     const quizzes = useStore((state) => state.quizzes);
-    const courses = useStore((state) => state.courses);
+    const courseList = useStore((state) => state.courses);
     const groups = useStore((state) => state.groups);
     const associates = useStore((state) => state.associates);
     const addAlert = useAlerts((state) => state.addAlert);
@@ -22,6 +22,41 @@ export function Dashboard({ more = false }) {
 
     const groupsCreated = groups.filter((group) => group.owner === user.id);
     const groupsJoined = groups.filter((group) => group.owner !== user.id);
+
+    const courses = courseList.map((crs) => {
+        const courseQuizzes = quizzes.filter((q) => q.courses.includes(crs.id));
+        const userQuizLevels = courseQuizzes.map((q) => {
+            let userQuiz = user.quizzes.find((x) => x.id === q.id);
+            if (!userQuiz) {
+                return 0;
+            }
+            return userQuiz.level;
+        });
+
+        if (userQuizLevels.length === 0) {
+            return {
+                id: crs.id,
+                name: crs.name,
+                description: crs.description,
+                minimumLevel: 0,
+                averageLevel: 0,
+            };
+        }
+
+        const totalLevel = userQuizLevels.reduce((acc, curr) => acc + curr, 0);
+        const minimumLevel = Math.min(...userQuizLevels);
+        const averageLevel = totalLevel / userQuizLevels.length;
+
+        return {
+            id: crs.id,
+            name: crs.name,
+            description: crs.description,
+            minimumLevel: minimumLevel === Infinity ? 0 : minimumLevel,
+            averageLevel,
+        };
+    });
+
+    console.log(courses);
 
     const [associate, setAssociate] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -88,8 +123,12 @@ export function Dashboard({ more = false }) {
                     data: courses.length,
                 },
                 {
-                    name: "Completed",
-                    data: "What does it mean to be complete?",
+                    name: "Level 10+",
+                    data: courses.filter((x) => x.averageLevel >= 10).length,
+                },
+                {
+                    name: "Not Started",
+                    data: courses.filter((x) => x.averageLevel === 0).length,
                 },
             ],
         },
