@@ -64,23 +64,15 @@ export function CourseDash({ course, isLogged }) {
 
     const addAlert = useAlerts((state) => state.addAlert);
 
-    const [currentTab, setCurrentTab] = useState(
-        parseInt(
-            typeof window != "undefined"
-                ? localStorage?.getItem("currentTab") || 0
-                : 0,
-        ),
-    );
+    const [currentTab, setCurrentTab] = useState(0);
 
     // const isEditable = canEdit(user, course);
     const isEditable = true;
 
-    const isEnrolled = courses?.find(
-        (x) => x.id.toString() === course.id.toString(),
-    );
+    const isEnrolled = courses?.find((x) => x.id === course.id);
 
     function filter(x) {
-        return x.courses.find((c) => c.toString() === course._id);
+        return x.courses.find((c) => c === course.id);
     }
 
     const quizzes = quizStore.filter(filter);
@@ -91,9 +83,7 @@ export function CourseDash({ course, isLogged }) {
     let countOfCanLevel = 0;
     let lowestLevel;
     const userQuizzes = quizzes.map((q) => {
-        const userQuiz = user.quizzes.find(
-            (x) => x.quizId.toString() === q._id.toString(),
-        );
+        const userQuiz = user.quizzes.find((x) => x.quizId === q.id);
         if (userQuiz) {
             sum += userQuiz.level;
             lowestLevel =
@@ -107,7 +97,7 @@ export function CourseDash({ course, isLogged }) {
         }
         countOfCanLevel++;
         return {
-            quizId: q._id,
+            quizId: q.id,
             lastCorrect: new Date(0),
             level: 0,
             hiddenUntil: new Date(0),
@@ -189,18 +179,15 @@ export function CourseDash({ course, isLogged }) {
         setIsLoading(true);
 
         try {
-            const response = await fetch(
-                `${basePath}/api/course`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        enrollment: action,
-                    }),
+            const response = await fetch(`${basePath}/api/course`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-            ).then((res) => res.json());
+                body: JSON.stringify({
+                    enrollment: action,
+                }),
+            }).then((res) => res.json());
 
             if (response.success) {
                 addAlert({
@@ -230,18 +217,15 @@ export function CourseDash({ course, isLogged }) {
         setIsLoading(true);
 
         try {
-            const response = await fetch(
-                `${basePath}/api/course`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        permissions: action,
-                    }),
+            const response = await fetch(`${basePath}/api/course`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-            ).then((res) => res.json());
+                body: JSON.stringify({
+                    permissions: action,
+                }),
+            }).then((res) => res.json());
 
             if (response.success) {
                 addAlert({
@@ -312,7 +296,7 @@ export function CourseDash({ course, isLogged }) {
 
                 <div className={styles.content}>
                     <div className={styles.courseHead}>
-                    <h1>{course.name}</h1>
+                        <h1>{course.name}</h1>
                     </div>
                     <header>
                         <h3>
@@ -447,7 +431,7 @@ export function CourseDash({ course, isLogged }) {
                                                             return (
                                                                 <li
                                                                     key={
-                                                                        course._id
+                                                                        course.id
                                                                     }
                                                                 >
                                                                     Unavailable
@@ -457,7 +441,7 @@ export function CourseDash({ course, isLogged }) {
 
                                                         return (
                                                             <ListItem
-                                                                key={course._id}
+                                                                key={course.id}
                                                                 item={
                                                                     course.name
                                                                 }
@@ -492,7 +476,7 @@ export function CourseDash({ course, isLogged }) {
                                                         return (
                                                             <ListItem
                                                                 key={
-                                                                    p.course._id
+                                                                    p.course.id
                                                                 }
                                                                 item={display}
                                                             />
@@ -521,13 +505,11 @@ export function CourseDash({ course, isLogged }) {
                             {currentTab === 1 &&
                                 quizzes.map((quiz) => {
                                     const userQuiz = userQuizzes.find(
-                                        (x) =>
-                                            x.quizId.toString() ===
-                                            quiz._id.toString(),
+                                        (x) => x.quizId === quiz.id,
                                     );
 
                                     return (
-                                        <li key={quiz._id}>
+                                        <li key={quiz.id}>
                                             <QuizDisplay quiz={quiz} />
                                             {userQuiz && (
                                                 <UserStats
@@ -543,14 +525,12 @@ export function CourseDash({ course, isLogged }) {
                                     const noteSources = note.sources.map(
                                         (srcId) => {
                                             const src = sources.find(
-                                                (source) =>
-                                                    source._id.toString() ===
-                                                    srcId.toString(),
+                                                (source) => source.id === srcId,
                                             );
 
                                             if (!src) {
                                                 return {
-                                                    _id: srcId,
+                                                    id: srcId,
                                                     title: "Unavailable",
                                                     url: null,
                                                 };
@@ -560,7 +540,7 @@ export function CourseDash({ course, isLogged }) {
                                         },
                                     );
                                     return (
-                                        <li key={note._id}>
+                                        <li key={note.id}>
                                             <Card
                                                 title={note.title}
                                                 description={`${note.text}`}
@@ -573,7 +553,7 @@ export function CourseDash({ course, isLogged }) {
                                                                 return (
                                                                     <ListItem
                                                                         key={
-                                                                            source._id
+                                                                            source.id
                                                                         }
                                                                         item={
                                                                             source.title
@@ -599,7 +579,7 @@ export function CourseDash({ course, isLogged }) {
                             {currentTab === 3 &&
                                 sources.map((source) => {
                                     return (
-                                        <li key={source._id}>
+                                        <li key={source.id}>
                                             <Card
                                                 title={source.title}
                                                 subtitle={source.medium}

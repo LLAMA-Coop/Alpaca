@@ -4,7 +4,6 @@ import { Card, ListItem } from "@client";
 import { cookies } from "next/headers";
 import {
     getPermittedCourses,
-    getPermittedNote,
     getPermittedSources,
 } from "@/lib/db/helpers";
 
@@ -13,10 +12,12 @@ export async function NoteDisplay({ note }) {
     const user = await useUser({ token: cookies().get("token")?.value });
     const sources = (
         await getPermittedSources(user ? user.id : undefined)
-    ).filter((x) => note.sources.includes(x.id));
-    const courses = (await getPermittedCourses(user ? user.id : undefined)).filter((x) =>
-        note.courses.includes(x.id),
-    );
+    ).filter((x) => {
+        note.sources.find((y) => x == y || y.id == x.id) != undefined;
+    });
+    const courses = (
+        await getPermittedCourses(user ? user.id : undefined)
+    ).filter((x) => note.courses.includes(x.id));
 
     return (
         <Card title={note.title} description={note.text}>
@@ -37,13 +38,17 @@ export async function NoteDisplay({ note }) {
                     <h5>Sources linked</h5>
 
                     <ul>
-                        {sources.map((source) => (
-                            <ListItem
-                                key={source.id}
-                                item={source.title}
-                                link={source.url}
-                            />
-                        ))}
+                        {sources.map((source) => {
+                            return (
+                                <>
+                                    <ListItem
+                                        key={source.id}
+                                        item={source.title}
+                                        link={source.url}
+                                    />
+                                </>
+                            );
+                        })}
                     </ul>
                 </section>
             )}
@@ -60,7 +65,7 @@ export async function NoteDisplay({ note }) {
                 </section>
             )}
 
-            <p>Created by: {creator?.username ?? "Unknown"}</p>
+            <p>Created by: {creator ? creator.username : "Unknown"}</p>
         </Card>
     );
 }

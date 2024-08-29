@@ -50,9 +50,9 @@ export function NoteInput({ note }) {
         if (note.text) setText(note.text);
         if (note.sources && note.sources.length > 0) {
             setSources(
-                note.sources.map((srcId, index) => {
+                note.sources.map((src, index) => {
                     const source = availableSources
-                        ? availableSources.find((x) => x.id === srcId)
+                        ? availableSources.find((x) => x.id === src.id)
                         : undefined;
                     if (!source)
                         return {

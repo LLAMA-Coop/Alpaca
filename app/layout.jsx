@@ -37,12 +37,18 @@ export default async function RootLayout({ children }) {
         ? await getPermittedResources(user.id)
         : { sources: [], notes: [], quizzes: [], notifications: [] };
 
-    const [userQuizzes, fields] = await db
-        .promise()
-        .query("SELECT * FROM `UserQuizzes` WHERE `userId` = ?", [user.id]);
+    const [userQuizzes, fields] = user
+        ? await db
+              .promise()
+              .query("SELECT * FROM `UserQuizzes` WHERE `userId` = ?", [
+                  user.id,
+              ])
+        : [[], null];
 
-    user.quizzes = userQuizzes;
-    user.xp = await getUserXp(user.id)
+    if (user) {
+        user.quizzes = userQuizzes;
+        user.xp = await getUserXp(user.id);
+    }
 
     const sources = await getPermittedSources(user?.id);
     const notes = await getPermittedNotes(user?.id);
