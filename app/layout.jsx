@@ -1,10 +1,11 @@
 import { FillStore, Timer, Alerts, Modals, Menu } from "@client";
-import { Header, Footer, DBConnectError } from "@server";
+import { Header, Footer } from "@server";
 import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import "./globals.css";
 import {
+    getUserXp,
     getPermittedCourses,
     getPermittedNotes,
     getPermittedQuizzes,
@@ -12,8 +13,6 @@ import {
     getPermittedSources,
 } from "@/lib/db/helpers";
 import { db } from "@/lib/db/db";
-
-// const connection = await connectDB();
 
 export const metadata = {
     metadataBase: new URL(metadatas.layout.url),
@@ -43,6 +42,7 @@ export default async function RootLayout({ children }) {
         .query("SELECT * FROM `UserQuizzes` WHERE `userId` = ?", [user.id]);
 
     user.quizzes = userQuizzes;
+    user.xp = await getUserXp(user.id)
 
     const sources = await getPermittedSources(user?.id);
     const notes = await getPermittedNotes(user?.id);

@@ -11,7 +11,6 @@ import {
 import styles from "@/app/me/dashboard/Dash.module.css";
 import { useAlerts, useStore } from "@/store/store";
 import { useState } from "react";
-import { CourseInput } from "@/app/components/Course/CourseInput";
 
 const tabs = [
     {
