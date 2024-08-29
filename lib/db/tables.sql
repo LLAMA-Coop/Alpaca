@@ -187,6 +187,7 @@ CREATE TABLE IF NOT EXISTS `ErrorsBugs` (
     `name` VARCHAR(128),
     `message` VARCHAR(1024),
     `code` VARCHAR(128),
+    `sql` VARCHAR(1024),
     `stack` VARCHAR(1024),
     `devNote` VARCHAR(1024),
     `time` DATETIME DEFAULT CURRENT_TIMESTAMP
