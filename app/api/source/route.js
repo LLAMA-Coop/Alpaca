@@ -6,12 +6,28 @@ import { MAX } from "@/lib/constants";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 import {
+    addError,
     getPermittedSources,
-    getSourcesById,
     insertPermissions,
     updateSource,
 } from "@/lib/db/helpers";
 import { validation } from "@/lib/validation";
+
+export async function GET(req) {
+    try {
+        const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) {
+            return unauthorized;
+        }
+
+        const content = await getPermittedSources(user.id);
+        return NextResponse.json({ content }, { status: 200 });
+    } catch (error) {
+        console.error(`[Source] GET error: ${error}`);
+        addError(error, "api/source: GET");
+        return server;
+    }
+}
 
 export async function POST(req) {
     const baseQuery = `INSERT INTO \`Sources\`
@@ -77,7 +93,7 @@ export async function POST(req) {
             url,
             JSON.stringify(tags),
             user.id,
-            publishDate.split("T")[0],
+            publishDate ? publishDate.split("T")[0] : null,
         ];
 
         const [sourceInsert, fields] = await db
@@ -113,6 +129,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[Source] POST error: ${error}`);
+        addError(error, "api/source: POST");
         return server;
     }
 }
@@ -182,6 +199,7 @@ export async function PUT(req) {
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Source] PUT error: ${error}`);
+        addError(error, "api/source: PUT");
         return server;
     }
 }

@@ -9,6 +9,7 @@ import {
     getPermittedQuizzes,
     insertPermissions,
     updateQuiz,
+    addError,
 } from "@/lib/db/helpers";
 
 const allowedType = [
@@ -31,6 +32,7 @@ export async function GET(req) {
         });
     } catch (error) {
         console.error(`[Quiz] GET error: ${error}`);
+        addError(error, "/api/quiz: GET");
         return server;
     }
 }
@@ -171,7 +173,7 @@ export async function POST(req) {
         const quizSourceValues = sources.map((s) => [
             quizId,
             "quiz",
-            s,
+            s.sourceId,
             "0",
             "page",
         ]);
@@ -180,13 +182,9 @@ export async function POST(req) {
             .promise()
             .query(quizSourceQuery, [quizSourceValues]);
 
-        const permInsert = await insertPermissions(
-            permissions,
-            quizId,
-            user.id,
-        );
+        const permInsert = await insertPermissions(permissions, quizId);
 
-        const content = quizInsert;
+        const content = { quizInsert, permInsert, quizSourceInserts };
 
         return NextResponse.json(
             { message: "Quiz created successfully", content },
@@ -194,6 +192,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[Quiz] POST error: ${error}`);
+        addError(error, "/api/quiz: POST");
         return server;
     }
 }
@@ -265,6 +264,7 @@ export async function PUT(req) {
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Quiz] PUT error: ${error}`);
+        addError(error, "/api/quiz: PUT");
         return server;
     }
 }

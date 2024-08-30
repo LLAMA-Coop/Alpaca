@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { useUser, authenticateUser } from "@/lib/auth";
 import SubmitErrors from "@/lib/SubmitErrors";
 import bcrypt from "bcrypt";
+import { addError } from "@/lib/db/helpers";
 
 export async function PATCH(req) {
     const {
@@ -107,6 +108,7 @@ export async function PATCH(req) {
         );
     } catch (error) {
         console.error("[ERROR] /api/users/me:PATCH ", error);
+        addError(error, "/api/users/me: PATCH");
 
         if (avatar) {
             // Remove new avatar

@@ -1,4 +1,5 @@
 import { catchRouteError } from "@/lib/db/helpers";
+import { addError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -39,6 +40,7 @@ export async function POST(req) {
             },
         );
     } catch (error) {
-        catchRouteError({ error, route: req.nextUrl.pathname });
+        addError(error, "/api/auth/logout: POST");
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

@@ -1,4 +1,5 @@
 import { getNanoId, catchRouteError } from "@/lib/db/helpers";
+import { addError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db/db";
 import bcrypt from "bcrypt";
@@ -82,6 +83,7 @@ export async function POST(req) {
         );
     } catch (error) {
         db.deleteFrom("users").where("publicId", "=", publicId).execute();
-        catchRouteError({ error, route: req.nextUrl.pathname });
+        addError(error, "/api/auth/register: POST");
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

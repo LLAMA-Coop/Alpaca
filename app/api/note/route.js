@@ -6,6 +6,7 @@ import { MIN, MAX } from "@/lib/constants";
 import { cookies } from "next/headers";
 import { db } from "@/lib/db/db.js";
 import {
+    addError,
     getNotesById,
     getPermittedNotes,
     insertPermissions,
@@ -27,6 +28,7 @@ export async function GET(req) {
         );
     } catch (error) {
         console.error(`[Note] GET error: ${error}`);
+        addError(error, "/api/note: GET");
         return server;
     }
 }
@@ -117,6 +119,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[Note] POST error: ${error}`);
+        addError(error, "/api/note: POST");
         return server;
     }
 }
@@ -129,7 +132,9 @@ export async function PUT(req) {
         const { id, title, text, sources, courses, tags, permissions } =
             await req.json();
 
-        const note = (await getNotesById({ id: id, userId: user.id }))[0];
+        const note = (await getPermittedNotes({ userId: user.id })).find(
+            (x) => x.id === id,
+        );
         if (!note) {
             return NextResponse.json(
                 {
@@ -167,6 +172,7 @@ export async function PUT(req) {
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Note] PUT error: ${error}`);
+        addError(error, "/api/note: PUT");
         return server;
     }
 }

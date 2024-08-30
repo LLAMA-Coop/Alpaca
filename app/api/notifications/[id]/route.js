@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
+import { addError } from "@/lib/db/helpers.js";
 
 export async function POST(req, { params }) {
     const { id } = params;
@@ -185,6 +186,7 @@ export async function POST(req, { params }) {
         );
     } catch (error) {
         console.error(`POST error for notification ID ${id}`, error);
+        addError(error, "/api/notifications/[id]: POST");
         return server;
     }
 }
@@ -196,11 +198,19 @@ export async function DELETE(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        // Need to verify that notification exists
-        // and that user authorized to delete
-        // then delete it
+        const notification = user.notifications.find((x) => x.id == id);
+        if (!notification) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message:
+                        "The notification could not be found for this user",
+                },
+                { status: 403 },
+            );
+        }
 
-        const [deletion, fields] = db
+        const [deletion, fields] = await db
             .promise()
             .query("DELETE FROM `Notifications` WHERE `id` = ?", [id]);
 
@@ -232,6 +242,7 @@ export async function DELETE(req, { params }) {
         }
     } catch (error) {
         console.error("[ERROR] /api/notifications/id:DELETE ", error);
+        addError(error, "/api/notifications/[id]: DELETE");
         return NextResponse.json(
             {
                 success: false,
@@ -266,5 +277,6 @@ export async function PATCH(req, { params }) {
         }
     } catch (error) {
         console.error(error);
+        addError(error, "/api/notifications/[id]: PATCH");
     }
 }

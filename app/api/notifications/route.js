@@ -2,7 +2,7 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { getGroup } from "@/lib/db/helpers.js";
+import { addError, getGroup } from "@/lib/db/helpers.js";
 import { db } from "@/lib/db/db.js";
 
 export async function POST(req) {
@@ -98,6 +98,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`POST error for notifications`, error);
+        addError(error, "/api/notifications: POST");
         return server;
     }
 }
@@ -126,6 +127,7 @@ export async function PATCH(req) {
         );
     } catch (error) {
         console.error(`PATCH error for notifications`, error);
+        addError(error, "/api/notifications: PATCH");
         return server;
     }
 }

@@ -5,12 +5,8 @@ import { unauthorized, server } from "@/lib/apiErrorResponses";
 import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
 import {
-    getNotesById,
+    addError,
     getPermittedCourses,
-    getPermittedNotes,
-    getPermittedQuizzes,
-    getQuizzesById,
-    getSourcesById,
     insertPermissions,
     updateCourse,
 } from "@/lib/db/helpers";
@@ -26,6 +22,7 @@ export async function GET(req) {
         });
     } catch (error) {
         console.error(`[Course] GET error: ${error}`);
+        addError(error, "/api/course: GET");
         return server;
     }
 }
@@ -111,9 +108,10 @@ export async function POST(req) {
             ]);
         });
 
-        const [hierInserts, fieldsHier] = await db
-            .promise()
-            .query(hierQuery, [hierValues]);
+        const [hierInserts, fieldsHier] =
+            hierValues.length > 0
+                ? await db.promise().query(hierQuery, [hierValues])
+                : [[], undefined];
 
         const crsResrcQuery = `INSERT INTO \`CourseResources\` 
             (\`courseId\`, \`resourceId\`, \`resourceType\`, \`includeReferencingResources\`)
@@ -145,6 +143,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[Course] POST error: ${error}`);
+        addError(error, "/api/course: POST");
         return server;
     }
 }
@@ -221,6 +220,7 @@ export async function PUT(req) {
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Course] PUT error: ${error}`);
+        addError(error, "/api/course: PUT");
         return server;
     }
 }

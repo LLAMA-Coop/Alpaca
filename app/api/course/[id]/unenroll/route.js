@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { doesUserMeetPrerequisites } from "@/lib/permissions";
-import { getPermittedCourses } from "@/lib/db/helpers";
+import { addError, getPermittedCourses } from "@/lib/db/helpers";
 
 export async function POST(req, { params }) {
     const { id } = params;
@@ -72,6 +72,7 @@ export async function POST(req, { params }) {
         );
     } catch (error) {
         console.error(`[CourseUnenroll] POST error:\n ${error}`);
+        addError(error, "/api/course/[id]/unenroll: POST");
         return server;
     }
 }

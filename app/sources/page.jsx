@@ -53,18 +53,30 @@ export default async function SourcesPage({ searchParams }) {
                     <h3>Available Sources</h3>
 
                     <ol className={styles.listGrid}>
-                        {sources.map((src) => (
-                            <li key={src.id}>
-                                <SourceDisplay source={src} />
-                                {((user && src.permissionType === "write") ||
-                                    (user && src.createdBy === user.id)) && (
-                                    <InputPopup type="source" resource={src} />
-                                )}
-                                <Link href={`/sources/${src.id}`}>
-                                    Go to Source Page
-                                </Link>
-                            </li>
-                        ))}
+                        {sources.map((src) => {
+                            const isCreator =
+                                user &&
+                                ((src.createdBy && src.createdBy === user.id) ||
+                                    (src.creator &&
+                                        src.creator.id === user.id));
+                            const canEdit =
+                                isCreator || src.permissionType === "write";
+
+                            return (
+                                <li key={src.id}>
+                                    <SourceDisplay source={src} />
+                                    {canEdit && (
+                                        <InputPopup
+                                            type="source"
+                                            resource={src}
+                                        />
+                                    )}
+                                    <Link href={`/sources/${src.id}`}>
+                                        Go to Source Page
+                                    </Link>
+                                </li>
+                            );
+                        })}
                     </ol>
 
                     <div className={styles.paginationButtons}>

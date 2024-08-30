@@ -19,21 +19,34 @@ export default async function CoursesPage({ searchParams }) {
                     <h3>Available Courses</h3>
 
                     <ol className={styles.listGrid}>
-                        {courses.map((course) => (
-                            <li key={course._id}>
-                                <CourseDisplay
-                                    course={course}
-                                    canRead={canRead(course, user)}
-                                />
+                        {courses.map((course) => {
+                            const isCreator =
+                                user &&
+                                ((course.createdBy &&
+                                    course.createdBy === user.id) ||
+                                    (course.creator &&
+                                        course.creator.id === user.id));
+                            const canEdit =
+                                isCreator || course.permissionType === "write";
+                            const canRead =
+                                canEdit || course.permissionType === "read";
 
-                                {user && canEdit(course, user) && (
-                                    <InputPopup
-                                        type="course"
-                                        resource={serializeOne(course)}
+                            return (
+                                <li key={course._id}>
+                                    <CourseDisplay
+                                        course={course}
+                                        canRead={canRead}
                                     />
-                                )}
-                            </li>
-                        ))}
+
+                                    {canEdit && (
+                                        <InputPopup
+                                            type="course"
+                                            resource={serializeOne(course)}
+                                        />
+                                    )}
+                                </li>
+                            );
+                        })}
                     </ol>
                 </section>
             )}

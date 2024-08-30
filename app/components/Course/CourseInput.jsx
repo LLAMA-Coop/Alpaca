@@ -205,6 +205,7 @@ export function CourseInput({ course }) {
                 type="select"
                 label="Enrollment Type"
                 required={true}
+                value={enrollment}
                 onChange={(e) => {
                     setEnrollment(e.target.value);
                 }}
