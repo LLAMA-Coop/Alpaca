@@ -6,8 +6,7 @@ import { addError, getUserGroups } from "@/lib/db/helpers";
 
 export async function GET(req) {
     try {
-        const token = cookies().get("token")?.value
-        const user = await useUser({ token });
+        const user = await useUser({ token: cookies().get("token")?.value });
 
         if (!user) {
             return unauthorized;
@@ -21,4 +20,12 @@ export async function GET(req) {
         addError(error, "/api/users/me/groups: GET");
         return server;
     }
+}
+
+export function POST(req) {
+    const content =
+        "This is a test to see if a POST method will prevent Next from trying to statically render GET";
+    return NextResponse.json({
+        content,
+    });
 }

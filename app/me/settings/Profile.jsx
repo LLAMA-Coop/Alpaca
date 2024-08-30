@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { uploadFile } from "@uploadcare/upload-client";
 import { useAlerts, useModals } from "@/store/store";
 import { Input } from "@/app/components/client";
