@@ -8,6 +8,7 @@ import { db } from "@/lib/db/db.js";
 import {
     getPermittedQuizzes,
     insertPermissions,
+    insertCourseResources,
     updateQuiz,
     addError,
 } from "@/lib/db/helpers";
@@ -183,6 +184,14 @@ export async function POST(req) {
             .query(quizSourceQuery, [quizSourceValues]);
 
         const permInsert = await insertPermissions(permissions, quizId);
+
+        if (courses && courses.length > 0) {
+            insertCourseResources({
+                courseIDs: courses,
+                resourceId: quizId,
+                resourceType: "quiz",
+            });
+        }
 
         const content = { quizInsert, permInsert, quizSourceInserts };
 

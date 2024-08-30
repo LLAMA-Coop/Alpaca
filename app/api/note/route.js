@@ -7,9 +7,9 @@ import { cookies } from "next/headers";
 import { db } from "@/lib/db/db.js";
 import {
     addError,
-    getNotesById,
     getPermittedNotes,
     insertPermissions,
+    insertCourseResources,
     updateNote,
 } from "@/lib/db/helpers";
 
@@ -111,6 +111,14 @@ export async function POST(req) {
             noteId,
             user.id,
         );
+
+        if (courses && courses.length > 0) {
+            insertCourseResources({
+                courseIDs: courses,
+                resourceId: noteId,
+                resourceType: "note",
+            });
+        }
 
         const content = noteInsert;
         return NextResponse.json(

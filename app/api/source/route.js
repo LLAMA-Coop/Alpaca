@@ -7,6 +7,7 @@ import { MAX } from "@/lib/constants";
 import {
     addError,
     getPermittedSources,
+    insertCourseResources,
     insertPermissions,
     updateSource,
 } from "@/lib/db/helpers";
@@ -23,15 +24,15 @@ export async function GET(req) {
         return NextResponse.json({ content }, { status: 200 });
     } catch (error) {
         console.error(`[Source] GET error: ${error}`);
-        addError(error, "api/source: GET");
+        addError(error, "/api/source: GET");
         return server;
     }
 }
 
 export async function POST(req) {
     const baseQuery = `INSERT INTO \`Sources\`
-        (\`title\`, \`medium\`, \`url\`, \`tags\`, \`createdBy\`, \`publishedUpdated\`) 
-        VALUES (?, ?, ?, ?, ?, ?)`;
+        (\`title\`, \`medium\`, \`url\`, \`tags\`, \`createdBy\`, \`publishedUpdated\`, \`lastAccessed\`) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
@@ -42,11 +43,10 @@ export async function POST(req) {
             medium,
             url,
             publishDate,
-            lastAccessed, // Do we want publishedUpdated to be the one date?
+            lastAccessed,
             authors,
             courses,
             tags,
-            locationTypeDefault,
             permissions,
         } = await req.json();
 
@@ -108,6 +108,7 @@ export async function POST(req) {
             JSON.stringify(tags),
             user.id,
             publishDate ? publishDate.split("T")[0] : null,
+            lastAccessed ? lastAccessed.split("T")[0] : null,
         ];
 
         const [sourceInsert, fields] = await db
@@ -116,13 +117,14 @@ export async function POST(req) {
 
         const sourceId = sourceInsert.insertId;
 
-        // Replace below with insertSourceCredits call
-        const creditInsertValues = authors.map((a) => [sourceId, a]);
-        const creditsQuery = `INSERT INTO \`SourceCredits\` (sourceId, name) VALUES ?`;
+        if (authors && authors.length) {
+            const creditInsertValues = authors.map((a) => [sourceId, a]);
+            const creditsQuery = `INSERT INTO \`SourceCredits\` (sourceId, name) VALUES ?`;
 
-        const [creditsInsert, fieldsCredits] = await db
-            .promise()
-            .query(creditsQuery, [creditInsertValues]);
+            const [creditsInsert, fieldsCredits] = await db
+                .promise()
+                .query(creditsQuery, [creditInsertValues]);
+        }
 
         const permsInsert = await insertPermissions(
             permissions,
@@ -130,8 +132,14 @@ export async function POST(req) {
             user.id,
         );
 
-        // Next up:
-        //  CourseResources (table created)
+        if (courses && courses.length > 0) {
+            insertCourseResources({
+                courseIDs: courses,
+                resourceId: sourceId,
+                resourceType: "source",
+            });
+        }
+
         const content = sourceInsert;
 
         return NextResponse.json(
@@ -143,7 +151,7 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`[Source] POST error: ${error}`);
-        addError(error, "api/source: POST");
+        addError(error, "/api/source: POST");
         return server;
     }
 }
@@ -169,7 +177,6 @@ export async function PUT(req) {
             permissions,
         } = await req.json();
 
-        // const source = (await getSourcesById({ id, userId: user.id }))[0];
         const source = (await getPermittedSources(user.id)).find(
             (x) => x.id == id,
         );
@@ -213,7 +220,7 @@ export async function PUT(req) {
         return NextResponse.json({ content });
     } catch (error) {
         console.error(`[Source] PUT error: ${error}`);
-        addError(error, "api/source: PUT");
+        addError(error, "/api/source: PUT");
         return server;
     }
 }
