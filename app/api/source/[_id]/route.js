@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { addError, getSourcesById } from "@/lib/db/helpers.js";
+import {
+    addError,
+    getSourcesById,
+    getPermittedSources,
+} from "@/lib/db/helpers.js";
 import { db } from "@/lib/db/db.js";
 
 export async function DELETE(req, { params }) {
@@ -15,8 +19,11 @@ export async function DELETE(req, { params }) {
 
         const { _id } = params;
 
-        // const source = await Source.findById(_id);
-        const source = await getSourcesById({ id: _id, userId: user.id });
+        // const source = await getSourcesById({ id: _id, userId: user.id });
+        const source = (await getPermittedSources(user.id)).find(
+            (x) => x.id == _id,
+        );
+        
         if (!source) {
             return NextResponse.json(
                 {
@@ -36,14 +43,13 @@ export async function DELETE(req, { params }) {
                     message: `User ${
                         user.id
                     } is not authorized to delete source ${_id}. Only the creator ${
-                        source.createdBy ? source.createdBy : source.creator.id
+                        source.createdBy ? source.createdBy : source.creator?.id
                     } is permitted`,
                 },
                 { status: 403 },
             );
         }
 
-        // const deletion = await Source.deleteOne({ _id });
         const [deletion, fields] = await db
             .promise()
             .query("DELETE FROM `Sources` WHERE `id` = ?", [_id]);
