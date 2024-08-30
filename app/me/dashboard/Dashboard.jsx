@@ -56,8 +56,6 @@ export function Dashboard({ more = false }) {
         };
     });
 
-    console.log(courses);
-
     const [associate, setAssociate] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 

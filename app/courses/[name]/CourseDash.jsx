@@ -19,8 +19,12 @@ const tabs = [
         name: "Course Info",
         icon: (
             <g>
-                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                <path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" />
+                <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
+                <path d="M6 9l12 0" />
+                <path d="M6 12l3 0" />
+                <path d="M6 15l2 0" />
             </g>
         ),
     },
@@ -28,8 +32,16 @@ const tabs = [
         name: "Quizzes",
         icon: (
             <g>
-                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                <text
+                    x="50%"
+                    y="50%"
+                    fontSize="12"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fill="white"
+                >
+                    ???
+                </text>
             </g>
         ),
     },
@@ -37,8 +49,52 @@ const tabs = [
         name: "Notes",
         icon: (
             <g>
-                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                <rect
+                    x="3"
+                    y="2"
+                    width="18"
+                    height="20"
+                    rx="2"
+                    ry="2"
+                    fill="none"
+                    stroke="white"
+                />
+                <line
+                    x1="7"
+                    y1="1"
+                    x2="7"
+                    y2="4"
+                    stroke="white"
+                    stroke-width="2"
+                />
+                <line
+                    x1="12"
+                    y1="1"
+                    x2="12"
+                    y2="4"
+                    stroke="white"
+                    stroke-width="2"
+                />
+                <line
+                    x1="17"
+                    y1="1"
+                    x2="17"
+                    y2="4"
+                    stroke="white"
+                    stroke-width="2"
+                />
+                <path
+                    d="M6,10 C7,11 9,9 10,10 C11,11 13,9 14,10"
+                    stroke="white"
+                    fill="none"
+                    stroke-width="1"
+                />
+                <path
+                    d="M10,14 C11,15 13,13 14,14 C15,15 17,13 18,14"
+                    stroke="white"
+                    fill="none"
+                    stroke-width="1"
+                />
             </g>
         ),
     },
@@ -46,8 +102,41 @@ const tabs = [
         name: "Sources",
         icon: (
             <g>
-                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                <rect
+                    x="3"
+                    y="2"
+                    width="18"
+                    height="22"
+                    rx="2"
+                    ry="2"
+                    fill="none"
+                    stroke="white"
+                />
+
+                <line
+                    x1="8"
+                    y1="7"
+                    x2="16"
+                    y2="7"
+                    stroke="white"
+                    stroke-width="1"
+                />
+                <line
+                    x1="8"
+                    y1="11"
+                    x2="16"
+                    y2="11"
+                    stroke="white"
+                    stroke-width="1"
+                />
+                <line
+                    x1="8"
+                    y1="15"
+                    x2="14"
+                    y2="15"
+                    stroke="white"
+                    stroke-width="1"
+                />
             </g>
         ),
     },
