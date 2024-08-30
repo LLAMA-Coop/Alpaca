@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Input, Spinner, DeletePopup } from "../components/client";
+import styles from "./ErrorBug.module.css";
 
 export default function ErrorBug({ error }) {
     const [note, setNote] = useState(error.devNote ? error.devNote : "");
@@ -29,20 +30,24 @@ export default function ErrorBug({ error }) {
                 {error.name} for {error.function}
             </h3>
             <h4>Error #{error.id}</h4>
-            <p style={{ margin: "1rem" }}>{error.message}</p>
-            <code style={{ display: "block", margin: "1rem" }}>
-                {error.code}
-            </code>
-            <code
-                style={{
-                    display: "block",
-                    margin: "1rem",
-                    wordWrap: "break-word",
-                    whiteSpace: "pre-wrap",
-                }}
-            >
-                {error.stack}
-            </code>
+            <div className={styles.block}>
+                <h5>Message</h5>
+                <p>{error.message}</p>
+            </div>
+            <div className={styles.block}>
+                <h5>Code</h5>
+                <code className={styles.code}>{error.code}</code>
+            </div>
+            <div className={styles.block}>
+                <h5>Stack</h5>
+                <code className={styles.stack}>{error.stack}</code>
+            </div>
+            {error.sql && (
+                <div className={styles.block}>
+                    <h5>SQL code</h5>
+                    <code className={styles.sql}>{error.sql}</code>
+                </div>
+            )}
             <p>Occurred at {error.time.toString()}</p>
 
             <Input

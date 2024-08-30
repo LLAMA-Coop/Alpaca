@@ -1,0 +1,22 @@
+.code {
+    display: block;
+    margin: 0 1rem;
+}
+
+.stack {
+    display: block;
+    margin: 0 1rem;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.sql {
+    display: block;
+    margin: 1rem;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.block {
+    margin: 0.5rem;
+}
