@@ -252,7 +252,7 @@ export function Dashboard({ more = false }) {
                 </nav>
 
                 <div className={styles.content}>
-                    <header>
+                    <header className={styles.header}>
                         <h1>
                             {currentTab === 0 && (
                                 <Avatar
@@ -303,7 +303,7 @@ export function Dashboard({ more = false }) {
                     </header>
 
                     <main className="scrollbar">
-                        <header>
+                        <header className={styles.header}>
                             <h1>
                                 {currentTab === 0 && (
                                     <Avatar

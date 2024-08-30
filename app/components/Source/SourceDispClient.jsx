@@ -1,16 +1,13 @@
-import { useUser } from "@/lib/auth";
-import { cookies } from "next/headers";
 import styles from "./SourceDisplay.module.css";
 import { ListItem, Card } from "@client";
-import { getPermittedCourses } from "@/lib/db/helpers.js";
+import { useStore } from "@/store/store";
 
-export async function SourceDisplay({ source }) {
-    if (!source) return;
-    const user = await useUser({ token: cookies().get("token")?.value });
-    const addedBy = await useUser({ id: source.createdBy });
-    const courses = (
-        await getPermittedCourses(user ? user.id : undefined)
-    ).filter((x) => source.courses && source.courses.includes(x.id));
+export function SourceDispClient({ source }) {
+    const usersStore = useStore((state) => state.users);
+    const coursesStore = useStore((state) => state.courses);
+
+    const addedBy = usersStore.find((x) => x.id == source.createdBy);
+    const courses = coursesStore.filter((x) => source.courses.includes(x.id));
 
     return (
         <Card

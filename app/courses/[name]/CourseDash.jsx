@@ -8,6 +8,8 @@ import {
     InputPopup,
     Spinner,
 } from "@client";
+import { NoteDispClient } from "@/app/components/Note/NoteDispClient";
+import { SourceDispClient } from "@/app/components/Source/SourceDispClient";
 import styles from "@/app/me/dashboard/Dash.module.css";
 import { useAlerts, useStore } from "@/store/store";
 import { useState } from "react";
@@ -298,7 +300,7 @@ export function CourseDash({ course, isLogged }) {
                     <div className={styles.courseHead}>
                         <h1>{course.name}</h1>
                     </div>
-                    <header>
+                    <header className={styles.header}>
                         <h3>
                             {tabs[currentTab].name}
                             <svg
@@ -522,56 +524,9 @@ export function CourseDash({ course, isLogged }) {
 
                             {currentTab === 2 &&
                                 notes.map((note) => {
-                                    const noteSources = note.sources.map(
-                                        (srcId) => {
-                                            const src = sources.find(
-                                                (source) => source.id === srcId,
-                                            );
-
-                                            if (!src) {
-                                                return {
-                                                    id: srcId,
-                                                    title: "Unavailable",
-                                                    url: null,
-                                                };
-                                            }
-
-                                            return src;
-                                        },
-                                    );
                                     return (
                                         <li key={note.id}>
-                                            <Card
-                                                title={note.title}
-                                                description={`${note.text}`}
-                                            >
-                                                <div className={styles.card}>
-                                                    <h4>Sources linked</h4>
-                                                    <ul>
-                                                        {noteSources.map(
-                                                            (source) => {
-                                                                return (
-                                                                    <ListItem
-                                                                        key={
-                                                                            source.id
-                                                                        }
-                                                                        item={
-                                                                            source.title
-                                                                        }
-                                                                        link={
-                                                                            source.url
-                                                                        }
-                                                                    />
-                                                                );
-                                                            },
-                                                        )}
-                                                    </ul>
-                                                </div>
-
-                                                <div className={styles.card}>
-                                                    Created By: {note.createdBy}
-                                                </div>
-                                            </Card>
+                                            <NoteDispClient note={note} />
                                         </li>
                                     );
                                 })}
@@ -580,51 +535,7 @@ export function CourseDash({ course, isLogged }) {
                                 sources.map((source) => {
                                     return (
                                         <li key={source.id}>
-                                            <Card
-                                                title={source.title}
-                                                subtitle={source.medium}
-                                                buttons={[
-                                                    {
-                                                        label: "Visit the source page",
-                                                        link: source.url,
-                                                    },
-                                                ]}
-                                            >
-                                                <div className={styles.card}>
-                                                    <h4>Authors</h4>
-                                                    {source.authors &&
-                                                    source.authors.length ? (
-                                                        <ul className="chipList">
-                                                            {source.authors &&
-                                                                source.authors.map(
-                                                                    (cont) => (
-                                                                        <ListItem
-                                                                            key={
-                                                                                cont
-                                                                            }
-                                                                            item={
-                                                                                /^http/.test(
-                                                                                    cont,
-                                                                                )
-                                                                                    ? "See all of the authors"
-                                                                                    : cont
-                                                                            }
-                                                                            link={
-                                                                                /^http/.test(
-                                                                                    cont,
-                                                                                )
-                                                                                    ? cont
-                                                                                    : null
-                                                                            }
-                                                                        />
-                                                                    ),
-                                                                )}
-                                                        </ul>
-                                                    ) : (
-                                                        <p>No authors listed</p>
-                                                    )}
-                                                </div>
-                                            </Card>
+                                            <SourceDispClient source={source} />
                                         </li>
                                     );
                                 })}

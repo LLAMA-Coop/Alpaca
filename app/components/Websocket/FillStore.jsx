@@ -5,6 +5,7 @@ import { useEffect } from "react";
 
 export function FillStore({
     user,
+    users,
     sources,
     notes,
     quizzes,
@@ -41,6 +42,7 @@ export function FillStore({
 
         fillInitialData({
             user,
+            users,
             sources,
             notes,
             quizzes,

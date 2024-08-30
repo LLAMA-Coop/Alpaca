@@ -81,7 +81,7 @@
     margin-bottom: 24px;
 }
 
-.content header {
+.content .header {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -91,12 +91,12 @@
     background-color: var(--background-2);
 }
 
-.content > header::-webkit-scrollbar {
+.content > .header::-webkit-scrollbar {
     display: none;
 }
 
-.content header > h1,
-.content header > h3 {
+.content .header > h1,
+.content .header > h3 {
     font-size: 36px;
     font-weight: 600;
     line-height: 1.2;
@@ -106,15 +106,15 @@
     flex: 1 1 auto;
 }
 
-.content header > h1 > img,
-.content header > h3 > img {
+.content .header > h1 > img,
+.content .header > h3 > img {
     border-radius: 50%;
     width: 42px;
     height: 42px;
 }
 
-.content header > h1 > span,
-.content header > h3 > span {
+.content .header > h1 > span,
+.content .header > h3 > span {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -126,11 +126,11 @@
     white-space: nowrap;
 }
 
-.content header > h1 > :first-child {
+.content .header > h1 > :first-child {
     margin-right: 16px;
 }
 
-.content header > h1 > :last-child {
+.content .header > h1 > :last-child {
     margin-left: 16px;
 }
 
@@ -159,14 +159,14 @@
     color: var(--foreground-1);
 }
 
-.content > header > .summaries {
+.content > .header > .summaries {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-around;
 }
 
-.content header > .summaries > div {
+.content .header > .summaries > div {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -184,7 +184,7 @@
     margin: 0 4px;
 }
 
-.content > main > header {
+.content > main > .header {
     display: none;
 }
 
@@ -541,16 +541,16 @@
         padding: 16px 0 16px 16px;
     }
 
-    .content > header {
+    .content > .header {
         display: none;
     }
 
-    .content > main > header {
+    .content > main > .header {
         display: flex;
         flex-wrap: wrap;
     }
 
-    .content > main > header > .summaries {
+    .content > main > .header > .summaries {
         display: flex;
         flex-wrap: wrap;
         align-items: center;

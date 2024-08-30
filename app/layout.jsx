@@ -9,7 +9,7 @@ import {
     getPermittedCourses,
     getPermittedNotes,
     getPermittedQuizzes,
-    getPermittedResources,
+    // getPermittedResources,
     getPermittedSources,
 } from "@/lib/db/helpers";
 import { db } from "@/lib/db/db";
@@ -33,9 +33,9 @@ export const metadata = {
 export default async function RootLayout({ children }) {
     const user = await useUser({ token: cookies().get("token")?.value });
 
-    const permittedResources = user
-        ? await getPermittedResources(user.id)
-        : { sources: [], notes: [], quizzes: [], notifications: [] };
+    // const permittedResources = user
+    //     ? await getPermittedResources(user.id)
+    //     : { sources: [], notes: [], quizzes: [], notifications: [] };
 
     const [userQuizzes, fields] = user
         ? await db
@@ -50,6 +50,9 @@ export default async function RootLayout({ children }) {
         user.xp = await getUserXp(user.id);
     }
 
+    const [users, uFields] = await db
+        .promise()
+        .query("SELECT `id`, `username`, `displayName` FROM `Users`");
     const sources = await getPermittedSources(user?.id);
     const notes = await getPermittedNotes(user?.id);
     const quizzes = await getPermittedQuizzes(user?.id);
@@ -61,6 +64,7 @@ export default async function RootLayout({ children }) {
             {user && (
                 <FillStore
                     user={user}
+                    users={users}
                     sources={sources}
                     notes={notes}
                     quizzes={quizzes}

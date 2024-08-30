@@ -12,6 +12,7 @@ export const stores = {
 
 export const useStore = create((set) => ({
     user: undefined,
+    users: [],
     sources: [],
     notes: [],
     quizzes: [],
@@ -41,6 +42,7 @@ export const useStore = create((set) => ({
     fillInitialData: (data) => {
         return set(() => ({
             user: data.user,
+            users: data.users || [],
             sources: data.sources || [],
             notes: data.notes || [],
             quizzes: data.quizzes || [],

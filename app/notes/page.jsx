@@ -24,6 +24,8 @@ export default async function NotesPage({ searchParams }) {
         ? await getPermittedNotes(user.id)
         : await getPermittedNotes();
 
+    console.log("NOTES from PAGE", notes)
+
     const hasMore = false;
 
     if (page > 1 && notes.length === 0) {
