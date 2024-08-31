@@ -1,5 +1,4 @@
 import { catchRouteError } from "@/lib/db/helpers";
-import { addError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -14,10 +13,6 @@ export async function POST(req) {
             const newTokens = user.tokens.filter((t) => t.token !== token);
 
             if (newTokens.length !== user.tokens.length) {
-                console.log(
-                    "Logging out user and removing token from database.",
-                );
-
                 await db
                     .updateTable("users")
                     .set({
@@ -40,7 +35,6 @@ export async function POST(req) {
             },
         );
     } catch (error) {
-        addError(error, "/api/auth/logout: POST");
         return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

@@ -1,11 +1,12 @@
 import { getNanoId, catchRouteError } from "@/lib/db/helpers";
-import { addError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db/db";
 import bcrypt from "bcrypt";
+import { validation } from "@/lib/validation";
 
 export async function POST(req) {
     const { username, password } = await req.json();
+
     const name = username.trim();
     const publicId = getNanoId();
 
@@ -22,14 +23,14 @@ export async function POST(req) {
     }
 
     const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:]).{8,70}$/g;
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:]).{8,72}$/g;
     const usernameRegex = /^.{2,32}$/g;
 
     if (!passwordRegex.test(password)) {
         return NextResponse.json(
             {
                 errors: {
-                    password: "Password does not meet requirements.",
+                    password: validation.user.password.error,
                 },
             },
             { status: 400 },
@@ -40,7 +41,7 @@ export async function POST(req) {
         return NextResponse.json(
             {
                 errors: {
-                    username: "Username does not meet requirements.",
+                    username: validation.user.username.error,
                 },
             },
             { status: 400 },
@@ -65,15 +66,16 @@ export async function POST(req) {
             );
         }
 
-        const user = {
-            publicId,
-            username: name,
-            password: await bcrypt.hash(password, 10),
-            displayName: name,
-            tokens: JSON.stringify("[]"),
-        };
-
-        await db.insertInto("users").values(user).execute();
+        await db
+            .insertInto("users")
+            .values({
+                publicId,
+                username: name,
+                displayName: name,
+                password: await bcrypt.hash(password, 10),
+                tokens: JSON.stringify([]),
+            })
+            .execute();
 
         return NextResponse.json(
             {
@@ -83,7 +85,6 @@ export async function POST(req) {
         );
     } catch (error) {
         db.deleteFrom("users").where("publicId", "=", publicId).execute();
-        addError(error, "/api/auth/register: POST");
         return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

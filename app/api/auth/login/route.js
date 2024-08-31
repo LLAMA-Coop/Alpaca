@@ -1,5 +1,4 @@
 import { getToken, catchRouteError } from "@/lib/db/helpers";
-import { addError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { db } from "@/lib/db/db";
@@ -97,7 +96,6 @@ export async function POST(req) {
             );
         }
     } catch (error) {
-        addError(error, "/api/auth/login: POST");
         return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

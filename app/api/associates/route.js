@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
-import { addError } from "@/lib/db/helpers";
 
 export async function POST(req) {
     const { userId, username } = await req.json();
@@ -27,7 +26,7 @@ export async function POST(req) {
         }
 
         const associate = await useUser({
-            userId,
+            id: userId,
             username,
             select: ["id", "username", "displayName", "description", "avatar"],
         });
@@ -62,8 +61,6 @@ export async function POST(req) {
                 .executeTakeFirst();
 
             if (alreadyReceived) {
-                // If already received, accept the request
-
                 await db
                     .insertInto("associates")
                     .values({
@@ -131,7 +128,6 @@ export async function POST(req) {
             }
         }
     } catch (error) {
-        addError(error, "/api/associates: POST");
         return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

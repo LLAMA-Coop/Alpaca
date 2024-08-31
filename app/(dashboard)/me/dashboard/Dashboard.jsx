@@ -217,7 +217,7 @@ export function Dashboard({ more = false }) {
                 </nav>
 
                 <div className={styles.content}>
-                    <header>
+                    <header className={styles.tabHeader}>
                         <h1>
                             {currentTab === 0 && (
                                 <Avatar

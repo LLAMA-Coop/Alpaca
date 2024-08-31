@@ -47,25 +47,25 @@
     gap: 12px;
     padding: 16px;
     border-radius: 6px;
-    background-color: var(--bg-1);
+    background-color: var(--bg-3);
     max-width: 360px;
     height: fit-content;
 }
 
 .notification.read {
-    opacity: 0.5;
+    filter: brightness(0.9);
 }
 
 .notification > header > h3 {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 500;
     line-height: 1.2;
     margin-bottom: 8px;
 }
 
 .notification > header > p {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 400;
     line-height: 1.2;
     margin-bottom: 8px;
     color: var(--fg-3);
@@ -77,89 +77,50 @@
     overflow: hidden;
 }
 
-.notification > .actions {
+.actions {
     display: flex;
     align-items: center;
-    gap: 8px;
 }
 
-.notification > .actions > button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 6px;
-    border-radius: 50%;
-    background-color: var(--bg-3);
-    color: var(--fg-3);
-    font-size: 13px;
-    font-weight: 500;
-    border: 0px;
-    cursor: pointer;
-    transition: background-color 0.1s ease-in-out;
-}
-
-.notification > .actions > button:hover,
-.notification > .actions > button:focus-visible {
-    background-color: var(--bg-4);
-}
-
-.notification > .actions > button:active {
-    background-color: var(--bg-3);
-}
-
-.notification > .actions > button:first-child {
-    background-color: var(--success);
-    color: var(--fg-1);
-}
-
-.notification > .actions > button:first-child:hover,
-.notification > .actions > button:first-child:focus-visible {
-    background-color: var(--success-hover);
-}
-
-.notification > .actions > button:first-child:active {
-    background-color: var(--success-active);
+.actions > button {
+    background-color: var(--bg-2);
+    margin-right: 12px;
 }
 
 .readButton,
 .removeButton {
     position: absolute;
-    top: -10px;
-    right: -10px;
+    top: -14px;
+    right: -14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background-color: var(--bg-3);
+    background-color: var(--bg-4);
     color: var(--fg-3);
     border: 0px;
     cursor: pointer;
     transition:
-        background-color 0.1s ease-in-out,
-        color 0.1s ease-in-out;
+        filter 0.1s ease,
+        color 0.1s ease;
+}
+
+.readButton > svg,
+.removeButton > svg {
+    width: 16px;
+    height: 16px;
 }
 
 .readButton {
     right: 24px;
 }
 
+.readButton:hover,
+.readButton:focus-visible,
 .removeButton:hover,
 .removeButton:focus-visible {
-    color: var(--danger-hover);
-}
-
-.readButton:hover,
-.readButton:focus-visible {
-    color: var(--fg-2);
-}
-
-.removeButton:active {
-    color: var(--danger-active);
-}
-
-.readButton:active {
+    filter: brightness(1.15);
     color: var(--fg-1);
 }

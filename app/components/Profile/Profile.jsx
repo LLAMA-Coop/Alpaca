@@ -18,58 +18,38 @@ export function Profile({ user, size = 44 }) {
     const router = useRouter();
     const path = usePathname();
 
-    function handleNotificationMenu(e) {
-        e.preventDefault();
-        e.stopPropagation();
+    const notificationItems = [
+        {
+            name: "See all notifications",
+            onClick: () => {
+                console.log(path, localStorage.getItem("currentTab"));
+                localStorage.setItem("currentTab", 0);
+                if (path != "/me/dashboard") {
+                    router.push("/me/dashboard");
+                }
+            },
+        },
+        {
+            name: "hr",
+        },
+        {
+            name: "Mark all as read",
+            onClick: async () => {
+                const response = await fetch(`${basePath}/api/notifications`, {
+                    method: "PATCH",
+                }).then((res) => res.json());
 
-        if (menu?.element === e.currentTarget) {
-            setMenu(null);
-        } else {
-            setMenu({
-                element: e.currentTarget,
-                items: [
-                    {
-                        name: "See all notifications",
-                        onClick: () => {
-                            console.log(
-                                path,
-                                localStorage.getItem("currentTab"),
-                            );
-                            localStorage.setItem("currentTab", 0);
-                            if (path != "/me/dashboard") {
-                                router.push("/me/dashboard");
-                            }
-                        },
-                    },
-                    {
-                        name: "hr",
-                    },
-                    {
-                        name: "Mark all as read",
-                        onClick: async () => {
-                            const response = await fetch(
-                                `${basePath}/api/notifications`,
-                                {
-                                    method: "PATCH",
-                                },
-                            ).then((res) => res.json());
+                addAlert({
+                    success: response.success,
+                    message: response.message,
+                });
 
-                            addAlert({
-                                success: response.success,
-                                message: response.message,
-                            });
-
-                            if (response.success) {
-                                readAll();
-                            }
-                        },
-                    },
-                ],
-                bottom: true,
-                left: true,
-            });
-        }
-    }
+                if (response.success) {
+                    readAll();
+                }
+            },
+        },
+    ];
 
     const logout = async () => {
         await fetch(
@@ -86,7 +66,7 @@ export function Profile({ user, size = 44 }) {
         router.refresh();
     };
 
-    const items = [
+    const menuItems = [
         {
             name: "Dashboard",
             icon: (
@@ -186,29 +166,26 @@ export function Profile({ user, size = 44 }) {
         <div className={styles.container}>
             <Popover>
                 <PopoverTrigger>
-                    <Avatar
-                        src={user.avatar}
-                        username={user.username}
-                        size={size}
-                    />
-
-                    {!!notifications.length && (
-                        <sub
-                            className={styles.notification}
-                            tabIndex={0}
-                            onClick={(e) => handleNotificationMenu(e)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    handleNotificationMenu(e);
-                                }
-                            }}
-                        >
-                            {notifications.length}
-                        </sub>
-                    )}
+                    <div>
+                        <Avatar
+                            src={user.avatar}
+                            username={user.username}
+                            size={size}
+                        />
+                    </div>
                 </PopoverTrigger>
 
-                <PopoverContent isMenu items={items} />
+                <PopoverContent isMenu items={menuItems} />
+            </Popover>
+
+            <Popover>
+                <PopoverTrigger>
+                    <sub className={styles.notification}>
+                        {notifications.length}
+                    </sub>
+                </PopoverTrigger>
+
+                <PopoverContent isMenu items={notificationItems} />
             </Popover>
         </div>
     );

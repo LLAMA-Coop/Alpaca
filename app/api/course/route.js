@@ -1,42 +1,48 @@
-import { NextResponse } from "next/server";
-import { useUser } from "@/lib/auth";
-import { cookies } from "next/headers";
 import { unauthorized, server } from "@/lib/apiErrorResponses";
-import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { MAX } from "@/lib/constants";
+import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db";
 import {
-    addError,
     getPermittedCourses,
     insertPermissions,
+    catchRouteError,
     updateCourse,
+    addError,
+    getNanoId,
 } from "@/lib/db/helpers";
-import { db } from "@/lib/db/db";
+import { Validator } from "@/lib/validation";
 
 export async function GET(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) return unauthorized;
 
-        const content = await getPermittedCourses(user?.id);
-        return NextResponse.json({
-            content,
-        });
+        const content = await getPermittedCourses(user.id);
+
+        return NextResponse.json(
+            {
+                content,
+            },
+            {
+                status: 200,
+            },
+        );
     } catch (error) {
-        console.error(`[Course] GET error: ${error}`);
-        addError(error, "/api/course: GET");
-        return server;
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }
 
 export async function POST(req) {
-    const baseQuery = `INSERT INTO \`Courses\`
-        (\`name\`, \`description\`, \`enrollment\`, \`createdBy\`) 
-        VALUES (?, ?, ?, ?)`;
+    const publicId = getNanoId();
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const submitErrors = new SubmitErrors();
+        const validator = new Validator();
 
         const {
             name,
@@ -52,66 +58,77 @@ export async function POST(req) {
             permissions,
         } = await req.json();
 
-        if (!name) {
-            submitErrors.addError("Missing name");
-        } else if (name.length > MAX.name) {
-            submitErrors.addError(
-                `The following name is longer than the maximum permitted, which is ${MAX.name} characters:\n ${name}`,
-            );
-        }
+        validator.validateAll(
+            [
+                {
+                    field: "name",
+                    value: name,
+                },
+                {
+                    field: "description",
+                    value: description,
+                },
+                {
+                    field: "enrollment",
+                    value: enrollment,
+                },
+            ],
+            "course",
+        );
 
-        if (!description) {
-            submitErrors.addError("Missing description");
-        } else if (description.length > MAX.description) {
-            submitErrors.addError(
-                `The following description is longer than the maximum permitted, which is ${MAX.description} characters:\n ${description}`,
-            );
-        }
-
-        if (submitErrors.cannotSend) {
+        if (!validator.isValid) {
             return NextResponse.json(
                 {
-                    message: submitErrors.displayErrors(),
+                    message: "Invalid input, please check the errors",
+                    errors: validator.errors,
                 },
                 { status: 400 },
             );
         }
 
-        const fieldsArray = [name, description, enrollment, user.id];
+        await db
+            .insertInto("courses")
+            .values({
+                publicId,
 
-        const [courseInsert, fields] = await db
-            .promise()
-            .query(baseQuery, fieldsArray);
+                name,
+                description,
+                enrollment,
 
-        const courseId = courseInsert.insertId;
+                createdBy: user.id,
 
-        const permsInsert = await insertPermissions(
-            permissions,
-            courseId,
-            user.id,
-        );
+                allRead: permissions.allRead,
+                allWrite: permissions.allWrite,
+
+                read: JSON.stringify(permissions.read),
+                write: JSON.stringify(permissions.write),
+            })
+            .execute();
 
         const hierQuery = `INSERT INTO \`CourseHierarchy\` 
             (\`inferiorCourse\`, \`superiorCourse\`, \`relationship\`, \`averageLevelRequired\`)
             VALUES ?`;
 
-        const hierValues = [];
-        parentCourses.forEach((crs) => {
-            hierValues.push([courseId, crs, "encompasses", 0]);
-        });
-        prerequisites.forEach((crs) => {
-            hierValues.push([
-                courseId,
-                crs.course,
-                "prerequisite",
-                crs.requiredAverageLevel,
-            ]);
-        });
+        const hierarchyValues = [
+            ...parentCourses.map((c) => ({
+                inferior: publicId,
+                superior: c.id,
+                relationship: "encompasses",
+            })),
+            ...prerequisites.map((c) => ({
+                inferior: publicId,
+                superior: c.id,
+                relationship: "prerequisite",
+                averageLevelRequired: c.requiredAverageLevel,
+            })),
+        ];
 
-        const [hierInserts, fieldsHier] =
-            hierValues.length > 0
-                ? await db.promise().query(hierQuery, [hierValues])
-                : [[], undefined];
+        if (hierarchyValues.length > 0) {
+            await db
+                .insertInto("courses_hierarchy")
+                .values(hierarchyValues)
+                .execute();
+        }
 
         const crsResrcQuery = `INSERT INTO \`CourseResources\` 
             (\`courseId\`, \`resourceId\`, \`resourceType\`, \`includeReferencingResources\`)

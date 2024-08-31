@@ -1,10 +1,9 @@
+import { catchRouteError, isUserAssociate } from "@/lib/db/helpers";
 import { unauthorized } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-// import { User } from "@models";
 import { db } from "@/lib/db/db.js";
-import { addError } from "@/lib/db/helpers";
 
 export async function DELETE(req, { params }) {
     const { id } = params;
@@ -13,64 +12,76 @@ export async function DELETE(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const [deletion, fields] = await db
-            .promise()
-            .query(
-                "DELETE FROM `Associates` WHERE (`A` = ? AND `B` = ?) OR (`A` = ? AND `B` = ?)",
-                [user.id, id, id, user.id],
+        const received = await db
+            .selectFrom("notifications")
+            .where("recipientId", "=", user.id)
+            .where("senderId", "=", id)
+            .where("type", "=", "request")
+            .executeTakeFirst();
+
+        if (received) {
+            await db
+                .deleteFrom("notifications")
+                .where("id", "=", received.id)
+                .execute();
+
+            return NextResponse.json(
+                {
+                    message: "Successfully removed request.",
+                },
+                { status: 200 },
             );
+        }
 
-        console.log(deletion);
+        const sent = await db
+            .selectFrom("notifications")
+            .where("recipientId", "=", id)
+            .where("senderId", "=", user.id)
+            .where("type", "=", "request")
+            .executeTakeFirst();
 
-        // const associate = await User.findOne({ _id: id });
+        if (sent) {
+            await db
+                .deleteFrom("notifications")
+                .where("id", "=", sent.id)
+                .execute();
 
-        // if (!associate) {
-        //     return NextResponse.json(
-        //         {
-        //             success: false,
-        //             message: "No user found with that ID.",
-        //         },
-        //         { status: 404 },
-        //     );
-        // }
+            return NextResponse.json(
+                {
+                    message: "Successfully removed request.",
+                },
+                { status: 200 },
+            );
+        }
 
-        // if (!user.associates.includes(associate.id)) {
-        //     return NextResponse.json(
-        //         {
-        //             success: false,
-        //             message: "User is not an associate.",
-        //         },
-        //         { status: 400 },
-        //     );
-        // } else {
-        //     await User.updateOne(
-        //         { _id: user.id },
-        //         { $pull: { associates: associate.id } },
-        //     );
+        const isAssociate = await isUserAssociate(user.id, id);
 
-        //     await User.updateOne(
-        //         { _id: associate.id },
-        //         { $pull: { associates: user.id } },
-        //     );
-        // }
+        if (isAssociate) {
+            await db
+                .deleteFrom("associates")
+                .where(({ eb, or, and }) =>
+                    or([
+                        and([eb("A", "=", user.id), eb("B", "=", id)]),
+                        and([eb("A", "=", id), eb("B", "=", user.id)]),
+                    ]),
+                )
+                .execute();
+
+            return NextResponse.json(
+                {
+                    message: "Successfully removed associate.",
+                },
+                { status: 200 },
+            );
+        }
 
         return NextResponse.json(
             {
-                success: true,
-                message: "Successfully removed associate.",
+                message: "No request or associate found.",
             },
-            { status: 200 },
+            { status: 404 },
         );
     } catch (error) {
-        console.error("[ERROR] /api/associates/id:DELETE ", error);
-        addError(error, '/api/associates/id: DELETE')
-
-        return NextResponse.json(
-            {
-                success: false,
-                message: "Something went wrong.",
-            },
-            { status: 500 },
-        );
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

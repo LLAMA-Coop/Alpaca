@@ -1,17 +1,10 @@
-import { FillStore, Timer, Alerts, Modals, Menu } from "@client";
-import { Header, Footer, DBConnectError } from "@server";
+import { FillStore, Timer, Alerts, Modals } from "@client";
+import { getPermittedResources } from "@/lib/db/helpers";
+import { Inter, Sofia_Sans } from "next/font/google";
 import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import "./globals.css";
-import {
-    getPermittedCourses,
-    getPermittedNotes,
-    getPermittedQuizzes,
-    getPermittedResources,
-    getPermittedSources,
-} from "@/lib/db/helpers";
-import { Inter, Sofia_Sans } from "next/font/google";
 
 const inter = Inter({
     subsets: ["latin"],
@@ -24,8 +17,6 @@ const sofia = Sofia_Sans({
     variable: "--font-heading",
     display: "swap",
 });
-
-// const connection = await connectDB();
 
 export const metadata = {
     metadataBase: new URL(metadatas.layout.url),
@@ -52,11 +43,9 @@ export default async function RootLayout({ children }) {
         takeNotifications: true,
     });
 
-    const sources = (await getPermittedSources(user?.id)) || [];
-    const notes = (await getPermittedNotes(user?.id)) || [];
-    const quizzes = (await getPermittedQuizzes(user?.id)) || [];
-    const courses = (await getPermittedCourses(user?.id)) || [];
-    const notifications = user ? user.notifications : [];
+    const { sources, notes, quizzes, courses } = await getPermittedResources(
+        user?.id,
+    );
 
     return (
         <html lang="en" className={`${inter.variable} ${sofia.variable}`}>
@@ -69,7 +58,7 @@ export default async function RootLayout({ children }) {
                     courses={courses}
                     groups={user.groups}
                     associates={user.associates}
-                    notifications={user.notifications}
+                    notifications={user.notifications || []}
                     // webSocketURL={process.env.WS_URL}
                 />
             )}
@@ -78,15 +67,11 @@ export default async function RootLayout({ children }) {
                 {/* So Firefox displays page after css has loaded */}
                 <script>0</script>
 
-                <Header user={user} />
                 {children}
-                <Footer />
 
-                {/* Layers */}
                 <Timer />
                 <Alerts />
                 <Modals />
-                <Menu />
             </body>
         </html>
     );
