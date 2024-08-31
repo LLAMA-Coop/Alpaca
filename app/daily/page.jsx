@@ -7,10 +7,9 @@ import { getPermittedQuizzes, getUserQuizzes } from "@/lib/db/helpers";
 
 export default async function DailyPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    
-    const userQuizzes = await getUserQuizzes(user.id);
-    const allQuizzes = await getPermittedQuizzes(user.id);
-    console.log("ALL PERM QUIZZES", allQuizzes, userQuizzes)
+
+    const userQuizzes = await getUserQuizzes(user ? user.id : undefined);
+    const allQuizzes = await getPermittedQuizzes(user ? user.id : undefined);
     const quizzes = shuffleArray(
         allQuizzes.filter((q) => {
             const quizInUser = userQuizzes?.find(
@@ -20,6 +19,15 @@ export default async function DailyPage({ searchParams }) {
             const hidden = new Date(quizInUser.hiddenUntil);
             return hidden.getTime() <= Date.now();
         }),
+    );
+
+    console.log(
+        "ALL PERM QUIZZES\n",
+        allQuizzes,
+        "USER QUIZZES\n",
+        userQuizzes,
+        "FILTERED QUIZZES\n",
+        quizzes,
     );
 
     return (

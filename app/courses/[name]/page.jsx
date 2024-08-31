@@ -10,7 +10,7 @@ export default async function CoursePage({ params }) {
     const { name } = params;
     const nameDecoded = decodeURIComponent(name);
 
-    const course = (await getPermittedCourses(user.id)).find(
+    const course = (await getPermittedCourses(user ? user.id : undefined)).find(
         (x) => x.name === nameDecoded,
     );
 

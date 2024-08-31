@@ -28,7 +28,7 @@ export function ListAdd({
                 let prop;
                 if (Array.isArray(listProperty)) {
                     prop = listProperty.find((p) => choice[p]);
-                    if (!prop) prop = "_id";
+                    if (!prop) prop = "id";
                 } else {
                     prop = listProperty;
                 }
@@ -122,7 +122,7 @@ export function ListAdd({
                             let prop;
                             if (Array.isArray(listProperty)) {
                                 prop = listProperty.find((p) => choice[p]);
-                                if (!prop) prop = "_id";
+                                if (!prop) prop = "id";
                             } else {
                                 prop = listProperty;
                             }
@@ -181,7 +181,7 @@ export function ListAdd({
                     let prop;
                     if (Array.isArray(listProperty)) {
                         prop = listProperty.find((p) => choice[p]);
-                        if (!prop) prop = "_id";
+                        if (!prop) prop = "id";
                     } else {
                         prop = listProperty;
                     }

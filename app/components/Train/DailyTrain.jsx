@@ -13,6 +13,8 @@ export function DailyTrain({ quizzes }) {
     const [tags, setTags] = useState([]);
     const [courses, setCourses] = useState([]);
 
+    const [filteredQuizzes, setFilteredQuizzes] = useState(quizzes);
+
     const setStart = useDailyTrain((state) => state.setStart);
     const start = useDailyTrain((state) => state.start);
     const isPaused = useDailyTrain((state) => state.isPaused);
@@ -30,19 +32,19 @@ export function DailyTrain({ quizzes }) {
     useEffect(() => {
         let presentTags = [];
         let presentCourses = [];
-        if(quizzes) quizzes.forEach((q) => {
-            console.log("THE QUIZ", q)
-            q.tags.forEach((t) => {
-                if (!presentTags.includes(t)) {
-                    presentTags.push(t);
-                }
+        if (quizzes)
+            quizzes.forEach((q) => {
+                q.tags.forEach((t) => {
+                    if (!presentTags.includes(t)) {
+                        presentTags.push(t);
+                    }
+                });
+                q.courses.forEach((c) => {
+                    if (!presentCourses.includes(c)) {
+                        presentCourses.push(c);
+                    }
+                });
             });
-            q.courses.forEach((c) => {
-                if (!presentCourses.includes(c)) {
-                    presentCourses.push(c);
-                }
-            });
-        });
         setTags(presentTags);
         setCourses(presentCourses);
     }, []);
@@ -54,6 +56,31 @@ export function DailyTrain({ quizzes }) {
             document.documentElement.style.overflowY = "auto";
         }
     }, [start]);
+
+    useEffect(() => {
+        console.log(settings, filteredQuizzes);
+        setFilteredQuizzes(
+            quizzes.filter((quiz) => {
+                if (
+                    settings.tags.length === 0 &&
+                    settings.courses.length === 0
+                ) {
+                    return true;
+                }
+                if (hasCommonItem(settings.tags, quiz.tags)) {
+                    return true;
+                }
+                if (hasCommonItem(settings.courses, quiz.courses)) {
+                    return true;
+                }
+                return false;
+            }),
+        );
+    }, [settings]);
+
+    useEffect(() => {
+        console.log("FILTERED", filteredQuizzes)
+    }, [filteredQuizzes])
 
     return (
         <>
@@ -82,6 +109,7 @@ export function DailyTrain({ quizzes }) {
                             content: (
                                 <TrainSettings tags={tags} courses={courses} />
                             ),
+                            buttonTexts: ["", "Continue"]
                         })
                     }
                     className={styles.settingsButton}
@@ -100,29 +128,9 @@ export function DailyTrain({ quizzes }) {
 
             {start && !isPaused && (
                 <div className={styles.popup}>
-                    <ol className="listGrid">
-                        {quizzes
-                            .filter((quiz) => {
-                                if (
-                                    settings.tags.length === 0 &&
-                                    settings.courses.length === 0
-                                ) {
-                                    return true;
-                                }
-                                if (hasCommonItem(settings.tags, quiz.tags)) {
-                                    return true;
-                                }
-                                if (
-                                    hasCommonItem(
-                                        settings.courses,
-                                        quiz.courses,
-                                    )
-                                ) {
-                                    return true;
-                                }
-                                return false;
-                            })
-                            .map((quiz, index) => {
+                    {filteredQuizzes.length > 0 && (
+                        <ol className="listGrid">
+                            {filteredQuizzes.map((quiz, index) => {
                                 return (
                                     <li
                                         key={quiz.id}
@@ -142,7 +150,16 @@ export function DailyTrain({ quizzes }) {
                                     </li>
                                 );
                             })}
-                    </ol>
+                        </ol>
+                    )}
+
+                    {filteredQuizzes.length === 0 && (
+                        <div>
+                            You are out of quizzes based on your filter
+                            settings. You can adjust the filters to increase
+                            available quizzes.
+                        </div>
+                    )}
 
                     <button
                         onClick={() => {

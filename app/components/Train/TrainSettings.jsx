@@ -23,9 +23,25 @@ export function TrainSettings({ tags, courses }) {
         let seconds = String(time % 60).padStart(2, "0");
         setMinutes(minutes);
         setSeconds(seconds);
+        setSelectedTags(
+            settings.tags.length > 0
+                ? settings.tags.map((t) => {
+                      const tag = tagOptions.find((x) => x.tag === t);
+                      return tag;
+                  })
+                : [],
+        );
+        setSelectedCourses(
+            settings.courses.length > 0
+                ? settings.courses.map((c) => {
+                      const course = courseOptions.find((x) => x.id === c);
+                      return course;
+                  })
+                : [],
+        );
     }, [settings]);
 
-    const tagOptions = tags.map((t, index) => ({ tag: t, _id: index }));
+    const tagOptions = tags.map((t, index) => ({ tag: t, id: index }));
     const courseOptions = courses.map((c_id) => {
         const course = availableCourses.find((c) => c.id === c_id);
         return course;
