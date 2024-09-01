@@ -79,8 +79,8 @@ export function DailyTrain({ quizzes }) {
     }, [settings]);
 
     useEffect(() => {
-        console.log("FILTERED", filteredQuizzes)
-    }, [filteredQuizzes])
+        console.log("FILTERED", filteredQuizzes);
+    }, [filteredQuizzes]);
 
     return (
         <>
@@ -109,7 +109,7 @@ export function DailyTrain({ quizzes }) {
                             content: (
                                 <TrainSettings tags={tags} courses={courses} />
                             ),
-                            buttonTexts: ["", "Continue"]
+                            buttonTexts: ["", "Continue"],
                         })
                     }
                     className={styles.settingsButton}
@@ -160,6 +160,14 @@ export function DailyTrain({ quizzes }) {
                             available quizzes.
                         </div>
                     )}
+
+                    {filteredQuizzes.length > 0 &&
+                        visibleSet.every((x) => !x) && (
+                            <div>
+                                Congratulations! You finished all the available
+                                quizzes for today! Keep up the great work.
+                            </div>
+                        )}
 
                     <button
                         onClick={() => {
