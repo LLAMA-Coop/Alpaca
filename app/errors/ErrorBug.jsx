@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { Input, Spinner, DeletePopup } from "../components/client";
+import { useAlerts } from "@/store/store";
 import styles from "./ErrorBug.module.css";
 
 export default function ErrorBug({ error }) {
     const [note, setNote] = useState(error.devNote ? error.devNote : "");
     const [loading, setLoading] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const addAlert = useAlerts((state) => state.addAlert);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -22,6 +25,21 @@ export default function ErrorBug({ error }) {
                 body: JSON.stringify({ note }),
             },
         );
+
+        setLoading(false);
+        setIsSubmitted(true);
+
+        if (response.status === 200) {
+            addAlert({
+                success: true,
+                message: "Note submitted",
+            });
+        } else {
+            addAlert({
+                success: false,
+                message: "Something went wrong. Check response in Network tab.",
+            });
+        }
     }
 
     return (
@@ -54,11 +72,18 @@ export default function ErrorBug({ error }) {
                 label="Developer Note"
                 type="textarea"
                 value={note}
-                onChange={(e) => setNote(e.target.value)}
+                onChange={(e) => {
+                    setNote(e.target.value);
+                    setIsSubmitted(false);
+                }}
                 maxLength={1024}
             />
 
-            <button onClick={handleSubmit} className="button submit">
+            <button
+                onClick={handleSubmit}
+                disabled={isSubmitted}
+                className="button submit"
+            >
                 {loading ? <Spinner /> : "Submit Note"}
             </button>
 
