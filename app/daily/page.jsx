@@ -21,15 +21,6 @@ export default async function DailyPage({ searchParams }) {
         }),
     );
 
-    console.log(
-        "ALL PERM QUIZZES\n",
-        allQuizzes,
-        "USER QUIZZES\n",
-        userQuizzes,
-        "FILTERED QUIZZES\n",
-        quizzes,
-    );
-
     return (
         <main className={styles.main}>
             <div className={styles.titleBlock}>

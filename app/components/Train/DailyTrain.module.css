@@ -55,6 +55,18 @@
     height: fit-content;
 }
 
+.popup li {
+    transition: opacity 3s ease-in-out;
+}
+
+.showQuiz {
+    opacity: 1;
+}
+
+.hideQuiz {
+    opacity: 0;
+}
+
 .popup .closeButton {
     position: fixed;
     top: 24px;

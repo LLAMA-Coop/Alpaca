@@ -78,10 +78,6 @@ export function DailyTrain({ quizzes }) {
         );
     }, [settings]);
 
-    useEffect(() => {
-        console.log("FILTERED", filteredQuizzes);
-    }, [filteredQuizzes]);
-
     return (
         <>
             <div className={styles.buttonContainer}>
@@ -134,11 +130,11 @@ export function DailyTrain({ quizzes }) {
                                 return (
                                     <li
                                         key={quiz.id}
-                                        style={{
-                                            display: visibleSet[index]
-                                                ? "list-item"
-                                                : "none",
-                                        }}
+                                        className={
+                                            visibleSet[index]
+                                                ? styles.showQuiz
+                                                : styles.hideQuiz
+                                        }
                                     >
                                         <QuizDisplay
                                             quiz={quiz}
