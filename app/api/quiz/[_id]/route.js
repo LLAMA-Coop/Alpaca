@@ -30,9 +30,16 @@ export async function POST(req, { params }) {
         let isCorrect;
         let incorrectIndexes;
 
-        if (["prompt-response", "multiple-choice"].includes(quiz.type)) {
+        if (quiz.type === "prompt-response") {
             let incorrect = quiz.correctResponses.find(
                 (x) => stringCompare(x, userResponse) >= 0.8,
+            );
+            isCorrect = incorrect !== undefined;
+        }
+
+        if (quiz.type === "multiple-choice") {
+            let incorrect = quiz.correctResponses.find(
+                (x) => x === userResponse,
             );
             isCorrect = incorrect !== undefined;
         }

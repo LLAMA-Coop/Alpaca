@@ -59,9 +59,12 @@ export function ResponseCard({
 
         if (canClientCheck) {
             const isCorrect =
-                quiz.correctResponses.find(
-                    (x) => stringCompare(x, userResponse) >= 0.8,
-                ) !== undefined;
+                quiz.type === "prompt-response"
+                    ? quiz.correctResponses.find(
+                          (x) => stringCompare(x, userResponse) >= 0.8,
+                      ) !== undefined
+                    : quiz.correctResponses.find((x) => x === userResponse) !==
+                      undefined;
 
             if (isCorrect) {
                 setFailures(0);
@@ -74,9 +77,7 @@ export function ResponseCard({
             setHasAnswered(true);
         } else {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
-                    quiz.id
-                }`,
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${quiz.id}`,
                 {
                     method: "POST",
                     headers: {
