@@ -22,9 +22,9 @@
 .hero > p {
     font-size: 20px;
     line-height: 1.5;
-    font-weight: 300;
+    font-weight: 400;
     text-align: center;
-    color: var(--fg-2);
+    color: var(--fg-3);
 }
 
 .buttons {
@@ -36,7 +36,7 @@
 
 .hero > img {
     display: block;
-    margin-top: 40px;
+    margin-top: 60px;
     width: 100%;
     max-width: 500px;
     height: auto;

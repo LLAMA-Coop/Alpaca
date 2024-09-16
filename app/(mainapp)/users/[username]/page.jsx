@@ -1,4 +1,4 @@
-import styles from "@/app/page.module.css";
+import styles from "@/app/(mainapp)/page.module.css";
 import { redirect } from "next/navigation";
 import { serializeOne } from "@/lib/db";
 import { cookies } from "next/headers";

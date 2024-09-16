@@ -1,205 +1,152 @@
-import { unauthorized, server } from "@/lib/apiErrorResponses";
-import SubmitErrors from "@/lib/SubmitErrors";
+import { catchRouteError, getNanoId } from "@/lib/db/helpers";
+import { unauthorized } from "@/lib/apiErrorResponses";
+import { Validator } from "@/lib/validation";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { MAX } from "@/lib/constants";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
-import {
-    addError,
-    getPermittedSources,
-    insertPermissions,
-    updateSource,
-} from "@/lib/db/helpers";
-import { validation } from "@/lib/validation";
-
-export async function GET(req) {
-    try {
-        const user = await useUser({ token: cookies().get("token")?.value });
-        if (!user) {
-            return unauthorized;
-        }
-
-        const content = await getPermittedSources(user.id);
-        return NextResponse.json({ content }, { status: 200 });
-    } catch (error) {
-        console.error(`[Source] GET error: ${error}`);
-        addError(error, "api/source: GET");
-        return server;
-    }
-}
 
 export async function POST(req) {
-    const baseQuery = `INSERT INTO \`Sources\`
-        (\`title\`, \`medium\`, \`url\`, \`tags\`, \`createdBy\`, \`publishedUpdated\`) 
-        VALUES (?, ?, ?, ?, ?, ?)`;
+    const publicId = getNanoId();
+    let sourceId = null;
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
+        const source = await req.json();
         const {
             title,
             medium,
             url,
-            publishDate,
-            lastAccessed, // Do we want publishedUpdated to be the one date?
+            publishedAt,
+            lastAccessed, // Do we want publishedUpdated to be the one date? Good question...
             authors,
             courses,
             tags,
-            locationTypeDefault,
-            permissions,
-        } = await req.json();
+            permissions: perm,
+        } = source;
 
-        const submitErrors = new SubmitErrors();
+        const validator = new Validator();
 
-        if (
-            title?.length < 1 ||
-            title?.length > validation.source.title.maxLength
-        ) {
-            submitErrors.addError("Title must be between 1 and 100 characters");
-        }
-
-        if (!medium) {
-            submitErrors.addError("A medium is required");
-        } else if (medium === "website" && !url) {
-            submitErrors.addError("A URL is required for a website source");
-        }
-
-        const validAuthors = (authors || []).filter(
-            (a) =>
-                typeof a === "string" &&
-                a.length >= validation.source.author.name.minLength &&
-                a.length <= validation.source.author.name.maxLength,
+        validator.validateAll(
+            [
+                {
+                    field: "title",
+                    value: title,
+                },
+                {
+                    field: "medium",
+                    value: medium,
+                },
+                {
+                    field: "url",
+                    value: url,
+                },
+                {
+                    field: "publishedAt",
+                    value: publishedAt,
+                },
+                {
+                    field: "lastAccessed",
+                    value: lastAccessed,
+                },
+                {
+                    field: "authors",
+                    value: authors,
+                },
+            ],
+            "source",
         );
 
-        const validTags = (tags || []).filter(
-            (t) =>
-                typeof t === "string" &&
-                t.length >= validation.tag.minLength &&
-                t.length <= validation.tag.maxLength,
-        );
+        validator.validate({
+            field: "tags",
+            value: tags,
+            type: "misc",
+        });
 
-        if (submitErrors.cannotSend) {
+        if (medium === "website" && !url) {
+            validator.errors.url = "Website sources must have a URL";
+            validator.isValid = false;
+        }
+
+        const permissions = validator.validatePermissions(perm, true);
+
+        if (!validator.isValid) {
             return NextResponse.json(
-                { message: submitErrors.displayErrors() },
+                {
+                    message: "Invalid source data.",
+                    errors: validator.errors,
+                },
                 { status: 400 },
             );
         }
 
-        const fieldsArray = [
-            title,
-            medium,
-            url,
-            JSON.stringify(tags),
-            user.id,
-            publishDate ? publishDate.split("T")[0] : null,
-        ];
+        await db
+            .insertInto("sources")
+            .values({
+                publicId,
+                title,
+                medium,
+                url,
+                tags: JSON.stringify(tags),
+                credits: JSON.stringify(authors),
+                createdBy: user.id,
+                publishedAt: publishedAt?.split("T")[0] || null,
+            })
+            .execute();
 
-        const [sourceInsert, fields] = await db
-            .promise()
-            .query(baseQuery, fieldsArray);
+        sourceId = (
+            await db
+                .selectFrom("sources")
+                .select("id")
+                .where("publicId", "=", publicId)
+                .executeTakeFirstOrThrow()
+        ).id;
 
-        const sourceId = sourceInsert.insertId;
+        await db
+            .insertInto("resource_permissions")
+            .values({
+                resourceId: sourceId,
+                resourceType: "source",
+                ...permissions,
+            })
+            .execute();
 
-        // Replace below with insertSourceCredits call
-        const creditInsertValues = authors.map((a) => [sourceId, a]);
-        const creditsQuery = `INSERT INTO \`SourceCredits\` (sourceId, name) VALUES ?`;
-
-        const [creditsInsert, fieldsCredits] = await db
-            .promise()
-            .query(creditsQuery, [creditInsertValues]);
-
-        const permsInsert = await insertPermissions(
-            permissions,
-            sourceId,
-            user.id,
-        );
-
-        // Next up:
-        //  CourseResources (table created)
-        const content = sourceInsert;
+        if (courses.length > 0) {
+            db.insertInto("resource_relations")
+                .values(
+                    courses.map((course) => ({
+                        A: course.id,
+                        B: sourceId,
+                        A_type: "course",
+                        B_type: "source",
+                        includeReference: course.includeReference || false,
+                    })),
+                )
+                .execute();
+        }
 
         return NextResponse.json(
             {
-                message: "Source created successfully",
-                content,
+                message: "Successfully created source.",
+                content: {
+                    id: sourceId,
+                    publicId,
+                    ...source,
+                },
             },
             { status: 201 },
         );
     } catch (error) {
-        console.error(`[Source] POST error: ${error}`);
-        addError(error, "api/source: POST");
-        return server;
-    }
-}
+        db.deleteFrom("sources").where("publicId", "=", publicId).execute();
 
-export async function PUT(req) {
-    try {
-        const user = await useUser({ token: cookies().get("token")?.value });
-
-        if (!user) {
-            return unauthorized;
+        if (sourceId) {
+            db.deleteFrom("resource_permissions")
+                .where("resourceId", "=", sourceId)
+                .execute();
         }
 
-        const {
-            id,
-            title,
-            medium,
-            url,
-            publishDate,
-            lastAccessed,
-            authors,
-            courses,
-            tags,
-            permissions,
-        } = await req.json();
-
-        // const source = (await getSourcesById({ id, userId: user.id }))[0];
-        const source = (await getPermittedSources(user.id)).find(
-            (x) => x.id == id,
-        );
-
-        if (!source) {
-            return NextResponse.json(
-                {
-                    message: `No source found with id ${id}`,
-                },
-                { status: 404 },
-            );
-        }
-
-        const isCreator =
-            source.createdBy == user.id || source.creator?.id == user.id;
-        const canEdit = isCreator || source.permissionType === "write";
-
-        if (!canEdit) {
-            return NextResponse.json(
-                {
-                    message: `You are not permitted to edit source ${id}`,
-                },
-                { status: 403 },
-            );
-        }
-
-        const content = updateSource({
-            id,
-            title,
-            medium,
-            url,
-            tags,
-            publishedUpdated: publishDate,
-            lastAccessed,
-            authors,
-            courses,
-            permissions: isCreator ? permissions : [],
-            contributorId: user.id,
-        });
-
-        return NextResponse.json({ content });
-    } catch (error) {
-        console.error(`[Source] PUT error: ${error}`);
-        addError(error, "api/source: PUT");
-        return server;
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

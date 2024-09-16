@@ -1,5 +1,5 @@
-import styles from "@/app/Auth.module.css";
 import { redirect } from "next/navigation";
+import styles from "../Auth.module.css";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { UserInput } from "@client";
@@ -17,7 +17,7 @@ export default async function RegisterPage() {
     return (
         <main className={styles.main}>
             <section className={styles.container}>
-                <h2>Create a Alpaca account</h2>
+                <h2>Start your journey on Alpaca</h2>
                 <UserInput isRegistering={true} />
 
                 <div>

@@ -1,20 +1,18 @@
+import styles from "@main/page.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
-import styles from "@/app/page.module.css";
 
 export default async function ErrorsBugsPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
-    const devIDs = process.env.DEVELOPERS?.split(",");
+    const devIDs = process.env.DEVELOPERS?.split(",").map((id) => parseInt(id));
 
-    if (!user || !devIDs.includes(user.id)) {
+    if (!user || !devIDs?.includes(user.id)) {
         return redirect("/");
     }
 
-    const [errors, fields] = await db
-        .promise()
-        .query("SELECT * FROM `ErrorsBugs`");
+    const errors = await db.selectFrom("error_logs").selectAll().execute();
 
     return (
         <main className={styles.main}>
@@ -65,7 +63,7 @@ export default async function ErrorsBugsPage() {
                                     {err.stack}
                                 </code>
                                 <p className={styles.paragraph}>
-                                    Occurred at {err.time.toString()}
+                                    Occurred at {err.triggeredAt.toString()}
                                 </p>
                             </li>
                         ))}

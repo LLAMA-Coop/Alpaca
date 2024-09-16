@@ -1,315 +1,311 @@
 "use client";
 
-import { PermissionsDisplay } from "../Form/PermissionsDisplay";
-import { useStore, useModals, useAlerts } from "@/store/store";
-import { Validator } from "@/lib/validation";
-import styles from "./NoteInput.module.css";
-import { useEffect, useState } from "react";
-import { serializeOne } from "@/lib/db";
-import { validation } from "@/lib/validation";
+import { Validator, validation } from "@/lib/validation";
+import { useStore, useAlerts } from "@/store/store";
+import { useEffect, useReducer } from "react";
+import { getNanoId } from "@/lib/random";
 import {
-    Label,
-    Input,
-    ListItem,
-    InputPopup,
-    Spinner,
     DeletePopup,
-    ListAdd,
-    UserInput,
+    Permissions,
+    TextArea,
+    Spinner,
+    Select,
+    Input,
+    Form,
 } from "@client";
-import { buildPermissions } from "@/lib/permissions";
+
+const defaultState = {
+    title: "",
+    text: "",
+    sources: [],
+    courses: [],
+    tag: "",
+    tags: [],
+    permissions: {
+        allRead: false,
+        allWrite: false,
+        read: [],
+        write: [],
+        groupId: null,
+        groupLocked: false,
+    },
+    loading: false,
+    errors: {},
+};
+
+function stateReducer(state, action) {
+    switch (action.type) {
+        case "title":
+            return { ...state, title: action.value };
+        case "text":
+            return { ...state, text: action.value };
+        case "sources":
+            return { ...state, sources: action.value };
+        case "courses":
+            return { ...state, courses: action.value };
+        case "tag":
+            return { ...state, tag: action.value };
+        case "addTag":
+            return { ...state, tags: [...state.tags, action.value] };
+        case "removeTag":
+            return {
+                ...state,
+                tags: state.tags.filter((t) => t !== action.value),
+            };
+        case "permissions":
+            return { ...state, permissions: action.value };
+        case "loading":
+            return { ...state, loading: action.value };
+        case "editing":
+            return {
+                ...state,
+                ...action.value,
+                sources:
+                    action.value.sources.map((id) => {
+                        const source = action.sources.find((x) => x.id === id);
+
+                        return (
+                            source ?? {
+                                id: getNanoId(),
+                                title: "Unavailable",
+                            }
+                        );
+                    }) ?? [],
+                courses:
+                    action.value.courses.map((id) => {
+                        const course = action.courses.find((x) => x.id === id);
+
+                        return (
+                            course ?? {
+                                id: getNanoId(),
+                                name: "Unavailable",
+                            }
+                        );
+                    }) ?? [],
+            };
+        case "errors":
+            return { ...state, errors: { ...state.errors, ...action.value } };
+        case "reset":
+            return defaultState;
+        default:
+            return state;
+    }
+}
 
 export function NoteInput({ note }) {
-    const [title, setTitle] = useState("");
-    const [text, setText] = useState("");
-    const [sources, setSources] = useState([]);
-    const [textError, setTextError] = useState("");
-    const [sourceError, setSourceError] = useState("");
+    const [state, dispatch] = useReducer(stateReducer, defaultState);
 
-    const [courses, setCourses] = useState([]);
-    const [tags, setTags] = useState([]);
-    const [newTag, setNewTag] = useState("");
-    const [permissions, setPermissions] = useState({});
-
-    const [loading, setLoading] = useState(false);
-
-    const availableSources = useStore((state) => state.sources);
-    const availableCourses = useStore((state) => state.courses);
-    const availableTags = useStore((state) => state.tags);
-    const addTags = useStore((state) => state.addTags);
-    const user = useStore((state) => state.user);
-    const addModal = useModals((state) => state.addModal);
-    const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
+    const sources = useStore((state) => state.sources);
+    const courses = useStore((state) => state.courses);
+    const user = useStore((state) => state.user);
 
-    const canDelete = note && user && note.createdBy === user.id;
+    const isOwner = note && user && note.creator.id === user.id;
+    const canChangePermissions = isOwner || !note;
 
     useEffect(() => {
         if (!note) return;
-        if (note.title) setTitle(note.title);
-        if (note.text) setText(note.text);
-        if (note.sources && note.sources.length > 0) {
-            setSources(
-                note.sources.map((srcId, index) => {
-                    const source = availableSources
-                        ? availableSources.find((x) => x.id === srcId)
-                        : undefined;
-                    if (!source)
-                        return {
-                            _id: index,
-                            title: "unavailable",
-                        };
-                    return source;
-                }),
-            );
-        }
-        if (note.courses && note.courses.length > 0) {
-            setCourses(
-                note.courses.map((courseId, index) => {
-                    const course = availableCourses.find(
-                        (x) => x.id === courseId,
-                    );
-                    if (!course)
-                        return {
-                            id: index,
-                            name: "unavailable",
-                        };
-                }),
-            );
-        }
-        if (note.tags && note.tags.length > 0) setTags([...note.tags]);
-        if (note.permissions) setPermissions(serializeOne(note.permissions));
+        dispatch({ type: "editing", value: note, sources, courses });
     }, []);
-
-    function handleAddTag(e) {
-        e.preventDefault();
-        if (!newTag || tags.includes(newTag)) return;
-        setTags([...tags, newTag]);
-        if (!availableTags.includes(newTag)) {
-            addTags(newTag);
-        }
-        setNewTag("");
-    }
 
     async function handleSubmit(e) {
         e.preventDefault();
-        if (loading) return;
+        if (state.loading) return;
 
         const validator = new Validator();
 
-        validator.validateAll([
-            {
-                field: "text",
-                value: text,
-                type: "note",
-            },
-            {},
-        ]);
-
-        if (sources.length === 0) {
-            validator.addError({
-                field: "sources",
-                message: "You must add at least one source",
-            });
-        }
-
-        if (!validator.isValid) {
-            return addAlert({
-                success: false,
-                message: validator.getErrorsAsString(),
-            });
-        }
-
-        const notePayload = {
-            title: title.trim(),
-            text: text.trim(),
-            sources: sources.filter((s) => s).map((src) => src.id),
-            courses: courses.filter((c) => c).map((course) => course.id),
-            tags,
-        };
-
-        notePayload.permissions = buildPermissions(
-            permissions,
-            note ? note.id : null,
+        validator.validateAll(
+            [
+                {
+                    field: "text",
+                    value: state.text.trim(),
+                },
+                {
+                    field: "title",
+                    value: state.title.trim(),
+                },
+                {
+                    field: "sources",
+                    value: state.sources.map((s) => s.id),
+                },
+                {
+                    field: "courses",
+                    value: state.courses.map((c) => c.id),
+                },
+            ],
             "note",
         );
 
-        if (note && note.id) {
-            notePayload.id = note.id;
+        validator.validate({
+            field: "tags",
+            value: state.tags,
+            type: "misc",
+        });
+
+        const permissions = validator.validatePermissions(state.permissions);
+
+        if (!validator.isValid) {
+            return dispatch({ type: "errors", value: validator.errors });
         }
 
-        setLoading(true);
+        dispatch({ type: "loading", value: true });
 
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/note`,
             {
-                method: note && note.id ? "PUT" : "POST",
+                method: !!note?.id ? "PATCH" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(notePayload),
+                body: JSON.stringify({
+                    id: note?.id,
+                    title: state.title.trim(),
+                    text: state.text.trim(),
+                    sources: state.sources.map((src) => src.id),
+                    courses: state.courses.map((course) => course.id),
+                    tags: state.tags,
+                    permissions,
+                }),
             },
         );
 
-        setLoading(false);
+        dispatch({ type: "loading", value: false });
+
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (e) {
+            console.log(`Error parsing response: ${e}`);
+        }
 
         if (response.status === 201) {
-            setText("");
-            setSourceError("");
+            dispatch({ type: "reset" });
 
             addAlert({
                 success: true,
-                message: "Note added succesfully",
+                message: data.message || "Successfully created note.",
             });
         } else if (response.status === 200) {
             addAlert({
                 success: true,
-                message: "Note edited succesfully.",
-            });
-        } else if (response.status === 401) {
-            addAlert({
-                success: false,
-                message: "You have been signed out. Please sign in again.",
-            });
-            addModal({
-                title: "Sign back in",
-                content: <UserInput onSubmit={removeModal} />,
+                message: data.message || "Successfully updated note.",
             });
         } else {
-            const json = await response.json();
             addAlert({
                 success: false,
-                message: json.message,
+                message: data.errors.server || "Something went wrong.",
             });
         }
     }
 
     return (
-        <div className={styles.form}>
-            <div className={styles.column}>
-                <Input
-                    onChange={(e) => {
-                        setTitle(e.target.value);
+        <Form onSubmit={handleSubmit}>
+            <Input
+                required
+                label="Title"
+                error={state.errors.title}
+                placeholder="How to make a sandwich"
+                value={state.title}
+                onChange={(e) => {
+                    dispatch({ type: "title", value: e.target.value });
+                    dispatch({ type: "errors", value: { title: "" } });
+                }}
+                maxLength={validation.note.title.maxLength}
+            />
+
+            <Input
+                multiple
+                label="Tags"
+                value={state.tag}
+                data={state.tags}
+                autoComplete="off"
+                error={state.errors.tags}
+                placeholder="Enter a tag and press enter"
+                maxLength={validation.misc.tag.maxLength}
+                description="A word or phrase that could be used to search for this note"
+                removeItem={(item) => {
+                    dispatch({ type: "removeTag", value: item });
+                }}
+                addItem={(item) => {
+                    dispatch({ type: "addTag", value: item });
+                    dispatch({ type: "tag", value: "" });
+                }}
+                onChange={(e) => {
+                    dispatch({ type: "tag", value: e.target.value });
+                    dispatch({ type: "errors", value: { tag: "" } });
+                }}
+            />
+
+            <Select
+                multiple
+                required
+                itemValue="id"
+                label="Sources"
+                options={sources}
+                itemLabel="title"
+                data={state.sources}
+                placeholder="Select sources"
+                error={state.errors.sources}
+                description="The sources you used to create this note"
+                setter={(value) => {
+                    dispatch({ type: "sources", value });
+                    dispatch({ type: "errors", value: { sources: "" } });
+                }}
+            />
+
+            <Select
+                multiple
+                itemValue="id"
+                label="Courses"
+                itemLabel="name"
+                options={courses}
+                data={state.courses}
+                placeholder="Select courses"
+                error={state.errors.courses}
+                description="The courses this note is related to"
+                setter={(value) => {
+                    dispatch({ type: "courses", value });
+                    dispatch({ type: "errors", value: { courses: "" } });
+                }}
+            />
+
+            <TextArea
+                required
+                label="Text"
+                value={state.text}
+                error={state.errors.text}
+                maxLength={validation.note.text.maxLength}
+                placeholder="To make a sandwich, first get some bread..."
+                onChange={(e) => {
+                    dispatch({ type: "text", value: e.target.value });
+                    dispatch({ type: "errors", value: { text: "" } });
+                }}
+            />
+
+            {canChangePermissions ? (
+                <Permissions
+                    disabled={state.loading}
+                    permissions={state.permissions}
+                    error={state.errors.permissions}
+                    setPermissions={(value) => {
+                        dispatch({ type: "permissions", value });
+                        dispatch({
+                            type: "errors",
+                            value: { permissions: "" },
+                        });
                     }}
-                    value={title}
-                    maxLength={validation.note.title.maxLength}
-                    placeholder="Note Title"
-                    label="TITLE"
                 />
-            </div>
+            ) : (
+                <div />
+            )}
 
-            <div className={styles.column}>
-                <div className={styles.sources}>
-                    <Label
-                        required={true}
-                        error={sourceError}
-                        label="Sources"
-                    />
-
-                    <ListAdd
-                        item="Add a source"
-                        listChoices={availableSources}
-                        listChosen={sources}
-                        listProperty={"title"}
-                        listSetter={setSources}
-                        createNew={<InputPopup type="source" />}
-                        type="datalist"
-                        messageIfNone="No sources added"
-                    />
-                </div>
-            </div>
-
-            <div className={styles.column}>
-                <Input
-                    type="textarea"
-                    required={true}
-                    onChange={(e) => {
-                        setText(e.target.value);
-                        setTextError("");
-                    }}
-                    value={text}
-                    error={textError}
-                    label={"Text"}
-                    maxLength={validation.note.text.maxLength}
-                    className={styles.textarea}
-                />
-            </div>
-            <div className={styles.column}>
-                <div className={styles.tags}>
-                    <div>
-                        <Input
-                            type="datalist"
-                            label="Tags"
-                            choices={availableTags}
-                            value={newTag}
-                            maxLength={validation.tag.maxLength}
-                            description="A word or phrase that could be used to search for this note"
-                            autoComplete="off"
-                            onChange={(e) => setNewTag(e.target.value)}
-                            action="Add tag"
-                            onActionTrigger={handleAddTag}
-                            placeholder="Note Tags"
-                        />
-                        <ul className="chipList">
-                            {tags.length === 0 && (
-                                <ListItem item="No tags added" />
-                            )}
-
-                            {tags.map((tag) => (
-                                <ListItem
-                                    key={tag}
-                                    item={tag}
-                                    action={() => {
-                                        setTags(tags.filter((t) => t !== tag));
-                                    }}
-                                    actionType={"delete"}
-                                />
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div className={styles.column}>
-                <div>
-                    <div className={styles.courses}>
-                        <Label required={false} label="Courses" />
-
-                        <ListAdd
-                            item="Add to a course"
-                            listChoices={availableCourses}
-                            listChosen={courses}
-                            listProperty={"name"}
-                            listSetter={setCourses}
-                            type="datalist"
-                            messageIfNone="Not added to any course"
-                        />
-                    </div>
-                </div>
-
-                <div className={styles.permissions}>
-                    <PermissionsDisplay
-                        permissions={permissions}
-                        setter={setPermissions}
-                    />
-
-                    {(!note || (user && note.createdBy === user.id)) && (
-                        <InputPopup
-                            type="permissions"
-                            resource={permissions}
-                            setter={setPermissions}
-                        />
-                    )}
-                </div>
-            </div>
-
-            <button onClick={handleSubmit} className="button submit">
-                {loading ? <Spinner /> : "Submit Note"}
+            <button className="button submit primary">
+                {state.loading ? <Spinner /> : "Submit Note"}
             </button>
 
-            {canDelete && (
+            {isOwner && (
                 <DeletePopup resourceType="note" resourceId={note.id} />
             )}
-        </div>
+        </Form>
     );
 }

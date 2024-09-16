@@ -1,156 +1,117 @@
-import makeUniqueId from "@/lib/uniqueId";
+import { getNanoId } from "@/lib/random";
 import { create } from "zustand";
 
-export const stores = {
-    source: "sourceStore",
-    note: "noteStore",
-    quiz: "quizStore",
-    course: "courseStore",
-    group: "groupStore",
-    user: "userStore",
-};
-
 export const useStore = create((set) => ({
-    user: undefined,
+    user: null,
+
     sources: [],
     notes: [],
     quizzes: [],
     courses: [],
+
     groups: [],
-    users: [],
     associates: [],
     notifications: [],
-    tags: [],
 
-    setUser: (user) => {
-        return set(() => ({
-            user: !user
-                ? undefined
-                : {
-                      id: user.id,
-                      username: user.username,
-                      displayName: user.displayName,
-                      description: user.description,
-                      avatar: user.avatar,
-                      isPublic: user.isPublic,
-                      createdAt: user.createdAt,
-                  },
-        }));
-    },
+    setUser: (user) => set(() => ({ user })),
 
     fillInitialData: (data) => {
         return set(() => ({
             user: data.user,
-            sources: data.sources || [],
-            notes: data.notes || [],
-            quizzes: data.quizzes || [],
-            courses: data.courses || [],
-            groups: data.groups || [],
-            associates: data.associates || [],
-            notifications: data.notifications || [],
+            sources: data.sources,
+            notes: data.notes,
+            quizzes: data.quizzes,
+            courses: data.courses,
+            groups: data.groups,
+            associates: data.associates,
+            notifications: data.notifications,
         }));
     },
 
-    addSource: (source) => {
-        return set((state) => ({ sources: [...state.sources, source] }));
+    addItem: (type, item) => {
+        return set((state) => {
+            return {
+                sources:
+                    type === "source"
+                        ? [...state.sources, item]
+                        : state.sources,
+                notes: type === "note" ? [...state.notes, item] : state.notes,
+                quizzes:
+                    type === "quiz" ? [...state.quizzes, item] : state.quizzes,
+                courses:
+                    type === "course"
+                        ? [...state.courses, item]
+                        : state.courses,
+                groups:
+                    type === "group" ? [...state.groups, item] : state.groups,
+                associates:
+                    type === "associate"
+                        ? [...state.associates, item]
+                        : state.associates,
+                notifications:
+                    type === "notification"
+                        ? [...state.notifications, item]
+                        : state.notifications,
+            };
+        });
     },
 
-    removeSource: (id) => {
-        return set((state) => ({
-            sources: state.sources.filter((source) => source.id !== id),
-        }));
-    },
-
-    addNote: (note) => {
-        return set((state) => ({ notes: [...state.notes, note] }));
-    },
-
-    removeNote: (id) => {
-        return set((state) => ({
-            notes: state.notes.filter((note) => note.id !== id),
-        }));
-    },
-
-    addQuiz: (quiz) => {
-        return set((state) => ({ quizzes: [...state.quizzes, quiz] }));
-    },
-
-    removeQuiz: (id) => {
-        return set((state) => ({
-            quizzes: state.quizzes.filter((quiz) => quiz.id !== id),
-        }));
-    },
-
-    addCourse: (course) => {
-        return set((state) => ({ courses: [...state.courses, course] }));
-    },
-
-    removeCourse: (id) => {
-        return set((state) => ({
-            courses: state.courses.filter((course) => course.id !== id),
-        }));
-    },
-
-    addGroup: (group) => {
-        return set((state) => ({ groups: [...state.groups, group] }));
-    },
-
-    removeGroup: (id) => {
-        return set((state) => ({
-            groups: state.groups.filter((group) => group.id !== id),
-        }));
-    },
-
-    addAssociate: (associate) => {
-        return set((state) => ({
-            associates: [...state.associates, associate],
-        }));
-    },
-
-    removeAssociate: (id) => {
-        return set((state) => ({
-            associates: state.associates.filter(
-                (associate) => associate.id !== id,
-            ),
-        }));
-    },
-
-    addNotification: (notification) => {
-        return set((state) => ({
-            notifications: [...state.notifications, notification],
-        }));
-    },
-
-    addTags: (tag) => {
-        return set((state) => ({
-            tags: [...state.tags, tag],
-        }));
-    },
-
-    removeNotification: (id) => {
-        return set((state) => ({
-            notifications: state.notifications.filter(
-                (notification) => notification.id !== id,
-            ),
-        }));
+    removeItem: (type, id) => {
+        return set((state) => {
+            return {
+                sources:
+                    type === "source"
+                        ? state.sources.filter((source) => source.id !== id)
+                        : state.sources,
+                notes:
+                    type === "note"
+                        ? state.notes.filter((note) => note.id !== id)
+                        : state.notes,
+                quizzes:
+                    type === "quiz"
+                        ? state.quizzes.filter((quiz) => quiz.id !== id)
+                        : state.quizzes,
+                courses:
+                    type === "course"
+                        ? state.courses.filter((course) => course.id !== id)
+                        : state.courses,
+                groups:
+                    type === "group"
+                        ? state.groups.filter((group) => group.id !== id)
+                        : state.groups,
+                associates:
+                    type === "associate"
+                        ? state.associates.filter(
+                              (associate) => associate.id !== id,
+                          )
+                        : state.associates,
+                notifications:
+                    type === "notification"
+                        ? state.notifications.filter(
+                              (notification) => notification.id !== id,
+                          )
+                        : state.notifications,
+            };
+        });
     },
 
     readNotification: (id) => {
         return set((state) => ({
-            notifications: state.notifications.map((notification) => {
-                if (notification.id === id) {
-                    notification.read = true;
+            notifications: state.notifications.map((n) => {
+                if (n.id === id) {
+                    n.read = true;
                 }
-                return notification;
+
+                return n;
             }),
         }));
     },
 
-    readAll: () => {
+    readAllNotifications: () => {
         return set((state) => ({
-            notifications: state.notifications.map((notification) => {
-                notification.read = true;
-                return notification;
+            notifications: state.notifications.map((n) => {
+                n.read = true;
+                return n;
             }),
         }));
     },
@@ -161,6 +122,7 @@ export const useStore = create((set) => ({
 export const useDailyTrain = create()((set) => ({
     start: false,
     isPaused: false,
+
     settings: {
         timeLimit: 60 * 15,
         tags: [],
@@ -170,13 +132,15 @@ export const useDailyTrain = create()((set) => ({
     setStart: (start) => set(() => ({ start })),
     setIsPaused: (isPaused) => set(() => ({ isPaused })),
     setTimeLimit: (timeLimit) => set(() => ({ timeLimit })),
-    setSettings: (newValues) =>
-        set((state) => ({
+
+    setSettings: (newValues) => {
+        return set((state) => ({
             settings: {
                 ...state.settings,
                 ...newValues,
             },
-        })),
+        }));
+    },
 }));
 
 // Alerts Store
@@ -184,52 +148,21 @@ export const useDailyTrain = create()((set) => ({
 export const useAlerts = create()((set) => ({
     alerts: [],
 
-    addAlert: (alert) =>
-        set((state) => ({
+    addAlert: (alert) => {
+        return set((state) => ({
             alerts: [
                 ...state.alerts,
                 {
-                    id: makeUniqueId(),
+                    id: getNanoId(),
                     ...alert,
                 },
             ],
-        })),
+        }));
+    },
 
-    removeAlert: (id) =>
-        set((state) => ({
-            alerts: state.alerts.filter((alert) => alert.id !== id),
-        })),
-}));
-
-// Modals Store
-
-export const useModals = create()((set) => ({
-    modals: [],
-
-    addModal: (modal) =>
-        set((state) => ({
-            modals: [
-                ...state.modals,
-                {
-                    id: makeUniqueId(),
-                    ...modal,
-                },
-            ],
-        })),
-
-    removeModal: (id) => {
-        if (!id) {
-            return set((state) => {
-                let newModals = [...state.modals];
-                newModals.pop();
-                return {
-                    modals: newModals,
-                };
-            });
-        }
-
+    removeAlert: (id) => {
         return set((state) => ({
-            modals: state.modals.filter((modal) => modal.id !== id),
+            alerts: state.alerts.filter((alert) => alert.id !== id),
         }));
     },
 }));

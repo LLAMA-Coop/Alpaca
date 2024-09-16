@@ -1,8 +1,8 @@
 import { getNanoId, catchRouteError } from "@/lib/db/helpers";
+import { validation } from "@/lib/validation";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db/db";
 import bcrypt from "bcrypt";
-import { validation } from "@/lib/validation";
 
 export async function POST(req) {
     const { username, password } = await req.json();
@@ -22,11 +22,7 @@ export async function POST(req) {
         );
     }
 
-    const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:]).{8,72}$/g;
-    const usernameRegex = /^.{2,32}$/g;
-
-    if (!passwordRegex.test(password)) {
+    if (!validation.user.password.regex.test(password)) {
         return NextResponse.json(
             {
                 errors: {
@@ -37,7 +33,7 @@ export async function POST(req) {
         );
     }
 
-    if (!usernameRegex.test(name)) {
+    if (!validation.user.username.regex.test(name)) {
         return NextResponse.json(
             {
                 errors: {

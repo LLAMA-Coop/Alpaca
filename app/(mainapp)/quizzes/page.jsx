@@ -1,21 +1,17 @@
-import { useUser } from "@/lib/auth";
-import { QuizInput, InputPopup, UserStats, QuizDisplay } from "@client";
-import styles from "@/app/page.module.css";
+import { getPermittedResources } from "@/lib/db/helpers";
+import { InputPopup, QuizDisplay } from "@client";
+import styles from "@main/page.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import { useUser } from "@/lib/auth";
 import Link from "next/link";
-import { getPermittedQuizzes } from "@/lib/db/helpers";
 
 export default async function QuizzesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
 
-    let userQuizzes;
-    if (user) {
-        userQuizzes = user.quizzes;
-    }
-
     const page = Number(searchParams["page"] ?? 1);
     const amount = Number(searchParams["amount"] ?? 10);
+
     if (page < 1 || amount < 1) {
         return redirect(
             `/quizzes?page=${page < 1 ? 1 : page}&amount=${
@@ -24,19 +20,12 @@ export default async function QuizzesPage({ searchParams }) {
         );
     }
 
-    // const quizzes = serialize(
-    //     await Quiz.find(query)
-    //         .limit(amount)
-    //         .skip((page - 1) * amount),
-    // );
-    const quizzes = user ? (await getPermittedQuizzes(user.id)) || [] : [];
+    const { quizzes } = await getPermittedResources({
+        withQuizzes: true,
+        userId: user?.id,
+    });
 
     const hasMore = false;
-    // (
-    //     await Quiz.find(query)
-    //         .limit(1)
-    //         .skip((page - 1) * amount + amount)
-    // )?.length > 0;
 
     if (page > 1 && quizzes.length === 0) {
         return redirect("/quizzes?page=1&amount=" + amount);
@@ -44,8 +33,8 @@ export default async function QuizzesPage({ searchParams }) {
 
     return (
         <main className={styles.main}>
-            <div className={styles.titleBlock}>
-                <h2>Quiz Cards</h2>
+            <header>
+                <h1>Quiz Cards</h1>
 
                 <p>
                     A quiz is a question that challenges your understanding and
@@ -56,50 +45,44 @@ export default async function QuizzesPage({ searchParams }) {
                         : `You are only viewing the publicly available quizzes.
                            Log in to see quizzes available to you and create your own quizzes.`}
                 </p>
-            </div>
+            </header>
 
-            {quizzes.length > 0 && (
-                <section>
-                    <h3>Available Quiz Questions</h3>
+            <section>
+                <h2>Available Quiz Questions</h2>
 
-                    <ol className={styles.listGrid}>
-                        {quizzes.map((quiz) => {
-                            const quizInUser = userQuizzes?.find(
-                                (q) =>
-                                    q.quizId.toString() === quiz._id.toString(),
-                            );
+                <ol className={styles.listGrid}>
+                    {quizzes.map((quiz) => {
+                        const isCreator = user && quiz.creator.id === user.id;
+                        const canWrite = isCreator || quiz.allCanWrite;
 
-                            const isCreator =
-                                user &&
-                                ((quiz.createdBy &&
-                                    quiz.createdBy === user.id) ||
-                                    (quiz.creator &&
-                                        quiz.creator.id === user.id));
-                            const canEdit =
-                                isCreator || quiz.permissionType === "write";
+                        return (
+                            <li key={quiz.id}>
+                                <QuizDisplay quiz={quiz} />
 
-                            return (
-                                <li key={quiz.id}>
-                                    <QuizDisplay quiz={quiz} />
+                                {canWrite && (
+                                    <InputPopup type="quiz" resource={quiz} />
+                                )}
 
-                                    {quizInUser && (
-                                        <UserStats userQuizInfo={quizInUser} />
-                                    )}
+                                <Link href={`/quizzes/${quiz.id}`}>
+                                    Go to Quiz Page
+                                </Link>
+                            </li>
+                        );
+                    })}
 
-                                    {canEdit && (
-                                            <InputPopup
-                                                type="quiz"
-                                                resource={quiz}
-                                            />
-                                        )}
-                                    <Link href={`/quizzes/${quiz.id}`}>
-                                        Go to Quiz Page
-                                    </Link>
-                                </li>
-                            );
-                        })}
-                    </ol>
+                    {quizzes.length === 0 && (
+                        <p className={styles.noContent}>
+                            Oh, that's awkward. There are no quizzes to display.
+                            <br />
+                            <Link className="link" href="/register">
+                                Register
+                            </Link>{" "}
+                            and create your own quizzes, you'll love it!
+                        </p>
+                    )}
+                </ol>
 
+                {quizzes.length > 0 && (
                     <div className={styles.paginationButtons}>
                         {page > 1 ? (
                             <Link
@@ -131,16 +114,8 @@ export default async function QuizzesPage({ searchParams }) {
                             </button>
                         )}
                     </div>
-                </section>
-            )}
-
-            {user && (
-                <section>
-                    <h3>Create new quiz</h3>
-
-                    <QuizInput />
-                </section>
-            )}
+                )}
+            </section>
         </main>
     );
 }

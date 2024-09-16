@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS `users` (
     `password` VARCHAR(256),
     `tokens` JSON NOT NULL,
 
-    `created_at` DATE DEFAULT CURRENT_DATE,
-    `updated_at` DATE DEFAULT CURRENT_DATE,
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
 
     `is_deleted` TINYINT DEFAULT 0
 );
@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS `groups` (
     
     `is_public` TINYINT DEFAULT 0,
 
-    `created_at` DATE DEFAULT CURRENT_DATE,
-    `updated_at` DATE DEFAULT CURRENT_DATE,
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
 
     `is_deleted` TINYINT DEFAULT 0
 );
@@ -76,20 +76,17 @@ CREATE TABLE IF NOT EXISTS `sources` (
 
     `title` VARCHAR(128) NOT NULL,
     `medium` ENUM("book", "article", "video", "podcast", "website", "audio"),
-    `url` VARCHAR(128),
+    `url` VARCHAR(512),
 
     `tags` JSON NOT NULL,
     `credits` JSON NOT NULL,
     `created_by` BIGINT NOT NULL,
-    `last_accessed` DATE NULL,
 
-    `all_read` TINYINT DEFAULT 0,
-    `all_edit` TINYINT DEFAULT 0,
-    `read` JSON NOT NULL,
-    `edit` JSON NOT NULL,
+    `published_at` TIMESTAMP NULL,
+    `last_accessed` TIMESTAMP NULL,
     
-    `created_at` DATE DEFAULT CURRENT_DATE,
-    `updated_at` DATE DEFAULT CURRENT_DATE,
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
 
     `is_deleted` TINYINT DEFAULT 0
 );
@@ -104,13 +101,8 @@ CREATE TABLE IF NOT EXISTS `notes` (
     `tags` JSON NOT NULL,
     `created_by` BIGINT NOT NULL,
 
-    `all_read` TINYINT DEFAULT 0,
-    `all_edit` TINYINT DEFAULT 0,
-    `read` JSON NOT NULL,
-    `edit` JSON NOT NULL,
-
-    `created_at` DATE DEFAULT CURRENT_DATE,
-    `updated_at` DATE DEFAULT CURRENT_DATE,
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
 
     `is_deleted` TINYINT DEFAULT 0
 );
@@ -129,13 +121,8 @@ CREATE TABLE IF NOT EXISTS `quizzes` (
 
     `created_by` BIGINT NOT NULL,
 
-    `all_read` TINYINT DEFAULT 0,
-    `all_edit` TINYINT DEFAULT 0,
-    `read` JSON NOT NULL,
-    `edit` JSON NOT NULL,
-
-    `created_at` DATE DEFAULT CURRENT_DATE,
-    `updated_at` DATE DEFAULT CURRENT_DATE,
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
 
     `is_deleted` TINYINT DEFAULT 0
 );
@@ -144,9 +131,9 @@ CREATE TABLE IF NOT EXISTS `user_quizzes` (
     `user_id` BIGINT NOT NULL,
     `quiz_id` BIGINT NOT NULL,
 
-    `last_correct` DATE DEFAULT CURRENT_DATE,
     `level` INT DEFAULT 0,
-    `hidden_until` DATE DEFAULT CURRENT_DATE,
+    `last_correct` TIMESTAMP DEFAULT NOW(),
+    `hidden_until` TIMESTAMP DEFAULT NOW(),
 
     UNIQUE KEY `user_quizzes_user_id_quiz_id_idx` (`user_id`, `quiz_id`),
     KEY `user_quizzes_quiz_id_idx` (`quiz_id`)
@@ -156,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `resource_contributors` (
     `resource_id` BIGINT NOT NULL,
     `user_id` BIGINT NOT NULL,
 
-    `type` ENUM("note", "quiz"),
+    `type` ENUM("source", "note", "quiz"),
 
     UNIQUE KEY `resource_contributors_resource_id_user_id_idx` (`resource_id`, `user_id`),
     KEY `resource_contributors_user_id_idx` (`user_id`)
@@ -169,18 +156,11 @@ CREATE TABLE IF NOT EXISTS `courses` (
     `name` VARCHAR(128),
     `description` VARCHAR(512),
     `enrollment` ENUM("open", "paid", "private"),
-    `tags` JSON NOT NULL,
-
-    `all_read` TINYINT DEFAULT 0,
-    `all_edit` TINYINT DEFAULT 0,
-    `read` JSON NOT NULL,
-    `edit` JSON NOT NULL,
-    `locked` TINYINT DEFAULT 0,
 
     `created_by` BIGINT NOT NULL,
 
-    `created_at` DATE DEFAULT CURRENT_DATE,
-    `updated_at` DATE DEFAULT CURRENT_DATE,
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
 
     `is_deleted` TINYINT DEFAULT 0
 );
@@ -189,8 +169,8 @@ CREATE TABLE IF NOT EXISTS `course_users` (
     `course_id` BIGINT NOT NULL,
     `user_id` BIGINT NOT NULL,
 
-    `role` ENUM("owner", "tutor", "student"),
-    `expiration` DATE DEFAULT (CURRENT_DATE + INTERVAL 200 YEAR),
+    `role` ENUM("owner", "tutor", "student") DEFAULT "student",
+    `expiration` TIMESTAMP null,
 
     UNIQUE KEY `course_users_course_id_user_id_idx` (`course_id`, `user_id`),
     KEY `course_users_user_id_idx` (`user_id`)
@@ -202,20 +182,45 @@ CREATE TABLE IF NOT EXISTS `courses_hierarchy` (
 
     `relationship` ENUM("prerequisite", "encompasses"),
     `average_level_required` INT DEFAULT 0,
+    `minimum_level_required` INT DEFAULT 0,
 
     KEY `courses_hierarchy_inferior_idx` (`inferior`),
     KEY `courses_hierarchy_superior_idx` (`superior`)
 );
 
-CREATE TABLE IF NOT EXISTS `course_resources` (
-    `course_id` BIGINT NOT NULL,
+CREATE TABLE IF NOT EXISTS `resource_relations` (
+    `A` BIGINT NOT NULL,
+    `B` BIGINT NOT NULL,
+
+    `A_type` ENUM("source", "note", "quiz", "course", "group"),
+    `B_type` ENUM("source", "note", "quiz", "course", "group"),
+
+    `include_reference` TINYINT DEFAULT 0,
+    `reference` VARCHAR(128) NULL,
+    `reference_type` ENUM("page", "id", "section", "timestamp", "url") NULL,
+
+    UNIQUE KEY `resource_relations_AB_idx` (`A`, `B`, `A_type`, `B_type`),
+    UNIQUE KEY `resource_relations_BA_idx` (`B`, `A`, `B_type`, `A_type`)
+);
+
+CREATE TABLE IF NOT EXISTS `resource_permissions` (
     `resource_id` BIGINT NOT NULL,
+    `resource_type` ENUM("source", "note", "quiz", "course", "group"),
 
-    `type` ENUM("source", "note", "quiz"),
-    `include_referencing_resources` TINYINT DEFAULT 0,
+    `group_id` BIGINT NULL,
+    `group_locked` TINYINT DEFAULT 0,
 
-    UNIQUE KEY `course_resources_course_id_resource_id_idx` (`course_id`, `resource_id`),
-    KEY `course_resources_resource_id_idx` (`resource_id`)
+    `all_read` TINYINT DEFAULT 0,
+    `all_write` TINYINT DEFAULT 0,
+
+    `read` JSON NOT NULL,
+    `write` JSON NOT NULL,
+
+    KEY `resource_permissions_resource_id_idx` (`resource_id`),
+    KEY `resource_permissions_group_id_idx` (`group_id`),
+
+    -- If all_edit is true, then all_read must be true
+    CHECK (`all_write` = 0 OR `all_read` = 1)
 );
 
 CREATE TABLE IF NOT EXISTS `error_logs` (
@@ -227,5 +232,5 @@ CREATE TABLE IF NOT EXISTS `error_logs` (
     `code` VARCHAR(256),
     `stack` LONGTEXT,
 
-    `triggered_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+    `triggered_at` TIMESTAMP DEFAULT NOW()
 );

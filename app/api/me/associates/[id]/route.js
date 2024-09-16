@@ -5,6 +5,81 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 
+export async function POST(req, { params }) {
+    const { id } = params;
+
+    try {
+        const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) return unauthorized;
+
+        if (await isUserAssociate(user.id, id)) {
+            return NextResponse.json(
+                {
+                    message: "User is already an associate.",
+                },
+                { status: 400 },
+            );
+        } else {
+            const received = await db
+                .selectFrom("notifications")
+                .select("id")
+                .where(({ eb, and }) =>
+                    and([
+                        eb("type", "=", "request"),
+                        eb("recipientId", "=", user.id),
+                        eb("senderId", "=", id),
+                    ]),
+                )
+                .executeTakeFirst();
+
+            if (!received) {
+                return NextResponse.json(
+                    {
+                        message: "No request found.",
+                    },
+                    { status: 404 },
+                );
+            } else {
+                await db
+                    .insertInto("associates")
+                    .values({
+                        A: user.id,
+                        B: id,
+                    })
+                    .execute();
+
+                await db
+                    .deleteFrom("notifications")
+                    .where("id", "=", received.id)
+                    .execute();
+
+                const associate = await useUser({
+                    id,
+                    select: [
+                        "id",
+                        "username",
+                        "displayName",
+                        "description",
+                        "avatar",
+                    ],
+                });
+
+                return NextResponse.json(
+                    {
+                        message: "Successfully accepted associate request.",
+                        content: {
+                            associate,
+                        },
+                    },
+                    { status: 200 },
+                );
+            }
+        }
+    } catch (error) {
+        return catchRouteError({ error, route: req.nextUrl.pathname });
+    }
+}
+
 export async function DELETE(req, { params }) {
     const { id } = params;
 
@@ -27,7 +102,7 @@ export async function DELETE(req, { params }) {
 
             return NextResponse.json(
                 {
-                    message: "Successfully removed request.",
+                    message: "Successfully declined request.",
                 },
                 { status: 200 },
             );
@@ -48,7 +123,7 @@ export async function DELETE(req, { params }) {
 
             return NextResponse.json(
                 {
-                    message: "Successfully removed request.",
+                    message: "Successfully cancelled request.",
                 },
                 { status: 200 },
             );

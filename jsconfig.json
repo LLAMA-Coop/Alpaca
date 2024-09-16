@@ -21,10 +21,12 @@
         "paths": {
             "@/*": ["./*"],
             "@app/*": ["./app/*"],
-            "@components/*": ["./app/components/*"],
+            "@api/*": ["./app/api/*"],
+            "@main/*": ["./app/(mainapp)/*"],
+            "@dash/*": ["./app/(dashboard)/*"],
+            "@c/*": ["./app/components/*"],
             "@server": ["./app/components/server.js"],
-            "@client": ["./app/components/client.js"],
-            "@models": ["./app/api/models/index.js"]
+            "@client": ["./app/components/client.js"]
         }
     },
     "exclude": ["node_modules"]

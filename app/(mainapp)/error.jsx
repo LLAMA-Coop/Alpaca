@@ -40,11 +40,14 @@ export default function Error({ error, reset }) {
                 <p>Don't worry though, we're on it!</p>
 
                 <div className={styles.buttons}>
-                    <button className="button round" onClick={() => reset()}>
+                    <button
+                        className="button round primary"
+                        onClick={() => reset()}
+                    >
                         Try again
                     </button>
 
-                    <Link className="button round" href="/">
+                    <Link className="button round primary" href="/">
                         Go back home
                     </Link>
                 </div>

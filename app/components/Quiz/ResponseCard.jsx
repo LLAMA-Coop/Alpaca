@@ -1,13 +1,12 @@
 "use client";
 
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { correctConfetti } from "@/lib/correctConfetti";
 import { useModals, useAlerts } from "@/store/store";
 import { Input, Card, UserInput } from "@client";
 import stringCompare from "@/lib/stringCompare";
 import shuffleArray from "@/lib/shuffleArray";
 import { useState, useEffect } from "react";
-import makeUniqueId from "@/lib/uniqueId";
+import { getNanoId } from "@/lib/random";
 
 export function ResponseCard({
     canClientCheck,
@@ -35,7 +34,7 @@ export function ResponseCard({
                           quiz.choices.map((x) => ({
                               label: x,
                               value: x,
-                              key: makeUniqueId(),
+                              key: getNanoId(),
                           })),
                       )
                     : null,
@@ -74,9 +73,7 @@ export function ResponseCard({
             setHasAnswered(true);
         } else {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
-                    quiz.id
-                }`,
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${quiz.id}`,
                 {
                     method: "POST",
                     headers: {
@@ -127,7 +124,7 @@ export function ResponseCard({
         outline = showAnswer ? "var(--accent-tertiary-outline)" : undefined;
     } else if (hasAnswered) {
         label = correctAnswer ? "Correct" : "Incorrect";
-        icon = correctAnswer ? faCheck : faXmark;
+        icon = correctAnswer ? <></> : <></>;
         color = correctAnswer ? "var(--accent-3)" : "var(--accent-2)";
         outline = correctAnswer
             ? "var(--accent-tertiary-outline)"

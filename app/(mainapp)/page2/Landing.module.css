@@ -119,25 +119,9 @@
 }
 
 .hero > a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 40px;
     height: 42px;
     width: 220px;
-    border-radius: 999px;
-    background-color: var(--accent-1);
-    color: var(--accent-foreground);
-    font-weight: 700;
-    transition: background-color 0.1s ease-in-out;
-}
-
-.hero > a:hover {
-    background-color: var(--accent-1-hover);
-}
-
-.hero > a:active {
-    background-color: var(--accent-1-active);
+    margin-top: 40px;
 }
 
 .section {

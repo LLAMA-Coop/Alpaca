@@ -1,5 +1,5 @@
-import styles from "@/app/Auth.module.css";
 import { redirect } from "next/navigation";
+import styles from "../Auth.module.css";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { UserInput } from "@client";

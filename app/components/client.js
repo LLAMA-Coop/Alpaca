@@ -1,21 +1,23 @@
 export { Card } from "./Card/Card";
 
-export { Details } from "./Form/Details";
-export { Input, Label } from "./Form/Input";
-export { ListItem } from "./Form/ListItem";
-export { ListAdd } from "./Form/ListAdd";
 export { Select } from "./Form/Select";
-export { PermissionsInput } from "./Form/PermissionsInput";
+export { Form, Column } from "./Form/Form";
+export { Checkbox } from "./Form/Checkbox";
+export { Input, TextArea } from "./Form/Input";
+export { Permissions } from "./Form/Permissions";
+
 export { RightContainer } from "./Header/RightContainer";
+
 export { InputPopup } from "./InputPopup/InputPopup";
 
 export { NoteInput } from "./Note/NoteInput";
-
 export { QuizInput } from "./Quiz/QuizInput";
+export { SourceInput } from "./Source/SourceInput";
+export { CourseInput } from "./Course/CourseInput";
+
 export { ListAnswer } from "./Quiz/ListAnswer";
 export { ResponseCard } from "./Quiz/ResponseCard";
 
-export { SourceInput } from "./Source/SourceInput";
 export { SourceReference } from "./Source/SourceReference";
 
 export { UserInput } from "./User/UserInput";
@@ -37,7 +39,6 @@ export { ThemePicker } from "./Footer/ThemePicker";
 
 export { Timer } from "./Layers/Timer";
 export { Alerts } from "./Layers/Alerts";
-export { Modals } from "./Layers/Modals";
 
 export { InviteUser } from "./Notification/InviteUser";
 export { Notifications } from "./Notification/Notifications";

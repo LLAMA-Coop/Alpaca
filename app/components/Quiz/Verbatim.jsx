@@ -1,6 +1,5 @@
 "use client";
 
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { correctConfetti } from "@/lib/correctConfetti";
@@ -66,9 +65,7 @@ export function Verbatim({
             );
         } else {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
-                    quiz.id
-                }`,
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${quiz.id}`,
                 {
                     method: "POST",
                     headers: {
@@ -109,7 +106,7 @@ export function Verbatim({
     } else if (responseStatus === "complete") {
         label = incorrectIndexes.length ? "Incorrect" : "Correct";
         color = incorrectIndexes.length ? "var(--accent-2)" : "var(--accent-3)";
-        icon = incorrectIndexes.length ? faXmark : faCheck;
+        icon = incorrectIndexes.length ? <></> : <></>;
     } else {
         label = "Check Answer";
     }

@@ -3,10 +3,80 @@ import { server, unauthorized } from "@/lib/apiErrorResponses";
 import stringCompare from "@/lib/stringCompare";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { useUser } from "@/lib/auth";
-import { getQuizzesById, getUserQuizzes, addError } from "@/lib/db/helpers";
-import { db } from "@/lib/db/db.js";
 import { htmlDate } from "@/lib/date";
+import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db.js";
+import {
+    canDeleteResource,
+    catchRouteError,
+    canEditResource,
+    getQuizzesById,
+    getUserQuizzes,
+    updateQuiz,
+    addError,
+} from "@/lib/db/helpers";
+
+export async function PATCH(req) {
+    try {
+        const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) return unauthorized;
+
+        const { id } = req.params;
+        const {
+            type,
+            prompt,
+            choices,
+            answers,
+            hints,
+            sources,
+            notes,
+            courses,
+            tags,
+            permissions,
+        } = await req.json();
+
+        if (!(await canEditResource(user.id, id, "quiz"))) {
+            return NextResponse.json(
+                {
+                    message: "You do not have permission to edit this quiz.",
+                },
+                { status: 404 },
+            );
+        }
+
+        const content = await updateQuiz({
+            id,
+            type,
+            prompt,
+            choices,
+            answers,
+            hints,
+            sources,
+            notes,
+            courses,
+            tags,
+            permissions,
+            contributorId: user.id,
+        });
+
+        if (!content.valid) {
+            return NextResponse.json(
+                {
+                    message: "Invalid quiz data.",
+                    errors: content.errors,
+                },
+                { status: 400 },
+            );
+        }
+
+        return NextResponse.json({
+            message: "Successfully updated quiz.",
+            content,
+        });
+    } catch (error) {
+        return catchRouteError({ error, route: req.nextUrl.pathname });
+    }
+}
 
 export async function POST(req, { params }) {
     try {
@@ -139,55 +209,26 @@ export async function DELETE(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const { _id } = params;
+        const { id } = params;
 
-        const quiz = (await getQuizzesById({ id: _id }))[0];
-        if (!quiz) {
+        if (!(await canDeleteResource(user.id, id, "quiz"))) {
             return NextResponse.json(
                 {
-                    message: `Quiz with id ${_id} could not be found`,
+                    message: "You do not have permission to delete this quiz.",
                 },
                 { status: 404 },
             );
         }
 
-        const isCreator =
-            (quiz.createdBy && quiz.createdBy == user.id) ||
-            (quiz.creator && quiz.creator.id == user.id);
+        await db.deleteFrom("quizzes").where("id", "=", id).execute();
 
-        if (!isCreator) {
-            return NextResponse.json(
-                {
-                    message: `User ${user.id} is not authorized to delete quiz with id ${_id}. Only the creator ${quiz.creator.id} is permitted`,
-                },
-                { status: 403 },
-            );
-        }
-
-        const [deletion, fields] = await db
-            .promise()
-            .query("DELETE FROM `Quizzes` WHERE `id` = ?", [_id]);
-        if (deletion.affectedRows === 0) {
-            console.error(`Unable to delete quiz with id ${_id}`);
-            addError(
-                {
-                    stack: deletion,
-                    message: `Unable to delete quiz with id ${_id}`,
-                },
-                "/api/quiz/[_id]: POST",
-            );
-
-            return NextResponse.json(
-                {
-                    message: `Unable to delete quiz with id ${_id}`,
-                },
-                { status: 500 },
-            );
-        }
-        return new NextResponse(null, { status: 204 });
+        return NextResponse.json(
+            {
+                message: "Successfully deleted quiz.",
+            },
+            { status: 200 },
+        );
     } catch (error) {
-        console.error(`[Quiz] DELETE error:\n ${error}`);
-        addError(error, "/api/quiz/[_id]: DELETE");
-        return server;
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

@@ -1,17 +1,13 @@
+import styles from "@/app/(mainapp)/page.module.css";
+import { getGroups } from "@/lib/db/helpers";
 import { Card, GroupInput } from "@client";
-import styles from "@/app/page.module.css";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { getPermittedGroups } from "@/lib/db/helpers";
 
-export default async function GroupPage() {
-    let user = await useUser({ token: cookies().get("token")?.value });
-    if (!user) {
-        // Need non-user Groups page
-        user = { id: 0 };
-    }
+export default async function GroupsPage() {
+    const user = await useUser({ token: cookies().get("token")?.value });
 
-    const groups = await getPermittedGroups(user.id);
+    const groups = await getGroups(user?.id, true);
 
     const yourGroups = groups.filter((x) => {
         const you = x.members.find((m) => m.id === user.id);

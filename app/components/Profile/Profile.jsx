@@ -1,7 +1,7 @@
 "use client";
 
-import { useAlerts, useModals, useStore } from "@/store/store";
 import { usePathname, useRouter } from "next/navigation";
+import { useAlerts, useStore } from "@/store/store";
 import { protectedPaths } from "@/app/data/paths";
 import styles from "./Profile.module.css";
 import { Avatar } from "@client";
@@ -11,7 +11,6 @@ const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
 export function Profile({ user, size = 44 }) {
     const notifications = useStore((state) => state.notifications);
-    const addModal = useModals((state) => state.addModal);
     const addAlert = useAlerts((state) => state.addAlert);
     const readAll = useStore((state) => state.readAll);
 
@@ -111,37 +110,37 @@ export function Profile({ user, size = 44 }) {
                     <path d="M0,19v4a1,1,0,0,0,2,0V19H4.93a8.248,8.248,0,0,0,14.14,0H22v4a1,1,0,0,0,2,0V19a2,2,0,0,0-2-2H19.947a8.2,8.2,0,0,0,.325-2.273A8.37,8.37,0,0,0,20.2,13.7l-.175-.7H23a1,1,0,0,0,0-2H19.522L18.513,7H22a2,2,0,0,0,2-2V1a1,1,0,0,0-2,0V5H18c-.018,0-.032.009-.05.01a6.411,6.411,0,0,0-11.89,0C6.039,5.011,6.021,5,6,5H2V1A1,1,0,0,0,0,1V5A2,2,0,0,0,2,7H5.485L4.472,11H1a1,1,0,0,0,0,2H3.965l-.145.573L3.8,13.7a8.37,8.37,0,0,0-.07,1.032A8.2,8.2,0,0,0,4.053,17H2A2,2,0,0,0,0,19Z" />
                 </svg>
             ),
-            onClick: () =>
-                addModal({
-                    title: "Report a bug",
-                    content: "Report a bug",
-                    buttonTexts: ["Cancel", "Send"],
-                    onSave: (data) => {
-                        fetch(`${basePath}/api/error`, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                message: data.title ?? "No title provided",
-                                stack: data.description,
-                                url: data.url,
-                                userInfo: {
-                                    userAgent: navigator.userAgent,
-                                    language: navigator.language,
-                                    cookieEnabled: navigator.cookieEnabled,
-                                    doNotTrack: navigator.doNotTrack,
-                                    hardwareConcurrency:
-                                        navigator.hardwareConcurrency,
-                                    maxTouchPoints: navigator.maxTouchPoints,
-                                    isOnline: navigator.onLine,
-                                },
-                                isClient: true,
-                                report: true,
-                            }),
-                        });
-                    },
-                }),
+            onClick: () => {},
+            // addModal({
+            //     title: "Report a bug",
+            //     content: "Report a bug",
+            //     buttonTexts: ["Cancel", "Send"],
+            //     onSave: (data) => {
+            //         fetch(`${basePath}/api/error`, {
+            //             method: "POST",
+            //             headers: {
+            //                 "Content-Type": "application/json",
+            //             },
+            //             body: JSON.stringify({
+            //                 message: data.title ?? "No title provided",
+            //                 stack: data.description,
+            //                 url: data.url,
+            //                 userInfo: {
+            //                     userAgent: navigator.userAgent,
+            //                     language: navigator.language,
+            //                     cookieEnabled: navigator.cookieEnabled,
+            //                     doNotTrack: navigator.doNotTrack,
+            //                     hardwareConcurrency:
+            //                         navigator.hardwareConcurrency,
+            //                     maxTouchPoints: navigator.maxTouchPoints,
+            //                     isOnline: navigator.onLine,
+            //                 },
+            //                 isClient: true,
+            //                 report: true,
+            //             }),
+            //         });
+            //     },
+            // }),
         },
         {
             name: "hr",

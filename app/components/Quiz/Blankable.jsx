@@ -1,11 +1,10 @@
 "use client";
 
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { correctConfetti } from "@/lib/correctConfetti";
-import { useModals, useAlerts } from "@/store/store";
-import { Card, Input, UserInput } from "@client";
 import { useEffect, useState } from "react";
+import { useAlerts } from "@/store/store";
+import { Card, Input } from "@client";
 
 export function Blankable({
     canClientCheck,
@@ -23,8 +22,6 @@ export function Blankable({
 
     const [showAnswer, setShowAnswer] = useState(false);
 
-    const addModal = useModals((state) => state.addModal);
-    const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
@@ -56,9 +53,7 @@ export function Blankable({
             );
         } else {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
-                    quiz.id
-                }`,
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${quiz.id}`,
                 {
                     method: "POST",
                     headers: {
@@ -67,17 +62,6 @@ export function Blankable({
                     body: JSON.stringify({ userResponse }),
                 },
             );
-
-            if (response.status === 401) {
-                addAlert({
-                    success: false,
-                    message: "You have been signed out. Please sign in again.",
-                });
-                addModal({
-                    title: "Sign back in",
-                    content: <UserInput onSubmit={removeModal} />,
-                });
-            }
 
             const resJson = await response.json();
             console.log(resJson);
@@ -99,7 +83,7 @@ export function Blankable({
     } else if (responseStatus === "complete") {
         label = incorrectIndexes.length ? "Incorrect" : "Correct";
         color = incorrectIndexes.length ? "var(--accent-2)" : "var(--accent-3)";
-        icon = incorrectIndexes.length ? faXmark : faCheck;
+        icon = incorrectIndexes.length ? <></> : <></>;
     } else {
         label = "Check Answer";
     }

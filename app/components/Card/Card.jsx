@@ -1,6 +1,5 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./Card.module.css";
 import { useState } from "react";
 import Link from "next/link";
@@ -105,11 +104,11 @@ export function Card({
                                             >
                                                 {button.label}
 
-                                                {button.icon && (
+                                                {/* {button.icon && (
                                                     <FontAwesomeIcon
                                                         icon={button.icon}
                                                     />
-                                                )}
+                                                )} */}
                                             </a>
                                         );
                                     }
@@ -129,11 +128,11 @@ export function Card({
                                         >
                                             {button.label}
 
-                                            {button.icon && (
+                                            {/* {button.icon && (
                                                 <FontAwesomeIcon
                                                     icon={button.icon}
                                                 />
-                                            )}
+                                            )} */}
                                         </Link>
                                     );
                                 } else {
@@ -146,11 +145,11 @@ export function Card({
                                             }}
                                         >
                                             {button.label}{" "}
-                                            {button.icon && (
+                                            {/* {button.icon && (
                                                 <FontAwesomeIcon
                                                     icon={button.icon}
                                                 />
-                                            )}
+                                            )} */}
                                         </button>
                                     );
                                 }

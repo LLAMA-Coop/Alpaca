@@ -1,6 +1,6 @@
-import { FillStore, Timer, Alerts, Modals } from "@client";
 import { getPermittedResources } from "@/lib/db/helpers";
 import { Inter, Sofia_Sans } from "next/font/google";
+import { FillStore, Timer, Alerts } from "@client";
 import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -38,14 +38,15 @@ export default async function RootLayout({ children }) {
     const user = await useUser({
         token: cookies().get("token")?.value,
         select: ["id", "username", "displayName", "avatar"],
-        takeAssociates: true,
-        takeCourses: true,
-        takeNotifications: true,
+        withAssociates: true,
+        withCourses: true,
+        withNotifications: true,
     });
 
-    const { sources, notes, quizzes, courses } = await getPermittedResources(
-        user?.id,
-    );
+    const { sources, notes, quizzes, courses } = await getPermittedResources({
+        userId: user?.id,
+        takeAll: true,
+    });
 
     return (
         <html lang="en" className={`${inter.variable} ${sofia.variable}`}>
@@ -71,7 +72,6 @@ export default async function RootLayout({ children }) {
 
                 <Timer />
                 <Alerts />
-                <Modals />
             </body>
         </html>
     );

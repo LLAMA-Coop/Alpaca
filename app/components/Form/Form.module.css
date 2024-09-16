@@ -1,0 +1,15 @@
+.form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 40px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.form > button {
+    align-self: self-end;
+}

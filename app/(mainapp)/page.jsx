@@ -13,9 +13,9 @@ export default async function Home({ searchParams }) {
 
     return (
         <main className={styles.main}>
-            <div className={styles.titleBlock}>
-                <h2>Welcome to Alpaca!</h2>
-            </div>
+            <header>
+                <h1>Welcome to Alpaca!</h1>
+            </header>
 
             <section id="overall" className="paragraph">
                 <h3>Overall Concept</h3>

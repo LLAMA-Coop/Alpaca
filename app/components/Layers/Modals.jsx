@@ -1,41 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useModals } from "@/store/store";
 import styles from "./Modals.module.css";
 import { Input } from "@client";
 
-export function Modals() {
-    const modals = useModals((state) => state.modals);
-
-    useEffect(() => {
-        if (modals.length === 0) {
-            document.documentElement.style.overflow = "auto";
-        } else {
-            document.documentElement.style.overflow = "hidden";
-        }
-    }, [modals]);
-
-    if (modals.length === 0) return null;
-
-    return (
-        <div className={styles.container} data-find="modals">
-            {modals.map((modal, index) => (
-                <Modal
-                    key={modal.id}
-                    modal={modal}
-                    index={index}
-                    length={modals.length}
-                />
-            ))}
-        </div>
-    );
-}
-
 export function Modal({ modal, index, length, buttonTexts }) {
-    const [closing, setClosing] = useState(false);
-    const [password, setPassword] = useState("");
-
     const [reportTitle, setReportTitle] = useState("");
     const [reportDescription, setReportDescription] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
@@ -43,7 +12,6 @@ export function Modal({ modal, index, length, buttonTexts }) {
         typeof window !== "undefined" ? window.location.href : "",
     );
 
-    const removeModal = useModals((state) => state.removeModal);
     const closeButton = useRef(null);
     const saveButton = useRef(null);
 
@@ -71,37 +39,12 @@ export function Modal({ modal, index, length, buttonTexts }) {
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, []);
 
-    function close() {
-        setClosing(true);
-        setTimeout(() => {
-            removeModal(modal.id);
-        }, 200);
-    }
-
     return (
-        <div
-            className={styles.wrapper}
-            onClick={() => close()}
-            style={{
-                backgroundColor: index === 0 ? "rgba(0, 0, 0, 0.5)" : "",
-                animation:
-                    index === 0
-                        ? closing
-                            ? `${styles.fadeOut} 0.25s ease`
-                            : `${styles.fadeIn} 0.2s ease`
-                        : "",
-            }}
-        >
+        <div className={styles.wrapper} onClick={() => close()}>
             <div
                 aria-modal="true"
                 className={styles.modal}
                 onClick={(e) => e.stopPropagation()}
-                style={{
-                    animationName:
-                        closing || index < length - 1
-                            ? `${styles.fadeOut}, ${styles.popOut}`
-                            : "",
-                }}
             >
                 <header>
                     <h2>{modal.title || "Modal Title"}</h2>
@@ -127,12 +70,12 @@ export function Modal({ modal, index, length, buttonTexts }) {
                                 current password.
                             </p>
 
-                            <Input
+                            {/* <Input
                                 label="Password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                            />
+                            /> */}
                         </div>
                     ) : modal.content === "Report a bug" ? (
                         <div>
@@ -189,7 +132,7 @@ export function Modal({ modal, index, length, buttonTexts }) {
                         onClick={() => {
                             if (modal.onSave) {
                                 if (modal.content === "Confirm Password") {
-                                    modal.onSave(password);
+                                    // modal.onSave(password);
                                 } else if (modal.content === "Report a bug") {
                                     if (reportDescription.length < 10) {
                                         setDescriptionError(

@@ -14,16 +14,24 @@ export function Notifications() {
     const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
     async function accept(notification) {
-        let url = `/api/associates/${notification.id}/accept`;
+        let url = `/api/me/associates/${notification.senderId}`;
         if (notification.type === 2) {
-            url = `/api/groups/${notification.group}/members/${notification.recipient}/accept`;
+            url = `/api/groups/${notification.group}/members/${notification.recipient}`;
         }
 
         const response = await fetch(`${basePath}${url}`, {
             method: "POST",
-        }).then((res) => res.json());
+        });
 
-        if (response.success) {
+        let data = null;
+
+        try {
+            data = await response.json();
+        } catch (e) {
+            data = { success: false, message: "An error occurred" };
+        }
+
+        if (response.ok) {
             removeNotification(notification.id);
 
             if (response.associate) {
@@ -34,28 +42,36 @@ export function Notifications() {
         }
 
         addAlert({
-            success: response.success,
-            message: response.message,
+            success: response.ok,
+            message: data.message,
         });
     }
 
     async function decline(notification) {
-        let url = `/api/associates/${notification.id}/decline`;
+        let url = `/api/me/associates/${notification.id}`;
         if (notification.type === "invite") {
-            url = `/api/groups/${notification.groupId}/members/${notification.recipientId}/decline`;
+            url = `/api/groups/${notification.groupId}/members/${notification.recipientId}`;
         }
 
         const response = await fetch(`${basePath}${url}`, {
-            method: "POST",
-        }).then((res) => res.json());
+            method: "DELETE",
+        });
 
-        if (response.success) {
+        let data = null;
+
+        try {
+            data = await response.json();
+        } catch (e) {
+            data = { success: false, message: "An error occurred" };
+        }
+
+        if (response.ok) {
             removeNotification(notification.id);
         }
 
         addAlert({
-            success: response.success,
-            message: response.message,
+            success: response.ok,
+            message: data.message,
         });
     }
 
@@ -64,10 +80,15 @@ export function Notifications() {
 
         const response = await fetch(`${basePath}${url}`, {
             method: "DELETE",
-        }).then((res) => res.json());
+        });
 
-        if (response.success) {
+        if (response.ok) {
             removeNotification(notification.id);
+        } else {
+            addAlert({
+                success: false,
+                message: "An error occurred",
+            });
         }
     }
 
@@ -76,10 +97,15 @@ export function Notifications() {
 
         const response = await fetch(`${basePath}${url}`, {
             method: "PATCH",
-        }).then((res) => res.json());
+        });
 
-        if (response.success) {
+        if (response.ok) {
             readNotification(notification.id);
+        } else {
+            addAlert({
+                success: false,
+                message: "An error occurred",
+            });
         }
     }
 

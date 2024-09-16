@@ -1,17 +1,18 @@
-import { useUser } from "@/lib/auth";
-import { InputPopup, SourceInput } from "@client";
-import styles from "@/app/page.module.css";
+import { getPermittedResources } from "@/lib/db/helpers";
+import styles from "@main/page.module.css";
 import { redirect } from "next/navigation";
 import { SourceDisplay } from "@server";
 import { cookies } from "next/headers";
+import { InputPopup } from "@client";
+import { useUser } from "@/lib/auth";
 import Link from "next/link";
-import { getPermittedSources } from "@/lib/db/helpers";
 
 export default async function SourcesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
 
     const page = Number(searchParams["page"] ?? 1);
     const amount = Number(searchParams["amount"] ?? 10);
+
     if (page < 1 || amount < 1) {
         return redirect(
             `/sources?page=${page < 1 ? 1 : page}&amount=${
@@ -20,11 +21,10 @@ export default async function SourcesPage({ searchParams }) {
         );
     }
 
-    const sources =
-        (user
-            ? await getPermittedSources(user.id)
-            : await getPermittedSources()) ?? [];
-    console.log("SOURCES", sources);
+    const { sources } = await getPermittedResources({
+        withSources: true,
+        userId: user?.id,
+    });
 
     const hasMore = false;
 
@@ -34,8 +34,8 @@ export default async function SourcesPage({ searchParams }) {
 
     return (
         <main className={styles.main}>
-            <div className={styles.titleBlock}>
-                <h2>Sources</h2>
+            <header>
+                <h1>Sources</h1>
 
                 <p>
                     A source is a record of a resource such as a book, website,
@@ -46,80 +46,76 @@ export default async function SourcesPage({ searchParams }) {
                         : `You are only viewing the publicly available sources.
                            Log in to see sources available to you and create your own sources.`}
                 </p>
-            </div>
+            </header>
 
-            {sources && sources.length > 0 && (
-                <section>
-                    <h3>Available Sources</h3>
+            <section>
+                <h2>Available Sources</h2>
 
-                    <ol className={styles.listGrid}>
-                        {sources.map((src) => {
-                            const isCreator =
-                                user &&
-                                ((src.createdBy && src.createdBy === user.id) ||
-                                    (src.creator &&
-                                        src.creator.id === user.id));
-                            const canEdit =
-                                isCreator || src.permissionType === "write";
+                <ol className={styles.listGrid}>
+                    {sources.map((source) => {
+                        const isCreator = user && source.creator.id === user.id;
+                        const canWrite = isCreator || source.allCanWrite;
 
-                            return (
-                                <li key={src.id}>
-                                    <SourceDisplay source={src} />
-                                    {canEdit && (
-                                        <InputPopup
-                                            type="source"
-                                            resource={src}
-                                        />
-                                    )}
-                                    <Link href={`/sources/${src.id}`}>
-                                        Go to Source Page
-                                    </Link>
-                                </li>
-                            );
-                        })}
-                    </ol>
+                        return (
+                            <li key={source.id}>
+                                <SourceDisplay source={source} />
 
+                                {canWrite && (
+                                    <InputPopup
+                                        type="source"
+                                        resource={source}
+                                    />
+                                )}
+
+                                <Link href={`/sources/${source.id}`}>
+                                    Go to Source Page
+                                </Link>
+                            </li>
+                        );
+                    })}
+
+                    {sources.length === 0 && (
+                        <p className={styles.noContent}>
+                            Oh, that's awkward. There are no sources to display.
+                            <br />
+                            <Link className="link" href="/register">
+                                Register
+                            </Link>{" "}
+                            and create your own sources, you'll love it!
+                        </p>
+                    )}
+                </ol>
+
+                {sources.length > 0 && (
                     <div className={styles.paginationButtons}>
                         {page > 1 ? (
                             <Link
-                                className="button submit"
-                                href={`/sources?page=${
-                                    page - 1
-                                }&amount=${amount}`}
+                                className="button submit primary"
+                                href={`/sources?page=${page - 1}&amount=${amount}`}
                             >
                                 Previous page
                             </Link>
                         ) : (
-                            <button disabled className="button submit">
+                            <button disabled className="button submit primary">
                                 Previous page
                             </button>
                         )}
 
                         {hasMore ? (
                             <Link
-                                className="button submit"
-                                href={`/sources?page=${
-                                    page + 1
-                                }&amount=${amount}`}
+                                className="button submit primary"
+                                href={`/sources?page=${page + 1}&amount=${amount}`}
                             >
                                 Next page
                             </Link>
                         ) : (
-                            <button disabled className="button submit">
+                            <button disabled className="button submit primary">
                                 Next page
                             </button>
                         )}
                     </div>
-                </section>
-            )}
-
-            {user && (
-                <section>
-                    <h3>Create new source</h3>
-
-                    <SourceInput />
-                </section>
-            )}
+                )}
+            </section>
         </main>
     );
 }

@@ -1,9 +1,9 @@
-import { getPermittedNotes } from "@/lib/db/helpers";
-import { NoteInput, InputPopup } from "@client";
-import styles from "@/app/page.module.css";
+import { getPermittedResources } from "@/lib/db/helpers";
+import styles from "@main/page.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { NoteDisplay } from "@server";
+import { InputPopup } from "@client";
 import { useUser } from "@/lib/auth";
 import Link from "next/link";
 
@@ -21,9 +21,10 @@ export default async function NotesPage({ searchParams }) {
         );
     }
 
-    const notes = user
-        ? (await getPermittedNotes(user.id)) || []
-        : (await getPermittedNotes()) || [];
+    const { notes } = await getPermittedResources({
+        withNotes: true,
+        userId: user?.id,
+    });
 
     const hasMore = false;
 
@@ -33,8 +34,8 @@ export default async function NotesPage({ searchParams }) {
 
     return (
         <main className={styles.main}>
-            <div className={styles.titleBlock}>
-                <h2>Notes</h2>
+            <header>
+                <h1>Notes</h1>
 
                 <p>
                     A note is a response to or summary of information in a cited
@@ -45,49 +46,49 @@ export default async function NotesPage({ searchParams }) {
                         : `You are only viewing the publicly available notes.
                            Log in to see notes available to you and create your own notes.`}
                 </p>
-            </div>
+            </header>
 
-            {notes.length > 0 && (
-                <section>
-                    <h3>Available Notes</h3>
+            <section>
+                <h2>Available Notes</h2>
 
-                    <ol className={styles.listGrid}>
-                        {notes.map((note) => {
-                            const isCreator =
-                                user &&
-                                ((note.createdBy &&
-                                    note.createdBy === user.id) ||
-                                    (note.creator &&
-                                        note.creator.id === user.id));
-                            const canEdit =
-                                isCreator || note.permissionType === "write";
+                <ol className={styles.listGrid}>
+                    {notes.map((note) => {
+                        const isCreator = user && note.creator.id === user.id;
+                        const canWrite = isCreator || note.allCanWrite;
 
-                            return (
-                                <li key={note.id}>
-                                    <NoteDisplay note={note} />
+                        return (
+                            <li key={note.id}>
+                                <NoteDisplay note={note} />
 
-                                    {canEdit && (
-                                            <InputPopup
-                                                type="note"
-                                                resource={note}
-                                            />
-                                        )}
+                                {canWrite && (
+                                    <InputPopup type="note" resource={note} />
+                                )}
 
-                                    <Link href={`/notes/${note.id}`}>
-                                        Go to Note Page
-                                    </Link>
-                                </li>
-                            );
-                        })}
-                    </ol>
+                                <Link href={`/notes/${note.id}`}>
+                                    Go to Note Page
+                                </Link>
+                            </li>
+                        );
+                    })}
 
+                    {notes.length === 0 && (
+                        <p className={styles.noContent}>
+                            Oh, that's awkward. There are no notes to display.
+                            <br />
+                            <Link className="link" href="/register">
+                                Register
+                            </Link>{" "}
+                            and create your own notes, you'll love it!
+                        </p>
+                    )}
+                </ol>
+
+                {notes.length > 0 && (
                     <div className={styles.paginationButtons}>
                         {page > 1 ? (
                             <Link
                                 className="button submit"
-                                href={`/notes?page=${
-                                    page - 1
-                                }&amount=${amount}`}
+                                href={`/notes?page=${page - 1}&amount=${amount}`}
                             >
                                 Previous page
                             </Link>
@@ -100,9 +101,7 @@ export default async function NotesPage({ searchParams }) {
                         {hasMore ? (
                             <Link
                                 className="button submit"
-                                href={`/notes?page=${
-                                    page + 1
-                                }&amount=${amount}`}
+                                href={`/notes?page=${page + 1}&amount=${amount}`}
                             >
                                 Next page
                             </Link>
@@ -112,15 +111,8 @@ export default async function NotesPage({ searchParams }) {
                             </button>
                         )}
                     </div>
-                </section>
-            )}
-
-            {user && (
-                <section>
-                    <h3>Create new note</h3>
-                    <NoteInput />
-                </section>
-            )}
+                )}
+            </section>
         </main>
     );
 }

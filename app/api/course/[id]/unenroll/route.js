@@ -1,78 +1,42 @@
-import { unauthorized, server } from "@/lib/apiErrorResponses";
+import { canUnenrollFromCourse, catchRouteError } from "@/lib/db/helpers";
+import { unauthorized } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { doesUserMeetPrerequisites } from "@/lib/permissions";
-import { addError, getPermittedCourses } from "@/lib/db/helpers";
+import { db } from "@/lib/db/db";
 
 export async function POST(req, { params }) {
-    const { id } = params;
-
     try {
-        const user = await useUser({
-            token: cookies().get("token")?.value,
-        });
+        const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const course = (await getPermittedCourses(user.id)).find(
-            (x) => x.id === id,
-        );
-        if (!course) {
+        const { id } = params;
+
+        if (!(await canUnenrollFromCourse(user.id, id))) {
             return NextResponse.json(
                 {
-                    success: false,
-                    message: "No course found with that id",
+                    message:
+                        "You are not allowed to unenroll from this course.",
                 },
-                { status: 404 },
+                { status: 403 },
             );
         }
 
-        if (course.createdBy.toString() === user.id.toString()) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "You cannot unenroll from a course you created",
-                },
-                { status: 400 },
-            );
-        }
-
-        if (
-            !user.courses.includes(course.id) &&
-            !course.students.includes(user.id)
-        ) {
-            return NextResponse.json({
-                success: false,
-                message: "You are not enrolled in this course",
-            });
-        }
-
-        const indexCourse = user.courses.findIndex(
-            (x) => x.course._id.toString() === course._id.toString(),
-        );
-        if (indexCourse !== -1) {
-            user.courses.splice(indexCourse, 1);
-        }
-        const indexStudent = course.students.findIndex(
-            (x) => x._id.toString() === user.id.toString(),
-        );
-        if (indexStudent !== -1) {
-            course.students.splice(indexStudent, 1);
-        }
-
-        await user.save();
-        await course.save();
+        await db
+            .deleteFrom("course_users")
+            .where({
+                courseId: id,
+                userId: user.id,
+            })
+            .execute();
 
         return NextResponse.json(
             {
-                success: true,
-                message: "Successfully unenrolled from a course",
+                message: "Successfully unenrolled from this course.",
             },
             { status: 200 },
         );
     } catch (error) {
-        console.error(`[CourseUnenroll] POST error:\n ${error}`);
-        addError(error, "/api/course/[id]/unenroll: POST");
-        return server;
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

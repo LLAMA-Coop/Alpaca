@@ -1,20 +1,18 @@
-import {
-    getQuizzesById,
-    getSourcesById,
-    getNotesById,
-    getPermittedQuizzes,
-} from "@/lib/db/helpers";
 import styles from "./Landing.module.css";
-import Link from "next/link";
-import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import QuizDisplay from "../components/Quiz/QuizDisplay";
+import { useUser } from "@/lib/auth";
+import Link from "next/link";
+import { getPermittedResources } from "@/lib/db/helpers";
 
 export default async function LandingPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
-    const notes = await getNotesById({ ids: [1, 2, 3], userId: user.id });
-    const note = (await getNotesById({ id: 1 }))[0];
-    const quizzes = await getPermittedQuizzes();
+
+    // const note = (await getNotesById({ id: 1 }))[0];
+
+    const { quizzes } = await getPermittedResources({
+        userId: user.id,
+        withQuizzes: true,
+    });
 
     return (
         <main className={styles.container}>
@@ -30,7 +28,9 @@ export default async function LandingPage() {
                 <h1>Welcome To Alpaca!</h1>
                 <p>Create | Test | Learn</p>
 
-                <Link href="#grid">Discover plans</Link>
+                <Link className="button primary round" href="#grid">
+                    Discover plans
+                </Link>
 
                 <img src="/assets/landing/stars.png" alt="Stars illustration" />
                 <img src="/assets/landing/stars.png" alt="Stars illustration" />
@@ -139,7 +139,7 @@ export default async function LandingPage() {
                 </div>
             </section>
 
-            <section className={styles.section}>
+            {/* <section className={styles.section}>
                 {notes.map((x) => (
                     <p key={x.id}>
                         {x.id} {x.title}; {x.text}; {x.creator.username};{" "}
@@ -151,7 +151,7 @@ export default async function LandingPage() {
                 {quizzes.map((q) => (
                     <QuizDisplay key={q.id} quiz={q} />
                 ))}
-            </section>
+            </section> */}
         </main>
     );
 }

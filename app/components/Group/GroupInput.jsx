@@ -1,64 +1,77 @@
 "use client";
 
-import { Label, Input, Spinner, UserInput } from "@client";
-import { useModals, useAlerts } from "@/store/store";
-import { useState, useRef, useEffect } from "react";
-import { Validator } from "@/lib/validation";
-import filetypeinfo from "magic-bytes.js";
-import styles from "./Group.module.css";
+import { Input, Spinner, Form } from "@client";
+import { useEffect, useReducer } from "react";
 import { validation } from "@/lib/validation";
+import { Validator } from "@/lib/validation";
+import { useAlerts } from "@/store/store";
+import filetypeinfo from "magic-bytes.js";
+
+const defaultState = {
+    name: "",
+    description: "",
+    icon: null,
+    errors: {},
+    loading: false,
+};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case "name":
+            return { ...state, name: action.value };
+        case "description":
+            return { ...state, description: action.value };
+        case "icon":
+            return { ...state, icon: action.value };
+        case "errors":
+            return { ...state, errors: { ...state.errors, ...action.value } };
+        case "loading":
+            return { ...state, loading: action.value };
+        case "reset":
+            return defaultState;
+        default:
+            return state;
+    }
+}
 
 export function GroupInput({ group }) {
-    const [name, setName] = useState("");
-    const [nameError, setNameError] = useState("");
+    const [state, dispatch] = useReducer(reducer, defaultState);
 
-    const [description, setDescription] = useState("");
-    const [descriptionError, setDescriptionError] = useState("");
-
-    const [icon, setIcon] = useState(null);
-    const [iconError, setIconError] = useState("");
-
-    const [loading, setLoading] = useState(false);
-
-    const addModal = useModals((state) => state.addModal);
-    const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
         if (!group) return;
-        setName(group.name);
-        setDescription(group.description);
+        dispatch({ type: "name", value: group.name });
+        dispatch({ type: "description", value: group.description });
+        dispatch({ type: "icon", value: group.icon });
     }, []);
-
-    const inputRef = useRef(null);
 
     async function handleSubmit(e) {
         e.preventDefault();
-        if (loading) return;
+        if (state.loading) return;
 
         const validator = new Validator();
 
-        validator.validateAll([
-            {
-                field: "name",
-                value: name,
-                type: "group",
-            },
-            {
-                field: "description",
-                value: description,
-                type: "group",
-            },
-        ]);
+        validator.validateAll(
+            [
+                {
+                    field: "name",
+                    value: state.name.trim(),
+                },
+                {
+                    field: "description",
+                    value: state.description.trim(),
+                },
+                // Not checking icon as it's not a string
+            ],
+            "group",
+        );
 
         if (!validator.isValid) {
-            return addAlert({
-                success: false,
-                message: validator.getErrorsAsString(),
-            });
+            return dispatch({ type: "errors", value: validator.errors });
         }
 
-        setLoading(true);
+        dispatch({ type: "loading", value: true });
 
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/groups`,
@@ -68,87 +81,69 @@ export function GroupInput({ group }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name: name.trim(),
-                    description: description,
-                    icon: icon,
+                    name: state.name.trim(),
+                    description: state.description.trim(),
+                    icon: state.icon,
                 }),
             },
         );
 
-        setLoading(false);
+        dispatch({ type: "loading", value: false });
 
-        if (response.status === 400) {
-            const json = await response.json();
-            if (json.sameName) setNameError("Name already taken.");
-            addAlert({
-                success: false,
-                message: json.message,
-            });
-        } else if (response.status === 201) {
-            setName("");
-            setNameError("");
-
-            setDescription("");
-            setDescriptionError("");
-
-            setIcon(null);
-            setIconError("");
+        if (response.ok) {
+            if (response.status === 201) {
+                dispatch({ type: "reset" });
+            }
 
             addAlert({
                 success: true,
-                message: "Group created successfully.",
-            });
-        } else if (response.status === 401) {
-            addAlert({
-                success: false,
-                message: "You have been signed out. Please sign in again.",
-            });
-            addModal({
-                title: "Sign back in",
-                content: <UserInput onSubmit={removeModal} />,
+                message:
+                    response.status === 201
+                        ? "Successfully created group."
+                        : "Successfully updated group.",
             });
         } else {
-            const json = await response.json();
+            const data = await response.json();
             addAlert({
                 success: false,
-                message: json.message,
+                message: data?.message ?? "An error occurred.",
             });
         }
     }
 
     return (
-        <div className="formGrid">
+        <Form onSubmit={handleSubmit}>
             <Input
-                value={name}
-                required={true}
-                label={"Group Name"}
-                error={nameError}
-                minLength={1}
+                required
+                label="Group Name"
+                value={state.name}
+                placeholder="Group Name"
+                error={state.errors.name}
                 maxLength={validation.group.name.maxLength}
                 onChange={(e) => {
-                    setName(e.target.value);
-                    setNameError("");
+                    dispatch({ type: "name", value: e.target.value });
+                    dispatch({ type: "errors", value: { name: "" } });
                 }}
             />
 
             <Input
-                value={description}
-                label={"Group Description"}
-                error={descriptionError}
-                minLength={2}
+                label="Group Description"
+                value={state.description}
+                placeholder="Group Description"
+                error={state.errors.description}
                 maxLength={validation.group.description.maxLength}
                 onChange={(e) => {
-                    setDescription(e.target.value);
-                    setDescriptionError("");
+                    dispatch({ type: "description", value: e.target.value });
+                    dispatch({ type: "errors", value: { description: "" } });
                 }}
             />
 
-            <div className={styles.iconContainer}>
+            {/* <div className={styles.iconContainer}>
                 <Label error={iconError} label="Group Icon" />
 
                 <div>
                     <div className={styles.image}>
-                        {/* <Image
+                        <Image
                             src={
                                 icon
                                     ? URL.createObjectURL(icon)
@@ -158,7 +153,7 @@ export function GroupInput({ group }) {
                             width={44}
                             height={44}
                             onClick={() => inputRef.current.click()}
-                        /> */}
+                        />
 
                         {!icon && <div />}
                     </div>
@@ -232,11 +227,11 @@ export function GroupInput({ group }) {
                         }}
                     />
                 </div>
-            </div>
+            </div> */}
 
-            <button onClick={handleSubmit} className="button submit">
-                {loading ? <Spinner /> : "Create Group"}
+            <button className="button submit primary">
+                {state.loading ? <Spinner /> : "Create Group"}
             </button>
-        </div>
+        </Form>
     );
 }

@@ -1,46 +1,3 @@
-.form {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.form > div:first-child,
-.form > div:nth-child(2) {
-    flex-basis: 100%;
-}
-
-.courses,
-.permissions {
-    flex-basis: 50%;
-}
-
-.answer,
-.multipleChoice,
-.links,
-.advanced,
-.submit {
-    flex-basis: 100%;
-}
-
-.links,
-.advanced {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.advanced > h4 {
-    flex-basis: 100%;
-    text-align: center;
-}
-
-.sources,
-.notes,
-.hints,
-.tags {
-    width: 50%;
-}
-
 .blankBank {
     flex-basis: 100%;
     background-color: var(--bg-2);
@@ -49,35 +6,44 @@
     padding: 10px;
     font-size: 1.2rem;
     border-radius: 4px;
-    margin-top: 4px;
+    margin-top: 8px;
 }
 
 .blankBank > p {
-    margin-bottom: 14px;
-    font-size: 14px;
-    font-style: italic;
+    font-size: 13px;
+    user-select: none;
+    margin-bottom: 6px;
+}
+
+.blankBank span {
+    cursor: default;
     user-select: none;
 }
 
 .blankBank span label {
-    margin-right: 6px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background-color: var(--bg-3);
-    color: var(--fg-3);
-    font-size: 1rem;
+    font-size: 14px;
     cursor: pointer;
+    margin-top: 6px;
+    padding: 2px 6px;
+    margin-right: 4px;
     user-select: none;
-    border: none;
+    color: var(--fg-3);
+    border-radius: 4px;
+    display: inline-block;
+    box-sizing: content-box;
+    background-color: var(--bg-3);
+    border: 1px solid var(--bg-4);
 }
 
 .blankBank span label:hover {
-    opacity: 0.8;
+    color: var(--fg-2);
+    background-color: var(--bg-4);
 }
 
 .blankBank input:checked + label {
-    background-color: var(--accent-3-hover);
-    color: white;
+    color: var(--accent-3-fg);
+    border: 1px solid var(--accent-3-50);
+    background-color: var(--accent-3-20);
 }
 
 .blankBank input[type="checkbox"] {
