@@ -28,12 +28,7 @@ export default async function Home({ searchParams }) {
 
                 <ol>
                     <li>
-                        First, you need to register and sign in. This is a
-                        pretty standard process, and it gives you privileges to
-                        create and edit. You will also be allowed to share with
-                        other users, organize users into groups, and give other
-                        users or groups privileges to read or edit what you have
-                        created. You can use the{" "}
+                        First, you need to register and sign in. You can use the{" "}
                         <Link className="link" href="/login">
                             Login
                         </Link>{" "}
