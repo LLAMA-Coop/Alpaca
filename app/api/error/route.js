@@ -1,11 +1,22 @@
-import { addError } from "@/lib/db/helpers";
+import { catchRouteError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 
 const webhookUrl = process.env.DISCORD_ERRORS_WEBHOOK;
 
+// SEND ERROR TO DISCORD
+
 export async function POST(req) {
     const { message, stack, url, userInfo, isClient, report } =
         await req.json();
+
+    if (!webhookUrl) {
+        return NextResponse.json(
+            {
+                message: "Reports have been disabled",
+            },
+            { status: 400 },
+        );
+    }
 
     try {
         const embed = {
@@ -28,8 +39,6 @@ export async function POST(req) {
             color: 14427686,
         };
 
-        console.log(embed);
-
         const response = await fetch(`${webhookUrl}?wait=true`, {
             method: "POST",
             headers: {
@@ -42,7 +51,6 @@ export async function POST(req) {
             console.error(
                 `[Error] POST error: ${response.status} ${response.statusText}`,
             );
-            addError({ stack: response }, "/api/error: POST");
 
             return NextResponse.json(
                 {
@@ -54,13 +62,6 @@ export async function POST(req) {
             return NextResponse.json({ success: true });
         }
     } catch (error) {
-        console.error(`[Error] POST error: ${error}`);
-        addError(error, "/api/error: POST");
-        return NextResponse.json(
-            {
-                error: "Failed to send error to Discord",
-            },
-            { status: 500 },
-        );
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

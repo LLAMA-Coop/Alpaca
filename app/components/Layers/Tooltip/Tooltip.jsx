@@ -1,18 +1,28 @@
-import * as React from "react";
+"use client";
+
 import {
+    useInteractions,
+    FloatingPortal,
+    useMergeRefs,
     useFloating,
+    useDismiss,
     autoUpdate,
-    offset,
-    flip,
-    shift,
     useHover,
     useFocus,
-    useDismiss,
     useRole,
-    useInteractions,
-    useMergeRefs,
-    FloatingPortal,
+    offset,
+    shift,
+    flip,
 } from "@floating-ui/react";
+import {
+    isValidElement,
+    createContext,
+    cloneElement,
+    useContext,
+    forwardRef,
+    useState,
+    useMemo,
+} from "react";
 
 export function useTooltip({
     initialOpen = false,
@@ -20,7 +30,7 @@ export function useTooltip({
     open: controlledOpen,
     onOpenChange: setControlledOpen,
 } = {}) {
-    const [uncontrolledOpen, setUncontrolledOpen] = React.useState(initialOpen);
+    const [uncontrolledOpen, setUncontrolledOpen] = useState(initialOpen);
 
     const open = controlledOpen ?? uncontrolledOpen;
     const setOpen = setControlledOpen ?? setUncontrolledOpen;
@@ -55,7 +65,7 @@ export function useTooltip({
 
     const interactions = useInteractions([hover, focus, dismiss, role]);
 
-    return React.useMemo(
+    return useMemo(
         () => ({
             open,
             setOpen,
@@ -66,10 +76,10 @@ export function useTooltip({
     );
 }
 
-const TooltipContext = React.createContext(null);
+const TooltipContext = createContext(null);
 
 export const useTooltipContext = () => {
-    const context = React.useContext(TooltipContext);
+    const context = useContext(TooltipContext);
 
     if (context == null) {
         throw new Error("Tooltip components must be wrapped in <Tooltip />");
@@ -89,7 +99,7 @@ export function Tooltip({ children, ...options }) {
     );
 }
 
-export const TooltipTrigger = React.forwardRef(function TooltipTrigger(
+export const TooltipTrigger = forwardRef(function TooltipTrigger(
     { children, asChild = true, ...props },
     propRef,
 ) {
@@ -98,8 +108,8 @@ export const TooltipTrigger = React.forwardRef(function TooltipTrigger(
     const ref = useMergeRefs([context.refs.setReference, propRef, childrenRef]);
 
     // `asChild` allows the user to pass any element as the anchor
-    if (asChild && React.isValidElement(children)) {
-        return React.cloneElement(
+    if (asChild && isValidElement(children)) {
+        return cloneElement(
             children,
             context.getReferenceProps({
                 ref,
@@ -122,7 +132,7 @@ export const TooltipTrigger = React.forwardRef(function TooltipTrigger(
     );
 });
 
-export const TooltipContent = React.forwardRef(function TooltipContent(
+export const TooltipContent = forwardRef(function TooltipContent(
     { style, ...props },
     propRef,
 ) {

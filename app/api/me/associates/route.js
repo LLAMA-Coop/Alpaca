@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 
+// SEND ASSOCIATE REQUEST TO USER
+
 export async function POST(req) {
     const { userId, username } = await req.json();
 
@@ -19,7 +21,7 @@ export async function POST(req) {
         if (user.username === username || user.id === userId) {
             return NextResponse.json(
                 {
-                    message: "Cannot add yourself as an associate.",
+                    message: "Cannot add yourself as an associate",
                 },
                 { status: 400 },
             );
@@ -34,7 +36,7 @@ export async function POST(req) {
         if (!associate) {
             return NextResponse.json(
                 {
-                    message: "No user found with that username or ID.",
+                    message: "No user found with that username or ID",
                 },
                 { status: 404 },
             );
@@ -43,7 +45,7 @@ export async function POST(req) {
         if (await isUserAssociate(user.id, associate.id)) {
             return NextResponse.json(
                 {
-                    message: "User is already an associate.",
+                    message: "User is already an associate",
                 },
                 { status: 400 },
             );
@@ -76,7 +78,7 @@ export async function POST(req) {
 
                 return NextResponse.json(
                     {
-                        message: "Successfully accepted associate request.",
+                        message: "Successfully accepted associate request",
                         content: {
                             associate: associate,
                         },
@@ -100,7 +102,7 @@ export async function POST(req) {
             if (alreadySent) {
                 return NextResponse.json(
                     {
-                        message: "Request already sent to this user.",
+                        message: "Request already sent to this user",
                     },
                     { status: 400 },
                 );
@@ -121,7 +123,7 @@ export async function POST(req) {
 
                 return NextResponse.json(
                     {
-                        message: "Successfully sent associate request.",
+                        message: "Successfully sent associate request",
                     },
                     { status: 200 },
                 );

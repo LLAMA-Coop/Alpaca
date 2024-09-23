@@ -3,7 +3,13 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
-import { addError, getGroup } from "@/lib/db/helpers";
+import {
+    canUserWriteToGroup,
+    catchRouteError,
+    isUserInGroup,
+} from "@/lib/db/helpers";
+
+// INVITE USER TO GROUP
 
 export async function POST(req, { params }) {
     const { id } = params;
@@ -13,87 +19,69 @@ export async function POST(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        let member;
-        if (userId) {
-            const [memberResults, memberFields] = await db
-                .promise()
-                .query("SELECT `id` FROM `Users` WHERE `id` = ?", [userId]);
-            member = memberResults.length > 0 ? memberResults[0] : false;
-        }
-        if (username) {
-            const [memberResults, memberFields] = await db
-                .promise()
-                .query("SELECT `id` FROM `Users` WHERE `username` = ?", [
-                    username,
-                ]);
-            member = memberResults.length > 0 ? memberResults[0] : false;
+        if (!(await canUserWriteToGroup(user.id, id))) {
+            return unauthorized;
         }
 
-        if (!member) {
+        if (await isUserInGroup(userId, id)) {
             return NextResponse.json(
                 {
-                    success: false,
-                    message: "No user found with that username or ID.",
-                },
-                { status: 404 },
-            );
-        }
-
-        const group = await getGroup({ id });
-
-        if (!group) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "No group found with that ID.",
-                },
-                { status: 404 },
-            );
-        }
-
-        const checkMember = group.members.find((x) => x.id === member.id);
-        if (checkMember) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "User is already a member of this group.",
+                    message: "User is already in group",
                 },
                 { status: 400 },
             );
         }
 
-        const [alreadySent, fields] = await db
-            .promise()
-            .query(
-                "SELECT `id` FROM `Notifications` WHERE `type` = 'invite' AND `recipientId` = ? AND `groupId` = ?",
-                [member.id, id],
-            );
+        const member = await useUser({
+            username: username || undefined,
+            id: userId || undefined,
+        });
 
-        if (alreadySent.length === 0) {
-            const [notification, notifFields] = await db
-                .promise()
-                .query(
-                    `INSERT INTO \`Notifications\` (\`type\`, \`senderId\`, \`recipientId\`, \`groupId\`, \`subject\`, \`message\`) VALUES ('invite', ?, ?, ?, 'Group Invite', 'You have been invited by ${user.username} to join ${group.name}.')`,
-                    [user.id, member.id, id],
-                );
+        if (!member) {
+            return NextResponse.json(
+                {
+                    message: "User not found",
+                },
+                { status: 404 },
+            );
         }
 
-        return NextResponse.json(
-            {
-                success: true,
-                message: "Successfully invited user to group.",
-            },
-            { status: 200 },
-        );
+        const alreadySent = await db
+            .selectFrom("notifications")
+            .select("id")
+            .where("type", "=", "invite")
+            .where("recipientId", "=", member.id)
+            .where("groupId", "=", id)
+            .executeTakeFirst();
+
+        if (!alreadySent) {
+            await db
+                .insertInto("notifications")
+                .values({
+                    type: "invite",
+                    senderId: user.id,
+                    recipientId: member.id,
+                    groupId: id,
+                    subject: "Group Invite",
+                    message: "You have been invited to join a group",
+                })
+                .execute();
+
+            return NextResponse.json(
+                {
+                    message: "Successfully invited user to group",
+                },
+                { status: 200 },
+            );
+        } else {
+            return NextResponse.json(
+                {
+                    message: "Invite already sent",
+                },
+                { status: 400 },
+            );
+        }
     } catch (error) {
-        console.error("[ERROR] /api/groups/id/members:POST ", error);
-        addError(error, "/api/groups/[id]/members: POST");
-        return NextResponse.json(
-            {
-                success: false,
-                message: "Something went wrong.",
-            },
-            { status: 500 },
-        );
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

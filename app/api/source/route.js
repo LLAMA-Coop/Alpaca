@@ -6,64 +6,44 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 
+// CREATE SOURCE
+
 export async function POST(req) {
     const publicId = getNanoId();
     let sourceId = null;
+
+    const source = await req.json();
+    const {
+        title,
+        medium,
+        url,
+        publishedAt,
+        lastAccessed, // Do we want publishedUpdated to be the one date? Good question...
+        authors,
+        courses,
+        tags,
+        permissions: perm,
+    } = source;
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const source = await req.json();
-        const {
-            title,
-            medium,
-            url,
-            publishedAt,
-            lastAccessed, // Do we want publishedUpdated to be the one date? Good question...
-            authors,
-            courses,
-            tags,
-            permissions: perm,
-        } = source;
-
         const validator = new Validator();
 
         validator.validateAll(
             [
-                {
-                    field: "title",
-                    value: title,
-                },
-                {
-                    field: "medium",
-                    value: medium,
-                },
-                {
-                    field: "url",
-                    value: url,
-                },
-                {
-                    field: "publishedAt",
-                    value: publishedAt,
-                },
-                {
-                    field: "lastAccessed",
-                    value: lastAccessed,
-                },
-                {
-                    field: "authors",
-                    value: authors,
-                },
-            ],
+                ["title", title],
+                ["medium", medium],
+                ["url", url],
+                ["publishedAt", publishedAt],
+                ["lastAccessed", lastAccessed],
+                ["authors", authors],
+            ].map(([field, value]) => ({ field, value })),
             "source",
         );
 
-        validator.validate({
-            field: "tags",
-            value: tags,
-            type: "misc",
-        });
+        validator.validate({ field: "tags", value: tags, type: "misc" });
 
         if (medium === "website" && !url) {
             validator.errors.url = "Website sources must have a URL";
@@ -75,7 +55,7 @@ export async function POST(req) {
         if (!validator.isValid) {
             return NextResponse.json(
                 {
-                    message: "Invalid source data.",
+                    message: "Invalid source data",
                     errors: validator.errors,
                 },
                 { status: 400 },
@@ -117,10 +97,10 @@ export async function POST(req) {
             db.insertInto("resource_relations")
                 .values(
                     courses.map((course) => ({
-                        A: course.id,
-                        B: sourceId,
-                        A_type: "course",
-                        B_type: "source",
+                        A: sourceId,
+                        B: course.id,
+                        A_type: "source",
+                        B_type: "course",
                         includeReference: course.includeReference || false,
                     })),
                 )
@@ -129,7 +109,7 @@ export async function POST(req) {
 
         return NextResponse.json(
             {
-                message: "Successfully created source.",
+                message: "Successfully created source",
                 content: {
                     id: sourceId,
                     publicId,

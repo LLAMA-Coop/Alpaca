@@ -4,6 +4,10 @@
     cursor: pointer;
 }
 
+.container > div {
+    border-radius: 50%;
+}
+
 .container > button {
     cursor: pointer;
     border-radius: 50%;

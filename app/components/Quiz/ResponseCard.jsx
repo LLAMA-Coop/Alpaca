@@ -1,7 +1,7 @@
 "use client";
 
 import { correctConfetti } from "@/lib/correctConfetti";
-import { useModals, useAlerts } from "@/store/store";
+import { useAlerts } from "@/store/store";
 import { Input, Card, UserInput } from "@client";
 import stringCompare from "@/lib/stringCompare";
 import shuffleArray from "@/lib/shuffleArray";
@@ -22,8 +22,6 @@ export function ResponseCard({
 
     const [showAnswer, setShowAnswer] = useState(false);
 
-    const addModal = useModals((state) => state.addModal);
-    const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
 
     useEffect(() => {
@@ -88,10 +86,10 @@ export function ResponseCard({
                     success: false,
                     message: "You have been signed out. Please sign in again.",
                 });
-                addModal({
-                    title: "Sign back in",
-                    content: <UserInput onSubmit={removeModal} />,
-                });
+                // addModal({
+                //     title: "Sign back in",
+                //     content: <UserInput onSubmit={removeModal} />,
+                // });
             }
 
             const resJson = await response.json();

@@ -6,9 +6,26 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
 
+// CREATE COURSE
+
 export async function POST(req) {
     const publicId = getNanoId();
     let courseId = null;
+
+    const course = await req.json();
+    const {
+        name,
+        description,
+        enrollment,
+        parents,
+        prerequisites,
+        sources,
+        notes,
+        quizzes,
+        addAllFromSources,
+        addAllFromNotes,
+        permissions: perm,
+    } = course;
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
@@ -16,64 +33,19 @@ export async function POST(req) {
 
         const validator = new Validator();
 
-        const course = await req.json();
-        const {
-            name,
-            description,
-            enrollment,
-            parents,
-            prerequisites,
-            sources,
-            notes,
-            quizzes,
-            addAllFromSources,
-            addAllFromNotes,
-            permissions: perm,
-        } = course;
-
         validator.validateAll(
             [
-                {
-                    field: "name",
-                    value: name,
-                },
-                {
-                    field: "description",
-                    value: description,
-                },
-                {
-                    field: "enrollment",
-                    value: enrollment,
-                },
-                {
-                    field: "parents",
-                    value: parents,
-                },
-                {
-                    field: "prerequisites",
-                    value: prerequisites,
-                },
-                {
-                    field: "sources",
-                    value: sources,
-                },
-                {
-                    field: "notes",
-                    value: notes,
-                },
-                {
-                    field: "quizzes",
-                    value: quizzes,
-                },
-                {
-                    field: "addAllFromSources",
-                    value: addAllFromSources,
-                },
-                {
-                    field: "addAllFromNotes",
-                    value: addAllFromNotes,
-                },
-            ],
+                ["name", name],
+                ["description", description],
+                ["enrollment", enrollment],
+                ["parents", parents],
+                ["prerequisites", prerequisites],
+                ["sources", sources],
+                ["notes", notes],
+                ["quizzes", quizzes],
+                ["addAllFromSources", addAllFromSources],
+                ["addAllFromNotes", addAllFromNotes],
+            ].map(([field, value]) => ({ field, value })),
             "course",
         );
 
@@ -82,7 +54,7 @@ export async function POST(req) {
         if (!validator.isValid) {
             return NextResponse.json(
                 {
-                    message: "Invalid course data.",
+                    message: "Invalid course data",
                     errors: validator.errors,
                 },
                 { status: 400 },
@@ -128,7 +100,7 @@ export async function POST(req) {
 
         if (parents.length || prerequisites.length) {
             await db
-                .insertInto("course_hierarchy")
+                .insertInto("courses_hierarchy")
                 .values([
                     ...parents.map((p) => ({
                         inferior: courseId,
@@ -139,7 +111,8 @@ export async function POST(req) {
                         inferior: courseId,
                         superior: p.id,
                         relationship: "prerequisite",
-                        // averageLevelRequired: p.requiredAverageLevel,
+                        averageLevelRequired: p.averageLevelRequired,
+                        minimumLevelRequired: p.minimumLevelRequired,
                     })),
                 ])
                 .execute();
@@ -150,28 +123,28 @@ export async function POST(req) {
                 .insertInto("resource_relations")
                 .values([
                     ...sources.map((s) => ({
-                        A: courseId,
-                        B: s.id,
-                        A_type: "course",
-                        B_type: "source",
+                        A: s.id,
+                        B: courseId,
+                        A_type: "source",
+                        B_type: "course",
                         includeReference: addAllFromSources,
                         // reference: null,
                         // referenceType: "page",
                     })),
                     ...notes.map((n) => ({
-                        A: courseId,
-                        B: n.id,
-                        A_type: "course",
-                        B_type: "note",
+                        A: n.id,
+                        B: courseId,
+                        A_type: "note",
+                        B_type: "course",
                         includeReference: addAllFromNotes,
                         // reference: null,
                         // referenceType: "page",
                     })),
                     ...quizzes.map((q) => ({
-                        A: courseId,
-                        B: q.id,
-                        A_type: "course",
-                        B_type: "quiz",
+                        A: q.id,
+                        B: courseId,
+                        A_type: "quiz",
+                        B_type: "course",
                         includeReference: false,
                         // reference: null,
                         // referenceType: "page",
@@ -192,6 +165,10 @@ export async function POST(req) {
             { status: 201 },
         );
     } catch (error) {
+        if (courseId) {
+            await db.deleteFrom("courses").where("id", "=", courseId).execute();
+        }
+
         return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

@@ -212,48 +212,19 @@ export function QuizInput({ quiz }) {
 
         validator.validateAll(
             [
-                {
-                    field: "type",
-                    value: state.type,
-                },
-                {
-                    field: "prompt",
-                    value: state.prompt.trim(),
-                },
-                {
-                    field: "answers",
-                    value: state.answers,
-                },
-                {
-                    field: "choices",
-                    value: state.choices,
-                },
-                {
-                    field: "hints",
-                    value: state.hints,
-                },
-                {
-                    field: "sources",
-                    value: state.sources,
-                },
-                {
-                    field: "notes",
-                    value: state.notes,
-                },
-                {
-                    field: "courses",
-                    value: state.courses,
-                },
-            ],
+                ["type", state.type],
+                ["prompt", state.prompt.trim()],
+                ["answers", state.answers],
+                ["choices", state.choices],
+                ["hints", state.hints],
+                ["sources", state.sources],
+                ["notes", state.notes],
+                ["courses", state.courses],
+            ].map(([field, value]) => ({ field, value })),
             "quiz",
         );
 
-        validator.validatePermissions({
-            field: "tags",
-            value: state.tags,
-            type: "misc",
-        });
-
+        validator.validate({ field: "tags", value: state.tags, type: "misc" });
         const perm = validator.validatePermissions(state.permissions);
 
         if (state.type === "multiple-choice" && state.answer.length < 2) {
@@ -400,7 +371,6 @@ export function QuizInput({ quiz }) {
 
             {state.type !== "fill-in-the-blank" && (
                 <Input
-                    required
                     multiple
                     notObject
                     label="Answers"
@@ -560,7 +530,7 @@ export function QuizInput({ quiz }) {
             )}
 
             <button className="button submit primary">
-                {state.loading ? <Spinner /> : "Submit Quiz"}
+                Submit Quiz {state.loading && <Spinner />}
             </button>
 
             {isOwner && (

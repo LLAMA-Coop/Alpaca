@@ -161,39 +161,15 @@ export function CourseInput({ course }) {
 
         validator.validateAll(
             [
-                {
-                    field: "name",
-                    value: state.name.trim(),
-                },
-                {
-                    field: "description",
-                    value: state.description.trim(),
-                },
-                {
-                    field: "enrollment",
-                    value: state.enrollment,
-                },
-                {
-                    field: "parents",
-                    value: state.parents,
-                },
-                {
-                    field: "prerequisites",
-                    value: state.prerequisites,
-                },
-                {
-                    field: "sources",
-                    value: state.sources,
-                },
-                {
-                    field: "notes",
-                    value: state.notes,
-                },
-                {
-                    field: "quizzes",
-                    value: state.quizzes,
-                },
-            ],
+                ["name", state.name.trim()],
+                ["description", state.description.trim()],
+                ["enrollment", state.enrollment],
+                ["parents", state.parents],
+                ["prerequisites", state.prerequisites],
+                ["sources", state.sources],
+                ["notes", state.notes],
+                ["quizzes", state.quizzes],
+            ].map(([field, value]) => ({ field, value })),
             "course",
         );
 
@@ -217,7 +193,7 @@ export function CourseInput({ course }) {
                     name: state.name.trim(),
                     description: state.description.trim(),
                     enrollment: state.enrollment,
-                    parents: state.parents.map((c) => c.id),
+                    parents: state.parents.map((c) => ({ id: c.id })),
                     prerequisites: state.prerequisites.map((c) => ({
                         averageLevelRequired: 1,
                         minimumLevelRequired: 1,
@@ -424,7 +400,7 @@ export function CourseInput({ course }) {
             )}
 
             <button className="button submit primary">
-                {state.loading ? <Spinner /> : "Submit Course"}
+                Submit Course {state.loading && <Spinner />}
             </button>
 
             {isOwner && (

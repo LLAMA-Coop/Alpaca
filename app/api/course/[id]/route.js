@@ -10,30 +10,32 @@ import {
     updateCourse,
 } from "@/lib/db/helpers.js";
 
+// UPDATE COURSE
+
 export async function PATCH(req) {
+    const { id } = req.params;
+    const {
+        name,
+        description,
+        enrollment,
+        parents,
+        prerequisites,
+        sources,
+        notes,
+        quizzes,
+        addAllFromSources,
+        addAllFromNotes,
+        permissions,
+    } = await req.json();
+
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const { id } = req.params;
-        const {
-            name,
-            description,
-            enrollment,
-            parents,
-            prerequisites,
-            sources,
-            notes,
-            quizzes,
-            addAllFromSources,
-            addAllFromNotes,
-            permissions,
-        } = await req.json();
-
         if (!(await canEditResource(user.id, id, "course"))) {
             return NextResponse.json(
                 {
-                    message: "You do not have permission to edit this course.",
+                    message: "You do not have permission to edit this course",
                 },
                 { status: 404 },
             );
@@ -58,7 +60,7 @@ export async function PATCH(req) {
         if (!content.valid) {
             return NextResponse.json(
                 {
-                    message: "Invalid course data.",
+                    message: "Invalid course data",
                     errors: content.errors,
                 },
                 { status: 400 },
@@ -66,13 +68,15 @@ export async function PATCH(req) {
         }
 
         return NextResponse.json({
-            message: "Successfully updated course.",
+            message: "Successfully updated course",
             content,
         });
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }
+
+// DELETE COURSE
 
 export async function DELETE(req, { params }) {
     try {
@@ -84,8 +88,7 @@ export async function DELETE(req, { params }) {
         if (!(await canDeleteResource(user.id, id, "course"))) {
             return NextResponse.json(
                 {
-                    message:
-                        "You do not have permission to delete this course.",
+                    message: "You do not have permission to delete this course",
                 },
                 { status: 404 },
             );
@@ -95,7 +98,7 @@ export async function DELETE(req, { params }) {
 
         return NextResponse.json(
             {
-                message: "Successfully deleted course.",
+                message: "Successfully deleted course",
             },
             { status: 200 },
         );

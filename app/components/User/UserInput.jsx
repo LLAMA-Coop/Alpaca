@@ -1,12 +1,17 @@
 "use client";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "../Layers/Tooltip";
 import { Validator } from "@/lib/validation";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
 import { useAlerts } from "@/store/store";
-import { Input, Spinner } from "@client";
 import { useState } from "react";
+import {
+    TooltipContent,
+    TooltipTrigger,
+    Tooltip,
+    Spinner,
+    Input,
+} from "@client";
 
 export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
@@ -186,6 +191,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                 autoFocus
                 label="Username"
                 value={username}
+                placeholder="Username"
                 error={errors.username}
                 onChange={(e) => {
                     setUsername(e.target.value);
@@ -201,6 +207,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                             type="password"
                             label="Password"
                             value={password}
+                            placeholder="Password"
                             error={errors.password}
                             onChange={(e) => {
                                 setPassword(e.target.value);
@@ -263,6 +270,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                     value={confirm}
                     error={errors.confirm}
                     label="Password Match"
+                    placeholder="Confirm Password"
                     onChange={(e) => {
                         setConfirm(e.target.value);
                         setErrors({ ...errors, confirm: "" });
@@ -274,7 +282,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                 onClick={isRegistering ? handleRegister : handleLogin}
                 className="button submit primary"
             >
-                {loading ? <Spinner /> : isRegistering ? "Register" : "Login"}
+                {isRegistering ? "Register" : "Login"} {loading && <Spinner />}
             </button>
         </form>
     );

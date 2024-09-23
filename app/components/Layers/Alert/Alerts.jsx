@@ -24,16 +24,18 @@ export function Alert({ alert }) {
 
     function hideAlert() {
         setAnimateOut(true);
-        setTimeout(() => removeAlert(alert.id), 300);
+        setTimeout(() => removeAlert(alert.id), 150);
     }
 
     useEffect(() => {
         let timeout;
+
         if (!stopTimeout) {
             timeout = setTimeout(() => {
                 hideAlert();
-            }, 5000000);
+            }, 5000);
         }
+
         return () => clearTimeout(timeout);
     }, [stopTimeout]);
 
@@ -52,7 +54,8 @@ export function Alert({ alert }) {
                 backgroundColor: alert.success
                     ? "var(--success)"
                     : "var(--danger)",
-                animationName: animateOut ? styles.slideOut : "",
+                animationName: animateOut ? styles.popOut : "",
+                opacity: animateOut ? 0 : "",
             }}
         >
             <div className={styles.icon}>

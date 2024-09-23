@@ -40,3 +40,9 @@
     pointer-events: none;
     background-color: var(--bg-2);
 }
+
+.error {
+    font-size: 14px;
+    margin-top: 4px;
+    color: var(--danger);
+}

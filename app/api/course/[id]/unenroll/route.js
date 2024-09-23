@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
 
+// UNENROLL FROM COURSE
+
 export async function POST(req, { params }) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
@@ -15,8 +17,7 @@ export async function POST(req, { params }) {
         if (!(await canUnenrollFromCourse(user.id, id))) {
             return NextResponse.json(
                 {
-                    message:
-                        "You are not allowed to unenroll from this course.",
+                    message: "You are not allowed to unenroll from this course",
                 },
                 { status: 403 },
             );
@@ -32,7 +33,7 @@ export async function POST(req, { params }) {
 
         return NextResponse.json(
             {
-                message: "Successfully unenrolled from this course.",
+                message: "Successfully unenrolled from this course",
             },
             { status: 200 },
         );

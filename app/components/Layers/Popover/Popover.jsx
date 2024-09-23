@@ -24,7 +24,7 @@ import {
     flip,
 } from "@floating-ui/react";
 
-import { Menu } from "./Menu";
+import { Menu } from "../Menu/Menu";
 
 export function usePopover({
     initialOpen = false,

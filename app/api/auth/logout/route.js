@@ -25,7 +25,7 @@ export async function POST(req) {
 
         return NextResponse.json(
             {
-                message: "Successfully logged out.",
+                message: "Successfully logged out",
             },
             {
                 status: 200,

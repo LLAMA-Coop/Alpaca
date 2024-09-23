@@ -127,39 +127,15 @@ export function SourceInput({ source }) {
 
         validator.validateAll(
             [
-                {
-                    field: "title",
-                    value: state.title.trim(),
-                },
-                {
-                    field: "medium",
-                    value: state.medium,
-                },
-                {
-                    field: "url",
-                    value: state.url.trim(),
-                },
-                {
-                    field: "publishedAt",
-                    value: state.publishedAt,
-                },
-                {
-                    field: "lastAccessed",
-                    value: state.lastAccessed,
-                },
-                {
-                    field: "authors",
-                    value: state.authors,
-                },
-                {
-                    field: "courses",
-                    value: state.courses,
-                },
-                {
-                    field: "locationType",
-                    value: state.locationType,
-                },
-            ],
+                ["title", state.title.trim()],
+                ["medium", state.medium],
+                ["url", state.url.trim()],
+                ["publishedAt", state.publishedAt],
+                ["lastAccessed", state.lastAccessed],
+                ["authors", state.authors],
+                ["courses", state.courses],
+                ["locationType", state.locationType],
+            ].map(([field, value]) => ({ field, value })),
             "source",
         );
 
@@ -409,7 +385,7 @@ export function SourceInput({ source }) {
             )}
 
             <button className="button submit primary">
-                {state.loading ? <Spinner /> : "Submit Source"}
+                Submit Source {state.loading && <Spinner />}
             </button>
 
             {isOwner && (

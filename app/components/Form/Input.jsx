@@ -88,6 +88,7 @@ export function Input({
                 notObject={notObject}
                 removeItem={removeItem}
                 description={description}
+                disabled={props.disabled}
             >
                 {options.map((option) => (
                     <Option

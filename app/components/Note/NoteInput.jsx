@@ -116,31 +116,15 @@ export function NoteInput({ note }) {
 
         validator.validateAll(
             [
-                {
-                    field: "text",
-                    value: state.text.trim(),
-                },
-                {
-                    field: "title",
-                    value: state.title.trim(),
-                },
-                {
-                    field: "sources",
-                    value: state.sources.map((s) => s.id),
-                },
-                {
-                    field: "courses",
-                    value: state.courses.map((c) => c.id),
-                },
-            ],
+                ["text", state.text.trim()],
+                ["title", state.title.trim()],
+                ["sources", state.sources.map((s) => s.id)],
+                ["courses", state.courses.map((c) => c.id)],
+            ].map(([field, value]) => ({ field, value })),
             "note",
         );
 
-        validator.validate({
-            field: "tags",
-            value: state.tags,
-            type: "misc",
-        });
+        validator.validate({ field: "tags", value: state.tags, type: "misc" });
 
         const permissions = validator.validatePermissions(state.permissions);
 
@@ -300,7 +284,7 @@ export function NoteInput({ note }) {
             )}
 
             <button className="button submit primary">
-                {state.loading ? <Spinner /> : "Submit Note"}
+                Submit Note {state.loading && <Spinner />}
             </button>
 
             {isOwner && (

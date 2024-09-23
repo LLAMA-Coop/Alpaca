@@ -1,8 +1,9 @@
 import { getPermittedResources } from "@/lib/db/helpers";
-import { InputPopup, CourseDisplay } from "@client";
+import { CourseDisplay, MasoneryList } from "@client";
 import styles from "@main/page.module.css";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function CoursesPage() {
@@ -28,39 +29,39 @@ export default async function CoursesPage() {
             </header>
 
             <section>
-                <h2>Available Courses</h2>
+                {courses.length > 0 ? (
+                    <>
+                        <h2>Available Courses</h2>
+                        <MasoneryList>
+                            {courses.map((course) => (
+                                <li key={course.id}>
+                                    <CourseDisplay course={course} />
+                                </li>
+                            ))}
+                        </MasoneryList>{" "}
+                    </>
+                ) : (
+                    <div className={styles.noResults}>
+                        <Image
+                            src="/assets/no-results.svg"
+                            alt="No courses found"
+                            height={400}
+                            width={400}
+                        />
 
-                <ol className={styles.listGrid}>
-                    {courses.map((course) => {
-                        const isCreator = user && course.creator.id === user.id;
-                        const canWrite = isCreator || course.allCanWrite;
-
-                        return (
-                            <li key={course._id}>
-                                <CourseDisplay course={course} />
-
-                                {canWrite && (
-                                    <InputPopup
-                                        type="course"
-                                        resource={course}
-                                    />
-                                )}
-                            </li>
-                        );
-                    })}
-
-                    {courses.length === 0 && (
-                        <p className={styles.noContent}>
-                            Oh, that's awkward. There are no courses available.
+                        <p>
+                            Hey, we searched high and low, but we couldn't find
+                            any courses for you.
                             <br />
-                            <Link className="link" href="/register">
-                                Register
-                            </Link>{" "}
-                            and create your own course to invite others to join
-                            and learn with you.
+                            Maybe you should try again later or create your own
+                            course.
                         </p>
-                    )}
-                </ol>
+
+                        <Link className="button primary" href="/create">
+                            Create a course
+                        </Link>
+                    </div>
+                )}
             </section>
         </main>
     );

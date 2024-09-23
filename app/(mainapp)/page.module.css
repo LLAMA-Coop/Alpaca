@@ -15,15 +15,20 @@
 .main > header > h1 {
     font-size: 56px;
     text-align: center;
-    font-family: var(--font-heading);
     margin-bottom: 40px;
+    font-family: var(--font-heading);
 }
 
 .main > header > p {
-    font-size: clamp(16px, 2vw, 20px);
     line-height: 1.625;
     text-align: center;
     color: var(--fg-3);
+    font-size: clamp(16px, 2vw, 20px);
+}
+
+.main > header > a,
+.main > header > button {
+    margin-top: 40px;
 }
 
 .main > section {
@@ -83,6 +88,17 @@
     margin-bottom: 40px;
 }
 
+.list {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-auto-rows: 0;
+}
+
+.list > * {
+    min-height: 80px;
+}
+
 @media (max-width: 767px) {
     .main > header > h1 {
         font-size: clamp(24px, 8vw, 32px);
@@ -103,4 +119,28 @@
         margin: 0 0 24px 0;
         padding: 0 10px;
     }
+}
+
+.noResults {
+    display: flex;
+    padding: 40px;
+    border-radius: 8px;
+    margin-top: -140px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--bg-2);
+}
+
+.noResults > img {
+    margin-bottom: 40px;
+    pointer-events: none;
+}
+
+.noResults > p {
+    font-size: 20px;
+    line-height: 1.25;
+    text-align: center;
+    color: var(--fg-3);
+    margin-bottom: 24px;
 }

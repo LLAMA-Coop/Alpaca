@@ -1,24 +1,28 @@
 import styles from "@/app/(mainapp)/page.module.css";
 import { getGroups } from "@/lib/db/helpers";
-import { Card, GroupInput } from "@client";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { Avatar, Card, CardChip, MasoneryList } from "@client";
+import Link from "next/link";
 
 export default async function GroupsPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
 
-    const groups = await getGroups(user?.id, true);
-
-    const yourGroups = groups.filter((x) => {
-        const you = x.members.find((m) => m.id === user.id);
-        if (you) return true;
-        return false;
+    const groups = (await getGroups(user?.id, true)).map((g) => {
+        const owner = g.members.find((m) => m.role === "owner");
+        return {
+            ...g,
+            creator: owner,
+        };
     });
+
+    const mine = groups.filter((g) => g.members.find((m) => m.id === user.id));
+    const discover = groups.filter((g) => !mine.find((a) => a.id === g.id));
 
     return (
         <main className={styles.main}>
-            <div className={styles.titleBlock}>
-                <h2>Groups</h2>
+            <header>
+                <h1>Groups</h1>
 
                 <p>
                     A group is a collection of users who can share resources,
@@ -29,23 +33,27 @@ export default async function GroupsPage() {
                         : `You are only viewing the publicly available groups.
                             Log in to see groups available to you and create your own groups.`}
                 </p>
-            </div>
+
+                <Link className="button primary round" href="/groups/new">
+                    Create a new group
+                </Link>
+            </header>
 
             <section>
-                <h3>Discover Groups</h3>
+                <h2>Discover Groups</h2>
 
-                {groups.length > 0 ? (
-                    <ol className={styles.listGrid}>
-                        {groups.map((group) => (
+                {!!discover.length ? (
+                    <MasoneryList>
+                        {discover.map((group) => (
                             <li key={group.id}>
                                 <Card
                                     title={group.name}
                                     description={group.description}
-                                    url={`/groups/${group.id}`}
+                                    url={`/groups/${group.publicId}`}
                                 />
                             </li>
                         ))}
-                    </ol>
+                    </MasoneryList>
                 ) : (
                     <div className="paragraph">
                         <p>There are no groups to discover yet.</p>
@@ -55,32 +63,56 @@ export default async function GroupsPage() {
 
             {user && (
                 <section>
-                    <h3>Your Groups</h3>
+                    <h2>Your Groups</h2>
 
-                    {yourGroups.length > 0 ? (
-                        <ol className={styles.listGrid}>
-                            {yourGroups.map((group) => (
+                    {!!mine.length ? (
+                        <MasoneryList>
+                            {mine.map((group) => (
                                 <li key={group.id}>
                                     <Card
-                                        title={group.name}
-                                        description={group.description}
-                                        url={`/groups/${group.id}`}
-                                    />
+                                        fullWidth
+                                        link={`/groups/${group.publicId}`}
+                                    >
+                                        <header>
+                                            {group.icon && (
+                                                <Avatar
+                                                    size={28}
+                                                    src={group.icon}
+                                                    alt={group.name}
+                                                    username={group.name}
+                                                />
+                                            )}
+
+                                            <h4>{group.name}</h4>
+
+                                            <CardChip>
+                                                {group.members.length} member
+                                                {group.members.length > 1
+                                                    ? "s"
+                                                    : ""}
+                                            </CardChip>
+                                        </header>
+
+                                        <p>{group.description}</p>
+
+                                        <footer>
+                                            <p>
+                                                Created by{" "}
+                                                {group.creator?.displayName}
+                                            </p>
+                                            <p>
+                                                {group.createdAt.toLocaleDateString()}
+                                            </p>
+                                        </footer>
+                                    </Card>
                                 </li>
                             ))}
-                        </ol>
+                        </MasoneryList>
                     ) : (
                         <div className="paragraph">
                             <p>You are not listed in any groups yet.</p>
                         </div>
                     )}
-                </section>
-            )}
-
-            {user && (
-                <section>
-                    <h3>Create Group</h3>
-                    <GroupInput />
                 </section>
             )}
         </main>

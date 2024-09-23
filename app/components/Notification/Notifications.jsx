@@ -4,12 +4,11 @@ import { useStore, useAlerts } from "@/store/store";
 import styles from "./Notifications.module.css";
 
 export function Notifications() {
-    const removeNotification = useStore((state) => state.removeNotification);
     const readNotification = useStore((state) => state.readNotification);
     const notifications = useStore((state) => state.notifications);
-    const addAssociate = useStore((state) => state.addAssociate);
+    const removeItem = useStore((state) => state.removeItem);
     const addAlert = useAlerts((state) => state.addAlert);
-    const addGroup = useStore((state) => state.addGroup);
+    const addItem = useStore((state) => state.addItem);
 
     const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
@@ -24,26 +23,23 @@ export function Notifications() {
         });
 
         let data = null;
-
         try {
             data = await response.json();
-        } catch (e) {
-            data = { success: false, message: "An error occurred" };
-        }
+        } catch (e) {}
 
         if (response.ok) {
-            removeNotification(notification.id);
+            removeItem("notification", notification.id);
 
-            if (response.associate) {
-                addAssociate(response.associate);
-            } else if (response.group) {
-                addGroup(response.group);
+            if (data?.content?.associate) {
+                addItem("associate", data.content.associate);
+            } else if (data?.content?.group) {
+                addItem("group", data.content.group);
             }
         }
 
         addAlert({
             success: response.ok,
-            message: data.message,
+            message: data?.message || "Something went wrong",
         });
     }
 
@@ -58,20 +54,17 @@ export function Notifications() {
         });
 
         let data = null;
-
         try {
             data = await response.json();
-        } catch (e) {
-            data = { success: false, message: "An error occurred" };
-        }
+        } catch (e) {}
 
         if (response.ok) {
-            removeNotification(notification.id);
+            removeItem("notification", notification.id);
         }
 
         addAlert({
             success: response.ok,
-            message: data.message,
+            message: data?.message || "Something went wrong",
         });
     }
 
@@ -83,7 +76,7 @@ export function Notifications() {
         });
 
         if (response.ok) {
-            removeNotification(notification.id);
+            removeItem("notification", notification.id);
         } else {
             addAlert({
                 success: false,

@@ -1,16 +1,23 @@
 CREATE TABLE IF NOT EXISTS `users` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `public_id` CHAR(12) NOT NULL,
+    `public_id` CHAR(6) NOT NULL,
 
     -- Need this for case sensitivity
 	`username` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL UNIQUE,
     `display_name` VARCHAR (32) NOT NULL,
+
+    `email` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_bin NULL UNIQUE,
+    `email_verified` TINYINT DEFAULT 0,
+    `email_code` CHAR(6) NULL,
+    `email_verification_token` CHAR(32) NULL,
 
     `description` VARCHAR(512),
     `avatar` VARCHAR(128),
     `is_private` TINYINT DEFAULT 0,
 
     `password` VARCHAR(256),
+    `password_reset` CHAR(32) NULL,
+    `password_reset_expiration` TIMESTAMP NULL,
     `tokens` JSON NOT NULL,
 
     `created_at` TIMESTAMP DEFAULT NOW(),
@@ -46,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `associates` (
 
 CREATE TABLE IF NOT EXISTS `groups` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `public_id` CHAR(12) NOT NULL,
+    `public_id` CHAR(6) NOT NULL,
 
     `name` VARCHAR(128) NOT NULL,
     `description` VARCHAR(512),
@@ -56,6 +63,8 @@ CREATE TABLE IF NOT EXISTS `groups` (
 
     `created_at` TIMESTAMP DEFAULT NOW(),
     `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+
+    `created_by` BIGINT NOT NULL,
 
     `is_deleted` TINYINT DEFAULT 0
 );
@@ -72,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `members` (
 
 CREATE TABLE IF NOT EXISTS `sources` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `public_id` CHAR(12) NOT NULL,
+    `public_id` CHAR(6) NOT NULL,
 
     `title` VARCHAR(128) NOT NULL,
     `medium` ENUM("book", "article", "video", "podcast", "website", "audio"),
@@ -93,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `sources` (
 
 CREATE TABLE IF NOT EXISTS `notes` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `public_id` CHAR(12) NOT NULL,
+    `public_id` CHAR(6) NOT NULL,
 
     `title` VARCHAR(128) NOT NULL,
     `text` VARCHAR(8192) NOT NULL,
@@ -109,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `notes` (
 
 CREATE TABLE IF NOT EXISTS `quizzes` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `public_id` CHAR(12) NOT NULL,
+    `public_id` CHAR(6) NOT NULL,
     
     `type` ENUM("prompt-response", "multiple-choice", "fill-in-the-blank", "ordered-list-answer", "unordered-list-answer", "verbatim"),
     `prompt` VARCHAR(256),
@@ -151,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `resource_contributors` (
 
 CREATE TABLE IF NOT EXISTS `courses` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `public_id` CHAR(12) NOT NULL,
+    `public_id` CHAR(6) NOT NULL,
 
     `name` VARCHAR(128),
     `description` VARCHAR(512),

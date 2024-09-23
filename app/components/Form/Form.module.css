@@ -13,3 +13,9 @@
 .form > button {
     align-self: self-end;
 }
+
+@media (max-width: 768px) {
+    .form {
+        grid-template-columns: 1fr;
+    }
+}

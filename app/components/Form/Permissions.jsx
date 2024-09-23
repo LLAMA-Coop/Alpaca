@@ -63,10 +63,17 @@ export function Permissions({ permissions, setPermissions, disabled, error }) {
 
                     <Select
                         multiple
-                        data={read}
+                        data={[
+                            ...groups.map((g) => ({
+                                username: g.name,
+                                ...g,
+                            })),
+                            ...associates,
+                        ].filter((a) => read.includes(a.id))}
                         error={false}
                         itemValue="id"
                         itemLabel="username"
+                        disabled={allRead || allWrite}
                         placeholder="Select groups and users"
                         label="Groups and users allowed to read"
                         options={[
@@ -79,7 +86,7 @@ export function Permissions({ permissions, setPermissions, disabled, error }) {
                         setter={(value) => {
                             setPermissions({
                                 ...permissions,
-                                read: value,
+                                read: value.map((v) => v.id),
                             });
                         }}
                     />
@@ -101,9 +108,16 @@ export function Permissions({ permissions, setPermissions, disabled, error }) {
 
                     <Select
                         multiple
-                        data={write}
+                        data={[
+                            ...groups.map((g) => ({
+                                username: g.name,
+                                ...g,
+                            })),
+                            ...associates,
+                        ].filter((a) => write.includes(a.id))}
                         error={false}
                         itemValue="id"
+                        disabled={allWrite}
                         itemLabel="username"
                         placeholder="Select groups and users"
                         label="Groups and users allowed to edit"
@@ -117,8 +131,7 @@ export function Permissions({ permissions, setPermissions, disabled, error }) {
                         setter={(value) => {
                             setPermissions({
                                 ...permissions,
-                                write: value,
-                                edit: [...permissions.edit, ...value],
+                                write: value.map((v) => v.id),
                             });
                         }}
                     />

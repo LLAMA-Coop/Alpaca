@@ -1,6 +1,10 @@
 "use client";
 
-import { Popover, PopoverContent, PopoverTrigger } from "../Layers/Popover";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "../Layers/Popover/Popover";
 import { useAlerts, useStore } from "@/store/store";
 import { useRouter } from "next/navigation";
 import styles from "./UserCard.module.css";
@@ -11,44 +15,57 @@ import Link from "next/link";
 const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
 export function UserCard({ user, group, isOwner, isAdmin }) {
-    const removeAssociate = useStore((state) => state.removeAssociate);
-    const addAssociate = useStore((state) => state.addAssociate);
+    const removeItem = useStore((state) => state.removeItem);
     const associates = useStore((state) => state.associates);
-    const isAssociate = associates.map((a) => a.id).includes(user.id);
     const addAlert = useAlerts((state) => state.addAlert);
+    const addItem = useStore((state) => state.addItem);
     const myself = useStore((state) => state.user);
 
+    const isAssociate = associates.map((a) => a.id).includes(user.id);
     const isMe = user.id === myself.id;
     const router = useRouter();
 
     async function requestAssociate(userId) {
-        const response = await fetch(`${basePath}/api/associates`, {
+        const response = await fetch(`${basePath}/api/me/associates`, {
             method: "POST",
             body: JSON.stringify({ userId }),
-        }).then((res) => res.json());
+        });
 
-        if (response.associate) {
-            addAssociate(response.associate);
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (e) {}
+
+        if (data?.content?.associate) {
+            addItem("associate", data.content.associate);
         }
 
         addAlert({
-            success: response.success,
-            message: response.message,
+            success: response.ok,
+            message: data?.message || "Something went wrong",
         });
     }
 
-    async function tryRemoveAssociate(userId) {
-        const response = await fetch(`${basePath}/api/associates/${userId}`, {
-            method: "DELETE",
-        }).then((res) => res.json());
+    async function removeAssociate(userId) {
+        const response = await fetch(
+            `${basePath}/api/me/associates/${userId}`,
+            {
+                method: "DELETE",
+            },
+        );
 
-        if (response.success) {
-            removeAssociate(userId);
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (e) {}
+
+        if (response.ok) {
+            removeItem("associate", userId);
         }
 
         addAlert({
-            success: response.success,
-            message: response.message,
+            success: response.ok,
+            message: data?.message || "Something went wrong",
         });
     }
 
@@ -174,7 +191,7 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                 : "Add As Associate",
                             onClick: () => {
                                 if (isAssociate) {
-                                    tryRemoveAssociate(user.id);
+                                    removeAssociate(user.id);
                                 } else {
                                     requestAssociate(user.id);
                                 }

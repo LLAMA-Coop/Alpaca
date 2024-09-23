@@ -1,23 +1,9 @@
-import { useUser } from "@/lib/auth";
+"use client";
+
 import styles from "./NoteDisplay.module.css";
-import { Card, ListItem } from "@client";
-import { cookies } from "next/headers";
-import {
-    getPermittedCourses,
-    getPermittedNote,
-    getPermittedSources,
-} from "@/lib/db/helpers";
+import { Card } from "@client";
 
-export async function NoteDisplay({ note }) {
-    const creator = await useUser({ id: note.createdBy });
-    const user = await useUser({ token: cookies().get("token")?.value });
-    const sources = (
-        await getPermittedSources(user ? user.id : undefined)
-    ).filter((x) => note.sources.includes(x.id));
-    const courses = (await getPermittedCourses(user ? user.id : undefined)).filter((x) =>
-        note.courses.includes(x.id),
-    );
-
+export function NoteDisplay({ note }) {
     return (
         <Card title={note.title} description={note.text}>
             {note.tags?.length > 0 && (
@@ -26,13 +12,13 @@ export async function NoteDisplay({ note }) {
 
                     <ol className="chipList">
                         {note.tags?.map((cont) => (
-                            <ListItem key={cont} item={cont} />
+                            <li key={cont.id}>{cont.name}</li>
                         ))}
                     </ol>
                 </section>
             )}
 
-            {sources.length > 0 && (
+            {/* {sources?.length > 0 && (
                 <section className={styles.section}>
                     <h5>Sources linked</h5>
 
@@ -58,9 +44,9 @@ export async function NoteDisplay({ note }) {
                         ))}
                     </ul>
                 </section>
-            )}
+            )} */}
 
-            <p>Created by: {creator?.username ?? "Unknown"}</p>
+            <p>Created by: {note.creator?.username ?? "Unknown"}</p>
         </Card>
     );
 }

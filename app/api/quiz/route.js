@@ -6,65 +6,43 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 
+// CREATE QUIZ
+
 export async function POST(req) {
     const publicId = getNanoId();
     let quizId = null;
+
+    const quiz = await req.json();
+    const {
+        type,
+        prompt,
+        choices,
+        answers,
+        hints,
+        sources,
+        notes,
+        courses,
+        tags,
+        permissions: perm,
+    } = quiz;
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const quiz = await req.json();
-        const {
-            type,
-            prompt,
-            choices,
-            answers,
-            hints,
-            sources,
-            notes,
-            courses,
-            tags,
-            permissions: perm,
-        } = quiz;
-
         const validator = new Validator();
 
         validator.validateAll(
             [
-                {
-                    field: "type",
-                    value: type,
-                },
-                {
-                    field: "prompt",
-                    value: prompt,
-                },
-                {
-                    field: "choices",
-                    value: choices,
-                },
-                {
-                    field: "answers",
-                    value: answers,
-                },
-                {
-                    field: "hints",
-                    value: hints,
-                },
-                {
-                    field: "sources",
-                    value: sources,
-                },
-                {
-                    field: "notes",
-                    value: notes,
-                },
-                {
-                    field: "courses",
-                    value: courses,
-                },
-            ],
+                ["type", type],
+                ["prompt", prompt],
+                ["choices", choices],
+                ["answers", answers],
+                ["hints", hints],
+                ["sources", sources],
+                ["notes", notes],
+                ["courses", courses],
+            ].map(([field, value]) => ({ field, value })),
             "quiz",
         );
 
@@ -104,6 +82,7 @@ export async function POST(req) {
         await db
             .insertInto("quizzes")
             .values({
+                publicId,
                 type,
                 prompt,
                 choices: JSON.stringify(choices),
@@ -117,6 +96,7 @@ export async function POST(req) {
         quizId = (
             await db
                 .selectFrom("quizzes")
+                .select("id")
                 .where("publicId", "=", publicId)
                 .executeTakeFirstOrThrow()
         ).id;
@@ -126,7 +106,7 @@ export async function POST(req) {
             .values(
                 sources.map((s) => ({
                     A: quizId,
-                    B: s.sourceId,
+                    B: s,
                     A_type: "quiz",
                     B_type: "source",
                     // includeReference: false,

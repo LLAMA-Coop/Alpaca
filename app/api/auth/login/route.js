@@ -29,8 +29,8 @@ export async function POST(req) {
             return NextResponse.json(
                 {
                     errors: {
-                        username: "Username or password is invalid.",
-                        password: "Username or password is invalid.",
+                        username: "Username or password is invalid",
+                        password: "Username or password is invalid",
                     },
                 },
                 { status: 401 },
@@ -75,7 +75,7 @@ export async function POST(req) {
             return NextResponse.json(
                 {
                     token: accessToken,
-                    message: "Successfully logged in.",
+                    message: "Successfully logged in",
                 },
                 {
                     status: 200,
@@ -88,8 +88,8 @@ export async function POST(req) {
             return NextResponse.json(
                 {
                     errors: {
-                        username: "Username or password is invalid.",
-                        password: "Username or password is invalid.",
+                        username: "Username or password is invalid",
+                        password: "Username or password is invalid",
                     },
                 },
                 { status: 401 },

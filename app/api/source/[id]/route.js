@@ -10,29 +10,30 @@ import {
     updateSource,
 } from "@/lib/db/helpers.js";
 
+// UPDATE SOURCE
+
 export async function PATCH(req, { params }) {
+    const { id } = params;
+    const {
+        title,
+        medium,
+        url,
+        publishedAt,
+        lastAccessed,
+        tags,
+        authors,
+        courses,
+        permissions,
+    } = await req.json();
+
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const { id } = params;
-
-        const {
-            title,
-            medium,
-            url,
-            publishedAt,
-            lastAccessed,
-            tags,
-            authors,
-            courses,
-            permissions,
-        } = await req.json();
-
         if (!(await canEditResource(user.id, id, "source"))) {
             return NextResponse.json(
                 {
-                    message: "You do not have permission to edit this source.",
+                    message: "You do not have permission to edit this source",
                 },
                 { status: 404 },
             );
@@ -55,7 +56,7 @@ export async function PATCH(req, { params }) {
         if (!content.valid) {
             return NextResponse.json(
                 {
-                    message: "Invalid source data.",
+                    message: "Invalid source data",
                     errors: content.errors,
                 },
                 { status: 400 },
@@ -63,13 +64,15 @@ export async function PATCH(req, { params }) {
         }
 
         return NextResponse.json({
-            message: "Successfully updated source.",
+            message: "Successfully updated source",
             content,
         });
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }
+
+// DELETE SOURCE
 
 export async function DELETE(req, { params }) {
     try {
@@ -81,8 +84,7 @@ export async function DELETE(req, { params }) {
         if (!(await canDeleteResource(user.id, id, "source"))) {
             return NextResponse.json(
                 {
-                    message:
-                        "You do not have permission to delete this source.",
+                    message: "You do not have permission to delete this source",
                 },
                 { status: 403 },
             );
@@ -92,7 +94,7 @@ export async function DELETE(req, { params }) {
 
         return NextResponse.json(
             {
-                message: "Successfully deleted source.",
+                message: "Successfully deleted source",
             },
             { status: 200 },
         );

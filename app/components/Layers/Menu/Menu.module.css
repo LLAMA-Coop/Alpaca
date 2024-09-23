@@ -33,6 +33,7 @@
 .container > li:hover,
 .container > li:focus-visible {
     outline: none;
+    box-shadow: none;
     color: var(--fg-1);
     background-color: var(--bg-3);
 }

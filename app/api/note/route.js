@@ -6,6 +6,8 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 
+// CREATE NOTE
+
 export async function POST(req) {
     const publicId = getNanoId();
     let noteId = null;
@@ -21,40 +23,22 @@ export async function POST(req) {
 
         validator.validate(
             [
-                {
-                    field: "title",
-                    value: title,
-                },
-                {
-                    field: "text",
-                    value: text,
-                },
-                {
-                    field: "sources",
-                    value: sources,
-                },
-                {
-                    field: "tags",
-                    value: tags,
-                },
-            ],
+                ["title", title],
+                ["text", text],
+                ["sources", sources],
+                ["tags", tags],
+            ].map(([field, value]) => ({ field, value })),
             "note",
         );
 
-        validator.validate([
-            {
-                field: "tags",
-                value: tags,
-                type: "misc",
-            },
-        ]);
+        validator.validate([{ field: "tags", value: tags, type: "misc" }]);
 
         const permissions = validator.validatePermissions(perm, true);
 
         if (!validator.isValid) {
             return NextResponse.json(
                 {
-                    message: "Invalid note data.",
+                    message: "Invalid note data",
                     errors: validator.errors,
                 },
                 { status: 400 },
@@ -94,10 +78,10 @@ export async function POST(req) {
                 .insertInto("resource_relations")
                 .values(
                     courses.map((c) => ({
-                        A: c,
-                        B: noteId,
-                        A_type: "course",
-                        B_type: "note",
+                        A: noteId,
+                        B: c,
+                        A_type: "note",
+                        B_type: "course",
                         // includeReference: c.includeReference || false,
                         // reference: c.reference || null,
                         // referenceType: c.referenceType || null,

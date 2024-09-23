@@ -10,19 +10,21 @@ import {
     updateNote,
 } from "@/lib/db/helpers.js";
 
+// UPDATE NOTE
+
 export async function PATCH(req) {
+    const { id } = req.params;
+    const { title, text, sources, courses, tags, permissions } =
+        await req.json();
+
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const { id } = req.params;
-        const { title, text, sources, courses, tags, permissions } =
-            await req.json();
-
         if (!(await canEditResource(user.id, id, "note"))) {
             return NextResponse.json(
                 {
-                    message: "You do not have permission to edit this note.",
+                    message: "You do not have permission to edit this note",
                 },
                 { status: 404 },
             );
@@ -42,7 +44,7 @@ export async function PATCH(req) {
         if (!content.valid) {
             return NextResponse.json(
                 {
-                    message: "Invalid note data.",
+                    message: "Invalid note data",
                     errors: content.errors,
                 },
                 { status: 400 },
@@ -50,13 +52,15 @@ export async function PATCH(req) {
         }
 
         return NextResponse.json({
-            message: "Successfully updated source.",
+            message: "Successfully updated source",
             content,
         });
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }
+
+// DELETE NOTE
 
 export async function DELETE(req, { params }) {
     try {
@@ -68,7 +72,7 @@ export async function DELETE(req, { params }) {
         if (!(await canDeleteResource(user.id, id, "note"))) {
             return NextResponse.json(
                 {
-                    message: "You do not have permission to delete this note.",
+                    message: "You do not have permission to delete this note",
                 },
                 { status: 404 },
             );
@@ -78,7 +82,7 @@ export async function DELETE(req, { params }) {
 
         return NextResponse.json(
             {
-                message: "Successfully deleted note.",
+                message: "Successfully deleted note",
             },
             { status: 200 },
         );

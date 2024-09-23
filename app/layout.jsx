@@ -1,4 +1,4 @@
-import { getPermittedResources } from "@/lib/db/helpers";
+import { getGroups, getPermittedResources } from "@/lib/db/helpers";
 import { Inter, Sofia_Sans } from "next/font/google";
 import { FillStore, Timer, Alerts } from "@client";
 import { metadatas } from "@/lib/metadatas";
@@ -39,7 +39,6 @@ export default async function RootLayout({ children }) {
         token: cookies().get("token")?.value,
         select: ["id", "username", "displayName", "avatar"],
         withAssociates: true,
-        withCourses: true,
         withNotifications: true,
     });
 
@@ -47,6 +46,8 @@ export default async function RootLayout({ children }) {
         userId: user?.id,
         takeAll: true,
     });
+
+    const groups = await getGroups(user?.id);
 
     return (
         <html lang="en" className={`${inter.variable} ${sofia.variable}`}>
@@ -57,10 +58,9 @@ export default async function RootLayout({ children }) {
                     notes={notes}
                     quizzes={quizzes}
                     courses={courses}
-                    groups={user.groups}
+                    groups={groups}
                     associates={user.associates}
                     notifications={user.notifications || []}
-                    // webSocketURL={process.env.WS_URL}
                 />
             )}
 

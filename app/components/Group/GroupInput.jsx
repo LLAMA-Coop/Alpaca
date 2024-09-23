@@ -1,16 +1,18 @@
 "use client";
 
-import { Input, Spinner, Form } from "@client";
-import { useEffect, useReducer } from "react";
-import { validation } from "@/lib/validation";
-import { Validator } from "@/lib/validation";
+import { Input, Spinner, Form, Checkbox } from "@client";
+import { validation, Validator } from "@/lib/validation";
+import { useEffect, useReducer, useRef } from "react";
 import { useAlerts } from "@/store/store";
-import filetypeinfo from "magic-bytes.js";
+import styles from "./Group.module.css";
+import Image from "next/image";
+import { useUploadThing } from "@/lib/uploadthing";
 
 const defaultState = {
     name: "",
     description: "",
     icon: null,
+    isPublic: false,
     errors: {},
     loading: false,
 };
@@ -23,6 +25,8 @@ function reducer(state, action) {
             return { ...state, description: action.value };
         case "icon":
             return { ...state, icon: action.value };
+        case "isPublic":
+            return { ...state, isPublic: action.value };
         case "errors":
             return { ...state, errors: { ...state.errors, ...action.value } };
         case "loading":
@@ -38,32 +42,47 @@ export function GroupInput({ group }) {
     const [state, dispatch] = useReducer(reducer, defaultState);
 
     const addAlert = useAlerts((state) => state.addAlert);
+    const inputRef = useRef();
+
+    const { startUpload } = useUploadThing("avatarOrIcon", {
+        onClientUploadComplete: (files) => {
+            const { key: fileId } = files[0];
+
+            if (!fileId) {
+                throw new Error("No file ID returned from cdn.");
+            }
+
+            handleSubmit(undefined, fileId);
+        },
+        onUploadError: () => {
+            dispatch({ type: "loading", value: false });
+            addAlert({
+                success: false,
+                message: "An error occurred while uploading the image",
+            });
+        },
+    });
 
     useEffect(() => {
         if (!group) return;
         dispatch({ type: "name", value: group.name });
         dispatch({ type: "description", value: group.description });
         dispatch({ type: "icon", value: group.icon });
+        dispatch({ type: "isPublic", value: group.isPublic });
     }, []);
 
-    async function handleSubmit(e) {
-        e.preventDefault();
-        if (state.loading) return;
+    async function handleSubmit(e, fileId = null) {
+        if (e) e.preventDefault();
+        if (state.loading && !fileId) return;
 
         const validator = new Validator();
 
         validator.validateAll(
             [
-                {
-                    field: "name",
-                    value: state.name.trim(),
-                },
-                {
-                    field: "description",
-                    value: state.description.trim(),
-                },
-                // Not checking icon as it's not a string
-            ],
+                ["name", state.name.trim()],
+                ["description", state.description.trim()],
+                ["isPublic", state.isPublic],
+            ].map(([field, value]) => ({ field, value })),
             "group",
         );
 
@@ -71,43 +90,59 @@ export function GroupInput({ group }) {
             return dispatch({ type: "errors", value: validator.errors });
         }
 
-        dispatch({ type: "loading", value: true });
+        try {
+            dispatch({ type: "loading", value: true });
 
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/groups`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            if (state.icon && !fileId) {
+                return startUpload([state.icon]);
+            }
+
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/groups`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name: state.name.trim(),
+                        description: state.description.trim(),
+                        icon: fileId ?? undefined,
+                        isPublic: state.isPublic,
+                    }),
                 },
-                body: JSON.stringify({
-                    name: state.name.trim(),
-                    description: state.description.trim(),
-                    icon: state.icon,
-                }),
-            },
-        );
+            );
 
-        dispatch({ type: "loading", value: false });
+            if (response.ok) {
+                if (response.status === 201) {
+                    dispatch({ type: "reset" });
+                }
 
-        if (response.ok) {
-            if (response.status === 201) {
-                dispatch({ type: "reset" });
+                addAlert({
+                    success: true,
+                    message:
+                        response.status === 201
+                            ? "Successfully created group"
+                            : "Successfully updated group",
+                });
+            } else {
+                const data = await response.json();
+                addAlert({
+                    success: false,
+                    message: data?.message ?? "Something went wrong",
+                });
+            }
+        } catch (error) {
+            if (fileId) {
+                // Need to hit api endpoint to delete the file
             }
 
             addAlert({
-                success: true,
-                message:
-                    response.status === 201
-                        ? "Successfully created group."
-                        : "Successfully updated group.",
-            });
-        } else {
-            const data = await response.json();
-            addAlert({
                 success: false,
-                message: data?.message ?? "An error occurred.",
+                message: "Something went wrong",
             });
+        } finally {
+            dispatch({ type: "loading", value: false });
         }
     }
 
@@ -138,45 +173,61 @@ export function GroupInput({ group }) {
                 }}
             />
 
-            {/* <div className={styles.iconContainer}>
-                <Label error={iconError} label="Group Icon" />
+            <Checkbox
+                label="Public Group"
+                value={state.isPublic}
+                onChange={(value) => dispatch({ type: "isPublic", value })}
+            />
 
+            <div className={styles.iconContainer}>
                 <div>
                     <div className={styles.image}>
                         <Image
                             src={
-                                icon
-                                    ? URL.createObjectURL(icon)
-                                    : "/icons/group.png"
+                                state.icon
+                                    ? URL.createObjectURL(state.icon)
+                                    : "/assets/group.png"
                             }
-                            alt="Group Icon"
                             width={44}
                             height={44}
+                            alt="Group Icon"
                             onClick={() => inputRef.current.click()}
                         />
 
-                        {!icon && <div />}
+                        {!state.icon && <div />}
                     </div>
 
                     <button
+                        type="button"
                         className="button"
                         onClick={() => inputRef.current.click()}
                     >
                         Change Icon
                     </button>
 
-                    {icon && (
+                    {state.icon && (
                         <button
+                            type="button"
                             className="button"
-                            onClick={() => setIcon(null)}
+                            onClick={() => {
+                                dispatch({ type: "icon", value: null });
+                                dispatch({
+                                    type: "errors",
+                                    value: { icon: "" },
+                                });
+                            }}
                         >
                             Remove Icon
                         </button>
                     )}
 
+                    {state.errors.icon && (
+                        <p className={styles.error}>{state.errors.icon}</p>
+                    )}
+
                     <input
-                        tabIndex={-1}
                         type="file"
+                        tabIndex={-1}
                         ref={inputRef}
                         accept="image/png, image/jpeg, image/gif, image/apng, image/webp"
                         onChange={async (e) => {
@@ -186,51 +237,28 @@ export function GroupInput({ group }) {
                             if (!file) return (e.target.value = "");
 
                             // Run checks
-                            const maxFileSize = 1024 * 1024 * 10; // 10MB
+                            const maxFileSize = 1024 * 1024 * 2; // 2MB
+
                             if (file.size > maxFileSize) {
-                                setIconError(
-                                    "File size must be less than 10MB",
-                                );
+                                dispatch({
+                                    type: "errors",
+                                    value: {
+                                        icon: "File cannot be larger than 2MB",
+                                    },
+                                });
                                 return (e.target.value = "");
                             }
 
-                            const fileBytes = new Uint8Array(
-                                await file.arrayBuffer(),
-                            );
-
-                            const fileType =
-                                filetypeinfo(fileBytes)?.[0].mime?.toString();
-
-                            const allowedFileTypes = [
-                                "image/png",
-                                "image/jpeg",
-                                "image/gif",
-                                "image/apng",
-                                "image/webp",
-                            ];
-
-                            if (
-                                !fileType ||
-                                !allowedFileTypes.includes(fileType)
-                            ) {
-                                setIconError("File type not allowed.");
-                                return (e.target.value = "");
-                            }
-
-                            const newFile = new File([file], "image", {
-                                type: file.type,
-                            });
-
-                            setIcon(newFile);
-                            setIconError("");
+                            dispatch({ type: "icon", value: file });
+                            dispatch({ type: "errors", value: { icon: "" } });
                             e.target.value = "";
                         }}
                     />
                 </div>
-            </div> */}
+            </div>
 
-            <button className="button submit primary">
-                {state.loading ? <Spinner /> : "Create Group"}
+            <button type="submit" className="button submit primary">
+                Create group {state.loading && <Spinner />}
             </button>
         </Form>
     );

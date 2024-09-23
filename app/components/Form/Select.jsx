@@ -96,6 +96,7 @@ export function SelectElement({
     notObject,
     setter,
     description,
+    disabled,
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [activeIndex, setActiveIndex] = useState(null);
@@ -199,7 +200,9 @@ export function SelectElement({
     );
 
     return (
-        <div className={styles.container}>
+        <div
+            className={`${styles.container} ${disabled ? styles.disabled : ""}`}
+        >
             <label htmlFor={id} className={styles.label}>
                 {label}
 
@@ -217,8 +220,8 @@ export function SelectElement({
 
             <div
                 tabIndex={0}
-                {...getReferenceProps()}
                 ref={refs.setReference}
+                {...getReferenceProps()}
                 className={`${styles.wrapper} ${multiple ? styles.multiple : ""} ${styles.select} ${isOpen ? styles.active : ""}`}
                 style={{
                     borderColor: error ? "var(--danger-50)" : "",
@@ -290,29 +293,31 @@ export function SelectElement({
 
             {description && <p className={styles.description}>{description}</p>}
 
-            <SelectContext.Provider value={selectContext}>
-                {isOpen && (
-                    <FloatingFocusManager context={context} modal={false}>
-                        <div
-                            ref={refs.setFloating}
-                            style={{
-                                ...floatingStyles,
-                                // Needs to be width of the reference element
-                                width: refs.reference?.current?.offsetWidth,
-                            }}
-                            {...getFloatingProps()}
-                            className={styles.options}
-                        >
-                            <FloatingList
-                                elementsRef={elementsRef}
-                                labelsRef={labelsRef}
+            {!disabled && (
+                <SelectContext.Provider value={selectContext}>
+                    {isOpen && (
+                        <FloatingFocusManager context={context} modal={false}>
+                            <div
+                                ref={refs.setFloating}
+                                style={{
+                                    ...floatingStyles,
+                                    // Needs to be width of the reference element
+                                    width: refs.reference?.current?.offsetWidth,
+                                }}
+                                {...getFloatingProps()}
+                                className={styles.options}
                             >
-                                {children}
-                            </FloatingList>
-                        </div>
-                    </FloatingFocusManager>
-                )}
-            </SelectContext.Provider>
+                                <FloatingList
+                                    elementsRef={elementsRef}
+                                    labelsRef={labelsRef}
+                                >
+                                    {children}
+                                </FloatingList>
+                            </div>
+                        </FloatingFocusManager>
+                    )}
+                </SelectContext.Provider>
+            )}
         </div>
     );
 }

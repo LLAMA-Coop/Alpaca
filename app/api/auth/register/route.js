@@ -14,8 +14,8 @@ export async function POST(req) {
         return NextResponse.json(
             {
                 errors: {
-                    username: "Username is required.",
-                    password: "Password is required.",
+                    username: "Username is required",
+                    password: "Password is required",
                 },
             },
             { status: 400 },
@@ -55,7 +55,7 @@ export async function POST(req) {
             return NextResponse.json(
                 {
                     errors: {
-                        username: "Username is already taken.",
+                        username: "Username is already taken",
                     },
                 },
                 { status: 400 },
@@ -75,7 +75,7 @@ export async function POST(req) {
 
         return NextResponse.json(
             {
-                message: "User registered successfully.",
+                message: "User registered successfully",
             },
             { status: 201 },
         );

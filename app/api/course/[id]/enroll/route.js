@@ -1,10 +1,15 @@
-import { canEnrollInCourse, catchRouteError } from "@/lib/db/helpers";
-import { doesUserMeetPrerequisites } from "@/lib/permissions";
 import { unauthorized } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
+import {
+    catchRouteError,
+    canEnrollInCourse,
+    doesUserMeetPrerequisites,
+} from "@/lib/db/helpers";
+
+// ENROLL IN COURSE
 
 export async function POST(req, { params }) {
     try {
@@ -16,7 +21,7 @@ export async function POST(req, { params }) {
         if (!(await canEnrollInCourse(user.id, id))) {
             return NextResponse.json(
                 {
-                    message: "You are not allowed to enroll in this course.",
+                    message: "You are not allowed to enroll in this course",
                 },
                 { status: 403 },
             );
@@ -26,7 +31,7 @@ export async function POST(req, { params }) {
             return NextResponse.json(
                 {
                     message:
-                        "You do not meet the prerequisites for this course.",
+                        "You do not meet the prerequisites for this course",
                 },
                 { status: 400 },
             );
@@ -42,7 +47,7 @@ export async function POST(req, { params }) {
 
         return NextResponse.json(
             {
-                message: "Successfully enrolled in this course.",
+                message: "Successfully enrolled in this course",
             },
             { status: 200 },
         );

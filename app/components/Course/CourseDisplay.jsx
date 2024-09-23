@@ -1,64 +1,60 @@
-import { Card, ListItem } from "../client";
-import styles from "../Note/NoteDisplay.module.css";
-import { useUser } from "@/lib/auth";
-import { cookies } from "next/headers";
+"use client";
 
-export async function CourseDisplay({ course, canRead }) {
-    const user = await useUser({ token: cookies().get("token")?.value });
-    const dbCourse = course;
+import {
+    CardDescription,
+    CardListItem,
+    CardList,
+    CardChip,
+    Card,
+} from "@client";
 
+export function CourseDisplay({ lighter = false, darker = false, course }) {
     return (
         <Card
-            title={`${dbCourse.name}`}
-            description={`${dbCourse.description}`}
-            buttons={
-                canRead
-                    ? [
-                          {
-                              label: "View Course",
-                              link: `/courses/${dbCourse.name}`,
-                              sameTab: true,
-                          },
-                      ]
-                    : []
-            }
+            fullWidth
+            darker={darker}
+            lighter={lighter}
+            link={`/courses/${course.name}`}
         >
-            <div className={styles.tags}>
-                <h5>Parent Courses</h5>
+            <header>
+                <h4>{course.name}</h4>
+                <CardChip>Level {course.level || 0}</CardChip>
+            </header>
 
-                {dbCourse.parentCourses.length > 0 ? (
-                    <ol className="chipList">
-                        {dbCourse.parentCourses.map((crs) => (
-                            <ListItem key={crs.id} item={crs.name} />
+            <CardDescription>{course.description}</CardDescription>
+
+            {course.parents.length > 0 && (
+                <section>
+                    <h5>Parent Courses</h5>
+
+                    <CardList>
+                        {course.parents.map((course) => (
+                            <CardListItem key={course.id}>
+                                {course.name}
+                            </CardListItem>
                         ))}
-                    </ol>
-                ) : (
-                    <p>No Parent Courses Listed</p>
-                )}
-            </div>
+                    </CardList>
+                </section>
+            )}
 
-            <div className={styles.tags}>
-                <h5>Prerequisites</h5>
+            {course.prerequisites.length > 0 && (
+                <section>
+                    <h5>Prerequisites</h5>
 
-                {dbCourse.prerequisites.length > 0 ? (
-                    <ol className="chipList">
-                        {dbCourse.prerequisites.map((p) => {
-                            const course = p.course;
-                            if (!course) {
-                                return <li key={p.course}>Unavailable</li>;
-                            }
+                    <CardList>
+                        {course.prerequisites.map((course) => (
+                            <CardListItem key={course.id}>
+                                {course.name}
+                            </CardListItem>
+                        ))}
+                    </CardList>
+                </section>
+            )}
 
-                            const display = `${course.name} - Average Level Required ${p.averageLevelRequired}`;
-
-                            return <ListItem key={course.id} item={display} />;
-                        })}
-                    </ol>
-                ) : (
-                    <p>No Prerequisites Listed</p>
-                )}
-            </div>
-
-            <p>Created by: {user.username}</p>
+            <footer>
+                <p>Created by {course.creator.username}</p>
+                <p>{new Date(course.createdAt).toLocaleDateString()}</p>
+            </footer>
         </Card>
     );
 }

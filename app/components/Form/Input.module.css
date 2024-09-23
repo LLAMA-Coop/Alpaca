@@ -2,6 +2,15 @@
     position: relative;
 }
 
+.container.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.container.disabled .label {
+    color: var(--fg-4);
+}
+
 .label {
     display: flex;
     font-size: 14px;
@@ -94,7 +103,7 @@
 .input.textarea {
     display: block;
     min-height: 160px;
-    padding: 10px 0 10px 10px;
+    padding: 10px;
     resize: vertical;
     align-self: stretch;
     font-family: var(--font-body);

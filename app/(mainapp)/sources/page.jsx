@@ -1,10 +1,10 @@
 import { getPermittedResources } from "@/lib/db/helpers";
+import { MasoneryList, SourceDisplay } from "@client";
 import styles from "@main/page.module.css";
 import { redirect } from "next/navigation";
-import { SourceDisplay } from "@server";
 import { cookies } from "next/headers";
-import { InputPopup } from "@client";
 import { useUser } from "@/lib/auth";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function SourcesPage({ searchParams }) {
@@ -29,7 +29,7 @@ export default async function SourcesPage({ searchParams }) {
     const hasMore = false;
 
     if (page > 1 && sources.length === 0) {
-        redirect("/sources?page=1&amount=" + amount);
+        return redirect("/sources?page=1&amount=" + amount);
     }
 
     return (
@@ -44,75 +44,77 @@ export default async function SourcesPage({ searchParams }) {
                     {user
                         ? `These are the sources that are publicly viewable, as well as the ones you made.`
                         : `You are only viewing the publicly available sources.
-                           Log in to see sources available to you and create your own sources.`}
+                           Log in to see sources available to you.`}
                 </p>
             </header>
 
             <section>
-                <h2>Available Sources</h2>
+                {sources.length > 0 ? (
+                    <>
+                        <h2>Available Sources</h2>
 
-                <ol className={styles.listGrid}>
-                    {sources.map((source) => {
-                        const isCreator = user && source.creator.id === user.id;
-                        const canWrite = isCreator || source.allCanWrite;
+                        <MasoneryList>
+                            {sources.map((source) => (
+                                <li key={source.id}>
+                                    <SourceDisplay source={source} />
+                                </li>
+                            ))}
+                        </MasoneryList>
 
-                        return (
-                            <li key={source.id}>
-                                <SourceDisplay source={source} />
-
-                                {canWrite && (
-                                    <InputPopup
-                                        type="source"
-                                        resource={source}
-                                    />
-                                )}
-
-                                <Link href={`/sources/${source.id}`}>
-                                    Go to Source Page
+                        <div className={styles.paginationButtons}>
+                            {page > 1 ? (
+                                <Link
+                                    className="button submit primary"
+                                    href={`/sources?page=${page - 1}&amount=${amount}`}
+                                >
+                                    Previous page
                                 </Link>
-                            </li>
-                        );
-                    })}
+                            ) : (
+                                <button
+                                    disabled
+                                    className="button submit primary"
+                                >
+                                    Previous page
+                                </button>
+                            )}
 
-                    {sources.length === 0 && (
-                        <p className={styles.noContent}>
-                            Oh, that's awkward. There are no sources to display.
+                            {hasMore ? (
+                                <Link
+                                    className="button submit primary"
+                                    href={`/sources?page=${page + 1}&amount=${amount}`}
+                                >
+                                    Next page
+                                </Link>
+                            ) : (
+                                <button
+                                    disabled
+                                    className="button submit primary"
+                                >
+                                    Next page
+                                </button>
+                            )}
+                        </div>
+                    </>
+                ) : (
+                    <div className={styles.noResults}>
+                        <Image
+                            src="/assets/no-results.svg"
+                            alt="No sources"
+                            height={400}
+                            width={400}
+                        />
+
+                        <p>
+                            Hey, we searched high and low, but we couldn't find
+                            any sources.
                             <br />
-                            <Link className="link" href="/register">
-                                Register
-                            </Link>{" "}
-                            and create your own sources, you'll love it!
+                            Maybe you should try again later or create your own
+                            sources.
                         </p>
-                    )}
-                </ol>
 
-                {sources.length > 0 && (
-                    <div className={styles.paginationButtons}>
-                        {page > 1 ? (
-                            <Link
-                                className="button submit primary"
-                                href={`/sources?page=${page - 1}&amount=${amount}`}
-                            >
-                                Previous page
-                            </Link>
-                        ) : (
-                            <button disabled className="button submit primary">
-                                Previous page
-                            </button>
-                        )}
-
-                        {hasMore ? (
-                            <Link
-                                className="button submit primary"
-                                href={`/sources?page=${page + 1}&amount=${amount}`}
-                            >
-                                Next page
-                            </Link>
-                        ) : (
-                            <button disabled className="button submit primary">
-                                Next page
-                            </button>
-                        )}
+                        <Link className="button primary" href="/create">
+                            Create a source
+                        </Link>
                     </div>
                 )}
             </section>

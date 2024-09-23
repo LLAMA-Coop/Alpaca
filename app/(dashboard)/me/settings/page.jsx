@@ -7,8 +7,17 @@ import { cookies } from "next/headers";
 export default async function SettingsPage() {
     const user = await useUser({
         token: cookies().get("token")?.value,
-        select: ["id", "username"],
+        select: [
+            "id",
+            "username",
+            "displayName",
+            "email",
+            "avatar",
+            "description",
+            "createdAt",
+        ],
     });
+
     if (!user) return redirect("/login");
 
     return <Settings user={serializeOne(user)} />;

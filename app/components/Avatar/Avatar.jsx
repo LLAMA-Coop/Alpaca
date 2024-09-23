@@ -20,19 +20,17 @@ export function Avatar({ src, username, size = 40, outline, background }) {
                 background: background || "",
             }}
         >
-            {/* {src ? (
+            {src ? (
                 <Image
-                    draggable={false}
-                    alt={`Avatar for ${username}`}
                     width={size}
                     height={size}
-                    src={`${cdn}/${src}/`}
+                    draggable={false}
+                    src={`${cdn}${src}`}
+                    alt={`Avatar for ${username || "User"}`}
                 />
             ) : (
-                <div>{letter}</div>
-            )} */}
-
-            {letter}
+                letter
+            )}
         </div>
     );
 }

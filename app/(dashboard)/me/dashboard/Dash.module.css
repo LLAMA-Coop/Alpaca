@@ -101,7 +101,7 @@
     align-items: center;
     flex-wrap: wrap;
     margin-bottom: 24px;
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 16px;
     background-color: var(--bg-2);
 }
@@ -121,6 +121,10 @@
     flex: 1 1 auto;
 }
 
+.tabHeader.course > h3 {
+    gap: 24px;
+}
+
 .tabHeader > h1 > img,
 .tabHeader > h3 > img {
     border-radius: 50%;
@@ -131,14 +135,16 @@
 .tabHeader > h1 > span,
 .tabHeader > h3 > span {
     display: flex;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 8px;
     align-items: center;
-    justify-content: center;
-    background-color: var(--accent-3);
-    border-radius: 100vw;
-    font-size: 15px;
-    height: 32px;
-    padding: 6px 12px;
     white-space: nowrap;
+    border-radius: 1000px;
+    justify-content: center;
+    color: var(--accent-3-fg);
+    font-family: var(--font-body);
+    background-color: var(--accent-3);
 }
 
 .tabHeader > h1 > :first-child {
@@ -179,25 +185,24 @@
     height: 20px;
 }
 
-.content > header > .summaries {
+.summaries {
+    gap: 12px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-around;
 }
 
-.content header > .summaries > div {
+.summaries > div {
+    padding: 6px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 6px;
-    padding: 6px 12px;
-    border-radius: 100vw;
-    background-color: var(--accent-3);
-    color: var(--fg-1);
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    line-height: 1.2;
+    align-items: center;
+    border-radius: 1000px;
+    justify-content: center;
+    color: var(--accent-3-fg);
+    background-color: var(--accent-3);
 }
 
 .summaries > div > * {
@@ -210,8 +215,8 @@
 
 .content > main {
     background-color: var(--bg-2);
-    border-radius: 10px;
-    padding: 24px 4px 24px 24px;
+    border-radius: 8px;
+    padding: 24px;
     flex: 1;
     min-height: 370px;
     height: auto;
@@ -246,9 +251,11 @@
 }
 
 .actionButtons {
+    gap: 16px;
     display: flex;
     align-items: center;
     margin-bottom: 24px;
+    justify-content: center;
 }
 
 .dashButton {
@@ -445,13 +452,14 @@
     width: 24px;
     height: 24px;
     border-radius: 1000px;
-    color: var(--accent-foreground);
+    color: var(--accent-1-fg);
     background-color: var(--accent-1);
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 15px;
+    font-weight: 600;
     line-height: 1.2;
     margin-left: 8px;
     user-select: none;
+    font-family: var(--font-body);
     aspect-ratio: 1;
 }
 
@@ -522,7 +530,7 @@
         grid-template-columns: var(--gutter-x) 1fr var(--gutter-x);
     }
 
-    .main > div > nav {
+    .main > section > nav {
         position: fixed;
         bottom: 35px;
         left: 50%;

@@ -36,7 +36,7 @@ export async function POST(req) {
         const newToken = await getToken(user.username);
 
         return NextResponse.json({
-            message: "Successfully refreshed token.",
+            message: "Successfully refreshed token",
             token: newToken,
         });
     } catch (error) {

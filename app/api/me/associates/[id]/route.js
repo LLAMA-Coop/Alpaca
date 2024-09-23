@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 
+// ACCEPT ASSOCIATE REQUEST
+
 export async function POST(req, { params }) {
     const { id } = params;
 
@@ -15,7 +17,7 @@ export async function POST(req, { params }) {
         if (await isUserAssociate(user.id, id)) {
             return NextResponse.json(
                 {
-                    message: "User is already an associate.",
+                    message: "User is already an associate",
                 },
                 { status: 400 },
             );
@@ -35,7 +37,7 @@ export async function POST(req, { params }) {
             if (!received) {
                 return NextResponse.json(
                     {
-                        message: "No request found.",
+                        message: "No request found",
                     },
                     { status: 404 },
                 );
@@ -66,7 +68,7 @@ export async function POST(req, { params }) {
 
                 return NextResponse.json(
                     {
-                        message: "Successfully accepted associate request.",
+                        message: "Successfully accepted associate request",
                         content: {
                             associate,
                         },
@@ -80,6 +82,8 @@ export async function POST(req, { params }) {
     }
 }
 
+// DECLINE ASSOCIATE REQUEST OR REMOVE USER FROM ASSOCIATES
+
 export async function DELETE(req, { params }) {
     const { id } = params;
 
@@ -89,6 +93,7 @@ export async function DELETE(req, { params }) {
 
         const received = await db
             .selectFrom("notifications")
+            .select("id")
             .where("recipientId", "=", user.id)
             .where("senderId", "=", id)
             .where("type", "=", "request")
@@ -102,7 +107,7 @@ export async function DELETE(req, { params }) {
 
             return NextResponse.json(
                 {
-                    message: "Successfully declined request.",
+                    message: "Successfully declined request",
                 },
                 { status: 200 },
             );
@@ -110,6 +115,7 @@ export async function DELETE(req, { params }) {
 
         const sent = await db
             .selectFrom("notifications")
+            .select("id")
             .where("recipientId", "=", id)
             .where("senderId", "=", user.id)
             .where("type", "=", "request")
@@ -123,7 +129,7 @@ export async function DELETE(req, { params }) {
 
             return NextResponse.json(
                 {
-                    message: "Successfully cancelled request.",
+                    message: "Successfully cancelled request",
                 },
                 { status: 200 },
             );
@@ -144,7 +150,7 @@ export async function DELETE(req, { params }) {
 
             return NextResponse.json(
                 {
-                    message: "Successfully removed associate.",
+                    message: "Successfully removed associate",
                 },
                 { status: 200 },
             );
@@ -152,7 +158,7 @@ export async function DELETE(req, { params }) {
 
         return NextResponse.json(
             {
-                message: "No request or associate found.",
+                message: "No request or associate found",
             },
             { status: 404 },
         );

@@ -1,10 +1,10 @@
 import { getPermittedResources } from "@/lib/db/helpers";
+import { MasoneryList, NoteDisplay } from "@client";
 import styles from "@main/page.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { NoteDisplay } from "@server";
-import { InputPopup } from "@client";
 import { useUser } from "@/lib/auth";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function NotesPage({ searchParams }) {
@@ -38,78 +38,77 @@ export default async function NotesPage({ searchParams }) {
                 <h1>Notes</h1>
 
                 <p>
-                    A note is a response to or summary of information in a cited
-                    source or multiple sources.
-                    <br />
+                    A note is a record of your thoughts, ideas, or summaries of
+                    a source. You can use notes to create quiz questions or to
+                    help you study.{` `}
                     {user
                         ? `These are the notes that are publicly viewable, as well as the ones you made.`
                         : `You are only viewing the publicly available notes.
-                           Log in to see notes available to you and create your own notes.`}
+                           Log in to see notes available to you.`}
                 </p>
             </header>
 
             <section>
-                <h2>Available Notes</h2>
+                {notes.length > 0 ? (
+                    <>
+                        <h2>Available Notes</h2>
 
-                <ol className={styles.listGrid}>
-                    {notes.map((note) => {
-                        const isCreator = user && note.creator.id === user.id;
-                        const canWrite = isCreator || note.allCanWrite;
+                        <MasoneryList>
+                            {notes.map((note) => (
+                                <li key={note.id}>
+                                    <NoteDisplay note={note} />
+                                </li>
+                            ))}
+                        </MasoneryList>
 
-                        return (
-                            <li key={note.id}>
-                                <NoteDisplay note={note} />
-
-                                {canWrite && (
-                                    <InputPopup type="note" resource={note} />
-                                )}
-
-                                <Link href={`/notes/${note.id}`}>
-                                    Go to Note Page
+                        <div className={styles.paginationButtons}>
+                            {page > 1 ? (
+                                <Link
+                                    className="button submit"
+                                    href={`/notes?page=${page - 1}&amount=${amount}`}
+                                >
+                                    Previous page
                                 </Link>
-                            </li>
-                        );
-                    })}
+                            ) : (
+                                <button disabled className="button submit">
+                                    Previous page
+                                </button>
+                            )}
 
-                    {notes.length === 0 && (
-                        <p className={styles.noContent}>
-                            Oh, that's awkward. There are no notes to display.
+                            {hasMore ? (
+                                <Link
+                                    className="button submit"
+                                    href={`/notes?page=${page + 1}&amount=${amount}`}
+                                >
+                                    Next page
+                                </Link>
+                            ) : (
+                                <button disabled className="button submit">
+                                    Next page
+                                </button>
+                            )}
+                        </div>
+                    </>
+                ) : (
+                    <div className={styles.noResults}>
+                        <Image
+                            src="/assets/no-results.svg"
+                            alt="No notes"
+                            height={400}
+                            width={400}
+                        />
+
+                        <p>
+                            Hey, we searched high and low, but we couldn't find
+                            any notes.
                             <br />
-                            <Link className="link" href="/register">
-                                Register
-                            </Link>{" "}
-                            and create your own notes, you'll love it!
+                            Maybe you should try again later or create your own
+                            notes.
                         </p>
-                    )}
-                </ol>
 
-                {notes.length > 0 && (
-                    <div className={styles.paginationButtons}>
-                        {page > 1 ? (
-                            <Link
-                                className="button submit"
-                                href={`/notes?page=${page - 1}&amount=${amount}`}
-                            >
-                                Previous page
-                            </Link>
-                        ) : (
-                            <button disabled className="button submit">
-                                Previous page
-                            </button>
-                        )}
-
-                        {hasMore ? (
-                            <Link
-                                className="button submit"
-                                href={`/notes?page=${page + 1}&amount=${amount}`}
-                            >
-                                Next page
-                            </Link>
-                        ) : (
-                            <button disabled className="button submit">
-                                Next page
-                            </button>
-                        )}
+                        <Link className="button primary" href="/create">
+                            Create a note
+                        </Link>
                     </div>
                 )}
             </section>
