@@ -95,10 +95,10 @@ export function ListAnswer({
     let label, color, icon;
     if (isFlashcard) {
         label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
-        color = showAnswer ? "var(--accent-3)" : undefined;
+        color = showAnswer ? "var(--accent)" : undefined;
     } else if (responseStatus === "complete") {
         label = incorrectIndexes.length ? "Incorrect" : "Correct";
-        color = incorrectIndexes.length ? "var(--accent-2)" : "var(--accent-3)";
+        color = incorrectIndexes.length ? "var(--accent-2)" : "var(--accent)";
         icon = incorrectIndexes.length ? <></> : <></>;
     } else {
         label = "Check Answer";

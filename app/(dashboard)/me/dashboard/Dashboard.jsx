@@ -4,8 +4,12 @@ import QuizDisplay from "@/app/components/Quiz/QuizDisplay";
 import {
     Avatar,
     CourseDisplay,
+    GroupDisplay,
     MasoneryList,
     Notifications,
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
     UserCard,
 } from "@client";
 import { useAlerts, useStore } from "@/store/store";
@@ -241,19 +245,28 @@ export function Dashboard({ more = false }) {
                         )}
 
                         {currentTab !== 0 && (
-                            <Link
-                                className={styles.browseLink}
-                                title={`Browse ${tabs[currentTab].name}`}
-                                href={`/${tabs[currentTab].name.toLowerCase()}`}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                >
-                                    <path d="M18,18.5c0,3.03-2.47,5.5-5.5,5.5H5.5C2.47,24,0,21.53,0,18.5v-7C0,8.47,2.47,6,5.5,6c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5c-1.38,0-2.5,1.12-2.5,2.5v7c0,1.38,1.12,2.5,2.5,2.5h7c1.38,0,2.5-1.12,2.5-2.5,0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5Zm5-13.45L18.58,.46c-.58-.6-1.52-.62-2.12-.04-.6,.58-.62,1.52-.04,2.12l3.33,3.46h-6.25c-3.03,0-5.5,2.47-5.5,5.5v5c0,.83,.67,1.5,1.5,1.5s1.5-.67,1.5-1.5v-5c0-1.38,1.12-2.5,2.5-2.5h6.25l-3.33,3.46c-.57,.6-.56,1.55,.04,2.12,.29,.28,.67,.42,1.04,.42,.39,0,.79-.15,1.08-.46l4.39-4.56c1.37-1.36,1.37-3.59,.02-4.93Z" />
-                                </svg>
-                            </Link>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <Link
+                                        className={styles.browseLink}
+                                        title={`Browse ${tabs[currentTab].name}`}
+                                        href={`/${tabs[currentTab].name.toLowerCase()}`}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                        >
+                                            <path d="M18.135,11.831c-.146-.201-.271-.417-.371-.644l-5.111,5.111c-.648,.648-1.575,1.035-2.479,1.035-.865,0-1.692-.333-2.392-.961-.693-.622-1.088-1.485-1.114-2.429-.026-.966,.352-1.912,1.036-2.596l5.106-5.106c-.698-.319-1.269-.87-1.632-1.566-.335-.013-.674-.031-1-.031-3.981,0-7.366,.938-7.508,.978-.329,.093-.588,.347-.687,.674-.041,.133-.984,3.304-.984,7.527,0,4.26,.944,7.398,.984,7.53,.1,.325,.358,.578,.686,.67,.142,.04,3.519,.979,7.509,.979s7.366-.938,7.508-.978c.329-.093,.588-.347,.687-.674,.041-.133,.984-3.304,.984-7.527,0-.322-.016-.65-.027-.976-.468-.239-.878-.581-1.196-1.017Z" />
+                                            <path d="M21.924,1.958c-.144-.128-.309-.226-.487-.291-1.052-.419-3.885-1.252-7.631-.037-.788,.255-1.22,1.101-.964,1.889,.255,.788,1.1,1.219,1.889,.964,1.203-.389,2.264-.497,3.144-.478L9.118,12.763c-.586,.585-.616,1.568,0,2.121,.94,.844,1.828,.293,2.121,0L19.999,6.124c.014,.867-.096,1.933-.485,3.155-.251,.79,.224,1.952,1.43,1.955,.636,.002,1.226-.408,1.429-1.046,1.342-4.222,.207-7.643-.451-8.23Z" />
+                                        </svg>
+                                    </Link>
+                                </TooltipTrigger>
+
+                                <TooltipContent>
+                                    Browse {tabs[currentTab].name}
+                                </TooltipContent>
+                            </Tooltip>
                         )}
                     </h1>
 
@@ -327,7 +340,7 @@ export function Dashboard({ more = false }) {
                                     <div>
                                         <h3>Pick up where you left off</h3>
 
-                                        <MasoneryList>
+                                        <MasoneryList dash>
                                             {courses.map((course) => (
                                                 <CourseDisplay
                                                     lighter
@@ -350,7 +363,7 @@ export function Dashboard({ more = false }) {
                                             </p>
                                         )}
 
-                                        <MasoneryList>
+                                        <MasoneryList dash>
                                             {quizzes.map((quiz) => (
                                                 <QuizDisplay
                                                     key={quiz.id}
@@ -404,7 +417,7 @@ export function Dashboard({ more = false }) {
                                 <div>
                                     <h3>Courses you are enrolled in</h3>
 
-                                    <MasoneryList>
+                                    <MasoneryList dash>
                                         {courses.map((course) => (
                                             <CourseDisplay
                                                 lighter
@@ -440,22 +453,14 @@ export function Dashboard({ more = false }) {
                                             </span>
                                         </h3>
 
-                                        <ul className={styles.gridList}>
+                                        <MasoneryList dash>
                                             {myGroups.map((group) => (
-                                                <Link
-                                                    key={group.id}
-                                                    className={styles.card}
-                                                    href={`/groups/${group.publicId}`}
-                                                >
-                                                    <h3>{group.name}</h3>
-
-                                                    <p>
-                                                        {group.description ||
-                                                            "No description provided."}
-                                                    </p>
-                                                </Link>
+                                                <GroupDisplay
+                                                    lighter
+                                                    group={group}
+                                                />
                                             ))}
-                                        </ul>
+                                        </MasoneryList>
                                     </div>
                                 )}
 
@@ -468,22 +473,14 @@ export function Dashboard({ more = false }) {
                                             </span>
                                         </h3>
 
-                                        <ul className={styles.gridList}>
+                                        <MasoneryList dash>
                                             {otherGroups.map((group) => (
-                                                <Link
-                                                    key={group.id}
-                                                    className={styles.card}
-                                                    href={`/groups/${group.id}`}
-                                                >
-                                                    <h3>{group.name}</h3>
-
-                                                    <p>
-                                                        {group.description ||
-                                                            "No description provided."}
-                                                    </p>
-                                                </Link>
+                                                <GroupDisplay
+                                                    lighter
+                                                    group={group}
+                                                />
                                             ))}
-                                        </ul>
+                                        </MasoneryList>
                                     </div>
                                 )}
                             </div>
@@ -562,13 +559,13 @@ export function Dashboard({ more = false }) {
                                     </div>
                                 </div>
 
-                                <ul className={styles.gridList}>
-                                    {(associates || []).map((user) => (
+                                <MasoneryList dash2>
+                                    {associates.map((user) => (
                                         <li key={user.id}>
                                             <UserCard user={user} />
                                         </li>
                                     ))}
-                                </ul>
+                                </MasoneryList>
                             </>
                         ))}
 

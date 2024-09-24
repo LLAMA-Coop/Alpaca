@@ -41,9 +41,9 @@
 }
 
 .blankBank input:checked + label {
-    color: var(--accent-3-fg);
-    border: 1px solid var(--accent-3-50);
-    background-color: var(--accent-3-20);
+    color: var(--accent-fg);
+    border: 1px solid var(--accent-50);
+    background-color: var(--accent-20);
 }
 
 .blankBank input[type="checkbox"] {

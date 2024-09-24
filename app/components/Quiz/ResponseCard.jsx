@@ -118,12 +118,12 @@ export function ResponseCard({
     let label, color, icon, outline;
     if (isFlashcard) {
         label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
-        color = showAnswer ? "var(--accent-3)" : undefined;
+        color = showAnswer ? "var(--accent)" : undefined;
         outline = showAnswer ? "var(--accent-tertiary-outline)" : undefined;
     } else if (hasAnswered) {
         label = correctAnswer ? "Correct" : "Incorrect";
         icon = correctAnswer ? <></> : <></>;
-        color = correctAnswer ? "var(--accent-3)" : "var(--accent-2)";
+        color = correctAnswer ? "var(--accent)" : "var(--accent-2)";
         outline = correctAnswer
             ? "var(--accent-tertiary-outline)"
             : "var(--accent-secondary-outline)";

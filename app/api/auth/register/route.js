@@ -68,6 +68,7 @@ export async function POST(req) {
                 publicId,
                 username: name,
                 displayName: name,
+                settings: JSON.stringify({}),
                 password: await bcrypt.hash(password, 10),
                 tokens: JSON.stringify([]),
             })

@@ -26,24 +26,30 @@
     color: var(--fg-2);
 }
 
+.container > li.disabled {
+    opacity: 0.5;
+    cursor: default;
+    color: var(--fg-3);
+}
+
 .container > li.danger {
     color: var(--danger);
 }
 
-.container > li:hover,
-.container > li:focus-visible {
+.container > li:not(.disabled):hover,
+.container > li:not(.disabled):focus-visible {
     outline: none;
     box-shadow: none;
     color: var(--fg-1);
     background-color: var(--bg-3);
 }
 
-.container > li.danger:hover,
-.container > li.danger:focus-visible {
+.container > li:not(.disabled).danger:hover,
+.container > li:not(.disabled).danger:focus-visible {
     color: var(--danger);
 }
 
-.container > li:active {
+.container > li:not(.disabled):active {
     filter: brightness(1.3);
 }
 

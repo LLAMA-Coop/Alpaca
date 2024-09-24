@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./Tooltip.module.css";
 import {
     useInteractions,
     FloatingPortal,
@@ -11,8 +12,11 @@ import {
     useFocus,
     useRole,
     offset,
+    arrow,
     shift,
     flip,
+    FloatingArrow,
+    useTransitionStyles,
 } from "@floating-ui/react";
 import {
     isValidElement,
@@ -22,6 +26,7 @@ import {
     forwardRef,
     useState,
     useMemo,
+    useRef,
 } from "react";
 
 export function useTooltip({
@@ -29,11 +34,16 @@ export function useTooltip({
     placement = "top",
     open: controlledOpen,
     onOpenChange: setControlledOpen,
+    gap = 4,
 } = {}) {
     const [uncontrolledOpen, setUncontrolledOpen] = useState(initialOpen);
 
     const open = controlledOpen ?? uncontrolledOpen;
     const setOpen = setControlledOpen ?? setUncontrolledOpen;
+
+    const arrowRef = useRef(null);
+    const ARROW_HEIGHT = 5;
+    const GAP = gap || 4;
 
     const data = useFloating({
         placement,
@@ -41,13 +51,14 @@ export function useTooltip({
         onOpenChange: setOpen,
         whileElementsMounted: autoUpdate,
         middleware: [
-            offset(5),
+            offset(ARROW_HEIGHT + GAP),
             flip({
                 crossAxis: placement.includes("-"),
                 fallbackAxisSideDirection: "start",
-                padding: 5,
+                padding: 10,
             }),
-            shift({ padding: 5 }),
+            shift({ padding: 10 }),
+            arrow({ element: arrowRef }),
         ],
     });
 
@@ -69,10 +80,11 @@ export function useTooltip({
         () => ({
             open,
             setOpen,
+            arrowRef,
             ...interactions,
             ...data,
         }),
-        [open, setOpen, interactions, data],
+        [open, setOpen, arrowRef, interactions, data],
     );
 }
 
@@ -139,7 +151,19 @@ export const TooltipContent = forwardRef(function TooltipContent(
     const context = useTooltipContext();
     const ref = useMergeRefs([context.refs.setFloating, propRef]);
 
-    if (!context.open) return null;
+    const { isMounted, styles: tStyles } = useTransitionStyles(context, {
+        duration: 100,
+        initial: {
+            transform: "scale(0.95)",
+            opacity: 0,
+        },
+        close: {
+            transform: "scale(0.98)",
+            opacity: 0,
+        },
+    });
+
+    if (!isMounted) return null;
 
     return (
         <FloatingPortal>
@@ -148,9 +172,26 @@ export const TooltipContent = forwardRef(function TooltipContent(
                 style={{
                     ...context.floatingStyles,
                     ...style,
+                    zIndex: 1000,
                 }}
                 {...context.getFloatingProps(props)}
-            />
+            >
+                <div style={{ ...tStyles }}>
+                    {!props.noStyle && (
+                        <FloatingArrow
+                            width={10}
+                            height={5}
+                            context={context}
+                            fill="var(--bg-4)"
+                            ref={context.arrowRef}
+                        />
+                    )}
+
+                    <div className={`${!props.noStyle && styles.container}`}>
+                        {props.children}
+                    </div>
+                </div>
+            </div>
         </FloatingPortal>
     );
 });

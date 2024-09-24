@@ -1,16 +1,17 @@
 .wrapper {
-    position: relative;
+    width: 100%;
 }
 
 .container {
-    display: flex;
-    align-items: center;
     gap: 16px;
-    padding: 16px 24px 16px 16px;
-    border-radius: 6px;
-    background-color: var(--bg-3);
-    max-width: 360px;
+    width: 100%;
+    display: flex;
     cursor: pointer;
+    position: relative;
+    align-items: center;
+    padding: 16px 24px 16px 16px;
+    background-color: var(--bg-3);
+    border-radius: var(--radius-medium);
     transition:
         transform 0.1s ease-in-out,
         box-shadow 0.1s ease-in-out;
@@ -56,28 +57,28 @@
     word-break: break-word;
 }
 
-.wrapper > button {
-    position: absolute;
+.menuButton {
     top: -10px;
+    width: 32px;
     right: -10px;
+    height: 32px;
     display: flex;
+    position: absolute;
+    color: var(--fg-2);
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 5px;
     border: 1px solid var(--bg-4);
     background-color: var(--bg-3);
-    color: var(--fg-2);
+    border-radius: var(--radius-medium);
     cursor: pointer;
     transition:
         background-color 0.1s ease-in-out,
         color 0.1s ease-in-out;
 }
 
-.wrapper > button:hover,
-.wrapper > button:focus-visible,
-.wrapper > button.active {
-    background-color: var(--bg-4);
+.menuButton:hover,
+.menuButton:focus-visible,
+.menuButton.open {
     color: var(--fg-1);
+    background-color: var(--bg-4);
 }

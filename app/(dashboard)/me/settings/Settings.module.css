@@ -48,7 +48,7 @@
     bottom: 0;
     width: 4px;
     height: 70%;
-    background-color: var(--accent-1);
+    background-color: var(--accent);
     border-radius: 1000px;
 }
 

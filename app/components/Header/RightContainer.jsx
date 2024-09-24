@@ -19,7 +19,7 @@ export function RightContainer({ user }) {
         setTimeout(() => {
             setOpen(false);
             setIsClosing(false);
-        }, 200);
+        }, 180);
     }
 
     function handleOpen() {

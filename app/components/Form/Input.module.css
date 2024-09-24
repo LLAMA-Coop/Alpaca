@@ -74,9 +74,9 @@
 
 .wrapper:focus-within,
 .wrapper.active {
-    --bs-1: var(--accent-1-20);
-    --bs-2: var(--accent-1-08);
-    border: 1px solid var(--accent-1-50);
+    --bs-1: var(--accent-20);
+    --bs-2: var(--accent-08);
+    border: 1px solid var(--accent-50);
     box-shadow:
         0 1px 1px rgba(0, 0, 0, 0.03),
         0 3px 6px rgba(0, 0, 0, 0.02),
@@ -188,7 +188,7 @@
 }
 
 .wrapper.active .selectButton {
-    color: var(--accent-1);
+    color: var(--accent);
     background-color: var(--bg-4);
 }
 
@@ -249,12 +249,12 @@
 
 .checkbox:focus-visible {
     outline: none;
-    border: 1px solid var(--accent-1-50);
+    border: 1px solid var(--accent-50);
     box-shadow:
         0 1px 1px rgba(0, 0, 0, 0.03),
         0 3px 6px rgba(0, 0, 0, 0.02),
-        0 0 0 3px var(--accent-1-20),
-        0 1px 1px 0 var(--accent-1-08);
+        0 0 0 3px var(--accent-20),
+        0 1px 1px 0 var(--accent-08);
 }
 
 .checkbox > span {

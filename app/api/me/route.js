@@ -22,6 +22,7 @@ export async function PATCH(req) {
         avatar,
         email,
         emailCode,
+        settings,
     } = await req.json();
 
     try {
@@ -141,11 +142,12 @@ export async function PATCH(req) {
                     ? emailVerificationToken
                     : undefined,
                 emailVerified: email ? false : undefined,
+                settings: settings ? JSON.stringify(settings) : undefined,
             })
             .where("id", "=", user.id)
             .execute();
 
-        if (avatar && user.avatar) {
+        if (avatar !== undefined && user.avatar) {
             await utapi.deleteFiles(user.avatar);
         }
 

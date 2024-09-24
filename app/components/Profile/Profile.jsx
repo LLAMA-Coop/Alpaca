@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Avatar, Dialog, Form, Input } from "@client";
+import { Avatar, Dialog, Form, Input, Spinner } from "@client";
 import { useAlerts, useStore } from "@/store/store";
 import { protectedPaths } from "@/app/data/paths";
 import styles from "./Profile.module.css";
@@ -342,7 +342,7 @@ export function Profile({ user, size = 44 }) {
                             className="button primary"
                             onClick={handleReportSubmit}
                         >
-                            Send
+                            Send {loading && <Spinner primary />}
                         </button>
                     </DialogButtons>
                 </DialogContent>

@@ -8,7 +8,7 @@ export function Spinner({ size = 20, primary = false, margin = 12 }) {
                 height: size,
                 marginLeft: margin,
                 borderColor: primary ? "#f5f5f5A8" : "",
-                borderTopColor: primary ? "var(--accent-1-fg)" : "",
+                borderTopColor: primary ? "var(--accent-fg)" : "",
             }}
             className={styles.spinner}
         />

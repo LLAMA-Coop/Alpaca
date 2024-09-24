@@ -81,7 +81,7 @@
 }
 
 .menu ul a:hover {
-    color: var(--accent-1);
+    color: var(--accent);
 }
 
 .profile {

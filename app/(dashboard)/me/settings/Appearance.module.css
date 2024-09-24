@@ -1,0 +1,25 @@
+.container > section {
+    margin-bottom: 80px;
+}
+
+.container > section > h2 {
+    margin: 24px 0;
+}
+
+.list {
+    gap: 44px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.theme {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+}
+
+.theme:hover {
+    border-color: var(--accent);
+}

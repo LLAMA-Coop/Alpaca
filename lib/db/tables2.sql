@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
     `description` VARCHAR(512),
     `avatar` VARCHAR(128),
+    `settings` JSON NOT NULL,
     `is_private` TINYINT DEFAULT 0,
 
     `password` VARCHAR(256),

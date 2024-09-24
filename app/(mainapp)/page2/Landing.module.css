@@ -10,7 +10,7 @@
     height: 418px;
     flex-shrink: 0;
     border-radius: 441px;
-    background: var(--accent-2-transparent);
+    background: var(--accent-20);
     filter: blur(110px);
     pointer-events: none;
 }
@@ -19,12 +19,12 @@
     top: 300px;
     left: unset;
     right: -280px;
-    background-color: var(--accent-3-transparent);
+    background-color: var(--accent-50);
 }
 
 .orb:nth-of-type(3) {
     top: 1250px;
-    background-color: var(--accent-3-transparent);
+    background-color: var(--accent-50);
 }
 
 .orb:nth-of-type(4) {
@@ -175,7 +175,7 @@
 }
 
 .articleText > h2 > span {
-    color: var(--accent-1);
+    color: var(--accent);
 }
 
 .articleText > p {
@@ -277,13 +277,13 @@
 }
 
 .freePlan > a {
-    color: var(--accent-1);
+    color: var(--accent);
     display: flex;
     justify-content: center;
     align-items: center;
     text-transform: uppercase;
     border-radius: 999px;
-    border: 2px solid var(--accent-1);
+    border: 2px solid var(--accent);
     width: 80%;
     height: 40px;
     font-weight: 800;
@@ -298,13 +298,13 @@
 }
 
 .freePlan > a:hover {
-    background-color: var(--accent-1);
+    background-color: var(--accent);
     color: var(--accent-foreground);
 }
 
 .freePlan > a:active {
-    background-color: var(--accent-1-hover);
-    border-color: var(--accent-1-hover);
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
 }
 
 .newsletter {

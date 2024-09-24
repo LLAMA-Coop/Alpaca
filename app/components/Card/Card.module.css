@@ -13,7 +13,7 @@
 }
 
 a.container:hover {
-    border: 1px solid var(--accent-1);
+    border: 1px solid var(--accent);
 }
 
 /* .container:hover::before,
@@ -26,13 +26,13 @@ a.container:hover {
     position: absolute;
     transform: translate(-50%, -50%);
     background-image: conic-gradient(
-        var(--accent-1),
+        var(--accent),
         transparent,
         transparent,
-        var(--accent-1-50),
+        var(--accent-50),
         transparent,
         transparent,
-        var(--accent-1),
+        var(--accent),
         transparent,
         transparent
     );
@@ -73,17 +73,22 @@ a.container:hover {
 .container > header > .chip {
     font-size: 12px;
     padding: 2px 8px;
+    font-weight: 600;
     color: var(--fg-2);
     white-space: nowrap;
     border-radius: 1000px;
     text-transform: capitalize;
-    background-color: var(--accent-1-50);
+    background-color: var(--accent-50);
 }
 
 .container > section {
     padding: 6px;
     border-radius: 4px;
     background-color: var(--bg-3);
+}
+
+.container.lighter > section {
+    background-color: var(--bg-4);
 }
 
 .container > section:not(:last-child) {
@@ -107,7 +112,7 @@ a.container:hover {
     color: var(--fg-2);
     border-radius: 1000px;
     text-transform: capitalize;
-    background-color: var(--accent-1-50);
+    background-color: var(--accent-50);
 }
 
 .container > section > p {
@@ -140,6 +145,10 @@ a.container:hover {
     background-color: var(--bg-2);
 }
 
+.lighter .listItem {
+    background-color: var(--bg-3);
+}
+
 .container > footer {
     display: flex;
     font-size: 14px;
@@ -147,4 +156,17 @@ a.container:hover {
     color: var(--fg-4);
     align-items: center;
     justify-content: space-between;
+}
+
+.createdAt {
+    font-size: 11px;
+    cursor: default;
+    padding: 2px 4px;
+    font-weight: 600;
+    background-color: var(--bg-3);
+    border-radius: var(--radius-small);
+}
+
+.lighter .createdAt {
+    background-color: var(--bg-2);
 }

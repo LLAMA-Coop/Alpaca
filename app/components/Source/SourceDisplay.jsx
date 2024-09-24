@@ -1,6 +1,6 @@
 "use client";
 
-import { CardChip, CardList, CardListItem } from "../Card/Card";
+import { CardChip, CardCreatedAt, CardList, CardListItem } from "../Card/Card";
 import { Card } from "@client";
 
 export function SourceDisplay({ source }) {
@@ -62,7 +62,9 @@ export function SourceDisplay({ source }) {
 
             <footer>
                 <p>Created by {source.creator.username}</p>
-                <p>{new Date(source.createdAt).toLocaleDateString()}</p>
+                <CardCreatedAt>
+                    {new Date(source.createdAt).toLocaleDateString()}
+                </CardCreatedAt>
             </footer>
         </Card>
     );

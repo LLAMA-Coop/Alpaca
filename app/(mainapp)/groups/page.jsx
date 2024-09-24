@@ -2,7 +2,7 @@ import styles from "@/app/(mainapp)/page.module.css";
 import { getGroups } from "@/lib/db/helpers";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { Avatar, Card, CardChip, MasoneryList } from "@client";
+import { Avatar, Card, CardChip, GroupDisplay, MasoneryList } from "@client";
 import Link from "next/link";
 
 export default async function GroupsPage() {
@@ -69,42 +69,7 @@ export default async function GroupsPage() {
                         <MasoneryList>
                             {mine.map((group) => (
                                 <li key={group.id}>
-                                    <Card
-                                        fullWidth
-                                        link={`/groups/${group.publicId}`}
-                                    >
-                                        <header>
-                                            {group.icon && (
-                                                <Avatar
-                                                    size={28}
-                                                    src={group.icon}
-                                                    alt={group.name}
-                                                    username={group.name}
-                                                />
-                                            )}
-
-                                            <h4>{group.name}</h4>
-
-                                            <CardChip>
-                                                {group.members.length} member
-                                                {group.members.length > 1
-                                                    ? "s"
-                                                    : ""}
-                                            </CardChip>
-                                        </header>
-
-                                        <p>{group.description}</p>
-
-                                        <footer>
-                                            <p>
-                                                Created by{" "}
-                                                {group.creator?.displayName}
-                                            </p>
-                                            <p>
-                                                {group.createdAt.toLocaleDateString()}
-                                            </p>
-                                        </footer>
-                                    </Card>
+                                    <GroupDisplay group={group} />
                                 </li>
                             ))}
                         </MasoneryList>

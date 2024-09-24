@@ -1,5 +1,6 @@
 "use client";
 
+import { Tooltip, TooltipContent, TooltipTrigger } from "../client";
 import styles from "./Card.module.css";
 import Link from "next/link";
 
@@ -19,7 +20,7 @@ export function Card({
         return (
             <Link
                 href={link}
-                className={styles.container}
+                className={`${styles.container} ${lighter ? styles.lighter : ""} ${darker ? styles.darker : ""}`}
                 style={{
                     width: fullWidth ? "100%" : "",
                     backgroundColor: bg,
@@ -39,7 +40,7 @@ export function Card({
                 width: fullWidth ? "100%" : "",
                 backgroundColor: bg,
             }}
-            className={styles.container}
+            className={`${styles.container} ${lighter ? styles.lighter : ""} ${darker ? styles.darker : ""}`}
             {...props}
         >
             {props.children}
@@ -69,4 +70,18 @@ export function CardButtons({ children }) {
 
 export function CardDescription({ children }) {
     return <p className={styles.description}>{children}</p>;
+}
+
+export function CardCreatedAt({ children }) {
+    return (
+        <Tooltip>
+            <TooltipTrigger>
+                <p className={styles.createdAt}>{children}</p>
+            </TooltipTrigger>
+
+            <TooltipContent>
+                {new Date(children).toLocaleString()}
+            </TooltipContent>
+        </Tooltip>
+    );
 }

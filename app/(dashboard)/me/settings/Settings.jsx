@@ -7,7 +7,9 @@ import { useState } from "react";
 import { Appearance } from "./Appearance";
 
 export function Settings({ user }) {
-    const [currentTab, setCurrentTab] = useState(0);
+    const [currentTab, setCurrentTab] = useState(
+        parseInt(localStorage.getItem("settings-tab")) || 0,
+    );
     const addAlert = useAlerts((state) => state.addAlert);
     const alerts = useAlerts((state) => state.alerts);
 
@@ -62,10 +64,17 @@ export function Settings({ user }) {
                                 className={
                                     index === currentTab ? styles.active : ""
                                 }
-                                onClick={() => setCurrentTab(index)}
+                                onClick={() => {
+                                    setCurrentTab(index);
+                                    localStorage.setItem("settings-tab", index);
+                                }}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                         setCurrentTab(index);
+                                        localStorage.setItem(
+                                            "settings-tab",
+                                            index,
+                                        );
                                     }
                                 }}
                             >

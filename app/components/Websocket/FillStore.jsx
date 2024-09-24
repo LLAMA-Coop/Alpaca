@@ -55,4 +55,6 @@ export function FillStore({
             console.log(`Web socket connection closed to ${webSocketURL}`);
         };
     }, []);
+
+    return null;
 }

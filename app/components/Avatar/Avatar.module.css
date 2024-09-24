@@ -5,12 +5,12 @@
     justify-content: center;
     border-radius: 50%;
     user-select: none;
-    outline: 0px solid var(--accent-1);
+    outline: 0px solid var(--accent);
     background-color: var(--bg-3);
 }
 
 .container:focus-visible {
-    outline: 2px solid var(--accent-1);
+    outline: 2px solid var(--accent);
 }
 
 .container > img {

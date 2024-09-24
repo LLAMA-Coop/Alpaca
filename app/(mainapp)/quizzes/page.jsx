@@ -64,7 +64,7 @@ export default async function QuizzesPage({ searchParams }) {
                         <div className={styles.paginationButtons}>
                             {page > 1 ? (
                                 <Link
-                                    className="button submit"
+                                    className="button submit primary"
                                     href={`/quizzes?page=${
                                         page - 1
                                     }&amount=${amount}`}
@@ -72,14 +72,17 @@ export default async function QuizzesPage({ searchParams }) {
                                     Previous page
                                 </Link>
                             ) : (
-                                <button disabled className="button submit">
+                                <button
+                                    disabled
+                                    className="button submit primary"
+                                >
                                     Previous page
                                 </button>
                             )}
 
                             {hasMore ? (
                                 <Link
-                                    className="button submit"
+                                    className="button submit primary"
                                     href={`/quizzes?page=${
                                         page + 1
                                     }&amount=${amount}`}
@@ -87,7 +90,10 @@ export default async function QuizzesPage({ searchParams }) {
                                     Next page
                                 </Link>
                             ) : (
-                                <button disabled className="button submit">
+                                <button
+                                    disabled
+                                    className="button submit primary"
+                                >
                                     Next page
                                 </button>
                             )}

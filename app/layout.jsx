@@ -1,6 +1,6 @@
 import { getGroups, getPermittedResources } from "@/lib/db/helpers";
+import { FillStore, Timer, Alerts, ThemeSetter } from "@client";
 import { Inter, Sofia_Sans } from "next/font/google";
-import { FillStore, Timer, Alerts } from "@client";
 import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -37,7 +37,7 @@ export const metadata = {
 export default async function RootLayout({ children }) {
     const user = await useUser({
         token: cookies().get("token")?.value,
-        select: ["id", "username", "displayName", "avatar"],
+        select: ["id", "username", "displayName", "avatar", "settings"],
         withAssociates: true,
         withNotifications: true,
     });
@@ -63,6 +63,8 @@ export default async function RootLayout({ children }) {
                     notifications={user.notifications || []}
                 />
             )}
+
+            <ThemeSetter settings={user?.settings} />
 
             <body>
                 {/* So Firefox displays page after css has loaded */}

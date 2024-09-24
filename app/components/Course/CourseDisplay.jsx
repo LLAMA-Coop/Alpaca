@@ -7,6 +7,7 @@ import {
     CardChip,
     Card,
 } from "@client";
+import { CardCreatedAt } from "../Card/Card";
 
 export function CourseDisplay({ lighter = false, darker = false, course }) {
     return (
@@ -53,7 +54,9 @@ export function CourseDisplay({ lighter = false, darker = false, course }) {
 
             <footer>
                 <p>Created by {course.creator.username}</p>
-                <p>{new Date(course.createdAt).toLocaleDateString()}</p>
+                <CardCreatedAt>
+                    {new Date(course.createdAt).toLocaleDateString()}
+                </CardCreatedAt>
             </footer>
         </Card>
     );

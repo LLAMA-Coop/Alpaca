@@ -223,7 +223,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                     </div>
                 </TooltipTrigger>
 
-                <TooltipContent>
+                <TooltipContent noStyle>
                     {isRegistering && (
                         <div className={styles.expectations}>
                             <p>Your password must contain:</p>
@@ -282,7 +282,8 @@ export function UserInput({ isRegistering, onSubmit }) {
                 onClick={isRegistering ? handleRegister : handleLogin}
                 className="button submit primary"
             >
-                {isRegistering ? "Register" : "Login"} {loading && <Spinner />}
+                {isRegistering ? "Register" : "Login"}{" "}
+                {loading && <Spinner primary />}
             </button>
         </form>
     );

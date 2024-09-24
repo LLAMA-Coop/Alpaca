@@ -7,6 +7,7 @@
 
     --font-mono: Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace;
 
+    --bg-0: #ffffff;
     --bg-1: #eff1f5;
     --bg-2: #e6e9ef;
     --bg-3: #dce0e8;
@@ -17,29 +18,23 @@
     --fg-3: #1e293b;
     --fg-4: #334155;
 
-    --accent-1: #10b981;
-    --accent-1-50: #10b98159;
-    --accent-1-20: #10b98123;
-    --accent-1-08: #10b9810e;
-    --accent-1-fg: #000000;
-
-    --accent-2: #38bdf8;
-    --accent-2-50: #38bdf80d;
-    --accent-2-20: #38bdf833;
-    --accent-2-08: #38bdf814;
-    --accent-2-fg: #22543d;
-
-    --accent-3: #8b5cf6;
-    --accent-3-50: #8a5cf681;
-    --accent-3-20: #8b5cf633;
-    --accent-3-08: #8b5cf614;
-    --accent-3-fg: #f0f4f8;
+    --accent: #10b981;
+    --accent-50: #10b98159;
+    --accent-20: #10b98123;
+    --accent-08: #10b9810e;
+    --accent-fg: #000000;
 
     --success: #4ade80;
     --success-50: #4ade800d;
     --success-20: #4ade8033;
     --success-08: #4ade8014;
     --success-fg: #000000;
+
+    --warning: #f59e0b;
+    --warning-50: #f59e0b7c;
+    --warning-20: #f59e0b33;
+    --warning-08: #f59e0b14;
+    --warning-fg: #000000;
 
     --danger: #e11d48;
     --danger-50: #e11d477c;
@@ -62,6 +57,7 @@
 
 @media screen and (prefers-color-scheme: dark) {
     :root {
+        --bg-0: #000511;
         --bg-1: #020617;
         --bg-2: #0f172a;
         --bg-3: #1e293b;
@@ -89,10 +85,11 @@
 *:focus-visible {
     outline: none;
     box-shadow:
+        0 0 0 1px var(--accent),
         0 1px 1px rgba(0, 0, 0, 0.03),
         0 3px 6px rgba(0, 0, 0, 0.02),
-        0 0 0 3px var(--accent-1-20),
-        0 1px 1px 0 var(--accent-1-08);
+        0 0 0 3px var(--accent-20),
+        0 1px 2px 0 var(--accent-08);
 }
 
 html,
@@ -125,7 +122,7 @@ h6 {
 
 .link {
     font-weight: 500;
-    color: var(--accent-3);
+    color: var(--accent);
 }
 
 .link:hover {
@@ -165,7 +162,7 @@ button {
 }
 
 button:focus-visible {
-    border: 1px solid var(--accent-1-50);
+    border: 1px solid var(--accent-50);
 }
 
 .button {
@@ -180,6 +177,7 @@ button:focus-visible {
     font-size: 14px;
     line-height: 16px;
     font-family: var(--font-body);
+    background-color: var(--bg-3);
     font-weight: 600;
     cursor: pointer;
     user-select: none;
@@ -212,8 +210,8 @@ button:focus-visible {
 }
 
 .button.primary {
-    color: var(--accent-1-fg);
-    background-color: var(--accent-1);
+    color: var(--accent-fg);
+    background-color: var(--accent);
 }
 
 .button.success {
@@ -242,7 +240,7 @@ li::marker {
 
 ::-webkit-calendar-picker-indicator:focus-visible {
     border-radius: 2px;
-    outline: 4px solid var(--accent-1);
+    outline: 4px solid var(--accent);
     outline-offset: 3px;
 }
 
@@ -268,7 +266,7 @@ input[type="date"] {
 }
 
 .thinScroller::-webkit-scrollbar-thumb {
-    background: var(--accent-1);
+    background: var(--accent);
     border: 3px solid var(--bg-1);
     border-radius: 100vw;
 }

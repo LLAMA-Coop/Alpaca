@@ -128,7 +128,8 @@ export function Profile({ user }) {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        avatar: fileId || undefined,
+                        avatar:
+                            avatar !== user.avatar ? fileId || null : undefined,
                         username:
                             user.username !== username ? username : undefined,
                         newPassword: newPassword || undefined,
@@ -168,7 +169,7 @@ export function Profile({ user }) {
 
                 user = {
                     ...user,
-                    avatar: fileId || user.avatar,
+                    avatar: fileId ?? (avatar === null ? avatar : user.avatar),
                     username: username || user.username,
                     displayName: displayName || user.displayName,
                     description: description || user.description,

@@ -1,22 +1,27 @@
-import styles from "./page.module.css";
+import styles from "./Error.module.css";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function NotFound() {
     return (
         <main className={styles.main}>
-            <div className={styles.titleBlock}>
-                <h2>Page Not Found</h2>
+            <section className={styles.hero}>
+                <h1>It looks like you're lost!</h1>
+                <p>But fear not! We're here to help you find your way.</p>
 
-                <p>
-                    Unfortunately, the page you are looking for does not exist.
-                    <br />
-                    Check the above navigation to see if you can find what you
-                    are looking for. Or you can{" "}
-                    <Link className="link" href="/">
-                        go home
+                <div className={styles.buttons}>
+                    <Link className="button round primary" href="/">
+                        Go back home
                     </Link>
-                </p>
-            </div>
+                </div>
+
+                <Image
+                    src="/assets/404.svg"
+                    alt="Not found"
+                    height={400}
+                    width={400}
+                />
+            </section>
         </main>
     );
 }
