@@ -1,0 +1,33 @@
+.box {
+    padding: 10px;
+    display: flex;
+    width: fit-content;
+    color: var(--fg-2);
+    border: 1px solid var(--accent-50);
+    background-color: var(--accent-08);
+    border-radius: var(--radius-medium);
+}
+
+.warning {
+    border: 1px solid var(--warning-50);
+    background-color: var(--warning-08);
+}
+
+.success {
+    border: 1px solid var(--success-50);
+    background-color: var(--success-08);
+}
+
+.danger {
+    border: 1px solid var(--danger-50);
+    background-color: var(--danger-08);
+}
+
+.box > div {
+    margin-right: 10px;
+}
+
+.box > p {
+    font-size: 15px;
+    line-height: 22px;
+}

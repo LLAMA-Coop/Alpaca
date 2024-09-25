@@ -1,28 +1,21 @@
 "use client";
 
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/app/components/client";
-import styles from "./Appearance.module.css";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/app/components/client";
 import { getAccentVariables, getThemeVariables, themes } from "@/lib/themes";
+import styles from "./Settings.module.css";
 import { useState } from "react";
 
 export function Appearance({ user }) {
     const [current, setCurrent] = useState(
-        themes.find((theme) => theme.name === user?.settings?.theme) ||
-            themes[0],
+        themes.find((theme) => theme.name === user?.settings?.theme) || themes[0]
     );
     const [accent, setAccent] = useState(
-        current.palette.accents.find(
-            (accent) => accent.name === user?.settings?.accent,
-        ) || current.palette.accents[0],
+        current.palette.accents.find((accent) => accent.name === user?.settings?.accent) ||
+            current.palette.accents[0]
     );
 
     const hasChanged =
-        current.name !== user?.settings?.theme ||
-        accent.name !== user?.settings?.accent;
+        current.name !== user?.settings?.theme || accent.name !== user?.settings?.accent;
 
     function handleThemeChange(theme) {
         if (current.name === theme.name) {
@@ -34,10 +27,7 @@ export function Appearance({ user }) {
 
         // Apply theme variables to the document
         variables.forEach((variable) => {
-            document.documentElement.style.setProperty(
-                variable.key,
-                variable.value,
-            );
+            document.documentElement.style.setProperty(variable.key, variable.value);
         });
 
         if (theme.isDark) {
@@ -65,10 +55,7 @@ export function Appearance({ user }) {
 
         // Apply accent variables to the document
         variables.forEach((variable) => {
-            document.documentElement.style.setProperty(
-                variable.key,
-                variable.value,
-            );
+            document.documentElement.style.setProperty(variable.key, variable.value);
         });
 
         // Save the accent to the user
@@ -84,10 +71,7 @@ export function Appearance({ user }) {
             return;
         }
 
-        if (
-            user.settings.theme === themeName &&
-            user.settings.accent === accentName
-        ) {
+        if (user.settings.theme === themeName && user.settings.accent === accentName) {
             return;
         }
 
@@ -108,24 +92,23 @@ export function Appearance({ user }) {
     }
 
     return (
-        <div className={styles.container}>
-            <section>
-                <h2>Themes</h2>
+        <section className={styles.content}>
+            <h2>Themes</h2>
 
+            <div>
                 <ol className={styles.list}>
                     {themes.map((theme) => (
-                        <Tooltip key={theme.name} gap={10}>
+                        <Tooltip
+                            key={theme.name}
+                            gap={10}
+                        >
                             <TooltipTrigger>
                                 <button
                                     className={styles.theme}
                                     onClick={() => handleThemeChange(theme)}
                                     style={{
-                                        backgroundColor:
-                                            theme.palette.colors["--bg-1"],
-                                        transform:
-                                            current.name === theme.name
-                                                ? "scale(1.2)"
-                                                : "",
+                                        backgroundColor: theme.palette.colors["--bg-1"],
+                                        transform: current.name === theme.name ? "scale(1.2)" : "",
                                     }}
                                 />
                             </TooltipTrigger>
@@ -134,24 +117,24 @@ export function Appearance({ user }) {
                         </Tooltip>
                     ))}
                 </ol>
-            </section>
+            </div>
 
-            <section>
-                <h2>Accent Colors</h2>
+            <h2>Accent Colors</h2>
 
+            <div>
                 <ol className={styles.list}>
                     {current.palette.accents.map((a) => (
-                        <Tooltip key={a.name} gap={10}>
+                        <Tooltip
+                            key={a.name}
+                            gap={10}
+                        >
                             <TooltipTrigger>
                                 <button
                                     className={styles.theme}
                                     onClick={() => handleAccentChange(a)}
                                     style={{
                                         backgroundColor: a.colors["--accent"],
-                                        transform:
-                                            a.name === accent.name
-                                                ? "scale(1.2)"
-                                                : "",
+                                        transform: a.name === accent.name ? "scale(1.2)" : "",
                                     }}
                                 />
                             </TooltipTrigger>
@@ -160,7 +143,7 @@ export function Appearance({ user }) {
                         </Tooltip>
                     ))}
                 </ol>
-            </section>
-        </div>
+            </div>
+        </section>
     );
 }

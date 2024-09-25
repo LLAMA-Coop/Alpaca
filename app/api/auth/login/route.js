@@ -3,51 +3,108 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { db } from "@/lib/db/db";
 import bcrypt from "bcrypt";
+import { nanoid } from "nanoid";
 
-function IP() {
-    const FALLBACK_IP_ADDRESS = "0.0.0.0";
-    const forwardedFor = headers().get("x-forwarded-for");
-
-    if (forwardedFor) {
-        return forwardedFor.split(",")[0] ?? FALLBACK_IP_ADDRESS;
-    }
-
-    return headers().get("x-real-ip") ?? FALLBACK_IP_ADDRESS;
+function isCorrectIP(ip) {
+    return /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip);
 }
 
 export async function POST(req) {
     const { username, password } = await req.json();
 
     try {
-        const user = await db
+        const select = ["id", "username", "password", "tokens", "twoFactorEnabled"];
+
+        let user = await db
             .selectFrom("users")
-            .select(["id", "username", "password", "tokens"])
-            .where("username", "=", username)
+            .select([...select, "emailVerified"])
+            .where("email", "=", username)
             .executeTakeFirst();
+
+        if (!user) {
+            user = await db
+                .selectFrom("users")
+                .select(select)
+                .where("username", "=", username)
+                .executeTakeFirst();
+        } else if (user.emailVerified === 0) {
+            return NextResponse.json(
+                {
+                    errors: {
+                        username: "Please verify your email address before logging in using it",
+                        password: "Please verify your email address before logging in using it",
+                    },
+                },
+                { status: 401 }
+            );
+        }
 
         if (!user) {
             return NextResponse.json(
                 {
                     errors: {
-                        username: "Username or password is invalid",
-                        password: "Username or password is invalid",
+                        username: "Incorrect credentials provided",
+                        password: "Incorrect credentials provided",
                     },
                 },
-                { status: 401 },
+                { status: 401 }
             );
         }
 
         if (await bcrypt.compare(password, user.password)) {
+            if (user.twoFactorEnabled) {
+                const token = nanoid(32);
+
+                await db
+                    .updateTable("users")
+                    .set({
+                        twoFactorTemp: token,
+                    })
+                    .where("id", "=", user.id)
+                    .execute();
+
+                return NextResponse.json(
+                    {
+                        message: "Two factor authentication is enabled",
+                        token,
+                    },
+                    { status: 200 }
+                );
+            }
+
             const refreshToken = await getToken(user.username, true);
             const accessToken = await getToken(user.username, false);
 
-            const userAgent = headers().get("user-agent") || "";
-            const ip = IP();
+            const userAgent = headers().get("user-agent") || "Unknown";
+            // const ip = (req.headers.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
+            const ip = "91.162.93.92";
+            let location = {};
+
+            if (isCorrectIP(ip)) {
+                try {
+                    const {
+                        city,
+                        region,
+                        country_name: country,
+                    } = await fetch(`https://ipapi.co/${ip}/json/`).then((res) => res.json());
+
+                    location = {
+                        city,
+                        region,
+                        country,
+                    };
+                } catch (error) {
+                    console.error("Error getting location from IP", error);
+                }
+            }
 
             const tokenObject = {
                 token: refreshToken,
+                login: Date.now(),
                 expires: Date.now() + 2592000000,
                 userAgent,
+                location,
+                device: getDeviceFromUserAgent(userAgent),
                 ip,
             };
 
@@ -70,7 +127,7 @@ export async function POST(req) {
                     tokens: JSON.stringify(newTokens),
                 })
                 .where("id", "=", user.id)
-                .executeTakeFirst();
+                .execute();
 
             return NextResponse.json(
                 {
@@ -82,20 +139,29 @@ export async function POST(req) {
                     headers: {
                         "Set-Cookie": `token=${refreshToken}; path=/; HttpOnly; SameSite=Lax; Max-Age=2592000; Secure`,
                     },
-                },
+                }
             );
         } else {
             return NextResponse.json(
                 {
                     errors: {
-                        username: "Username or password is invalid",
-                        password: "Username or password is invalid",
+                        username: "Incorrect credentials provided",
+                        password: "Incorrect credentials provided",
                     },
                 },
-                { status: 401 },
+                { status: 401 }
             );
         }
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });
     }
+}
+
+function getDeviceFromUserAgent(userAgent) {
+    if (userAgent.includes("Mobile")) return "Mobile";
+    if (userAgent.includes("Tablet")) return "Tablet";
+    if (userAgent.includes("Windows")) return "Windows";
+    if (userAgent.includes("Macintosh")) return "Macintosh";
+    if (userAgent.includes("Linux")) return "Linux";
+    return "Unknown";
 }

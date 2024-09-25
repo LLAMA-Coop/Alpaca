@@ -10,7 +10,10 @@ export function Alerts() {
     return (
         <div className={styles.list}>
             {alerts.map((alert) => (
-                <Alert key={alert.id} alert={alert} />
+                <Alert
+                    key={alert.id}
+                    alert={alert}
+                />
             ))}
         </div>
     );
@@ -46,14 +49,12 @@ export function Alert({ alert }) {
             aria-relevant="additions"
             aria-label="Alert message"
             aria-describedby="alert"
-            className={`${styles.alert} ${alert.success ? styles.success : ""}`}
+            className={`${styles.alert} ${alert.success ? styles.success : ""} ${!alert.success ? styles.danger : ""} ${alert.warning ? styles.warning : ""}`}
             onMouseEnter={() => setStopTimeout(true)}
             onMouseLeave={() => setStopTimeout(false)}
             onClick={() => hideAlert()}
             style={{
-                backgroundColor: alert.success
-                    ? "var(--success)"
-                    : "var(--danger)",
+                backgroundColor: alert.success ? "var(--success)" : "var(--danger)",
                 animationName: animateOut ? styles.popOut : "",
                 opacity: animateOut ? 0 : "",
             }}
@@ -82,7 +83,7 @@ export function Alert({ alert }) {
                 )}
             </div>
 
-            <div style={{ whiteSpace: "pre-wrap" }}>{alert.message}</div>
+            <p style={{ whiteSpace: "pre-wrap" }}>{alert.message}</p>
         </div>
     );
 }

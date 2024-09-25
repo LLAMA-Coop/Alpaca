@@ -7,10 +7,10 @@ import { getNanoId } from "@/lib/random";
 import {
     DeletePopup,
     Permissions,
-    TextArea,
     Spinner,
     Select,
     Input,
+    Label,
     Form,
 } from "@client";
 
@@ -253,18 +253,13 @@ export function NoteInput({ note }) {
                 }}
             />
 
-            <TextArea
-                required
-                label="Text"
-                value={state.text}
-                error={state.errors.text}
-                maxLength={validation.note.text.maxLength}
-                placeholder="To make a sandwich, first get some bread..."
-                onChange={(e) => {
-                    dispatch({ type: "text", value: e.target.value });
-                    dispatch({ type: "errors", value: { text: "" } });
-                }}
-            />
+            <div>
+                <Label required id={"ejjeiahdiopaehdi3289ry2380"}>
+                    Text
+                </Label>
+
+                {/* <PlateEditor /> */}
+            </div>
 
             {canChangePermissions ? (
                 <Permissions

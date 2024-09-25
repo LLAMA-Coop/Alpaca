@@ -62,7 +62,7 @@ export function useDialog({
             setLabelId,
             setDescriptionId,
         }),
-        [open, setOpen, interactions, data, labelId, descriptionId],
+        [open, setOpen, interactions, data, labelId, descriptionId]
     );
 }
 
@@ -81,16 +81,12 @@ export const useDialogContext = () => {
 export function Dialog({ children, ...options }) {
     const dialog = useDialog(options);
 
-    return (
-        <DialogContext.Provider value={dialog}>
-            {children}
-        </DialogContext.Provider>
-    );
+    return <DialogContext.Provider value={dialog}>{children}</DialogContext.Provider>;
 }
 
 export const DialogTrigger = forwardRef(function DialogTrigger(
     { children, asChild = false, ...props },
-    propRef,
+    propRef
 ) {
     const context = useDialogContext();
     const childrenRef = children.ref;
@@ -105,7 +101,7 @@ export const DialogTrigger = forwardRef(function DialogTrigger(
                 ...props,
                 ...children.props,
                 "data-state": context.open ? "open" : "closed",
-            }),
+            })
         );
     }
 
@@ -129,7 +125,10 @@ export const DialogContent = forwardRef(function DialogContent(props, propRef) {
 
     return (
         <FloatingPortal>
-            <FloatingOverlay className={styles.container} lockScroll>
+            <FloatingOverlay
+                className={styles.container}
+                lockScroll
+            >
                 <FloatingFocusManager context={floatingContext}>
                     <div
                         ref={ref}
@@ -146,10 +145,7 @@ export const DialogContent = forwardRef(function DialogContent(props, propRef) {
     );
 });
 
-export const DialogHeading = forwardRef(function DialogHeading(
-    { children, ...props },
-    ref,
-) {
+export const DialogHeading = forwardRef(function DialogHeading({ children, ...props }, ref) {
     const { setLabelId } = useDialogContext();
     const id = useId();
 
@@ -162,7 +158,11 @@ export const DialogHeading = forwardRef(function DialogHeading(
 
     return (
         <header className={styles.header}>
-            <h2 {...props} ref={ref} id={id}>
+            <h2
+                {...props}
+                ref={ref}
+                id={id}
+            >
                 {children}
             </h2>
 
@@ -173,7 +173,7 @@ export const DialogHeading = forwardRef(function DialogHeading(
 
 export const DialogDescription = forwardRef(function DialogDescription(
     { children, ...props },
-    ref,
+    ref
 ) {
     const { setDescriptionId } = useDialogContext();
     const id = useId();
@@ -186,7 +186,12 @@ export const DialogDescription = forwardRef(function DialogDescription(
     }, [id, setDescriptionId]);
 
     return (
-        <p {...props} ref={ref} id={id} className={styles.description}>
+        <p
+            {...props}
+            ref={ref}
+            id={id}
+            className={styles.description}
+        >
             {children}
         </p>
     );
@@ -218,12 +223,13 @@ export const DialogClose = forwardRef(function DialogClose(props, ref) {
     );
 });
 
-export const DialogButtons = forwardRef(function DialogButtons(
-    { children, ...props },
-    ref,
-) {
+export const DialogButtons = forwardRef(function DialogButtons({ children, ...props }, ref) {
     return (
-        <footer {...props} ref={ref} className={styles.buttons}>
+        <footer
+            {...props}
+            ref={ref}
+            className={styles.buttons}
+        >
             {children}
         </footer>
     );

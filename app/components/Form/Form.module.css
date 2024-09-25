@@ -1,7 +1,7 @@
 .form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     grid-gap: 40px;
+    grid-template-columns: 1fr 1fr;
 }
 
 .column {
@@ -12,6 +12,15 @@
 
 .form > button {
     align-self: self-end;
+}
+
+.buttons {
+    gap: 16px;
+    display: flex;
+}
+
+.buttons.right {
+    justify-content: flex-end;
 }
 
 @media (max-width: 768px) {

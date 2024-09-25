@@ -89,28 +89,22 @@
 
 .readButton,
 .removeButton {
-    position: absolute;
     top: -14px;
     right: -14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border: 0px;
     width: 32px;
     height: 32px;
-    border-radius: 50%;
-    background-color: var(--bg-4);
-    color: var(--fg-3);
-    border: 0px;
+    display: flex;
     cursor: pointer;
+    position: absolute;
+    border-radius: 50%;
+    color: var(--fg-2);
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-4);
     transition:
         filter 0.1s ease,
         color 0.1s ease;
-}
-
-.readButton > svg,
-.removeButton > svg {
-    width: 16px;
-    height: 16px;
 }
 
 .readButton {
@@ -121,6 +115,11 @@
 .readButton:focus-visible,
 .removeButton:hover,
 .removeButton:focus-visible {
-    filter: brightness(1.15);
     color: var(--fg-1);
+    filter: brightness(1.15);
+}
+
+.removeButton:hover,
+.removeButton:focus-visible {
+    color: var(--danger);
 }

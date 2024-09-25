@@ -44,12 +44,9 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
     }
 
     async function removeAssociate(userId) {
-        const response = await fetch(
-            `${basePath}/api/me/associates/${userId}`,
-            {
-                method: "DELETE",
-            },
-        );
+        const response = await fetch(`${basePath}/api/me/associates/${userId}`, {
+            method: "DELETE",
+        });
 
         let data = null;
         try {
@@ -140,9 +137,21 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                 height="14"
                                 width="14"
                             >
-                                <circle cx="12" cy="2" r="2.5" />
-                                <circle cx="12" cy="12" r="2.5" />
-                                <circle cx="12" cy="22" r="2.5" />
+                                <circle
+                                    cx="12"
+                                    cy="2"
+                                    r="2.5"
+                                />
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="2.5"
+                                />
+                                <circle
+                                    cx="12"
+                                    cy="22"
+                                    r="2.5"
+                                />
                             </svg>
                         </button>
                     </PopoverTrigger>
@@ -164,7 +173,11 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                         y="0px"
                                     >
                                         <g>
-                                            <circle cx="256" cy="128" r="128" />
+                                            <circle
+                                                cx="256"
+                                                cy="128"
+                                                r="128"
+                                            />
                                             <path d="M256,298.667c-105.99,0.118-191.882,86.01-192,192C64,502.449,73.551,512,85.333,512h341.333   c11.782,0,21.333-9.551,21.333-21.333C447.882,384.677,361.99,298.784,256,298.667z" />
                                         </g>
                                     </svg>
@@ -183,15 +196,14 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                     </svg>
                                 ),
                                 show: !isMe,
+                                disabled: true,
                             },
                             {
                                 name: "hr",
                                 show: !isMe,
                             },
                             {
-                                name: isAssociate
-                                    ? "Remove Associate"
-                                    : "Add As Associate",
+                                name: isAssociate ? "Remove Associate" : "Add As Associate",
                                 onClick: () => {
                                     if (isAssociate) {
                                         removeAssociate(user.id);
@@ -217,7 +229,11 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                     >
                                         <g>
                                             <path d="M490.667,234.667H448V192c0-11.782-9.551-21.333-21.333-21.333c-11.782,0-21.333,9.551-21.333,21.333v42.667h-42.667   c-11.782,0-21.333,9.551-21.333,21.333c0,11.782,9.551,21.333,21.333,21.333h42.667V320c0,11.782,9.551,21.333,21.333,21.333   c11.782,0,21.333-9.551,21.333-21.333v-42.667h42.667c11.782,0,21.333-9.551,21.333-21.333   C512,244.218,502.449,234.667,490.667,234.667z" />
-                                            <circle cx="192" cy="128" r="128" />
+                                            <circle
+                                                cx="192"
+                                                cy="128"
+                                                r="128"
+                                            />
                                             <path d="M192,298.667c-105.99,0.118-191.882,86.01-192,192C0,502.449,9.551,512,21.333,512h341.333   c11.782,0,21.333-9.551,21.333-21.333C383.882,384.677,297.99,298.784,192,298.667z" />
                                         </g>
                                     </svg>
@@ -263,7 +279,7 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                 name: "Copy Profile Link",
                                 onClick: async () => {
                                     await navigator.clipboard.writeText(
-                                        `${window.location.origin}/users/${user.username}`,
+                                        `${window.location.origin}/users/${user.username}`
                                     );
                                 },
                                 icon: (

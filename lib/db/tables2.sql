@@ -21,6 +21,11 @@ CREATE TABLE IF NOT EXISTS `users` (
     `password_reset_expiration` TIMESTAMP NULL,
     `tokens` JSON NOT NULL,
 
+    `two_factor_enabled` TINYINT DEFAULT 0,
+    `two_factor_secret` VARCHAR(128) NULL,
+    `two_factor_temp` VARCHAR(128) NULL,
+    `two_factor_recovery` JSON NULL,
+
     `created_at` TIMESTAMP DEFAULT NOW(),
     `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
 

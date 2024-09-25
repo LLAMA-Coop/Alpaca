@@ -41,11 +41,7 @@ export function Dashboard({ more = false }) {
 
     useEffect(() => {
         if (typeof window !== undefined) {
-            setCurrentTab(
-                parseInt(
-                    localStorage ? localStorage.getItem("currentTab") || 0 : 0,
-                ),
-            );
+            setCurrentTab(parseInt(localStorage ? localStorage.getItem("currentTab") || 0 : 0));
         }
     }, []);
 
@@ -155,9 +151,7 @@ export function Dashboard({ more = false }) {
         const response = await fetch(`${basePath}/api/me/associates`, {
             method: "POST",
             body: JSON.stringify(
-                isNaN(associate)
-                    ? { username: associate }
-                    : { userId: associate },
+                isNaN(associate) ? { username: associate } : { userId: associate }
             ),
         });
 
@@ -192,26 +186,18 @@ export function Dashboard({ more = false }) {
                         {tabs.map((tab, index) => (
                             <li
                                 key={tab.name}
-                                className={
-                                    currentTab === index ? styles.active : ""
-                                }
+                                className={currentTab === index ? styles.active : ""}
                             >
                                 <div
                                     tabIndex={0}
                                     onClick={() => {
                                         setCurrentTab(index);
-                                        localStorage.setItem(
-                                            "currentTab",
-                                            index,
-                                        );
+                                        localStorage.setItem("currentTab", index);
                                     }}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
                                             setCurrentTab(index);
-                                            localStorage.setItem(
-                                                "currentTab",
-                                                index,
-                                            );
+                                            localStorage.setItem("currentTab", index);
                                         }
                                     }}
                                 >
@@ -236,13 +222,9 @@ export function Dashboard({ more = false }) {
                             />
                         )}
 
-                        {currentTab === 0
-                            ? user.username
-                            : tabs[currentTab].name}
+                        {currentTab === 0 ? user.username : tabs[currentTab].name}
 
-                        {currentTab === 0 && (
-                            <span>XP {user.xp ? user.xp : 0}</span>
-                        )}
+                        {currentTab === 0 && <span>XP {user.xp ? user.xp : 0}</span>}
 
                         {currentTab !== 0 && (
                             <Tooltip>
@@ -263,9 +245,7 @@ export function Dashboard({ more = false }) {
                                     </Link>
                                 </TooltipTrigger>
 
-                                <TooltipContent>
-                                    Browse {tabs[currentTab].name}
-                                </TooltipContent>
+                                <TooltipContent>Browse {tabs[currentTab].name}</TooltipContent>
                             </Tooltip>
                         )}
                     </h1>
@@ -291,21 +271,15 @@ export function Dashboard({ more = false }) {
                                 />
                             )}
 
-                            {currentTab === 0
-                                ? user.username
-                                : tabs[currentTab].name}
+                            {currentTab === 0 ? user.username : tabs[currentTab].name}
 
-                            {currentTab === 0 && (
-                                <span>XP {user.xp ? user.xp : 0}</span>
-                            )}
+                            {currentTab === 0 && <span>XP {user.xp ? user.xp : 0}</span>}
 
                             {currentTab !== 0 && (
                                 <Link
                                     className={styles.browseLink}
                                     title={`Browse ${tabs[currentTab].name}`}
-                                    href={`/${tabs[
-                                        currentTab
-                                    ].name.toLowerCase()}`}
+                                    href={`/${tabs[currentTab].name.toLowerCase()}`}
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -331,7 +305,11 @@ export function Dashboard({ more = false }) {
                         </div>
                     </header>
 
-                    {currentTab === 0 && <Notifications />}
+                    {currentTab === 0 && (
+                        <div className={styles.userContent}>
+                            <Notifications />
+                        </div>
+                    )}
 
                     {currentTab === 0 &&
                         (courses.length || quizzes.length ? (
@@ -357,10 +335,7 @@ export function Dashboard({ more = false }) {
                                         <h3>Attempt quizzes to earn XP</h3>
 
                                         {quizzes.length === 0 && (
-                                            <p>
-                                                No quizzes available at the
-                                                moment.
-                                            </p>
+                                            <p>No quizzes available at the moment.</p>
                                         )}
 
                                         <MasoneryList dash>
@@ -377,9 +352,8 @@ export function Dashboard({ more = false }) {
                         ) : (
                             <div className={styles.empty}>
                                 <p>
-                                    Hey, we couldn't find any courses or quizzes
-                                    for you. But that doesn't mean you can't
-                                    explore more.
+                                    Hey, we couldn't find any courses or quizzes for you. But that
+                                    doesn't mean you can't explore more.
                                 </p>
 
                                 <div>
@@ -448,9 +422,7 @@ export function Dashboard({ more = false }) {
                                     <div>
                                         <h3>
                                             Groups you created
-                                            <span className={styles.chip}>
-                                                {myGroups.length}
-                                            </span>
+                                            <span className={styles.chip}>{myGroups.length}</span>
                                         </h3>
 
                                         <MasoneryList dash>
@@ -458,6 +430,7 @@ export function Dashboard({ more = false }) {
                                                 <GroupDisplay
                                                     lighter
                                                     group={group}
+                                                    key={group.id}
                                                 />
                                             ))}
                                         </MasoneryList>
@@ -478,6 +451,7 @@ export function Dashboard({ more = false }) {
                                                 <GroupDisplay
                                                     lighter
                                                     group={group}
+                                                    key={group.id}
                                                 />
                                             ))}
                                         </MasoneryList>
@@ -502,14 +476,9 @@ export function Dashboard({ more = false }) {
                                             type="text"
                                             placeholder="Username or ID"
                                             value={associate}
-                                            onChange={(e) =>
-                                                setAssociate(e.target.value)
-                                            }
+                                            onChange={(e) => setAssociate(e.target.value)}
                                             onKeyDown={(e) => {
-                                                if (
-                                                    e.key === "Enter" &&
-                                                    !isLoading
-                                                ) {
+                                                if (e.key === "Enter" && !isLoading) {
                                                     requestAssociate();
                                                 }
                                             }}
@@ -537,14 +506,9 @@ export function Dashboard({ more = false }) {
                                             type="text"
                                             placeholder="Username or ID"
                                             value={associate}
-                                            onChange={(e) =>
-                                                setAssociate(e.target.value)
-                                            }
+                                            onChange={(e) => setAssociate(e.target.value)}
                                             onKeyDown={(e) => {
-                                                if (
-                                                    e.key === "Enter" &&
-                                                    !isLoading
-                                                ) {
+                                                if (e.key === "Enter" && !isLoading) {
                                                     requestAssociate();
                                                 }
                                             }}
@@ -561,9 +525,10 @@ export function Dashboard({ more = false }) {
 
                                 <MasoneryList dash2>
                                     {associates.map((user) => (
-                                        <li key={user.id}>
-                                            <UserCard user={user} />
-                                        </li>
+                                        <UserCard
+                                            user={user}
+                                            key={user.id}
+                                        />
                                     ))}
                                 </MasoneryList>
                             </>

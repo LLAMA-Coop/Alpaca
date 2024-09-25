@@ -1,52 +1,77 @@
 "use client";
 
-import styles from "./NoteDisplay.module.css";
-import { Card } from "@client";
+import { Card, CardChip, CardCreatedAt, CardList, CardListItem } from "@client";
 
 export function NoteDisplay({ note }) {
     return (
-        <Card title={note.title} description={note.text}>
-            {note.tags?.length > 0 && (
-                <section className={styles.section}>
-                    <h5>Tags</h5>
+        <Card fullWidth>
+            <header>
+                <h4 title={note.title}>{note.title}</h4>
+            </header>
 
-                    <ol className="chipList">
-                        {note.tags?.map((cont) => (
-                            <li key={cont.id}>{cont.name}</li>
+            <p>
+                {note.text.length > 200
+                    ? note.text.substring(0, 200) + "..."
+                    : note.text}
+            </p>
+
+            {!!note.tags.length && (
+                <section>
+                    <h5>
+                        Tags
+                        <CardChip>{note.tags.length}</CardChip>
+                    </h5>
+
+                    <CardList>
+                        {note.tags.map((tag) => (
+                            <CardListItem key={tag}>{tag}</CardListItem>
                         ))}
-                    </ol>
+                    </CardList>
                 </section>
             )}
 
-            {/* {sources?.length > 0 && (
-                <section className={styles.section}>
-                    <h5>Sources linked</h5>
+            {!!note.courses.length && (
+                <section>
+                    <h5>
+                        Courses
+                        <CardChip>{note.courses.length}</CardChip>
+                    </h5>
 
-                    <ul>
-                        {sources.map((source) => (
-                            <ListItem
-                                key={source.id}
-                                item={source.title}
-                                link={source.url}
-                            />
+                    <p>This note has been used in the following courses.</p>
+
+                    <CardList>
+                        {note.courses.map((c) => (
+                            <CardListItem key={c.id}>{c.name}</CardListItem>
                         ))}
-                    </ul>
+                    </CardList>
                 </section>
             )}
 
-            {courses?.length > 0 && (
-                <section className={styles.section}>
-                    <h5>This note belongs to the following courses</h5>
+            {!!note.sources.length && (
+                <section>
+                    <h5>
+                        Sources Used
+                        <CardChip>{note.sources.length}</CardChip>
+                    </h5>
 
-                    <ul>
-                        {courses.map((course) => (
-                            <ListItem key={course.id} item={course.name} />
+                    <p>
+                        This note has been created using the following sources.
+                    </p>
+
+                    <CardList>
+                        {note.sources.map((s) => (
+                            <CardListItem key={s.id}>{s.name}</CardListItem>
                         ))}
-                    </ul>
+                    </CardList>
                 </section>
-            )} */}
+            )}
 
-            <p>Created by: {note.creator?.username ?? "Unknown"}</p>
+            <footer>
+                <p>Created by {note.creator.username}</p>
+                <CardCreatedAt>
+                    {new Date(note.createdAt).toLocaleDateString()}
+                </CardCreatedAt>
+            </footer>
         </Card>
     );
 }

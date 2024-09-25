@@ -18,7 +18,7 @@ export async function POST(req) {
                     password: "Password is required",
                 },
             },
-            { status: 400 },
+            { status: 400 }
         );
     }
 
@@ -29,7 +29,7 @@ export async function POST(req) {
                     password: validation.user.password.error,
                 },
             },
-            { status: 400 },
+            { status: 400 }
         );
     }
 
@@ -40,7 +40,7 @@ export async function POST(req) {
                     username: validation.user.username.error,
                 },
             },
-            { status: 400 },
+            { status: 400 }
         );
     }
 
@@ -48,7 +48,7 @@ export async function POST(req) {
         const exists = await db
             .selectFrom("users")
             .select("id")
-            .where("username", "=", name)
+            .where(({ or, eb }) => or([eb("username", "=", name), eb("email", "=", name)]))
             .executeTakeFirst();
 
         if (exists) {
@@ -58,7 +58,7 @@ export async function POST(req) {
                         username: "Username is already taken",
                     },
                 },
-                { status: 400 },
+                { status: 400 }
             );
         }
 
@@ -78,7 +78,7 @@ export async function POST(req) {
             {
                 message: "User registered successfully",
             },
-            { status: 201 },
+            { status: 201 }
         );
     } catch (error) {
         db.deleteFrom("users").where("publicId", "=", publicId).execute();

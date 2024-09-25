@@ -51,13 +51,11 @@
 
 .close:hover,
 .close:focus {
-    color: var(--fg-3);
-    background-color: var(--bg-3);
+    color: var(--fg-2);
 }
 
 .close:active {
-    color: var(--fg-2);
-    background-color: var(--bg-4);
+    color: var(--fg-1);
 }
 
 .description {

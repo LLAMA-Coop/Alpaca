@@ -19,30 +19,30 @@
     --fg-4: #334155;
 
     --accent: #10b981;
-    --accent-50: #10b98159;
-    --accent-20: #10b98123;
-    --accent-08: #10b9810e;
+    --accent-50: #10b98180;
+    --accent-20: #10b98156;
+    --accent-08: #10b98114;
     --accent-fg: #000000;
 
     --success: #4ade80;
-    --success-50: #4ade800d;
-    --success-20: #4ade8033;
+    --success-50: #4ade8080;
+    --success-20: #4ade8056;
     --success-08: #4ade8014;
     --success-fg: #000000;
 
     --warning: #f59e0b;
-    --warning-50: #f59e0b7c;
-    --warning-20: #f59e0b33;
+    --warning-50: #f59e0b80;
+    --warning-20: #f59e0b56;
     --warning-08: #f59e0b14;
     --warning-fg: #000000;
 
     --danger: #e11d48;
-    --danger-50: #e11d477c;
-    --danger-20: #e11d4833;
+    --danger-50: #e11d4880;
+    --danger-20: #e11d4856;
     --danger-08: #e11d4814;
     --danger-fg: #ffffff;
 
-    --border-color: hsl(227, 19%, 81%);
+    --border-color: #ccd0da56;
 
     --radius-small: 2px;
     --radius-medium: 4px;
@@ -68,7 +68,7 @@
         --fg-3: #cbd5e1;
         --fg-4: #989fa8;
 
-        --border-color: #313547;
+        --border-color: #33415556;
     }
 }
 
@@ -97,7 +97,7 @@ body {
     font-size: 16px;
     min-height: 100vh;
     min-height: 100dvh;
-    color: var(--fg-1);
+    color: var(--fg-2);
     scroll-behavior: smooth;
     color-scheme: light dark;
     font-family: var(--font-body);
@@ -115,14 +115,18 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: var(--font-heading);
     font-weight: 700;
     color: var(--fg-1);
+    font-family: var(--font-heading);
 }
 
 .link {
+    font-size: 15px;
     font-weight: 500;
+    width: fit-content;
     color: var(--accent);
+    font-family: var(--font-body);
+    background-color: transparent;
 }
 
 .link:hover {
@@ -139,18 +143,18 @@ h6 {
 }
 
 .scrollbar::-webkit-scrollbar-track {
-    border-radius: 1000px;
-    border: 6px var(--bg-2) solid;
-    background-color: var(--bg-3);
     background-clip: padding-box;
+    background-color: var(--bg-3);
+    border-radius: var(--radius-full);
+    border: var(--radius-large) var(--bg-2) solid;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-    border-radius: 1000px;
-    border: 6px var(--bg-3) solid;
     border-color: transparent;
-    background-color: var(--bg-1);
     background-clip: padding-box;
+    background-color: var(--bg-1);
+    border-radius: var(--radius-full);
+    border: var(--radius-large) var(--bg-3) solid;
 }
 
 button {
@@ -166,22 +170,22 @@ button:focus-visible {
 }
 
 .button {
+    gap: 12px;
     height: 36px;
     display: flex;
-    gap: 8px;
     outline: none;
+    padding: 0 24px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 700;
+    line-height: 16px;
+    user-select: none;
+    border-radius: 3px;
+    color: var(--fg-1);
     align-items: center;
     justify-content: center;
-    padding: 0 20px;
-    border-radius: 3px;
-    font-size: 14px;
-    line-height: 16px;
     font-family: var(--font-body);
     background-color: var(--bg-3);
-    font-weight: 600;
-    cursor: pointer;
-    user-select: none;
-    color: var(--fg-1);
     transition:
         filter 0.1s ease,
         box-shadow 0.1s ease,
@@ -197,16 +201,22 @@ button:focus-visible {
     filter: brightness(1.3);
 }
 
+.button.small {
+    height: 28px;
+    padding: 0 14px;
+    font-size: 13px;
+}
+
 .button.round {
     height: 38px;
-    padding: 0 24px;
-    border-radius: 1000px;
+    border-radius: var(--radius-full);
 }
 
 .button.submit {
     width: 100%;
     height: 44px;
-    font-size: 16px;
+    font-size: 17px;
+    font-weight: 800;
 }
 
 .button.primary {
@@ -224,9 +234,41 @@ button:focus-visible {
     background-color: var(--danger);
 }
 
-.button.transparent {
+.button.transparent,
+.button.border {
     color: var(--fg-1);
     background-color: transparent;
+    transition:
+        border 0.1s ease,
+        color 0.1s ease,
+        background-color 0.1s ease;
+}
+
+.button.border.success {
+    border: 1px solid var(--success);
+}
+
+.button.border.success:hover {
+    color: var(--success-fg);
+    background-color: var(--success);
+}
+
+.button.border.danger {
+    border: 1px solid var(--danger);
+}
+
+.button.border.danger:hover {
+    color: var(--danger-fg);
+    background-color: var(--danger);
+}
+
+.button.border.primary {
+    border: 1px solid var(--accent);
+}
+
+.button.border.primary:hover {
+    color: var(--accent-fg);
+    background-color: var(--accent);
 }
 
 ul,
@@ -240,8 +282,8 @@ li::marker {
 
 ::-webkit-calendar-picker-indicator:focus-visible {
     border-radius: 2px;
+    outline-offset: 6px;
     outline: 4px solid var(--accent);
-    outline-offset: 3px;
 }
 
 input {
@@ -253,8 +295,8 @@ input[type="date"] {
 }
 
 :disabled {
-    cursor: not-allowed;
     opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .thinScroller::-webkit-scrollbar {
@@ -271,91 +313,6 @@ input[type="date"] {
     border-radius: 100vw;
 }
 
-.formGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 24px;
-}
-
-.formGrid > *:last-child {
-    align-self: flex-end;
-}
-
-.chipList {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.chipList > li {
-    max-width: 100%;
-}
-
-.buttonContainer {
-    display: flex;
-    gap: 16px;
-}
-
-.paragraph.center {
-    text-align: center;
-}
-
-.paragraph > h3 {
-    font-size: 24px;
-    line-height: 30px;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-.paragraph > p,
-.paragraph > ol > li,
-.paragraph > ul > li {
-    font-size: clamp(16px, 2vw, 20px);
-    line-height: 1.5;
-    font-weight: 300;
-    margin-bottom: 24px;
-    color: var(--fg-2);
-}
-
-.paragraph > ul {
-    margin-left: 2rem;
-    list-style-type: disc;
-}
-
-.paragraph > ol {
-    margin-left: 2rem;
-    list-style-type: numeral;
-}
-
-.paragraph a {
-    font-weight: 400;
-}
-
-.paragraph a:hover {
-    text-decoration: underline;
-}
-
-h4 {
-    margin-bottom: 12px;
-}
-
-.listGrid {
-    width: 100%;
-    max-width: var(--max-width);
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
-    grid-gap: 24px;
-}
-
-.listGrid > li {
-    width: fit-content;
-}
-
-.flexColumn {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
 @media screen and (max-width: 1024px) {
     :root {
         --padding: 100px 40px;
@@ -369,11 +326,6 @@ h4 {
         --padding: 60px 24px;
         --gutter-x: 24px;
         --gutter-y: 100px;
-    }
-
-    .formGrid {
-        max-width: 550px;
-        grid-template-columns: 1fr;
     }
 }
 

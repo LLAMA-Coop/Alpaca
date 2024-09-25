@@ -64,6 +64,25 @@
     display: none;
 }
 
+.recoveryButton {
+    display: flex;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: -40px;
+    color: var(--fg-3);
+    width: fit-content;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    background-color: transparent;
+}
+
+.recoveryButton:hover {
+    color: var(--fg-1);
+    text-decoration: underline;
+}
+
 @keyframes popIn {
     0% {
         opacity: 0;

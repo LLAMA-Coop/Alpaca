@@ -24,6 +24,8 @@ export function Input({
     itemLabel = "label",
     notObject,
     setter,
+    small = false,
+    labelChip,
     ...props
 }) {
     const [hasLoaded, setHasLoaded] = useState(false);
@@ -49,9 +51,7 @@ export function Input({
         }
 
         if (multiple && !Array.isArray(data)) {
-            throw new Error(
-                "Input component with multiple requires an array data prop.",
-            );
+            throw new Error("Input component with multiple requires an array data prop.");
         }
 
         if (select && !Array.isArray(options)) {
@@ -97,9 +97,7 @@ export function Input({
                         active={
                             multiple
                                 ? data.find((t) =>
-                                      notObject
-                                          ? t === option
-                                          : t[itemValue] === option[itemValue],
+                                      notObject ? t === option : t[itemValue] === option[itemValue]
                                   )
                                 : false
                         }
@@ -108,9 +106,7 @@ export function Input({
                 ))}
 
                 {options.length === 0 && (
-                    <div className={`${styles.option} ${styles.empty}`}>
-                        No options available
-                    </div>
+                    <div className={`${styles.option} ${styles.empty}`}>No options available</div>
                 )}
             </SelectElement>
         );
@@ -127,15 +123,21 @@ export function Input({
 
     return (
         <div className={styles.container}>
-            <label htmlFor={id} className={styles.label}>
+            <label
+                htmlFor={id}
+                className={styles.label}
+            >
                 {label}
 
-                {(props.required || error) && (
-                    <span className={styles.required}>*</span>
-                )}
+                {labelChip && <span className={styles.chip}>{labelChip}</span>}
+
+                {(props.required || error) && <span className={styles.required}>*</span>}
 
                 {error && (
-                    <span id={`${id}-error`} className={styles.error}>
+                    <span
+                        id={`${id}-error`}
+                        className={styles.error}
+                    >
                         {" "}
                         {error}
                     </span>
@@ -148,6 +150,8 @@ export function Input({
                     borderColor: error ? "var(--danger-50)" : "",
                     "--bs-1": error ? "var(--danger-20)" : "",
                     "--bs-2": error ? "var(--danger-08)" : "",
+                    height: small ? "32px" : "",
+                    width: small ? "fit-content" : "",
                 }}
             >
                 {multiple &&
@@ -197,6 +201,9 @@ export function Input({
                         value={value}
                         aria-label={label}
                         className={styles.input}
+                        style={{
+                            padding: small ? "0 6px" : "",
+                        }}
                         aria-invalid={error ? "true" : "false"}
                         aria-multiline={multiple ? "true" : "false"}
                         aria-describedby={error ? `${id}-error` : ""}
@@ -229,5 +236,33 @@ export function Input({
 }
 
 export function TextArea({ ...props }) {
-    return <Input {...props} textarea />;
+    return (
+        <Input
+            {...props}
+            textarea
+        />
+    );
+}
+
+export function Label({ id, error, ...props }) {
+    return (
+        <label
+            htmlFor={id}
+            className={styles.label}
+        >
+            {props.children}
+
+            {(props.required || error) && <span className={styles.required}>*</span>}
+
+            {error && (
+                <span
+                    id={`${id}-error`}
+                    className={styles.error}
+                >
+                    {" "}
+                    {error}
+                </span>
+            )}
+        </label>
+    );
 }

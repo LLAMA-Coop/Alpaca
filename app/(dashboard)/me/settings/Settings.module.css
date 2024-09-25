@@ -1,115 +1,120 @@
-.main {
-    max-width: var(--max-width);
-    padding: var(--padding);
-    margin: 0 auto;
-    flex: 1;
+.wrapper {
     width: 100%;
+    padding: var(--padding);
+}
+
+.wrapper > div {
     display: grid;
+    margin: 0 auto;
+    max-width: var(--max-width);
     grid-template-columns: 270px 1fr;
 }
 
-.tabList {
-    padding-right: 24px;
-    display: flex;
-    flex-direction: column;
+.tabs {
     gap: 4px;
+    display: flex;
+    padding-right: 24px;
+    flex-direction: column;
 }
 
-.tabList > li {
-    position: relative;
-    padding: 8px 12px;
-    border-radius: 4px;
+.tabs > li {
     cursor: pointer;
-    color: var(--fg-2);
     user-select: none;
+    padding: 8px 12px;
+    color: var(--fg-2);
+    position: relative;
+    border-radius: var(--radius-medium);
 }
 
-.tabList > li:hover,
-.tabList > li:focus-within {
-    background-color: var(--bg-2);
+.tabs > li:hover,
+.tabs > li:focus-within {
     color: var(--fg-1);
-}
-
-.tabList > li:active {
     background-color: var(--bg-3);
 }
 
-.tabList > li.active {
-    background-color: var(--bg-3);
+.tabs > li:active,
+.tabs > li.active {
     color: var(--fg-1);
+    background-color: var(--bg-4);
 }
 
-.tabList > li.active::before {
-    content: "";
-    position: absolute;
-    left: -8px;
+.tabs > li.active::before {
     top: 50%;
-    transform: translateY(-50%);
     bottom: 0;
-    width: 4px;
-    height: 70%;
+    left: -6px;
+    width: 3px;
+    content: "";
+    height: 60%;
+    position: absolute;
+    transform: translateY(-50%);
     background-color: var(--accent);
-    border-radius: 1000px;
+    border-radius: var(--radius-full);
 }
 
-.main > section {
+.main {
     padding-left: 32px;
 }
 
-.main > section > h1 {
+.main > h1 {
+    display: flex;
     font-size: 32px;
     font-weight: 500;
-    margin-bottom: 16px;
+    margin-bottom: 60px;
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
     align-items: center;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.main > section > h1 > button {
-    display: inline-flex;
-    background-color: transparent;
-    border: none;
-    justify-content: center;
-    align-items: center;
+.main > h1 > button {
     width: 32px;
     height: 32px;
+    border: none;
+    cursor: pointer;
     margin-left: 8px;
     color: var(--fg-2);
-    border-radius: 3px;
-    cursor: pointer;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    background-color: transparent;
+    border-radius: var(--radius-medium);
 }
 
-.main > section > h1 > button:hover {
-    background-color: var(--bg-2);
+.main > h1 > button:hover {
     color: var(--fg-1);
+    background-color: var(--bg-2);
 }
 
-.content {
+.column {
+    gap: 120px;
     display: flex;
-    gap: 32px;
 }
 
-.content > div {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 40px 0;
+.content > h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--fg-2);
+    width: fit-content;
+    margin-bottom: 40px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.content > div:first-child {
-    flex: 1;
+.content > p {
+    font-size: 16px;
+    line-height: 1.375;
+    color: var(--fg-2);
+    margin-bottom: 24px;
 }
 
-.content > div:last-child {
-    width: 250px;
-    padding: 40px 32px 40px 0;
+.content > article {
+    margin-bottom: 24px;
 }
 
-.content > div > .buttons {
-    display: flex;
-    gap: 12px;
+.content > div:not(:last-child) {
+    margin-bottom: 120px;
 }
+
+/* PROFILE */
 
 .avatar {
     display: flex;
@@ -185,13 +190,198 @@
     color: var(--danger);
 }
 
-@media screen and (max-width: 1024px) {
-    .content {
-        flex-direction: column-reverse;
-    }
+/* APPEARANCE */
 
-    .content > div:last-child {
-        padding: 32px 0 0 0;
+.list {
+    gap: 44px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.theme {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+}
+
+.theme:hover {
+    border-color: var(--accent);
+}
+
+/* SECURITY */
+
+.totp {
+    gap: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.totp > h3 {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.qr {
+    padding: 6px;
+    margin: 20px 0;
+    width: fit-content;
+    background-color: #ffffff;
+    border-radius: var(--radius-medium);
+}
+
+.totp > p {
+    font-size: 16px;
+    line-height: 1.375;
+    color: var(--fg-2);
+}
+
+.totp > p > code {
+    padding: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    background-color: var(--bg-0);
+    border-radius: var(--radius-medium);
+}
+
+.totp > .codes {
+    gap: 16px;
+    padding: 16px;
+    display: grid;
+    background-color: var(--bg-0);
+    grid-template-columns: 1fr 1fr;
+    border-radius: var(--radius-medium);
+}
+
+.totp > .codes > li {
+    display: flex;
+    font-size: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.totp > .codes > li.used {
+    opacity: 0.5;
+    cursor: default;
+    user-select: none;
+    color: var(--danger);
+    text-decoration: line-through;
+}
+
+.totp > .right {
+    gap: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: end;
+}
+
+.regenerate,
+.toggle {
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: -20px;
+    width: fit-content;
+    color: var(--fg-3);
+    font-family: var(--font-body);
+    background-color: transparent;
+    border-radius: var(--radius-medium);
+}
+
+.toggle {
+    margin-top: 8px;
+}
+
+.regenerate:hover,
+.toggle:hover {
+    color: var(--fg-2);
+    text-decoration: underline;
+}
+
+.device {
+    gap: 24px;
+    padding: 16px;
+    display: flex;
+    overflow: hidden;
+    width: max-content;
+    align-items: center;
+    margin-bottom: 24px;
+    background-color: var(--bg-2);
+    border-radius: var(--radius-large);
+    border: 1px solid var(--border-color);
+}
+
+.device > aside {
+    align-self: stretch;
+}
+
+.device > main > header {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.device > main > header > p {
+    font-size: 16px;
+    color: var(--fg-2);
+}
+
+.device > main > header > span {
+    display: flex;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    margin-left: 12px;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-fg);
+    background-color: var(--accent);
+    border-radius: var(--radius-full);
+}
+
+.device > main > p {
+    font-size: 14px;
+    color: var(--fg-3);
+}
+
+.revoke {
+    border: none;
+    display: flex;
+    margin: -16px;
+    margin-left: 0;
+    padding: 0 12px;
+    cursor: pointer;
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    transition: background-color 0.1s ease;
+    border-left: 1px solid var(--border-color);
+}
+
+.revoke:hover {
+    background-color: var(--bg-3);
+}
+
+.revoke > div {
+    border: none;
+    cursor: pointer;
+    color: var(--fg-4);
+    transition: color 0.1s ease;
+    background-color: transparent;
+}
+
+.revoke:hover > svg,
+.revoke:focus-visible > svg {
+    color: var(--danger);
+}
+
+@media screen and (max-width: 1024px) {
+    .column {
+        gap: 60px;
+        flex-direction: column-reverse;
     }
 
     .avatar {
@@ -201,15 +391,20 @@
 
 @media screen and (max-width: 768px) {
     .main {
-        display: block;
+        gap: 60px;
+        flex-direction: column;
     }
 
-    .tabList {
+    .wrapper > div {
+        gap: 120px;
+        grid-template-columns: 1fr;
+    }
+
+    .tabs {
         padding-right: 0;
-        margin-bottom: 80px;
     }
 
-    .main > section {
+    .main {
         padding-left: 0;
     }
 }

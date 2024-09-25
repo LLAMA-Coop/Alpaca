@@ -1,22 +1,21 @@
 "use client";
 
+import { TooltipContent, TooltipTrigger, Tooltip, Spinner, Input, Form } from "@client";
 import { Validator } from "@/lib/validation";
 import styles from "./UserInput.module.css";
 import { useRouter } from "next/navigation";
 import { useAlerts } from "@/store/store";
-import { useState } from "react";
-import {
-    TooltipContent,
-    TooltipTrigger,
-    Tooltip,
-    Spinner,
-    Input,
-} from "@client";
+import { useEffect, useState } from "react";
+import { InfoBox } from "../Display/InfoBox/InfoBox";
 
 export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
+
+    const [showTwoFactor, setShowTwoFactor] = useState(true);
+    const [twoFactorToken, setTwoFactorToken] = useState("");
+    const [twoFactorCode, setTwoFactorCode] = useState("");
 
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
@@ -24,6 +23,14 @@ export function UserInput({ isRegistering, onSubmit }) {
 
     const addAlert = useAlerts((state) => state.addAlert);
     const router = useRouter();
+
+    useEffect(() => {
+        if (twoFactorToken && showTwoFactor && twoFactorCode.length === 6) {
+            handleTwoFactor({ preventDefault: () => {} });
+        } else if (twoFactorToken && !showTwoFactor && twoFactorCode.length === 11) {
+            handleTwoFactor({ preventDefault: () => {} });
+        }
+    }, [twoFactorCode, showTwoFactor, twoFactorToken]);
 
     async function handleRegister(e) {
         e.preventDefault();
@@ -64,7 +71,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                     username: name,
                     password,
                 }),
-            },
+            }
         );
 
         setLoading(false);
@@ -77,7 +84,7 @@ export function UserInput({ isRegistering, onSubmit }) {
 
             addAlert({
                 success: true,
-                message: "Successfully registered.",
+                message: "Successfully registered",
             });
 
             if (!onSubmit) {
@@ -107,19 +114,86 @@ export function UserInput({ isRegistering, onSubmit }) {
 
         setLoading(true);
 
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/login`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username,
-                    password,
-                }),
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-        );
+            body: JSON.stringify({
+                username,
+                password,
+            }),
+        });
+
+        setLoading(false);
+
+        if (response.status === 200) {
+            const data = await response.json();
+
+            if (response.status === 200 && data.token) {
+                return setTwoFactorToken(data.token);
+            }
+
+            setUsername("");
+            setPassword("");
+            setErrors({});
+
+            addAlert({
+                success: true,
+                message: "Successfully logged in",
+            });
+
+            if (!onSubmit) {
+                const redirectUrl = new URLSearchParams(window.location.search).get("redirect");
+
+                if (redirectUrl) {
+                    router.push(redirectUrl);
+                } else {
+                    router.push("/me/dashboard");
+                }
+            } else {
+                onSubmit();
+            }
+
+            router.refresh();
+        } else {
+            const data = await response.json();
+            setErrors(data.errors || {});
+
+            if (errors.server) {
+                addAlert({
+                    success: false,
+                    message: errors.server,
+                });
+            }
+        }
+    }
+
+    async function handleTwoFactor(e) {
+        e.preventDefault();
+        if (loading) return;
+
+        if (showTwoFactor && twoFactorCode.length !== 6) {
+            return setErrors({ code: "Invalid code" });
+        }
+
+        if (!showTwoFactor && twoFactorCode.length !== 11) {
+            return setErrors({ code: "Invalid recovery code" });
+        }
+
+        setLoading(true);
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/2fa`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                token: twoFactorToken,
+                code: showTwoFactor ? twoFactorCode : undefined,
+                recovery: !showTwoFactor ? twoFactorCode : undefined,
+            }),
+        });
 
         setLoading(false);
 
@@ -130,18 +204,16 @@ export function UserInput({ isRegistering, onSubmit }) {
 
             addAlert({
                 success: true,
-                message: "Successfully logged in.",
+                message: `Successfully logged in ${!showTwoFactor ? " - this code is no longer valid" : ""}`,
             });
 
             if (!onSubmit) {
-                const redirectUrl = new URLSearchParams(
-                    window.location.search,
-                ).get("redirect");
+                const redirectUrl = new URLSearchParams(window.location.search).get("redirect");
 
                 if (redirectUrl) {
                     router.push(redirectUrl);
                 } else {
-                    router.push(`/users/${username}`);
+                    router.push("/me/dashboard");
                 }
             } else {
                 onSubmit();
@@ -184,8 +256,81 @@ export function UserInput({ isRegistering, onSubmit }) {
         },
     ];
 
+    if (twoFactorToken) {
+        return (
+            <Form onSubmit={handleTwoFactor}>
+                <InfoBox>
+                    {showTwoFactor ? (
+                        <span>
+                            You have two factor authentication enabled.
+                            <br />
+                            Please enter the code from your authenticator app.
+                        </span>
+                    ) : (
+                        <span>
+                            Lost your authenticator app? Enter a recovery code to login.
+                            <br />
+                            Once used, this code is no longer valid.
+                        </span>
+                    )}
+                </InfoBox>
+
+                {showTwoFactor ? (
+                    <Input
+                        required
+                        autoFocus
+                        maxLength={6}
+                        error={errors.code}
+                        value={twoFactorCode}
+                        label="Two Factor Code"
+                        placeholder="Two Factor Code"
+                        onChange={(e) => {
+                            setTwoFactorCode(e.target.value);
+                            setErrors({ ...errors, code: "" });
+                        }}
+                    />
+                ) : (
+                    <Input
+                        required
+                        autoFocus
+                        maxLength={11}
+                        error={errors.code}
+                        value={twoFactorCode}
+                        label="Recovery Code"
+                        placeholder="Recovery Code"
+                        onChange={(e) => {
+                            setTwoFactorCode(e.target.value);
+                            setErrors({ ...errors, code: "" });
+                        }}
+                    />
+                )}
+
+                <button
+                    type="button"
+                    className={styles.recoveryButton}
+                    onClick={() => {
+                        setShowTwoFactor((show) => !show);
+                    }}
+                >
+                    I {!!showTwoFactor && "don't"} have my authenticator app
+                </button>
+
+                {(!!errors.server || !!errors.token) && (
+                    <InfoBox type="danger">{errors.server || errors.token}</InfoBox>
+                )}
+
+                <button
+                    type="submit"
+                    className="button submit primary"
+                >
+                    Submit {loading && <Spinner primary />}
+                </button>
+            </Form>
+        );
+    }
+
     return (
-        <form className="formGrid">
+        <Form onSubmit={isRegistering ? handleRegister : handleLogin}>
             <Input
                 required
                 autoFocus
@@ -214,9 +359,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                                 setErrors((errors) => ({
                                     ...errors,
                                     password: "",
-                                    username: isRegistering
-                                        ? errors.username
-                                        : "",
+                                    username: isRegistering ? errors.username : "",
                                 }));
                             }}
                         />
@@ -233,11 +376,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                                     return (
                                         <li
                                             key={exp.name}
-                                            className={
-                                                exp.regex.test(password)
-                                                    ? styles.valid
-                                                    : ""
-                                            }
+                                            className={exp.regex.test(password) ? styles.valid : ""}
                                         >
                                             {exp.regex.test(password) && (
                                                 <svg
@@ -279,12 +418,11 @@ export function UserInput({ isRegistering, onSubmit }) {
             )}
 
             <button
-                onClick={isRegistering ? handleRegister : handleLogin}
+                type="submit"
                 className="button submit primary"
             >
-                {isRegistering ? "Register" : "Login"}{" "}
-                {loading && <Spinner primary />}
+                {isRegistering ? "Register" : "Login"} {loading && <Spinner primary />}
             </button>
-        </form>
+        </Form>
     );
 }

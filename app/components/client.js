@@ -8,16 +8,12 @@ export {
     CardCreatedAt,
 } from "./Card/Card";
 
-export {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "./Layers/Popover/Popover";
+export { Popover, PopoverContent, PopoverTrigger } from "./Layers/Popover/Popover";
 
 export { Select } from "./Form/Select";
-export { Form, Column } from "./Form/Form";
+export { Form, FormButtons, Column } from "./Form/Form";
 export { Checkbox } from "./Form/Checkbox";
-export { Input, TextArea } from "./Form/Input";
+export { Input, TextArea, Label } from "./Form/Input";
 export { Permissions } from "./Form/Permissions";
 
 export { RightContainer } from "./Header/RightContainer";
@@ -33,6 +29,7 @@ export { SourceDisplay } from "./Source/SourceDisplay";
 export { CourseDisplay } from "./Course/CourseDisplay";
 
 export { MasoneryList } from "./Display/MasoneryList";
+export { InfoBox } from "./Display/InfoBox/InfoBox";
 
 export { ListAnswer } from "./Quiz/ListAnswer";
 export { ResponseCard } from "./Quiz/ResponseCard";
@@ -69,12 +66,17 @@ export { UserStats } from "./Quiz/UserStats";
 export { QuizDisplay } from "./Quiz/QuizDisplay";
 
 export { Menu } from "./Layers/Menu/Menu";
+export { Tooltip, TooltipContent, TooltipTrigger } from "./Layers/Tooltip/Tooltip";
+
 export {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "./Layers/Tooltip/Tooltip";
-export { Dialog } from "./Layers/Dialog/Dialog";
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogClose,
+    DialogDescription,
+    DialogHeading,
+    DialogButtons,
+} from "./Layers/Dialog/Dialog";
 
 export { UserCard } from "./User/UserCard";
 export { GroupDisplay } from "./Group/GroupDisplay";

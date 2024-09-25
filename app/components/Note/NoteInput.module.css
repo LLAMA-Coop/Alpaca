@@ -1,0 +1,24 @@
+.editor {
+    padding: 10px;
+    color: var(--fg-2);
+    border-radius: 4px;
+    background-color: var(--bg-3);
+    border: 1px solid var(--border-color);
+    min-height: 160px;
+    height: fit-content;
+    max-width: 100%;
+    transition:
+        border 0.1s ease,
+        box-shadow 0.1s ease;
+}
+
+.editor:focus {
+    --bs-1: var(--accent-20);
+    --bs-2: var(--accent-08);
+    border: 1px solid var(--accent-50);
+    box-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.03),
+        0 3px 6px rgba(0, 0, 0, 0.02),
+        0 0 0 3px var(--bs-1),
+        0 1px 1px 0 var(--bs-2);
+}
