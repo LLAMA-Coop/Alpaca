@@ -1,45 +1,72 @@
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
+import { isValidDate, timestampFromDate } from "@/lib/date";
 import { unauthorized } from "@/lib/apiErrorResponses";
 import stringCompare from "@/lib/stringCompare";
+import { areFieldsEqual } from "@/lib/objects";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { htmlDate } from "@/lib/date";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 import {
+    getResourcePermissions,
     canDeleteResource,
-    catchRouteError,
     canEditResource,
+    catchRouteError,
     updateQuiz,
 } from "@/lib/db/helpers";
 
 // UPDATE QUIZ
 
-export async function PATCH(req) {
-    const { id } = req.params;
-    const {
-        type,
-        prompt,
-        choices,
-        answers,
-        hints,
-        sources,
-        notes,
-        courses,
-        tags,
-        permissions,
-    } = await req.json();
+export async function PATCH(req, { params }) {
+    const { id } = req;
+
+    const data = await req.json();
+    const { type, prompt, choices, answers, hints, sources, notes, courses, tags, permissions } =
+        data;
+
+    if (!Object.keys(data).length) {
+        return NextResponse.json(
+            {
+                message: "No data provided to update",
+            },
+            { status: 400 }
+        );
+    }
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        if (!(await canEditResource(user.id, id, "quiz"))) {
+        if (!(await canEditResource(user.id, id, "quizzes", "quiz"))) {
             return NextResponse.json(
                 {
                     message: "You do not have permission to edit this quiz",
                 },
-                { status: 404 },
+                { status: 400 }
+            );
+        }
+
+        const quiz = await db
+            .selectFrom("quizzes")
+            .select(({ eb }) => ["id", "createdBy", getResourcePermissions("quiz", id, eb)])
+            .where("id", "=", id)
+            .executeTakeFirst();
+
+        if (!quiz) {
+            return NextResponse.json(
+                {
+                    message: "Quiz not found",
+                },
+                { status: 404 }
+            );
+        }
+
+        if (!areFieldsEqual(permissions, quiz.permissions) && quiz.createdBy !== user.id) {
+            return NextResponse.json(
+                {
+                    message: "You do not have permission to edit permissions for this quiz",
+                },
+                { status: 403 }
             );
         }
 
@@ -64,7 +91,7 @@ export async function PATCH(req) {
                     message: "Invalid quiz data",
                     errors: content.errors,
                 },
-                { status: 400 },
+                { status: 400 }
             );
         }
 
@@ -80,7 +107,7 @@ export async function PATCH(req) {
 // GRADE QUIZ
 
 export async function POST(req, { params }) {
-    const { answer } = await req.json();
+    const { answers } = await req.json();
     const { id } = params;
 
     try {
@@ -98,18 +125,26 @@ export async function POST(req, { params }) {
                 {
                     message: "Quiz not found",
                 },
-                { status: 404 },
+                { status: 404 }
             );
         }
 
         let isCorrect;
         let incorrectIndexes;
 
-        if (["prompt-response", "multiple-choice"].includes(quiz.type)) {
+        if (quiz.type === "true-false") {
+            // True-false quizzes are always correct if the answer is the same
+            isCorrect = quiz.answers[0] === answers;
+        }
+
+        if (quiz.type === "prompt-response") {
+            isCorrect = stringCompare(quiz.answers[0], answers) >= 0.8;
+        }
+
+        if (quiz.type === "multiple-choice") {
             isCorrect =
-                quiz.answers.find((x) => {
-                    return stringCompare(x, answer) >= 0.8;
-                }) !== undefined;
+                quiz.answers.every((a) => answers.includes(a)) &&
+                answers.length === quiz.answers.length;
         }
 
         if (
@@ -121,9 +156,9 @@ export async function POST(req, { params }) {
             ].includes(quiz.type)
         ) {
             incorrectIndexes = whichIndexesIncorrect(
-                answer,
+                answers,
                 quiz.answers,
-                quiz.type !== "unordered-list-answer",
+                quiz.type !== "unordered-list-answer"
             );
 
             isCorrect = incorrectIndexes.length === 0;
@@ -131,64 +166,60 @@ export async function POST(req, { params }) {
 
         let quizInteraction = await db
             .selectFrom("user_quizzes")
-            .select("level")
+            .select(["level", "triesAtLevel", "lastCorrect", "hiddenUntil"])
             .where("userId", "=", user.id)
             .where("quizId", "=", quiz.id)
             .executeTakeFirst();
 
         let hasUserInteractedWithQuiz = !!quizInteraction;
-
+        let currentLevel = quizInteraction?.level || 0;
         let canProgressLevel = false;
 
         if (!quizInteraction) {
             canProgressLevel = true;
 
             quizInteraction = {
-                quizId: quiz.id,
                 level: 0,
+                quizId: quiz.id,
+                triesAtLevel: 0,
                 hiddenUntil: new Date(),
             };
         } else {
             canProgressLevel =
-                Date.now() > quizInteraction.hiddenUntil.getTime();
+                !isValidDate(quizInteraction.hiddenUntil) ||
+                new Date(quizInteraction.hiddenUntil) < new Date();
         }
 
         if (isCorrect && canProgressLevel) {
             let hiddenUntil = new Date();
+
             quizInteraction.lastCorrect = new Date();
             quizInteraction.level += 1;
 
-            quizInteraction.hiddenUntil = hiddenUntil.setDate(
-                hiddenUntil.getDate() + quizInteraction.level,
+            quizInteraction.hiddenUntil = new Date(
+                hiddenUntil.setHours(hiddenUntil.getHours() + quizInteraction.level)
             );
         } else if (isCorrect) {
             quizInteraction.lastCorrect = new Date();
         } else {
             quizInteraction.lastCorrect = 0;
-            quizInteraction.level =
-                quizInteraction.level > 0 ? quizInteraction.level - 1 : 0;
+            quizInteraction.level = quizInteraction.level > 0 ? quizInteraction.level - 1 : 0;
         }
 
-        const lastCorrect =
-            htmlDate(quizInteraction.lastCorrect) === "Not yet"
-                ? 0
-                : htmlDate(quizInteraction.lastCorrect);
-        const hiddenUntil =
-            htmlDate(quizInteraction.hiddenUntil) === "Not yet"
-                ? 0
-                : htmlDate(quizInteraction.hiddenUntil);
+        const lastCorrect = timestampFromDate(quizInteraction.lastCorrect);
+        const hiddenUntil = timestampFromDate(quizInteraction.hiddenUntil);
+        const hasLeveledUp = currentLevel < quizInteraction.level;
         const level = quizInteraction.level;
 
-        // Update the user's quiz interaction if it exists already
-        // Otherwise, create a one
         if (hasUserInteractedWithQuiz) {
             await db
-                .update("user_quizzes")
-                .set({
-                    lastCorrect,
+                .updateTable("user_quizzes")
+                .set((eb) => ({
                     level,
+                    triesAtLevel: hasLeveledUp ? 0 : eb("triesAtLevel", "+", 1),
+                    lastCorrect,
                     hiddenUntil,
-                })
+                }))
                 .where("quizId", "=", quiz.id)
                 .execute();
         } else {
@@ -197,12 +228,14 @@ export async function POST(req, { params }) {
                 .values({
                     userId: user.id,
                     quizId: quiz.id,
-                    lastCorrect,
                     level,
+                    lastCorrect,
                     hiddenUntil,
                 })
                 .execute();
         }
+
+        const sendHints = shouldSendHints(level, quizInteraction.triesAtLevel || 0);
 
         return NextResponse.json(
             {
@@ -210,17 +243,34 @@ export async function POST(req, { params }) {
                 content: {
                     isCorrect,
                     incorrectIndexes,
-                    quiz: {
-                        ...quiz,
-                        ...quizInteraction,
-                    },
+                    hints: sendHints ? hintsFromLevel(quiz.hints, level) : [],
                 },
             },
-            { status: 200 },
+            { status: 200 }
         );
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });
     }
+}
+
+function hintsFromLevel(hints, level) {
+    if (!hints) return [];
+    if (hints.length === 0) return [];
+
+    // We want at least one hint to be sent
+
+    const randomHint = hints[Math.floor(Math.random() * hints.length)];
+    const newHints = hints.slice(0, level + 1);
+
+    if (newHints.length === 0) return [randomHint];
+    return newHints;
+}
+
+function shouldSendHints(level, tries) {
+    // The more the level, the more tries needed to send hints
+    // Minimum tries to send hints is 3
+
+    return tries >= Math.max(3, level * 2);
 }
 
 // DELETE QUIZ
@@ -237,7 +287,7 @@ export async function DELETE(req, { params }) {
                 {
                     message: "You do not have permission to delete this quiz",
                 },
-                { status: 404 },
+                { status: 404 }
             );
         }
 
@@ -247,7 +297,7 @@ export async function DELETE(req, { params }) {
             {
                 message: "Successfully deleted quiz",
             },
-            { status: 200 },
+            { status: 200 }
         );
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });

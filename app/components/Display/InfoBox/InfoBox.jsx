@@ -14,12 +14,21 @@ const fills = {
     danger: "var(--danger)",
 };
 
-export function InfoBox({ type = "default", ...props }) {
+export function InfoBox({
+    asDiv = false,
+    className = "",
+    fullWidth = false,
+    type = "default",
+    ...props
+}) {
     const classnames = `${styles.box} ${classes[type]}`;
     const fill = fills[type];
 
     return (
-        <article className={classnames}>
+        <article
+            className={`${classnames} ${className}`}
+            style={{ width: fullWidth ? "100%" : "" }}
+        >
             <div>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +49,7 @@ export function InfoBox({ type = "default", ...props }) {
                 </svg>
             </div>
 
-            <p>{props.children}</p>
+            {asDiv ? <div>{props.children}</div> : <p>{props.children}</p>}
         </article>
     );
 }

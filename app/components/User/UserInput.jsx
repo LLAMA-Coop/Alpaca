@@ -1,12 +1,12 @@
 "use client";
 
-import { TooltipContent, TooltipTrigger, Tooltip, Spinner, Input, Form } from "@client";
+import { TooltipContent, TooltipTrigger, Tooltip, Spinner, Input, Form, InfoBox } from "@client";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Validator } from "@/lib/validation";
-import styles from "./UserInput.module.css";
-import { useRouter } from "next/navigation";
-import { useAlerts } from "@/store/store";
 import { useEffect, useState } from "react";
-import { InfoBox } from "../Display/InfoBox/InfoBox";
+import styles from "./UserInput.module.css";
+import { useAlerts } from "@/store/store";
+import Link from "next/link";
 
 export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
@@ -22,6 +22,7 @@ export function UserInput({ isRegistering, onSubmit }) {
     const [open, setOpen] = useState(false);
 
     const addAlert = useAlerts((state) => state.addAlert);
+    const searchParams = useSearchParams();
     const router = useRouter();
 
     useEffect(() => {
@@ -144,13 +145,10 @@ export function UserInput({ isRegistering, onSubmit }) {
             });
 
             if (!onSubmit) {
-                const redirectUrl = new URLSearchParams(window.location.search).get("redirect");
+                const redirectUrl = searchParams.get("next");
 
-                if (redirectUrl) {
-                    router.push(redirectUrl);
-                } else {
-                    router.push("/me/dashboard");
-                }
+                if (redirectUrl) router.push(redirectUrl);
+                else router.push("/me/dashboard");
             } else {
                 onSubmit();
             }
@@ -366,8 +364,8 @@ export function UserInput({ isRegistering, onSubmit }) {
                     </div>
                 </TooltipTrigger>
 
-                <TooltipContent noStyle>
-                    {isRegistering && (
+                {isRegistering && (
+                    <TooltipContent noStyle>
                         <div className={styles.expectations}>
                             <p>Your password must contain:</p>
 
@@ -398,9 +396,48 @@ export function UserInput({ isRegistering, onSubmit }) {
                                 })}
                             </ul>
                         </div>
-                    )}
-                </TooltipContent>
+                    </TooltipContent>
+                )}
             </Tooltip>
+
+            {isRegistering && (
+                <InfoBox
+                    asDiv
+                    fullWidth
+                    className={styles.hideBox}
+                >
+                    <div className={styles.expectationsBox}>
+                        <p>Your password must contain:</p>
+
+                        <ul>
+                            {expectations.map((exp) => {
+                                return (
+                                    <li
+                                        key={exp.name}
+                                        className={exp.regex.test(password) ? styles.valid : ""}
+                                    >
+                                        {exp.regex.test(password) && (
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 507.506 507.506"
+                                                fill="currentColor"
+                                                x="0px"
+                                                y="0px"
+                                            >
+                                                <g>
+                                                    <path d="M163.865,436.934c-14.406,0.006-28.222-5.72-38.4-15.915L9.369,304.966c-12.492-12.496-12.492-32.752,0-45.248l0,0   c12.496-12.492,32.752-12.492,45.248,0l109.248,109.248L452.889,79.942c12.496-12.492,32.752-12.492,45.248,0l0,0   c12.492,12.496,12.492,32.752,0,45.248L202.265,421.019C192.087,431.214,178.271,436.94,163.865,436.934z" />
+                                                </g>
+                                            </svg>
+                                        )}
+
+                                        <span>{exp.name}</span>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                </InfoBox>
+            )}
 
             {isRegistering && (
                 <Input
@@ -416,6 +453,13 @@ export function UserInput({ isRegistering, onSubmit }) {
                     }}
                 />
             )}
+
+            <Link
+                href="/forgot-password"
+                className={`link ${styles.forgotPassword}`}
+            >
+                Forgot password?
+            </Link>
 
             <button
                 type="submit"

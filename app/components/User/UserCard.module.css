@@ -48,6 +48,7 @@
 }
 
 .container > div > p {
+    font-size: 15px;
     color: var(--fg-3);
     overflow: hidden;
     display: -webkit-box;

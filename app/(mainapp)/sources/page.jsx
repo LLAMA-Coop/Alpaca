@@ -14,11 +14,7 @@ export default async function SourcesPage({ searchParams }) {
     const amount = Number(searchParams["amount"] ?? 10);
 
     if (page < 1 || amount < 1) {
-        return redirect(
-            `/sources?page=${page < 1 ? 1 : page}&amount=${
-                amount < 1 ? 10 : amount
-            }`,
-        );
+        return redirect(`/sources?page=${page < 1 ? 1 : page}&amount=${amount < 1 ? 10 : amount}`);
     }
 
     const { sources } = await getPermittedResources({
@@ -38,9 +34,8 @@ export default async function SourcesPage({ searchParams }) {
                 <h1>Sources</h1>
 
                 <p>
-                    A source is a record of a resource such as a book, website,
-                    or video tutorial, that you can cite for your notes or quiz
-                    questions.{` `}
+                    A source is a record of a resource such as a book, website, or video tutorial,
+                    that you can cite for your notes or quiz questions.{` `}
                     {user
                         ? `These are the sources that are publicly viewable, as well as the ones you made.`
                         : `You are only viewing the publicly available sources.
@@ -55,9 +50,10 @@ export default async function SourcesPage({ searchParams }) {
 
                         <MasoneryList>
                             {sources.map((source) => (
-                                <li key={source.id}>
-                                    <SourceDisplay source={source} />
-                                </li>
+                                <SourceDisplay
+                                    key={source.id}
+                                    source={source}
+                                />
                             ))}
                         </MasoneryList>
 
@@ -105,14 +101,15 @@ export default async function SourcesPage({ searchParams }) {
                         />
 
                         <p>
-                            Hey, we searched high and low, but we couldn't find
-                            any sources.
+                            Hey, we searched high and low, but we couldn't find any sources.
                             <br />
-                            Maybe you should try again later or create your own
-                            sources.
+                            Maybe you should try again later or create your own sources.
                         </p>
 
-                        <Link className="button primary" href="/create">
+                        <Link
+                            className="button primary"
+                            href="/create"
+                        >
                             Create a source
                         </Link>
                     </div>

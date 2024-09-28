@@ -1,16 +1,16 @@
 .container {
     padding: 4px;
-    border-radius: 4px;
     min-width: 170px;
-    border: 1px solid var(--border-color);
     background-color: var(--bg-2);
+    border-radius: var(--radius-medium);
+    border: 1px solid var(--border-color);
 }
 
 .container > hr {
     border: 0;
-    border-top: 1px solid var(--border-color);
-    border-radius: 1000px;
     margin: 4px 0;
+    border-radius: var(--radius-full);
+    border-top: 1px solid var(--border-color);
 }
 
 .container > li {

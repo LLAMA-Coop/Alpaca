@@ -64,6 +64,7 @@ export { Blankable } from "./Quiz/Blankable";
 export { BlankableInput } from "./Quiz/BlankableInput";
 export { UserStats } from "./Quiz/UserStats";
 export { QuizDisplay } from "./Quiz/QuizDisplay";
+export { MultipleChoiceCard } from "./Quiz/MultipleChoice";
 
 export { Menu } from "./Layers/Menu/Menu";
 export { Tooltip, TooltipContent, TooltipTrigger } from "./Layers/Tooltip/Tooltip";
@@ -80,3 +81,11 @@ export {
 
 export { UserCard } from "./User/UserCard";
 export { GroupDisplay } from "./Group/GroupDisplay";
+
+export {
+    PasswordResetTemplate,
+    EmailCodeTemplate,
+    EmailVerifyTemplate,
+    PasswordChangedTemplate,
+    EmailFooter,
+} from "./EmailTemplates";

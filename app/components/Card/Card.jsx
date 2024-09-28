@@ -1,17 +1,21 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../client";
 import styles from "./Card.module.css";
 import Link from "next/link";
 
-export function Card({
-    link,
-    fullWidth,
-    lighter = false,
-    darker = false,
-    hideAnimatedBorder,
-    ...props
-}) {
+export function Card({ link, darker, border, lighter, fullWidth, hideAnimatedBorder, ...props }) {
+    const [hasLoaded, setHasLoaded] = useState(false);
+
+    useEffect(() => {
+        setHasLoaded(true);
+    }, []);
+
+    if (!hasLoaded) {
+        return null;
+    }
+
     // Link is external if it starts with http
     const isExternalLink = link && link.startsWith("http");
     const bg = darker ? "var(--bg-1)" : lighter ? "var(--bg-3)" : "";
@@ -24,6 +28,7 @@ export function Card({
                 style={{
                     width: fullWidth ? "100%" : "",
                     backgroundColor: bg,
+                    borderColor: border || "",
                 }}
                 target={isExternalLink ? "_blank" : "_self"}
                 rel={isExternalLink ? "noopener noreferrer" : ""}
@@ -39,6 +44,7 @@ export function Card({
             style={{
                 width: fullWidth ? "100%" : "",
                 backgroundColor: bg,
+                borderColor: border || "",
             }}
             className={`${styles.container} ${lighter ? styles.lighter : ""} ${darker ? styles.darker : ""}`}
             {...props}
@@ -79,9 +85,7 @@ export function CardCreatedAt({ children }) {
                 <p className={styles.createdAt}>{children}</p>
             </TooltipTrigger>
 
-            <TooltipContent>
-                {new Date(children).toLocaleString()}
-            </TooltipContent>
+            <TooltipContent>{new Date(children).toLocaleString()}</TooltipContent>
         </Tooltip>
     );
 }

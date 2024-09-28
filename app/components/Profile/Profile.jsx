@@ -6,11 +6,7 @@ import { useAlerts, useStore } from "@/store/store";
 import { protectedPaths } from "@/app/data/paths";
 import styles from "./Profile.module.css";
 import { useState } from "react";
-import {
-    PopoverTrigger,
-    PopoverContent,
-    Popover,
-} from "../Layers/Popover/Popover";
+import { PopoverTrigger, PopoverContent, Popover } from "../Layers/Popover/Popover";
 import {
     DialogDescription,
     DialogButtons,
@@ -27,7 +23,7 @@ export function Profile({ user, size = 44 }) {
     const [reportTitle, setReportTitle] = useState("");
     const [reportDescription, setReportDescription] = useState("");
     const [reportUrl, setReportUrl] = useState(
-        typeof window !== "undefined" ? window.location.href : "",
+        typeof window !== "undefined" ? window.location.href : ""
     );
 
     const [loading, setLoading] = useState(false);
@@ -36,6 +32,7 @@ export function Profile({ user, size = 44 }) {
     const notifications = useStore((state) => state.notifications);
     const addAlert = useAlerts((state) => state.addAlert);
     const readAll = useStore((state) => state.readAll);
+    const setUser = useStore((state) => state.setUser);
 
     const router = useRouter();
     const path = usePathname();
@@ -63,8 +60,7 @@ export function Profile({ user, size = 44 }) {
         }
 
         if (!reportDescription || reportDescription.length > 4096) {
-            newErrors.description =
-                "Description must be less than 4096 characters";
+            newErrors.description = "Description must be less than 4096 characters";
         }
 
         if (!reportUrl) {
@@ -163,20 +159,19 @@ export function Profile({ user, size = 44 }) {
         },
     ];
 
-    const logout = async () => {
-        await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/logout`,
-            {
-                method: "POST",
-            },
-        );
+    async function logout() {
+        await fetch(`${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/logout`, {
+            method: "POST",
+        });
+
+        setUser(null);
 
         if (protectedPaths.includes(path)) {
             router.push("/login");
         }
 
         router.refresh();
-    };
+    }
 
     const menuItems = [
         {
@@ -259,19 +254,28 @@ export function Profile({ user, size = 44 }) {
                     </div>
                 </PopoverTrigger>
 
-                <PopoverContent isMenu items={menuItems} />
+                <PopoverContent
+                    isMenu
+                    items={menuItems}
+                />
             </Popover>
 
             <Popover>
                 {notifications.length > 0 && (
                     <PopoverTrigger>
-                        <sub tabIndex={0} className={styles.notification}>
+                        <sub
+                            tabIndex={0}
+                            className={styles.notification}
+                        >
                             {notifications.length}
                         </sub>
                     </PopoverTrigger>
                 )}
 
-                <PopoverContent isMenu items={notificationItems} />
+                <PopoverContent
+                    isMenu
+                    items={notificationItems}
+                />
             </Popover>
 
             <Dialog
@@ -282,12 +286,16 @@ export function Profile({ user, size = 44 }) {
                     <DialogHeading>Report a bug</DialogHeading>
 
                     <DialogDescription>
-                        Please describe the bug you encountered below. If you
-                        can, please include steps to reproduce the bug.
+                        Please describe the bug you encountered below. If you can, please include
+                        steps to reproduce the bug.
                     </DialogDescription>
 
-                    <Form onSubmit={handleReportSubmit} singleColumn>
+                    <Form
+                        onSubmit={handleReportSubmit}
+                        singleColumn
+                    >
                         <Input
+                            darker
                             label="Title"
                             maxLength={128}
                             value={reportTitle}
@@ -300,6 +308,7 @@ export function Profile({ user, size = 44 }) {
                         />
 
                         <Input
+                            darker
                             required
                             type="textarea"
                             maxLength={4096}
@@ -317,6 +326,7 @@ export function Profile({ user, size = 44 }) {
                         />
 
                         <Input
+                            darker
                             required
                             label="URL"
                             maxLength={256}

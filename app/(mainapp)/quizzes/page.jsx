@@ -14,11 +14,7 @@ export default async function QuizzesPage({ searchParams }) {
     const amount = Number(searchParams["amount"] ?? 10);
 
     if (page < 1 || amount < 1) {
-        return redirect(
-            `/quizzes?page=${page < 1 ? 1 : page}&amount=${
-                amount < 1 ? 10 : amount
-            }`,
-        );
+        return redirect(`/quizzes?page=${page < 1 ? 1 : page}&amount=${amount < 1 ? 10 : amount}`);
     }
 
     const { quizzes } = await getPermittedResources({
@@ -38,8 +34,8 @@ export default async function QuizzesPage({ searchParams }) {
                 <h1>Quiz Cards</h1>
 
                 <p>
-                    A quiz is a question that challenges your understanding and
-                    recall of information from a source or note.
+                    A quiz is a question that challenges your understanding and recall of
+                    information from a source or note.
                     <br />
                     {user
                         ? `These are the quizzes that are publicly viewable, as well as the ones you made.`
@@ -55,9 +51,10 @@ export default async function QuizzesPage({ searchParams }) {
 
                         <MasoneryList>
                             {quizzes.map((quiz) => (
-                                <li key={quiz.id}>
-                                    <QuizDisplay quiz={quiz} />
-                                </li>
+                                <QuizDisplay
+                                    key={quiz.id}
+                                    quiz={quiz}
+                                />
                             ))}
                         </MasoneryList>
 
@@ -65,9 +62,7 @@ export default async function QuizzesPage({ searchParams }) {
                             {page > 1 ? (
                                 <Link
                                     className="button submit primary"
-                                    href={`/quizzes?page=${
-                                        page - 1
-                                    }&amount=${amount}`}
+                                    href={`/quizzes?page=${page - 1}&amount=${amount}`}
                                 >
                                     Previous page
                                 </Link>
@@ -83,9 +78,7 @@ export default async function QuizzesPage({ searchParams }) {
                             {hasMore ? (
                                 <Link
                                     className="button submit primary"
-                                    href={`/quizzes?page=${
-                                        page + 1
-                                    }&amount=${amount}`}
+                                    href={`/quizzes?page=${page + 1}&amount=${amount}`}
                                 >
                                     Next page
                                 </Link>
@@ -109,14 +102,15 @@ export default async function QuizzesPage({ searchParams }) {
                         />
 
                         <p>
-                            Hey, we searched high and low, but we couldn't find
-                            any quizzes.
+                            Hey, we searched high and low, but we couldn't find any quizzes.
                             <br />
-                            Maybe you should try again later or create your own
-                            quizzes.
+                            Maybe you should try again later or create your own quizzes.
                         </p>
 
-                        <Link className="button primary" href="/create">
+                        <Link
+                            className="button primary"
+                            href="/create"
+                        >
                             Create a quiz
                         </Link>
                     </div>

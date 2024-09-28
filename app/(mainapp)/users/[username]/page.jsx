@@ -1,8 +1,8 @@
 import styles from "@/app/(mainapp)/page.module.css";
 import { redirect } from "next/navigation";
-import { serializeOne } from "@/lib/db";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { Avatar } from "@/app/components/client";
 
 export default async function UserPage({ params: { username } }) {
     const user = await useUser({
@@ -11,43 +11,63 @@ export default async function UserPage({ params: { username } }) {
     });
 
     if (!user) return redirect("/login");
+
     const usernameDecoded = decodeURIComponent(username);
     if (user.username === usernameDecoded) return redirect("/me/dashboard");
 
-    const profile = serializeOne(await useUser({ username: usernameDecoded }));
-    const canView =
-        (profile && profile.isPublic) ||
-        (profile && profile.associates.includes(user.id.toString()));
+    const profile = await useUser({
+        username: usernameDecoded,
+        select: [
+            "id",
+            "publicId",
+            "username",
+            "avatar",
+            "displayName",
+            "description",
+            "createdAt",
+            "isPrivate",
+        ],
+    });
+
+    // const canView =
+    //     (profile && profile.isPublic) ||
+    //     (profile && profile.associates.includes(user.id));
+
+    const canView = profile && !profile.isPrivate;
 
     return (
         <main className={styles.main}>
-            <div className={styles.titleBlock}>
-                <h2>Profile</h2>
-            </div>
+            <header>
+                {canView ? (
+                    <h1>
+                        {profile.avatar && (
+                            <Avatar
+                                size={300}
+                                src={profile.avatar}
+                                username={profile.username}
+                            />
+                        )}
+                        {profile.username}'s Profile
+                    </h1>
+                ) : (
+                    <h1>Profile not found</h1>
+                )}
+            </header>
 
             <section>
-                <div className="paragraph">
-                    {canView ? (
-                        <>
-                            <h3>{profile.username}'s profile</h3>
-
-                            <p>
-                                Username: {profile.username}
-                                <br />
-                                Joined:{" "}
-                                {new Intl.DateTimeFormat("en-US", {
-                                    dateStyle: "long",
-                                    timeStyle: "short",
-                                }).format(new Date(profile.createdAt))}
-                            </p>
-                        </>
-                    ) : (
-                        <>
-                            <h3>404</h3>
-                            <p>Profile not found</p>
-                        </>
-                    )}
-                </div>
+                {canView ? (
+                    <>
+                        <h2>{profile.username}</h2>
+                        <p>{profile.displaName}</p>
+                        <p>{profile.description}</p>
+                        <p>Created on: {new Date(profile.createdAt).toLocaleDateString()}</p>
+                    </>
+                ) : (
+                    <>
+                        <h3>404</h3>
+                        <p>Profile not found</p>
+                    </>
+                )}
             </section>
         </main>
     );

@@ -24,8 +24,15 @@ export function Input({
     itemLabel = "label",
     notObject,
     setter,
-    small = false,
+    small,
+    inline,
+    hideLabel,
     labelChip,
+    success,
+    width,
+    darker,
+    loading,
+    close,
     ...props
 }) {
     const [hasLoaded, setHasLoaded] = useState(false);
@@ -80,7 +87,9 @@ export function Input({
                 props={props}
                 label={label}
                 error={error}
+                darker={darker}
                 setter={setter}
+                success={success}
                 options={options}
                 multiple={multiple}
                 itemValue={itemValue}
@@ -116,20 +125,28 @@ export function Input({
                 id={id}
                 label={label}
                 value={value}
+                close={close}
                 props={props}
+                loading={loading}
             />
         );
     }
 
     return (
-        <div className={styles.container}>
+        <div
+            className={styles.container}
+            style={{ display: inline ? "inline-block" : "", opacity: success ? 0.8 : "" }}
+        >
             <label
                 htmlFor={id}
+                style={{
+                    display: hideLabel ? "none" : "",
+                }}
                 className={styles.label}
             >
                 {label}
 
-                {labelChip && <span className={styles.chip}>{labelChip}</span>}
+                {!!labelChip && labelChip}
 
                 {(props.required || error) && <span className={styles.required}>*</span>}
 
@@ -142,16 +159,18 @@ export function Input({
                         {error}
                     </span>
                 )}
+
+                {success && <span className={styles.success}>{success}</span>}
             </label>
 
             <div
                 className={`${styles.wrapper} ${multiple ? styles.multiple : ""} ${textarea ? styles.textarea : ""}`}
                 style={{
-                    borderColor: error ? "var(--danger-50)" : "",
-                    "--bs-1": error ? "var(--danger-20)" : "",
-                    "--bs-2": error ? "var(--danger-08)" : "",
-                    height: small ? "32px" : "",
-                    width: small ? "fit-content" : "",
+                    borderColor: error ? "var(--danger-50)" : success ? "var(--success-50)" : "",
+                    "--bs-1": error ? "var(--danger-20)" : success ? "var(--success-20)" : "",
+                    "--bs-2": error ? "var(--danger-08)" : success ? "var(--success-08)" : "",
+                    height: inline ? "20px" : small ? "32px" : "",
+                    width: inline || small ? "fit-content" : "",
                 }}
             >
                 {multiple &&
@@ -188,11 +207,12 @@ export function Input({
                         {...props}
                         value={value}
                         aria-label={label}
-                        className={`${styles.input} ${styles.textarea}`}
                         aria-invalid={error ? "true" : "false"}
                         aria-multiline={multiple ? "true" : "false"}
                         aria-describedby={error ? `${id}-error` : ""}
+                        className={`${styles.input} ${styles.textarea}`}
                         aria-required={props.required ? "true" : "false"}
+                        style={{ backgroundColor: darker ? "var(--bg-1)" : "" }}
                     />
                 ) : (
                     <input
@@ -202,7 +222,13 @@ export function Input({
                         aria-label={label}
                         className={styles.input}
                         style={{
-                            padding: small ? "0 6px" : "",
+                            backgroundColor: darker ? "var(--bg-1)" : "",
+                            padding: inline ? "0 4px" : small ? "0 6px" : "",
+                            fontSize: inline || small ? "14px" : "",
+                            width: width ? width : inline || small ? "fit-content" : "",
+                            fontFamily: inline ? "var(--font-mono)" : "",
+                            minWidth: inline ? "28px" : "",
+                            color: inline ? "var(--fg-1)" : "",
                         }}
                         aria-invalid={error ? "true" : "false"}
                         aria-multiline={multiple ? "true" : "false"}

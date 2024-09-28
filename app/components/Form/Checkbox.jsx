@@ -4,10 +4,15 @@ import styles from "./Input.module.css";
 import { Input } from "./Input";
 
 export function Checkbox({ ...props }) {
-    return <Input {...props} checkbox />;
+    return (
+        <Input
+            {...props}
+            checkbox
+        />
+    );
 }
 
-export function CheckboxElement({ id, label, value, props }) {
+export function CheckboxElement({ id, label, value, close, loading, props }) {
     return (
         <label
             tabIndex={0}
@@ -18,12 +23,19 @@ export function CheckboxElement({ id, label, value, props }) {
                     props.onChange(!value);
                 }
             }}
+            style={{
+                gap: close ? "24px" : "",
+                width: close ? "fit-content" : "",
+                justifyContent: close ? "flex-start" : "",
+            }}
         >
             <span>{label}</span>
 
             <div className={`${styles.checker} ${value ? styles.checked : ""}`}>
                 <div>
-                    {value ? (
+                    {loading ? (
+                        <div className={styles.spinner} />
+                    ) : value ? (
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 507.506 507.506"

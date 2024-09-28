@@ -18,14 +18,7 @@ import {
     offset,
     flip,
 } from "@floating-ui/react";
-import {
-    createContext,
-    useCallback,
-    useContext,
-    useState,
-    useMemo,
-    useRef,
-} from "react";
+import { createContext, useCallback, useContext, useState, useMemo, useRef } from "react";
 
 //
 
@@ -76,7 +69,12 @@ import {
  * />
  */
 export function Select({ ...props }) {
-    return <Input {...props} select />;
+    return (
+        <Input
+            {...props}
+            select
+        />
+    );
 }
 
 const SelectContext = createContext({});
@@ -96,16 +94,14 @@ export function SelectElement({
     notObject,
     setter,
     description,
+    success,
     disabled,
+    darker,
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [activeIndex, setActiveIndex] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(
-        multiple
-            ? []
-            : options.findIndex((o) =>
-                  notObject ? o === label : o.value === label,
-              ),
+        multiple ? [] : options.findIndex((o) => (notObject ? o === label : o.value === label))
     );
     const [selectedLabel, setSelectedLabel] = useState(multiple ? [] : value);
 
@@ -136,28 +132,25 @@ export function SelectElement({
                         data.find((t) =>
                             notObject
                                 ? t === options[index]
-                                : t[itemValue] === options[index][itemValue],
+                                : t[itemValue] === options[index][itemValue]
                         )
                     ) {
                         setter(
                             data.filter((t) =>
                                 notObject
                                     ? t !== options[index]
-                                    : t[itemValue] !==
-                                      options[index][itemValue],
-                            ),
+                                    : t[itemValue] !== options[index][itemValue]
+                            )
                         );
                     } else {
                         setter([...data, options[index]]);
                     }
                 } else {
-                    props.onChange(
-                        notObject ? options[index] : options[index][itemValue],
-                    );
+                    props.onChange(notObject ? options[index] : options[index][itemValue]);
                 }
             }
         },
-        [data, options, multiple, setter, props, itemValue, notObject],
+        [data, options, multiple, setter, props, itemValue, notObject]
     );
 
     function handleTypeaheadMatch(index) {
@@ -186,8 +179,13 @@ export function SelectElement({
     const dismiss = useDismiss(context);
     const role = useRole(context, { role: "listbox" });
 
-    const { getReferenceProps, getFloatingProps, getItemProps } =
-        useInteractions([listNav, typeahead, click, dismiss, role]);
+    const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
+        listNav,
+        typeahead,
+        click,
+        dismiss,
+        role,
+    ]);
 
     const selectContext = useMemo(
         () => ({
@@ -196,26 +194,33 @@ export function SelectElement({
             getItemProps,
             handleSelect,
         }),
-        [activeIndex, selectedIndex, getItemProps, handleSelect],
+        [activeIndex, selectedIndex, getItemProps, handleSelect]
     );
 
     return (
         <div
             className={`${styles.container} ${disabled ? styles.disabled : ""}`}
+            style={{ opacity: success ? 0.8 : "" }}
         >
-            <label htmlFor={id} className={styles.label}>
+            <label
+                htmlFor={id}
+                className={styles.label}
+            >
                 {label}
 
-                {(props.required || error) && (
-                    <span className={styles.required}>*</span>
-                )}
+                {(props.required || error) && <span className={styles.required}>*</span>}
 
                 {error && (
-                    <span id={`${id}-error`} className={styles.error}>
+                    <span
+                        id={`${id}-error`}
+                        className={styles.error}
+                    >
                         {" "}
                         {error}
                     </span>
                 )}
+
+                {success && <span className={styles.success}>{success}</span>}
             </label>
 
             <div
@@ -224,9 +229,10 @@ export function SelectElement({
                 {...getReferenceProps()}
                 className={`${styles.wrapper} ${multiple ? styles.multiple : ""} ${styles.select} ${isOpen ? styles.active : ""}`}
                 style={{
-                    borderColor: error ? "var(--danger-50)" : "",
-                    "--bs-1": error ? "var(--danger-20)" : "",
-                    "--bs-2": error ? "var(--danger-08)" : "",
+                    backgroundColor: darker ? "var(--bg-1)" : "",
+                    borderColor: success ? "var(--success-50)" : error ? "var(--danger-50)" : "",
+                    "--bs-1": success ? "var(--success)" : error ? "var(--danger-20)" : "",
+                    "--bs-2": success ? "var(--success)" : error ? "var(--danger-08)" : "",
                 }}
             >
                 {multiple &&
@@ -239,10 +245,8 @@ export function SelectElement({
                                 e.stopPropagation();
                                 setter(
                                     data.filter((t) =>
-                                        notObject
-                                            ? t !== item
-                                            : t[itemValue] !== item[itemValue],
-                                    ),
+                                        notObject ? t !== item : t[itemValue] !== item[itemValue]
+                                    )
                                 );
                             }}
                         >
@@ -266,16 +270,13 @@ export function SelectElement({
                         </span>
                     ))}
 
-                <div
-                    className={`${styles.selected} ${!multiple ? styles.isValue : ""}`}
-                >
+                <div className={`${styles.selected} ${!multiple ? styles.isValue : ""}`}>
                     {multiple
                         ? props.placeholder
                         : notObject
                           ? options.find((o) => o[itemValue] === value)
-                          : options.find((o) => o[itemValue] === value)?.[
-                                itemLabel
-                            ] || props.placeholder}
+                          : options.find((o) => o[itemValue] === value)?.[itemLabel] ||
+                            props.placeholder}
                 </div>
 
                 <div className={styles.selectButton}>
@@ -296,7 +297,10 @@ export function SelectElement({
             {!disabled && (
                 <SelectContext.Provider value={selectContext}>
                     {isOpen && (
-                        <FloatingFocusManager context={context} modal={false}>
+                        <FloatingFocusManager
+                            context={context}
+                            modal={false}
+                        >
                             <div
                                 ref={refs.setFloating}
                                 style={{
@@ -323,8 +327,7 @@ export function SelectElement({
 }
 
 export function Option({ label, active, multiple }) {
-    const { activeIndex, selectedIndex, getItemProps, handleSelect } =
-        useContext(SelectContext);
+    const { activeIndex, selectedIndex, getItemProps, handleSelect } = useContext(SelectContext);
 
     const { ref, index } = useListItem({ label });
 
@@ -349,8 +352,8 @@ export function Option({ label, active, multiple }) {
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 507.506 507.506"
                     fill="currentColor"
-                    height="12"
-                    width="12"
+                    height="14"
+                    width="14"
                     x="0px"
                     y="0px"
                 >

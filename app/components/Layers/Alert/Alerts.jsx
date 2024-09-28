@@ -7,6 +7,10 @@ import styles from "./Alerts.module.css";
 export function Alerts() {
     const alerts = useAlerts((state) => state.alerts);
 
+    if (!alerts.length) {
+        return null;
+    }
+
     return (
         <div className={styles.list}>
             {alerts.map((alert) => (

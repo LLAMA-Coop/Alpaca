@@ -41,11 +41,63 @@
 }
 
 .blankBank input:checked + label {
-    color: var(--accent-fg);
+    color: var(--fg-1);
     border: 1px solid var(--accent-50);
     background-color: var(--accent-20);
 }
 
 .blankBank input[type="checkbox"] {
     display: none;
+}
+
+.hints > li {
+    font-size: 14px;
+    color: var(--fg-3);
+    margin-left: 20px;
+}
+
+.hints > li::before {
+    width: 16px;
+    content: "•";
+    color: var(--fg-3);
+    margin-left: -16px;
+    display: inline-block;
+}
+
+.blanks > .span {
+    margin-top: 4px;
+    vertical-align: middle;
+}
+
+.blanks > .span > div {
+    margin: 0 2px;
+}
+
+.blanks > .span > div input {
+    max-width: 300px;
+}
+
+.dragContainer {
+    display: flex;
+    align-items: center;
+}
+
+.dragHandle {
+    cursor: move;
+    margin-top: 22px;
+    font-size: 1.2rem;
+    margin-right: 4px;
+    user-select: none;
+    display: inline-block;
+}
+
+.dragContainer > :last-child {
+    flex-grow: 1;
+}
+
+.verbatim {
+    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
 }

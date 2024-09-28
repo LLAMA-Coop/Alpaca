@@ -1,9 +1,11 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
+import { areFieldsEqual } from "@/lib/objects";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 import {
+    getResourcePermissions,
     canDeleteResource,
     canEditResource,
     catchRouteError,
@@ -14,28 +16,54 @@ import {
 
 export async function PATCH(req, { params }) {
     const { id } = params;
-    const {
-        title,
-        medium,
-        url,
-        publishedAt,
-        lastAccessed,
-        tags,
-        authors,
-        courses,
-        permissions,
-    } = await req.json();
+
+    const data = await req.json();
+    const { title, medium, url, publishedAt, lastAccessed, tags, authors, courses, permissions } =
+        data;
+
+    if (!Object.keys(data).length) {
+        return NextResponse.json(
+            {
+                message: "No data provided to update",
+            },
+            { status: 400 }
+        );
+    }
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        if (!(await canEditResource(user.id, id, "source"))) {
+        if (!(await canEditResource(user.id, id, "sources", "source"))) {
             return NextResponse.json(
                 {
                     message: "You do not have permission to edit this source",
                 },
-                { status: 404 },
+                { status: 400 }
+            );
+        }
+
+        const source = await db
+            .selectFrom("sources")
+            .select(({ eb }) => ["id", "createdBy", getResourcePermissions("source", id, eb)])
+            .where("id", "=", id)
+            .executeTakeFirst();
+
+        if (!source) {
+            return NextResponse.json(
+                {
+                    message: "Source not found",
+                },
+                { status: 404 }
+            );
+        }
+
+        if (!areFieldsEqual(permissions, source.permissions) && source.createdBy !== user.id) {
+            return NextResponse.json(
+                {
+                    message: "You do not have permission to edit permissions for this source",
+                },
+                { status: 403 }
             );
         }
 
@@ -59,13 +87,12 @@ export async function PATCH(req, { params }) {
                     message: "Invalid source data",
                     errors: content.errors,
                 },
-                { status: 400 },
+                { status: 400 }
             );
         }
 
         return NextResponse.json({
             message: "Successfully updated source",
-            content,
         });
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });
@@ -86,7 +113,7 @@ export async function DELETE(req, { params }) {
                 {
                     message: "You do not have permission to delete this source",
                 },
-                { status: 403 },
+                { status: 403 }
             );
         }
 
@@ -96,7 +123,7 @@ export async function DELETE(req, { params }) {
             {
                 message: "Successfully deleted source",
             },
-            { status: 200 },
+            { status: 200 }
         );
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });

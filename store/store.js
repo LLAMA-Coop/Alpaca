@@ -15,6 +15,24 @@ export const useStore = create((set) => ({
 
     setUser: (user) => set(() => ({ user })),
 
+    setSettings: (settings) => {
+        return set((state) => {
+            if (!state.user) {
+                return state;
+            }
+
+            return {
+                user: {
+                    ...state.user,
+                    settings: {
+                        ...state.user.settings,
+                        ...settings,
+                    },
+                },
+            };
+        });
+    },
+
     fillInitialData: (data) => {
         return set(() => ({
             user: data.user,
@@ -31,27 +49,14 @@ export const useStore = create((set) => ({
     addItem: (type, item) => {
         return set((state) => {
             return {
-                sources:
-                    type === "source"
-                        ? [...state.sources, item]
-                        : state.sources,
+                sources: type === "source" ? [...state.sources, item] : state.sources,
                 notes: type === "note" ? [...state.notes, item] : state.notes,
-                quizzes:
-                    type === "quiz" ? [...state.quizzes, item] : state.quizzes,
-                courses:
-                    type === "course"
-                        ? [...state.courses, item]
-                        : state.courses,
-                groups:
-                    type === "group" ? [...state.groups, item] : state.groups,
-                associates:
-                    type === "associate"
-                        ? [...state.associates, item]
-                        : state.associates,
+                quizzes: type === "quiz" ? [...state.quizzes, item] : state.quizzes,
+                courses: type === "course" ? [...state.courses, item] : state.courses,
+                groups: type === "group" ? [...state.groups, item] : state.groups,
+                associates: type === "associate" ? [...state.associates, item] : state.associates,
                 notifications:
-                    type === "notification"
-                        ? [...state.notifications, item]
-                        : state.notifications,
+                    type === "notification" ? [...state.notifications, item] : state.notifications,
             };
         });
     },
@@ -63,10 +68,7 @@ export const useStore = create((set) => ({
                     type === "source"
                         ? state.sources.filter((source) => source.id !== id)
                         : state.sources,
-                notes:
-                    type === "note"
-                        ? state.notes.filter((note) => note.id !== id)
-                        : state.notes,
+                notes: type === "note" ? state.notes.filter((note) => note.id !== id) : state.notes,
                 quizzes:
                     type === "quiz"
                         ? state.quizzes.filter((quiz) => quiz.id !== id)
@@ -81,15 +83,11 @@ export const useStore = create((set) => ({
                         : state.groups,
                 associates:
                     type === "associate"
-                        ? state.associates.filter(
-                              (associate) => associate.id !== id,
-                          )
+                        ? state.associates.filter((associate) => associate.id !== id)
                         : state.associates,
                 notifications:
                     type === "notification"
-                        ? state.notifications.filter(
-                              (notification) => notification.id !== id,
-                          )
+                        ? state.notifications.filter((notification) => notification.id !== id)
                         : state.notifications,
             };
         });

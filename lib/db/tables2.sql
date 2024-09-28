@@ -147,6 +147,7 @@ CREATE TABLE IF NOT EXISTS `user_quizzes` (
     `quiz_id` BIGINT NOT NULL,
 
     `level` INT DEFAULT 0,
+    `tries_at_level` INT DEFAULT 0,
     `last_correct` TIMESTAMP DEFAULT NOW(),
     `hidden_until` TIMESTAMP DEFAULT NOW(),
 

@@ -84,7 +84,7 @@ export function useTooltip({
             ...interactions,
             ...data,
         }),
-        [open, setOpen, arrowRef, interactions, data],
+        [open, setOpen, arrowRef, interactions, data]
     );
 }
 
@@ -104,16 +104,12 @@ export function Tooltip({ children, ...options }) {
     // This can accept any props as options, e.g. `placement`,
     // or other positioning options.
     const tooltip = useTooltip(options);
-    return (
-        <TooltipContext.Provider value={tooltip}>
-            {children}
-        </TooltipContext.Provider>
-    );
+    return <TooltipContext.Provider value={tooltip}>{children}</TooltipContext.Provider>;
 }
 
 export const TooltipTrigger = forwardRef(function TooltipTrigger(
     { children, asChild = true, ...props },
-    propRef,
+    propRef
 ) {
     const context = useTooltipContext();
     const childrenRef = children.ref;
@@ -128,7 +124,7 @@ export const TooltipTrigger = forwardRef(function TooltipTrigger(
                 ...props,
                 ...children.props,
                 "data-state": context.open ? "open" : "closed",
-            }),
+            })
         );
     }
 
@@ -145,8 +141,8 @@ export const TooltipTrigger = forwardRef(function TooltipTrigger(
 });
 
 export const TooltipContent = forwardRef(function TooltipContent(
-    { style, ...props },
-    propRef,
+    { noStyle, style, ...props },
+    propRef
 ) {
     const context = useTooltipContext();
     const ref = useMergeRefs([context.refs.setFloating, propRef]);
@@ -177,7 +173,7 @@ export const TooltipContent = forwardRef(function TooltipContent(
                 {...context.getFloatingProps(props)}
             >
                 <div style={{ ...tStyles }}>
-                    {!props.noStyle && (
+                    {!noStyle && (
                         <FloatingArrow
                             width={10}
                             height={5}
@@ -187,9 +183,7 @@ export const TooltipContent = forwardRef(function TooltipContent(
                         />
                     )}
 
-                    <div className={`${!props.noStyle && styles.container}`}>
-                        {props.children}
-                    </div>
+                    <div className={`${!noStyle && styles.container}`}>{props.children}</div>
                 </div>
             </div>
         </FloatingPortal>

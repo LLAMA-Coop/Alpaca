@@ -11,11 +11,12 @@ import {
     Checkbox,
     TextArea,
     Spinner,
+    Column,
     Select,
     Input,
     Form,
-    Column,
 } from "@client";
+import { getChangedFields } from "@/lib/objects";
 
 const defaultState = {
     name: "",
@@ -75,7 +76,7 @@ function stateReducer(state, action) {
                 ...state,
                 ...action.value,
                 parents:
-                    action.value.parents.map((id) => {
+                    action.value.parents?.map((id) => {
                         const parent = action.parents.find((x) => x.id === id);
 
                         return (
@@ -86,10 +87,8 @@ function stateReducer(state, action) {
                         );
                     }) ?? [],
                 prerequisites:
-                    action.value.prerequisites.map((p) => {
-                        const course = action.parents.find(
-                            (x) => x.id === p.id,
-                        );
+                    action.value.prerequisites?.map((p) => {
+                        const course = action.parents.find((x) => x.id === p.id);
 
                         return {
                             ...p,
@@ -97,7 +96,7 @@ function stateReducer(state, action) {
                         };
                     }) ?? [],
                 sources:
-                    action.value.sources.map((id) => {
+                    action.value.sources?.map((id) => {
                         const source = action.sources.find((x) => x.id === id);
 
                         return (
@@ -108,7 +107,7 @@ function stateReducer(state, action) {
                         );
                     }) ?? [],
                 notes:
-                    action.value.notes.map((id) => {
+                    action.value.notes?.map((id) => {
                         const note = action.notes.find((x) => x.id === id);
 
                         return (
@@ -119,7 +118,7 @@ function stateReducer(state, action) {
                         );
                     }) ?? [],
                 quizzes:
-                    action.value.quizzes.map((id) => {
+                    action.value.quizzes?.map((id) => {
                         const quiz = action.quizzes.find((x) => x.id === id);
 
                         return (
@@ -135,7 +134,7 @@ function stateReducer(state, action) {
     }
 }
 
-export function CourseInput({ course }) {
+export function CourseInput({ course, close }) {
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 
     const addAlert = useAlerts((state) => state.addAlert);
@@ -150,8 +149,30 @@ export function CourseInput({ course }) {
 
     useEffect(() => {
         if (!course) return;
-        dispatch({ type: "editing", course });
-    }, []);
+        dispatch({ type: "editing", value: course, parents: courses, sources, notes, quizzes });
+    }, [course, courses, sources, notes, quizzes]);
+
+    const courseData = {
+        name: state.name,
+        description: state.description,
+        enrollment: state.enrollment,
+        parents: state.parents,
+        prerequisites: state.prerequisites,
+        sources: state.sources,
+        notes: state.notes,
+        quizzes: state.quizzes,
+        addAllFromSources: state.addAllFromSources,
+        addAllFromNotes: state.addAllFromNotes,
+        permissions: state.permissions,
+    };
+
+    const canSubmitChange = () => {
+        if (!course) return true;
+
+        const changedFields = getChangedFields(course, courseData);
+
+        return Object.keys(changedFields).length > 0;
+    };
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -170,7 +191,7 @@ export function CourseInput({ course }) {
                 ["notes", state.notes],
                 ["quizzes", state.quizzes],
             ].map(([field, value]) => ({ field, value })),
-            "course",
+            "course"
         );
 
         const permissions = validator.validatePermissions(state.permissions);
@@ -182,31 +203,32 @@ export function CourseInput({ course }) {
         dispatch({ type: "loading", value: true });
 
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/course`,
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/course${course ? `/${course.id}` : ""}`,
             {
                 method: course ? "PATCH" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    id: course?.id,
-                    name: state.name.trim(),
-                    description: state.description.trim(),
-                    enrollment: state.enrollment,
-                    parents: state.parents.map((c) => ({ id: c.id })),
-                    prerequisites: state.prerequisites.map((c) => ({
-                        averageLevelRequired: 1,
-                        minimumLevelRequired: 1,
-                        id: c.id,
-                    })),
-                    sources: state.sources.map((s) => s.id),
-                    notes: state.notes.map((n) => n.id),
-                    quizzes: state.quizzes.map((q) => q.id),
-                    addAllFromSources: state.addAllFromSources,
-                    addAllFromNotes: state.addAllFromNotes,
-                    permissions,
-                }),
-            },
+                body: course
+                    ? JSON.stringify(getChangedFields(course, courseData, true))
+                    : JSON.stringify({
+                          name: state.name.trim(),
+                          description: state.description.trim(),
+                          enrollment: state.enrollment,
+                          parents: state.parents.map((c) => ({ id: c.id })),
+                          prerequisites: state.prerequisites.map((c) => ({
+                              averageLevelRequired: 1,
+                              minimumLevelRequired: 1,
+                              id: c.id,
+                          })),
+                          sources: state.sources.map((s) => s.id),
+                          notes: state.notes.map((n) => n.id),
+                          quizzes: state.quizzes.map((q) => q.id),
+                          addAllFromSources: state.addAllFromSources,
+                          addAllFromNotes: state.addAllFromNotes,
+                          permissions,
+                      }),
+            }
         );
 
         dispatch({ type: "loading", value: false });
@@ -230,6 +252,8 @@ export function CourseInput({ course }) {
                 success: true,
                 message: data.message || "Successfully updated course.",
             });
+
+            if (close) close();
         } else {
             addAlert({
                 success: false,
@@ -239,8 +263,11 @@ export function CourseInput({ course }) {
     }
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <Column>
+        <Form
+            singleColumn={course}
+            onSubmit={handleSubmit}
+        >
+            <Column gap={course ? 40 : null}>
                 <Input
                     required
                     label="Name"
@@ -372,8 +399,8 @@ export function CourseInput({ course }) {
                 multiple
                 itemValue="id"
                 label="Quizzes"
-                itemLabel="name"
                 options={quizzes}
+                itemLabel="prompt"
                 data={state.quizzes}
                 placeholder="Select quizzes"
                 error={state.errors.quizzes}
@@ -399,13 +426,13 @@ export function CourseInput({ course }) {
                 />
             )}
 
-            <button className="button submit primary">
+            <button
+                type="submit"
+                className="button submit primary"
+                disabled={state.loading || !canSubmitChange()}
+            >
                 Submit Course {state.loading && <Spinner />}
             </button>
-
-            {isOwner && (
-                <DeletePopup resourceType="course" resourceId={course.id} />
-            )}
         </Form>
     );
 }

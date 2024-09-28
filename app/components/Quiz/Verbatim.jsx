@@ -1,177 +1,198 @@
 "use client";
 
+import { Input, Form, InfoBox, FormButtons, Spinner } from "@client";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
-import { useStore, useModals, useAlerts } from "@/store/store";
 import { correctConfetti } from "@/lib/correctConfetti";
-import { Input, Card, UserInput } from "../client";
+import { useStore, useAlerts } from "@/store/store";
+import styles from "./QuizInput.module.css";
 import { useState, useEffect } from "react";
+import { nanoid } from "nanoid";
 
-export function Verbatim({
-    canClientCheck,
-    quiz,
-    handleWhenCorrect,
-    isFlashcard,
-}) {
-    const [userResponse, setUserResponse] = useState(
-        [...Array(quiz.correctResponses.length)].map(() => ""),
-    );
-    const [responseStatus, setResponseStatus] = useState("empty");
-    const [responseCorrect, setResponseCorrect] = useState(false);
-    const [failures, setFailures] = useState(0);
+export function Verbatim({ quiz, lighter, setCorrect, canClientCheck }) {
+    const [answers, setAnswers] = useState(new Array(quiz.numOfAnswers).fill(""));
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
+    const [hasAnswered, setHasAnswered] = useState(false);
+    const [isCorrect, setIsCorrect] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [failures, setFailures] = useState(0);
+    const [hints, setHints] = useState([]);
 
-    const [showAnswer, setShowAnswer] = useState(false);
-
-    const user = useStore((state) => state.user);
-    const userQuizzes = user ? user.quizzes : undefined;
-    let level = 0;
-
-    const addModal = useModals((state) => state.addModal);
-    const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
+    const user = useStore((state) => state.user);
+    const showConfetti = user.settings?.showConfetti ?? true;
 
     useEffect(() => {
-        if (!quiz || !quiz.id || !userQuizzes) return;
-        const userQuiz = userQuizzes.find(
-            (q) => q.id.toString() === quiz.id.toString(),
-        );
-        if (userQuiz) level = userQuiz.level;
-    }, []);
+        setCorrect(isCorrect);
+    }, [isCorrect]);
 
-    useEffect(() => {
-        if (responseStatus === "empty") return;
-        if (incorrectIndexes.length === 0) {
-            setResponseCorrect(true);
-            setFailures(0);
-            correctConfetti();
-            handleWhenCorrect();
-        } else {
-            setFailures(failures + 1);
-        }
-    }, [incorrectIndexes]);
+    async function handleSubmitAnswer(e) {
+        e.preventDefault();
+        if (hasAnswered || !answers.every((answer) => answer.length > 0)) return;
 
-    function handleChange(index, value) {
-        setResponseStatus("incomplete");
-        let array = [...userResponse];
-        array[index] = value;
-        setUserResponse(array);
-    }
+        setLoading(true);
 
-    async function handleCheckAnswer() {
-        setResponseStatus("complete");
         if (canClientCheck) {
-            setIncorrectIndexes(
-                whichIndexesIncorrect(userResponse, quiz.correctResponses),
-            );
-        } else {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${quiz.id}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ userResponse }),
-                },
-            );
+            const incorrect = whichIndexesIncorrect(answers, quiz.answers, true);
+            const isCorrect = incorrect.length === 0;
 
-            if (response.status === 401) {
-                addAlert({
-                    success: false,
-                    message: "You have been signed out. Please sign in again.",
-                });
-                addModal({
-                    title: "Sign back in",
-                    content: <UserInput onSubmit={removeModal} />,
-                });
+            if (!isCorrect) {
+                setIncorrectIndexes(incorrect);
+                setFailures((prev) => prev + 1);
+                setIsCorrect(false);
+                setHasAnswered(true);
+
+                const showHints = failures >= 2;
+
+                if (showHints) {
+                    setHints(quiz.hints);
+                }
+
+                return setLoading(false);
             }
 
-            const resJson = await response.json();
-            console.log(resJson);
-            const message = resJson.message;
-            setIncorrectIndexes(message.incorrectIndexes);
-            setResponseStatus("complete");
+            setHints([]);
+            setIsCorrect(true);
+            setHasAnswered(true);
+
+            if (showConfetti) {
+                correctConfetti();
+            }
+        } else {
+            try {
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${quiz.id}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ answers }),
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to check answers");
+                } else {
+                    const data = await response.json();
+                    if (!data?.content) throw new Error("No data returned");
+
+                    const { isCorrect, incorrectIndexes, hints } = data.content;
+
+                    setIncorrectIndexes(incorrectIndexes ?? []);
+                    setIsCorrect(isCorrect);
+                    setHasAnswered(true);
+                    setHints(hints);
+
+                    if (!isCorrect) {
+                        setFailures((prev) => prev + 1);
+                    } else {
+                        setHints([]);
+
+                        if (showConfetti) {
+                            correctConfetti();
+                        }
+                    }
+                }
+            } catch (error) {
+                setHasAnswered(false);
+                addAlert({
+                    success: false,
+                    message: error.message,
+                });
+            } finally {
+                setLoading(false);
+            }
         }
     }
 
-    function handleShowAnswer() {
-        if (!isFlashcard) return;
-        setShowAnswer((prev) => !prev);
-    }
-
-    let label, color, icon;
-    if (isFlashcard) {
-        label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
-        color = showAnswer ? "var(--accent)" : undefined;
-    } else if (responseStatus === "complete") {
-        label = incorrectIndexes.length ? "Incorrect" : "Correct";
-        color = incorrectIndexes.length ? "var(--accent-2)" : "var(--accent)";
-        icon = incorrectIndexes.length ? <></> : <></>;
-    } else {
-        label = "Check Answer";
-    }
+    const error = hasAnswered && !isCorrect;
 
     return (
-        <Card
-            title={"Verbatim"}
-            description={quiz.prompt}
-            buttons={[
-                {
-                    label,
-                    icon,
-                    color,
-                    onClick: isFlashcard ? handleShowAnswer : handleCheckAnswer,
-                },
-            ]}
+        <Form
+            singleColumn
+            onSubmit={handleSubmitAnswer}
         >
-            <div>
-                {userResponse.map((word, index) => {
-                    let isCorrect;
-                    if (incorrectIndexes.includes(index)) {
-                        isCorrect = false;
-                    } else if (responseStatus === "complete") {
-                        isCorrect = true;
-                    }
-
+            <div className={styles.verbatim}>
+                {answers.map((a, index) => {
                     return (
                         <Input
-                            key={`verbatim-${index}`}
-                            id={`verbatim-${index}`}
                             inline
-                            isCorrect={isCorrect}
-                            value={
-                                isFlashcard && showAnswer
-                                    ? quiz.correctResponses[index]
-                                    : word
-                            }
+                            hideLabel
+                            value={a}
+                            darker={lighter}
+                            label={`Answer ${index + 1}`}
+                            disabled={hasAnswered && isCorrect}
+                            width={`calc(${a.length + 1}ch)`}
+                            error={error && incorrectIndexes.includes(index)}
+                            success={hasAnswered && !incorrectIndexes.includes(index)}
                             onChange={(e) => {
-                                handleChange(index, e.target.value);
+                                const newAnswers = [...answers];
+                                newAnswers[index] = e.target.value;
+                                setAnswers(newAnswers);
+
+                                setHasAnswered(false);
+
+                                // Remove error for current index
+                                if (error && incorrectIndexes.includes(index)) {
+                                    setIncorrectIndexes(
+                                        incorrectIndexes.filter((i) => i !== index)
+                                    );
+                                }
                             }}
-                            outlineColor={
-                                responseStatus === "complete" &&
-                                (incorrectIndexes.includes(index)
-                                    ? "var(--accent-2)"
-                                    : "var(--accent)")
-                            }
                         />
                     );
                 })}
             </div>
 
-            {!responseCorrect &&
-                responseStatus === "complete" &&
-                quiz.hints &&
-                quiz.hints.length > 0 &&
-                failures > 2 && (
-                    <div data-type="hints">
-                        <p>You're having some trouble. Here are some hints:</p>
-                        <ul>
-                            {quiz.hints.map((hint, index) => {
-                                return <li key={`hint_${index}`}>{hint}</li>;
-                            })}
-                        </ul>
-                    </div>
+            {!!hints.length && (
+                <InfoBox
+                    fullWidth
+                    asDiv
+                >
+                    <h4>Here are some hints to help you out</h4>
+                    <ul className={styles.hints}>
+                        {hints.map((hint) => (
+                            <li key={nanoid()}>{hint}</li>
+                        ))}
+                    </ul>
+                </InfoBox>
+            )}
+
+            <FormButtons>
+                <button
+                    type="submit"
+                    disabled={
+                        (hasAnswered && !isCorrect) ||
+                        !answers.every((answer) => answer.length > 0) ||
+                        loading
+                    }
+                    className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
+                >
+                    {isCorrect ? "Correct!" : hasAnswered ? "Incorrect" : "Check Answer "}{" "}
+                    {loading && (
+                        <Spinner
+                            primary
+                            size={14}
+                            margin={2}
+                        />
+                    )}
+                </button>
+
+                {hasAnswered && isCorrect && (
+                    <button
+                        type="button"
+                        className="button small border"
+                        onClick={() => {
+                            setIncorrectIndexes([]);
+                            setAnswers(new Array(quiz.numOfAnswers).fill(""));
+                            setIsCorrect(false);
+                            setHasAnswered(false);
+                        }}
+                    >
+                        Try Again
+                    </button>
                 )}
-        </Card>
+            </FormButtons>
+        </Form>
     );
 }

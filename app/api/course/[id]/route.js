@@ -1,9 +1,11 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
+import { areFieldsEqual } from "@/lib/objects";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 import {
+    getResourcePermissions,
     canDeleteResource,
     canEditResource,
     catchRouteError,
@@ -12,8 +14,10 @@ import {
 
 // UPDATE COURSE
 
-export async function PATCH(req) {
-    const { id } = req.params;
+export async function PATCH(req, { params }) {
+    const { id } = params;
+
+    const data = await req.json();
     const {
         name,
         description,
@@ -26,18 +30,51 @@ export async function PATCH(req) {
         addAllFromSources,
         addAllFromNotes,
         permissions,
-    } = await req.json();
+    } = data;
+
+    if (!Object.keys(data).length) {
+        return NextResponse.json(
+            {
+                message: "No data provided to update",
+            },
+            { status: 400 }
+        );
+    }
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        if (!(await canEditResource(user.id, id, "course"))) {
+        if (!(await canEditResource(user.id, id, "courses", "course"))) {
             return NextResponse.json(
                 {
                     message: "You do not have permission to edit this course",
                 },
-                { status: 404 },
+                { status: 400 }
+            );
+        }
+
+        const course = await db
+            .selectFrom("courses")
+            .select(({ eb }) => ["id", "createdBy", getResourcePermissions("course", id, eb)])
+            .where("id", "=", id)
+            .executeTakeFirst();
+
+        if (!course) {
+            return NextResponse.json(
+                {
+                    message: "Course not found",
+                },
+                { status: 404 }
+            );
+        }
+
+        if (!areFieldsEqual(permissions, course.permissions) && course.createdBy !== user.id) {
+            return NextResponse.json(
+                {
+                    message: "You do not have permission to edit permissions for this note",
+                },
+                { status: 403 }
             );
         }
 
@@ -63,7 +100,7 @@ export async function PATCH(req) {
                     message: "Invalid course data",
                     errors: content.errors,
                 },
-                { status: 400 },
+                { status: 400 }
             );
         }
 
@@ -90,7 +127,7 @@ export async function DELETE(req, { params }) {
                 {
                     message: "You do not have permission to delete this course",
                 },
-                { status: 404 },
+                { status: 404 }
             );
         }
 
@@ -100,7 +137,7 @@ export async function DELETE(req, { params }) {
             {
                 message: "Successfully deleted course",
             },
-            { status: 200 },
+            { status: 200 }
         );
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });

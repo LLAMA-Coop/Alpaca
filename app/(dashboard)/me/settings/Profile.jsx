@@ -1,28 +1,25 @@
 "use client";
 
-import { Form, Input, Spinner } from "@/app/components/client";
+import { FormButtons, Spinner, Input, Form } from "@/app/components/client";
 import { useUploadThing } from "@/lib/uploadthing";
+import { Validator } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import styles from "./Settings.module.css";
 import { useAlerts } from "@/store/store";
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { FormButtons } from "@/app/components/Form/Form";
 
 const cdn = process.env.NEXT_PUBLIC_CDN_URL;
 
 export function Profile({ user }) {
-    const [avatar, setAvatar] = useState(user.avatar);
+    const [imageLoading, setImageLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState({});
+
     const [username, setUsername] = useState(user.username);
     const [displayName, setDisplayName] = useState(user.displayName);
     const [description, setDescription] = useState(user.description);
-    const [email, setEmail] = useState(user.email);
-    const [password, setPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [emailCode, setEmailCode] = useState("");
-    const [errors, setErrors] = useState({});
-    const [imageLoading, setImageLoading] = useState(false);
+    const [avatar, setAvatar] = useState(user.avatar);
 
     const addAlert = useAlerts((state) => state.addAlert);
     const router = useRouter();
@@ -36,7 +33,7 @@ export function Profile({ user }) {
             }
 
             setImageLoading(false);
-            handleSubmit(undefined, fileId);
+            handleSubmit({ fileId });
         },
         onUploadError: () => {
             setImageLoading(false);
@@ -51,13 +48,10 @@ export function Profile({ user }) {
     });
 
     function resetState() {
-        setAvatar(user.avatar);
         setUsername(user.username);
         setDisplayName(user.displayName);
         setDescription(user.description);
-        setEmail(user.email);
-        setPassword("");
-        setNewPassword("");
+        setAvatar(user.avatar);
         setErrors({});
     }
 
@@ -66,45 +60,25 @@ export function Profile({ user }) {
         avatar !== user.avatar ||
         username !== user.username ||
         displayName !== user.displayName ||
-        description !== user.description ||
-        email !== user.email ||
-        newPassword;
+        description !== user.description;
 
-    async function handleSubmit(e, fileId) {
+    async function handleSubmit({ e, fileId, emailCode, twoFactorCode }) {
         if (e) e.preventDefault();
         if (isLoading || (imageLoading && !fileId)) return;
 
-        const newErrors = {};
+        const validator = new Validator();
 
-        if (username !== user.username && (username.length < 2 || username.length > 32)) {
-            newErrors.username = "Must be between 2 and 32 characters.";
-        }
+        validator.validateAll(
+            [
+                ["username", username],
+                ["displayName", displayName],
+                ["description", description],
+            ].map(([field, value]) => ({ field, value })),
+            "user"
+        );
 
-        if ((newPassword && newPassword.length < 8) || newPassword.length > 72) {
-            newErrors.newPassword = "Must be between 8 and 72 characters.";
-        }
-
-        if (newPassword && !password) {
-            newErrors.password = "You must enter your current password.";
-        }
-
-        if (
-            displayName !== user.displayName &&
-            (displayName.length < 2 || displayName.length > 32)
-        ) {
-            newErrors.displayName = "Must be between 2 and 32 characters.";
-        }
-
-        if (email !== user.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            newErrors.email = "Invalid email address.";
-        }
-
-        if (description !== user.description && description.length > 256) {
-            newErrors.description = "Description must be less than 256 characters.";
-        }
-
-        if (Object.keys(newErrors).length) {
-            return setErrors(newErrors);
+        if (!validator.isValid) {
+            return setErrors(validator.errors);
         }
 
         try {
@@ -120,60 +94,40 @@ export function Profile({ user }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    avatar: avatar !== user.avatar ? fileId || null : undefined,
                     username: user.username !== username ? username : undefined,
-                    newPassword: newPassword || undefined,
-                    password: newPassword ? password : undefined,
                     displayName: user.displayName !== displayName ? displayName : undefined,
                     description: user.description !== description ? description : undefined,
-                    email: user.email !== email ? email : undefined,
+                    avatar: avatar !== user.avatar ? fileId || null : undefined,
                 }),
             });
 
-            let data = null;
-            try {
-                data = await response.json();
-            } catch (err) {}
-
             if (!response.ok) {
-                if (data.errors) {
-                    if (data.errors.password) {
-                        setErrors((prev) => ({
-                            ...prev,
-                            newPassword: data.errors.password,
-                            password: "",
-                        }));
-                    } else {
-                        setErrors(data.errors);
-                    }
-                }
-            } else {
-                router.refresh();
+                const data = await response.json();
 
+                if (data?.errors?.server) throw new Error(data.errors.server);
+                if (data?.errors) setErrors(data.errors);
+                else throw new Error("Something went wrong");
+            } else {
                 user = {
                     ...user,
-                    avatar: fileId ?? (avatar === null ? avatar : user.avatar),
                     username: username || user.username,
                     displayName: displayName || user.displayName,
                     description: description || user.description,
-                    email: email || user.email,
+                    avatar: fileId ?? (avatar === null ? avatar : user.avatar),
                 };
 
-                resetState();
-            }
-
-            if (!data.errors) {
                 addAlert({
-                    success: response.ok,
-                    message: data.message || "Something went wrong.",
+                    success: true,
+                    message: "Profile updated successfully",
                 });
+
+                resetState();
+                router.refresh();
             }
         } catch (err) {
-            console.error(err);
-
             addAlert({
                 success: false,
-                message: "Something went wrong.",
+                message: "Something went wrong",
             });
         } finally {
             setIsLoading(false);
@@ -188,7 +142,7 @@ export function Profile({ user }) {
                 <Form
                     fullWidth
                     singleColumn
-                    onSubmit={handleSubmit}
+                    onSubmit={(e) => handleSubmit({ e })}
                 >
                     <Input
                         label="Username"
@@ -202,30 +156,6 @@ export function Profile({ user }) {
                     />
 
                     <Input
-                        type="password"
-                        label="New Password"
-                        value={newPassword}
-                        placeholder="New Password"
-                        error={errors.newPassword}
-                        onChange={(e) => {
-                            setNewPassword(e.target.value);
-                            setErrors((prev) => ({ ...prev, newPassword: "" }));
-                        }}
-                    />
-
-                    <Input
-                        type="password"
-                        value={password}
-                        error={errors.password}
-                        label="Current Password"
-                        placeholder="Current Password"
-                        onChange={(e) => {
-                            setPassword(e.target.value);
-                            setErrors((prev) => ({ ...prev, password: "" }));
-                        }}
-                    />
-
-                    <Input
                         label="Display Name"
                         value={displayName || ""}
                         placeholder="Display Name"
@@ -233,19 +163,6 @@ export function Profile({ user }) {
                         onChange={(e) => {
                             setDisplayName(e.target.value);
                             setErrors((prev) => ({ ...prev, displayName: "" }));
-                        }}
-                    />
-
-                    <Input
-                        type="email"
-                        label="Email"
-                        value={email || ""}
-                        placeholder="Email"
-                        error={errors.email}
-                        labelChip={user.emailVerified ? "Verified" : "Unverified"}
-                        onChange={(e) => {
-                            setEmail(e.target.value);
-                            setErrors((prev) => ({ ...prev, email: "" }));
                         }}
                     />
 

@@ -132,10 +132,11 @@ export const DialogContent = forwardRef(function DialogContent(props, propRef) {
                 <FloatingFocusManager context={floatingContext}>
                     <div
                         ref={ref}
-                        className={styles.dialog}
+                        className={`${styles.dialog} scrollbar`}
                         aria-labelledby={context.labelId}
-                        aria-describedby={context.descriptionId}
                         {...context.getFloatingProps(props)}
+                        aria-describedby={context.descriptionId}
+                        onClick={(event) => event.stopPropagation()}
                     >
                         {props.children}
                     </div>

@@ -28,11 +28,13 @@
 }
 
 .container > div {
-    margin-top: 24px;
-    font-size: 14px;
+    font-size: 13px;
+    margin-top: 8px;
     line-height: 20px;
+    color: var(--fg-3);
 }
 
 .container > div > a {
-    border-radius: 3px;
+    font-size: 13px;
+    border-radius: var(--radius-small);
 }

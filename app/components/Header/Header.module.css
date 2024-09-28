@@ -3,23 +3,25 @@
 }
 
 .header > header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: var(--max-width);
     width: 100%;
-    margin: 0 auto;
     height: 80px;
+    display: flex;
+    margin: 0 auto;
     user-select: none;
+    align-items: center;
+    max-width: var(--max-width);
+    justify-content: space-between;
 }
 
 .link {
-    font-family: var(--font-heading);
-    display: inline-flex;
     font-size: 32px;
-    border-radius: 5px;
-    outline-offset: 4px;
     color: var(--fg-1);
+    position: relative;
+    outline-offset: 4px;
+    display: inline-block;
+    font-family: var(--font-heading);
+    border-radius: var(--radius-medium);
+    z-index: 1000;
 }
 
 .header > header > nav {

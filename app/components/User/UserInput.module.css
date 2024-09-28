@@ -21,12 +21,14 @@
     border-right: 8px solid var(--bg-3);
 }
 
-.expectations > p {
+.expectations > p,
+.expectationsBox > p {
     font-size: 14px;
     margin-bottom: 14px;
 }
 
-.expectations > ul > li {
+.expectations > ul > li,
+.expectationsBox > ul > li {
     margin-bottom: 4px;
     display: flex;
     align-items: center;
@@ -35,7 +37,8 @@
     font-weight: 300;
 }
 
-.expectations > ul > li::before {
+.expectations > ul > li::before,
+.expectationsBox > ul > li::before {
     content: "";
     display: inline-block;
     width: 4px;
@@ -46,13 +49,15 @@
     color: var(--accent-fg);
 }
 
-.expectations > ul > li.valid > span {
+.expectations > ul > li.valid > span,
+.expectationsBox > ul > li.valid > span {
     text-decoration: line-through;
     opacity: 0.3;
     font-weight: 200;
 }
 
-.expectations > ul > li.valid > svg {
+.expectations > ul > li.valid > svg,
+.expectationsBox > ul > li.valid > svg {
     color: var(--success);
     width: 8px;
     height: 8px;
@@ -60,8 +65,23 @@
     margin-right: 5px;
 }
 
-.expectations > ul > li.valid::before {
+.expectations > ul > li.valid::before,
+.expectationsBox > ul > li.valid::before {
     display: none;
+}
+
+.hideBox {
+    display: none;
+}
+
+@media (max-width: 1100px) {
+    .hideBox {
+        display: flex;
+    }
+
+    .expectations {
+        display: none;
+    }
 }
 
 .recoveryButton {
@@ -81,6 +101,12 @@
 .recoveryButton:hover {
     color: var(--fg-1);
     text-decoration: underline;
+}
+
+a.forgotPassword {
+    font-size: 13px;
+    margin-top: -30px;
+    color: var(--fg-4);
 }
 
 @keyframes popIn {

@@ -1,7 +1,7 @@
 .main {
     display: grid;
+    margin: 100px 0;
     align-items: center;
-    margin: 100px 0 100px 0;
     grid-template-columns: 200px 1fr 200px;
     height: calc(100vh - 80px - 100px - 100px);
     height: calc(100dvh - 80px - 100px - 100px);
@@ -97,12 +97,13 @@
 }
 
 .tabHeader {
+    gap: 24px;
     display: flex;
-    align-items: center;
+    padding: 16px;
     flex-wrap: wrap;
+    align-items: center;
     margin-bottom: 24px;
     border-radius: 8px;
-    padding: 16px;
     background-color: var(--bg-2);
 }
 
@@ -191,7 +192,6 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-around;
 }
 
 .summaries > div {
@@ -520,6 +520,22 @@
     color: var(--accent);
 }
 
+/* @media (max-height: 950px) {
+    .main {
+        margin: 50px 0 100px 0;
+        height: calc(100vh - 80px - 100px - 50px);
+        height: calc(100dvh - 80px - 100px - 50px);
+    }
+}
+
+@media (max-height: 720px) {
+    .main {
+        margin: 24px 0;
+        height: calc(100vh - 80px - 100px - 24px);
+        height: calc(100dvh - 80px - 100px - 24px);
+    }
+} */
+
 @media screen and (max-width: 1500px) {
     .main {
         grid-template-columns: 125px 1fr 125px;
@@ -528,6 +544,7 @@
 
 @media screen and (max-width: 768px) {
     .main {
+        margin: 50px 0 100px 0;
         grid-template-columns: var(--gutter-x) 1fr var(--gutter-x);
     }
 
@@ -574,6 +591,18 @@
 
     .tabList > li > span {
         display: none;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .main {
+        margin: 24px 0;
+        height: calc(100vh - 80px - 100px - 24px);
+        height: calc(100dvh - 80px - 100px - 24px);
+    }
+
+    .main > section > nav {
+        bottom: 20px;
     }
 }
 

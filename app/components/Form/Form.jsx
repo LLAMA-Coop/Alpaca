@@ -2,13 +2,14 @@
 
 import styles from "./Form.module.css";
 
-export function Form({ fullWidth, singleColumn, children, ...props }) {
+export function Form({ gap = 40, fullWidth, singleColumn, children, ...props }) {
     // This is just a styled component to apply css to the form
     // It does not have any logic
 
     return (
         <form
             style={{
+                gap: `${gap}px`,
                 width: fullWidth ? "100%" : "",
                 gridTemplateColumns: singleColumn ? "1fr" : "",
             }}
@@ -34,13 +35,14 @@ export function FormButtons({ right, children, ...props }) {
     );
 }
 
-export function Column({ children, ...props }) {
+export function Column({ gap, children, ...props }) {
     // This is just a styled component to apply css to the column
     // It does not have any logic
 
     return (
         <section
             className={styles.column}
+            style={{ gap: gap ? `${gap}px` : "" }}
             {...props}
         >
             {children}

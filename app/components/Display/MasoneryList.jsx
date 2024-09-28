@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 const dashColumnCountBp = {
@@ -34,6 +35,16 @@ const defaultColumnCountBp = {
 };
 
 export function MasoneryList({ children, ...props }) {
+    const [hasLoaded, setHasLoaded] = useState(false);
+
+    useEffect(() => {
+        setHasLoaded(true);
+    }, []);
+
+    if (!hasLoaded) {
+        return null;
+    }
+
     return (
         <ResponsiveMasonry
             columnsCountBreakPoints={

@@ -6,14 +6,7 @@ import { useEffect, useReducer } from "react";
 import { validation } from "@/lib/validation";
 import { Validator } from "@/lib/validation";
 import { getNanoId } from "@/lib/random";
-import {
-    BlankableInput,
-    Permissions,
-    Spinner,
-    Select,
-    Input,
-    Form,
-} from "@client";
+import { BlankableInput, Permissions, Spinner, Select, Input, Form } from "@client";
 
 const defaultState = {
     type: "prompt-response",
@@ -184,10 +177,7 @@ export function QuizInput({ quiz }) {
         });
     }, []);
 
-    if (
-        state.type === "multiple-choice" &&
-        state.answers.find((x) => !state.choices.includes(x))
-    ) {
+    if (state.type === "multiple-choice" && state.answers.find((x) => !state.choices.includes(x))) {
         // Remove answers that are not in the choices
         dispatch({
             type: "answers",
@@ -221,18 +211,19 @@ export function QuizInput({ quiz }) {
                 ["notes", state.notes],
                 ["courses", state.courses],
             ].map(([field, value]) => ({ field, value })),
-            "quiz",
+            "quiz"
         );
 
         validator.validate({ field: "tags", value: state.tags, type: "misc" });
         const perm = validator.validatePermissions(state.permissions);
 
-        if (state.type === "multiple-choice" && state.answer.length < 2) {
-            validator.addError({
-                field: "answers",
-                message: "Must have at least 2 answers",
-            });
-        }
+        // Why ??? We should be able to have only one answer from the choices
+        // if (state.type === "multiple-choice" && state.answer.length < 2) {
+        //     validator.addError({
+        //         field: "answers",
+        //         message: "Must have at least 2 answers",
+        //     });
+        // }
 
         if (!validator.isValid) {
             dispatch({ type: "errors", value: validator.errors });
@@ -245,35 +236,32 @@ export function QuizInput({ quiz }) {
 
         dispatch({ type: "loading", value: true });
 
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,
-            {
-                method: quiz && quiz.id ? "PUT" : "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    id: quiz?.id,
-                    type: state.type,
-                    prompt: state.prompt.trim(),
-                    answers: state.answers,
-                    choices: state.choices,
-                    hints: state.hints,
-                    tags: state.tags,
-                    // sources: sources.map((src) => ({
-                    //     resourceId: quiz ? quiz.id : undefined,
-                    //     resourceType: "quiz",
-                    //     sourceId: src.id,
-                    //     locInSource: "unknown",
-                    //     locType: "page",
-                    // })),
-                    sources: state.sources.map((s) => s.id),
-                    notes: notes.map((n) => n.id),
-                    courses: courses.map((c) => c.id),
-                    permissions: perm,
-                }),
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`, {
+            method: quiz && quiz.id ? "PUT" : "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-        );
+            body: JSON.stringify({
+                id: quiz?.id,
+                type: state.type,
+                prompt: state.prompt.trim(),
+                answers: state.answers,
+                choices: state.choices,
+                hints: state.hints,
+                tags: state.tags,
+                // sources: sources.map((src) => ({
+                //     resourceId: quiz ? quiz.id : undefined,
+                //     resourceType: "quiz",
+                //     sourceId: src.id,
+                //     locInSource: "unknown",
+                //     locType: "page",
+                // })),
+                sources: state.sources.map((s) => s.id),
+                notes: notes.map((n) => n.id),
+                courses: courses.map((c) => c.id),
+                permissions: perm,
+            }),
+        });
 
         dispatch({ type: "loading", value: false });
 
@@ -346,7 +334,6 @@ export function QuizInput({ quiz }) {
 
             {state.type === "multiple-choice" && (
                 <Input
-                    required
                     multiple
                     label="Choices"
                     data={state.choices}
@@ -361,6 +348,7 @@ export function QuizInput({ quiz }) {
                     addItem={(item) => {
                         dispatch({ type: "addChoice", value: item });
                         dispatch({ type: "choice", value: "" });
+                        dispatch({ type: "errors", value: { choices: "" } });
                     }}
                     onChange={(e) => {
                         dispatch({ type: "choice", value: e.target.value });
@@ -374,38 +362,36 @@ export function QuizInput({ quiz }) {
                     multiple
                     notObject
                     label="Answers"
-                    placeholder={
-                        state.type === "multiple-choice"
-                            ? "Select answers"
-                            : "Paris"
-                    }
                     data={state.answers}
                     value={state.answer}
                     options={state.choices}
                     error={state.errors.answers}
                     setter={(value) => dispatch({ type: "answers", value })}
+                    placeholder={state.type === "multiple-choice" ? "Select answers" : "Paris"}
                     description={
                         state.type === "multiple-choice"
                             ? "Select answers from the choices"
                             : "Enter an answer and press enter"
                     }
-                    type={
-                        state.type === "multiple-choice"
-                            ? "select"
-                            : state.type === "verbatim"
-                              ? "textarea"
-                              : "text"
-                    }
+                    type={state.type === "multiple-choice" ? "select" : "text"}
                     maxLength={
-                        state.type !== "verbatim"
-                            ? validation.quiz.choice
-                            : validation.quiz.prompt
+                        state.type !== "verbatim" ? validation.quiz.choice : validation.quiz.prompt
                     }
                     removeItem={(item) => {
                         dispatch({ type: "removeAnswer", value: item });
                     }}
                     addItem={(item) => {
-                        dispatch({ type: "addAnswer", value: item });
+                        if (state.type === "verbatim") {
+                            // If verbatime, we want to split the answer by word and add each word as an answer
+                            const words = item.split(" ");
+
+                            for (const word of words) {
+                                dispatch({ type: "addAnswer", value: word });
+                            }
+                        } else {
+                            dispatch({ type: "addAnswer", value: item });
+                        }
+
                         dispatch({ type: "answer", value: "" });
                     }}
                     onChange={(e) => {
@@ -525,16 +511,17 @@ export function QuizInput({ quiz }) {
                 />
             )}
 
-            {["fill-in-the-blank", "prompt-response"].includes(state.type) && (
-                <div />
-            )}
+            {["fill-in-the-blank", "prompt-response"].includes(state.type) && <div />}
 
             <button className="button submit primary">
                 Submit Quiz {state.loading && <Spinner />}
             </button>
 
             {isOwner && (
-                <DeletePopup resourceType="quiz" resourceId={quiz.id} />
+                <DeletePopup
+                    resourceType="quiz"
+                    resourceId={quiz.id}
+                />
             )}
         </Form>
     );

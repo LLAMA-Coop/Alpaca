@@ -133,6 +133,7 @@ export async function POST(req) {
             .updateTable("users")
             .set({
                 tokens: JSON.stringify(newTokens),
+                twoFactorTemp: null,
                 twoFactorRecovery: newCodes ? JSON.stringify(newCodes) : undefined,
             })
             .where("id", "=", user.id)

@@ -1,9 +1,7 @@
 .container {
-    z-index: 2;
+    /* z-index: 2; */
     padding: 16px;
     display: block;
-    overflow: hidden;
-    overflow: hidden;
     width: max-content;
     position: relative;
     border-radius: 4px;
@@ -169,4 +167,39 @@ a.container:hover {
 
 .lighter .createdAt {
     background-color: var(--bg-2);
+}
+
+.lighter input,
+.lighter textarea,
+.lighter select {
+    background-color: var(--bg-1);
+}
+
+.tools {
+    gap: 12px;
+    display: flex;
+}
+
+.edit,
+.delete {
+    padding: 6px;
+    display: flex;
+    cursor: pointer;
+    margin-top: 20px;
+    color: var(--fg-3);
+    align-items: center;
+    margin-bottom: -20px;
+    justify-content: center;
+    background-color: var(--bg-3);
+    border-radius: var(--radius-small);
+}
+
+.edit:hover,
+.edit:focus-visible {
+    color: var(--accent);
+}
+
+.delete:hover,
+.delete:focus-visible {
+    color: var(--danger);
 }

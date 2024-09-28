@@ -1,21 +1,37 @@
 "use client";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/app/components/client";
+import {
+    Checkbox,
+    InfoBox,
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/app/components/client";
 import { getAccentVariables, getThemeVariables, themes } from "@/lib/themes";
 import styles from "./Settings.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useStore } from "@/store/store";
 
 export function Appearance({ user }) {
     const [current, setCurrent] = useState(
-        themes.find((theme) => theme.name === user?.settings?.theme) || themes[0]
+        themes.find((t) => t.name === user?.settings?.theme) || themes[0]
     );
     const [accent, setAccent] = useState(
-        current.palette.accents.find((accent) => accent.name === user?.settings?.accent) ||
+        current.palette.accents.find((a) => a[0] === user?.settings?.accent) ||
             current.palette.accents[0]
     );
 
-    const hasChanged =
-        current.name !== user?.settings?.theme || accent.name !== user?.settings?.accent;
+    const [showConfetti, setShowConfetti] = useState(user?.settings?.showConfetti ?? true);
+    const [confettiLoading, setConfettiLoading] = useState(false);
+
+    const [showTools, setShowTools] = useState(user?.settings?.showTools ?? true);
+    const [toolsLoading, setToolsLoading] = useState(false);
+
+    const setSettings = useStore((state) => state.setSettings);
+
+    useEffect(() => {
+        setSettings({ showConfetti });
+    }, [showConfetti]);
 
     function handleThemeChange(theme) {
         if (current.name === theme.name) {
@@ -39,16 +55,14 @@ export function Appearance({ user }) {
         const newAccent = theme.palette.accents[0];
 
         if (newAccent === accent) {
-            return handleSave(theme.name, newAccent.name);
+            return handleSave(theme.name, newAccent[0]);
         }
 
         handleAccentChange(newAccent, theme);
     }
 
     function handleAccentChange(a, theme = current) {
-        if (a.name === accent.name) {
-            return;
-        }
+        if (a[0] === accent[0]) return;
 
         setAccent(a);
         const variables = getAccentVariables(a);
@@ -59,7 +73,7 @@ export function Appearance({ user }) {
         });
 
         // Save the accent to the user
-        handleSave(theme.name, a.name);
+        handleSave(theme.name, a[0]);
     }
 
     async function handleSave(themeName, accentName) {
@@ -125,24 +139,85 @@ export function Appearance({ user }) {
                 <ol className={styles.list}>
                     {current.palette.accents.map((a) => (
                         <Tooltip
-                            key={a.name}
                             gap={10}
+                            key={a[0]}
                         >
                             <TooltipTrigger>
                                 <button
                                     className={styles.theme}
                                     onClick={() => handleAccentChange(a)}
                                     style={{
-                                        backgroundColor: a.colors["--accent"],
-                                        transform: a.name === accent.name ? "scale(1.2)" : "",
+                                        backgroundColor: a[1],
+                                        transform: a[0] === accent[0] ? "scale(1.2)" : "",
                                     }}
                                 />
                             </TooltipTrigger>
 
-                            <TooltipContent>{a.name}</TooltipContent>
+                            <TooltipContent>{a[0]}</TooltipContent>
                         </Tooltip>
                     ))}
                 </ol>
+            </div>
+
+            <h2>Quizzes</h2>
+
+            <div>
+                <InfoBox>
+                    When you complete a quiz, you can choose to have confetti appear on the screen,
+                    as well as a clapping sound. This can be disabled if you prefer a more subtle
+                    experience.
+                </InfoBox>
+
+                <Checkbox
+                    close
+                    value={showConfetti}
+                    loading={confettiLoading}
+                    label="Show confetti when a quiz is completed"
+                    onChange={async () => {
+                        if (confettiLoading) {
+                            return;
+                        }
+
+                        setConfettiLoading(true);
+
+                        await fetch("/api/me", {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                settings: {
+                                    ...user.settings,
+                                    showConfetti: !showConfetti,
+                                },
+                            }),
+                        });
+
+                        setConfettiLoading(false);
+                        setShowConfetti((prev) => !prev);
+                    }}
+                />
+            </div>
+
+            <h2>Resources</h2>
+
+            <div>
+                <InfoBox>
+                    When viewing resources, buttons to edit or delete those resources are available
+                    to you if you have the permissions to do so. You can hide these buttons if you
+                    only want to view the content. This can be re-enabled at any time. Hiding them
+                    will still allow you to edit or delete the resources in their respective pages.
+                </InfoBox>
+
+                <Checkbox
+                    close
+                    value={showTools}
+                    loading={toolsLoading}
+                    label="Show edit and delete options on resources"
+                    onChange={() => {
+                        alert("Not implemented yet, we're working on it!");
+                    }}
+                />
             </div>
         </section>
     );

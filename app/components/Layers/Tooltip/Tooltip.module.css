@@ -1,8 +1,8 @@
 .container {
-    z-index: 100;
     display: flex;
     font-size: 13px;
     font-weight: 500;
+    z-index: 1000000;
     padding: 8px 12px;
     position: relative;
     align-items: center;

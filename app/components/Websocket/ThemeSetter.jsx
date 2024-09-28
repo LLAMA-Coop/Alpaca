@@ -13,15 +13,15 @@ export function ThemeSetter({ settings }) {
         const accentName = settings?.accent || localStorage.getItem("accent");
 
         if (themeName) {
-            const theme = themes.find((theme) => theme.name === themeName);
+            const theme = themes.find((t) => t.name === themeName);
+            if (!theme) return;
+
             const variables = getThemeVariables(theme);
+            if (!variables?.length) return;
 
             // Apply theme variables to the document
             variables.forEach((variable) => {
-                document.documentElement.style.setProperty(
-                    variable.key,
-                    variable.value,
-                );
+                document.documentElement.style.setProperty(variable.key, variable.value);
             });
 
             if (theme.isDark) {
@@ -31,17 +31,14 @@ export function ThemeSetter({ settings }) {
             }
 
             if (accentName) {
-                const accent = theme.palette.accents.find(
-                    (accent) => accent.name === accentName,
-                );
+                const accent = theme.palette.accents.find((a) => a[0] === accentName);
+                if (!accent || accent.length !== 2) return;
+
                 const variables = getAccentVariables(accent);
 
                 // Apply accent variables to the document
                 variables.forEach((variable) => {
-                    document.documentElement.style.setProperty(
-                        variable.key,
-                        variable.value,
-                    );
+                    document.documentElement.style.setProperty(variable.key, variable.value);
                 });
             }
         }

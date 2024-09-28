@@ -1,18 +1,11 @@
 "use client";
 
+import { Permissions, Spinner, Select, Input, Label, Form } from "@client";
 import { Validator, validation } from "@/lib/validation";
 import { useStore, useAlerts } from "@/store/store";
+import { getChangedFields } from "@/lib/objects";
 import { useEffect, useReducer } from "react";
 import { getNanoId } from "@/lib/random";
-import {
-    DeletePopup,
-    Permissions,
-    Spinner,
-    Select,
-    Input,
-    Label,
-    Form,
-} from "@client";
 
 const defaultState = {
     title: "",
@@ -61,7 +54,7 @@ function stateReducer(state, action) {
                 ...state,
                 ...action.value,
                 sources:
-                    action.value.sources.map((id) => {
+                    action.value.sources?.map((id) => {
                         const source = action.sources.find((x) => x.id === id);
 
                         return (
@@ -72,7 +65,7 @@ function stateReducer(state, action) {
                         );
                     }) ?? [],
                 courses:
-                    action.value.courses.map((id) => {
+                    action.value.courses?.map((id) => {
                         const course = action.courses.find((x) => x.id === id);
 
                         return (
@@ -92,7 +85,7 @@ function stateReducer(state, action) {
     }
 }
 
-export function NoteInput({ note }) {
+export function NoteInput({ note, close }) {
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 
     const addAlert = useAlerts((state) => state.addAlert);
@@ -106,7 +99,24 @@ export function NoteInput({ note }) {
     useEffect(() => {
         if (!note) return;
         dispatch({ type: "editing", value: note, sources, courses });
-    }, []);
+    }, [note, sources, courses]);
+
+    const noteData = {
+        title: state.title,
+        text: state.text,
+        sources: state.sources.map((src) => src.id),
+        courses: state.courses.map((course) => course.id),
+        tags: state.tags,
+        permissions: state.permissions,
+    };
+
+    const canSubmitChange = () => {
+        if (!note) return true;
+
+        const changedFields = getChangedFields(note, noteData);
+
+        return Object.keys(changedFields).length > 0;
+    };
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -121,7 +131,7 @@ export function NoteInput({ note }) {
                 ["sources", state.sources.map((s) => s.id)],
                 ["courses", state.courses.map((c) => c.id)],
             ].map(([field, value]) => ({ field, value })),
-            "note",
+            "note"
         );
 
         validator.validate({ field: "tags", value: state.tags, type: "misc" });
@@ -135,22 +145,23 @@ export function NoteInput({ note }) {
         dispatch({ type: "loading", value: true });
 
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/note`,
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/note${note ? `/${note.id}` : ""}`,
             {
                 method: !!note?.id ? "PATCH" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    id: note?.id,
-                    title: state.title.trim(),
-                    text: state.text.trim(),
-                    sources: state.sources.map((src) => src.id),
-                    courses: state.courses.map((course) => course.id),
-                    tags: state.tags,
-                    permissions,
-                }),
-            },
+                body: note
+                    ? JSON.stringify(getChangedFields(note, noteData, true))
+                    : JSON.stringify({
+                          title: state.title.trim(),
+                          text: state.text.trim(),
+                          sources: state.sources.map((src) => src.id),
+                          courses: state.courses.map((course) => course.id),
+                          tags: state.tags,
+                          permissions,
+                      }),
+            }
         );
 
         dispatch({ type: "loading", value: false });
@@ -174,6 +185,8 @@ export function NoteInput({ note }) {
                 success: true,
                 message: data.message || "Successfully updated note.",
             });
+
+            if (close) close();
         } else {
             addAlert({
                 success: false,
@@ -183,7 +196,10 @@ export function NoteInput({ note }) {
     }
 
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form
+            singleColumn={note}
+            onSubmit={handleSubmit}
+        >
             <Input
                 required
                 label="Title"
@@ -254,7 +270,10 @@ export function NoteInput({ note }) {
             />
 
             <div>
-                <Label required id={"ejjeiahdiopaehdi3289ry2380"}>
+                <Label
+                    required
+                    id={"ejjeiahdiopaehdi3289ry2380"}
+                >
                     Text
                 </Label>
 
@@ -278,13 +297,13 @@ export function NoteInput({ note }) {
                 <div />
             )}
 
-            <button className="button submit primary">
+            <button
+                type="submit"
+                className="button submit primary"
+                disabled={state.loading || !canSubmitChange()}
+            >
                 Submit Note {state.loading && <Spinner />}
             </button>
-
-            {isOwner && (
-                <DeletePopup resourceType="note" resourceId={note.id} />
-            )}
         </Form>
     );
 }

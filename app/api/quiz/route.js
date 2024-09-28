@@ -43,7 +43,7 @@ export async function POST(req) {
                 ["notes", notes],
                 ["courses", courses],
             ].map(([field, value]) => ({ field, value })),
-            "quiz",
+            "quiz"
         );
 
         validator.validate({ field: "tags", value: tags, type: "misc" });
@@ -75,7 +75,7 @@ export async function POST(req) {
                     message: "Invalid quiz data.",
                     errors: validator.errors,
                 },
-                { status: 400 },
+                { status: 400 }
             );
         }
 
@@ -101,20 +101,22 @@ export async function POST(req) {
                 .executeTakeFirstOrThrow()
         ).id;
 
-        await db
-            .insertInto("resource_relations")
-            .values(
-                sources.map((s) => ({
-                    A: quizId,
-                    B: s,
-                    A_type: "quiz",
-                    B_type: "source",
-                    // includeReference: false,
-                    // reference: null,
-                    // referenceType: null,
-                })),
-            )
-            .execute();
+        if (sources.length) {
+            await db
+                .insertInto("resource_relations")
+                .values(
+                    sources.map((s) => ({
+                        A: quizId,
+                        B: s,
+                        A_type: "quiz",
+                        B_type: "source",
+                        // includeReference: false,
+                        // reference: null,
+                        // referenceType: null,
+                    }))
+                )
+                .execute();
+        }
 
         await db
             .insertInto("resource_permissions")
@@ -134,15 +136,13 @@ export async function POST(req) {
                     ...quiz,
                 },
             },
-            { status: 201 },
+            { status: 201 }
         );
     } catch (error) {
         db.deleteFrom("quizzes").where("publicId", "=", publicId).execute();
 
         if (quizId) {
-            db.deleteFrom("resource_permissions")
-                .where("resourceId", "=", quizId)
-                .execute();
+            db.deleteFrom("resource_permissions").where("resourceId", "=", quizId).execute();
         }
 
         return catchRouteError({ error, route: req.nextUrl.pathname });

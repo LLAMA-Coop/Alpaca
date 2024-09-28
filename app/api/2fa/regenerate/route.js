@@ -1,11 +1,10 @@
 import { unauthorized } from "@/lib/apiErrorResponses";
 import { catchRouteError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
-import { generateSecret } from "node-2fa";
+import { customAlphabet } from "nanoid";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
-import { customAlphabet } from "nanoid";
 
 export async function POST(req) {
     try {

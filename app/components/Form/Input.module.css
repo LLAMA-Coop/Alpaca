@@ -18,20 +18,8 @@
     user-select: none;
     color: var(--fg-2);
     margin-bottom: 6px;
+    align-items: center;
     letter-spacing: 0.35px;
-}
-
-.label > .chip {
-    padding: 0 6px;
-    cursor: default;
-    font-size: 11px;
-    margin-left: 8px;
-    font-weight: 700;
-    font-style: normal;
-    pointer-events: none;
-    color: var(--accent-fg);
-    background-color: var(--accent);
-    border-radius: var(--radius-full);
 }
 
 .label > span {
@@ -45,6 +33,10 @@
 .label > .required,
 .label > .error {
     color: var(--danger);
+}
+
+.label > .success {
+    color: var(--success);
 }
 
 .wrapper {
@@ -113,6 +105,10 @@
     border-radius: var(--radius-medium);
 }
 
+.input:disabled {
+    cursor: default;
+}
+
 .input.textarea {
     padding: 10px;
     display: block;
@@ -136,6 +132,7 @@
 
 .input::placeholder {
     font-weight: 400;
+    color: var(--fg-4);
 }
 
 .chip {
@@ -163,9 +160,12 @@
 .selected {
     flex-grow: 1;
     display: flex;
-    color: #757e8d;
+    overflow: hidden;
     user-select: none;
+    color: var(--fg-4);
     align-items: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .selected.isValue {
@@ -208,8 +208,8 @@
 .options {
     gap: 4px;
     padding: 4px;
-    z-index: 100;
     display: flex;
+    z-index: 100000;
     max-height: 400px;
     overflow: hidden auto;
     flex-direction: column;
@@ -219,11 +219,12 @@
 }
 
 .option {
-    padding: 8px;
     border: none;
+    padding: 10px;
     display: flex;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
+    text-align: left;
     font-weight: 400;
     user-select: none;
     color: var(--fg-3);
@@ -288,41 +289,53 @@
     width: 40px;
     height: 24px;
     cursor: pointer;
+    min-width: 40px;
     position: relative;
     background-color: var(--bg-4);
     border-radius: var(--radius-full);
 }
 
 .checker.checked {
-    background-color: #23a55a;
+    background-color: var(--success);
 }
 
 .checker > div {
     top: 50%;
     left: 12px;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     display: flex;
-    color: var(--bg-4);
     position: absolute;
+    color: var(--bg-4);
     align-items: center;
     justify-content: center;
-    background-color: var(--fg-1);
+    transition: left 0.1s ease;
     transform: translate(-50%, -50%);
     border-radius: var(--radius-full);
-    transition: left 0.1s ease;
+    background-color: var(--success-fg);
 }
 
 .checker.checked > div {
-    color: #23a55a;
+    color: var(--success);
     left: calc(100% - 12px);
 }
 
+/* Checker loading spinner */
+
+.spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--fg-1);
+    border-top-color: var(--success);
+    animation: spinner 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
 .description {
-    font-size: 13px;
-    color: var(--fg-4);
-    font-weight: 500;
     margin-top: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg-4);
 }
 
 /* Skeletons */
@@ -351,5 +364,11 @@
     }
     100% {
         background-position: -100% 0;
+    }
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
     }
 }

@@ -1,16 +1,23 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import styles from "./Settings.module.css";
 import { useAlerts } from "@/store/store";
-import { Profile } from "./Profile";
-import { useState } from "react";
 import { Appearance } from "./Appearance";
 import { Security } from "./Security";
+import { Profile } from "./Profile";
+import { Account } from "./Account";
 
 export function Settings({ user }) {
-    const [currentTab, setCurrentTab] = useState(
-        parseInt(localStorage?.getItem("settings-tab")) || 0
-    );
+    const [currentTab, setCurrentTab] = useState(0);
+
+    useEffect(() => {
+        const tab = localStorage.getItem("settings-tab");
+        if (tab) {
+            setCurrentTab(parseInt(tab));
+        }
+    }, []);
+
     const addAlert = useAlerts((state) => state.addAlert);
     const alerts = useAlerts((state) => state.alerts);
 
@@ -21,7 +28,7 @@ export function Settings({ user }) {
         },
         {
             name: "Account",
-            component: "Account",
+            component: <Account user={user} />,
         },
         {
             name: "Appearance",

@@ -1,21 +1,21 @@
 "use client";
 
-import QuizDisplay from "@/app/components/Quiz/QuizDisplay";
-import {
-    Avatar,
-    CourseDisplay,
-    GroupDisplay,
-    MasoneryList,
-    Notifications,
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-    UserCard,
-} from "@client";
 import { useAlerts, useStore } from "@/store/store";
 import { useState, useEffect } from "react";
 import styles from "./Dash.module.css";
 import Link from "next/link";
+import {
+    TooltipContent,
+    TooltipTrigger,
+    CourseDisplay,
+    Notifications,
+    MasoneryList,
+    GroupDisplay,
+    QuizDisplay,
+    UserCard,
+    Tooltip,
+    Avatar,
+} from "@client";
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
@@ -341,8 +341,9 @@ export function Dashboard({ more = false }) {
                                         <MasoneryList dash>
                                             {quizzes.map((quiz) => (
                                                 <QuizDisplay
-                                                    key={quiz.id}
+                                                    lighter
                                                     quiz={quiz}
+                                                    key={quiz.id}
                                                 />
                                             ))}
                                         </MasoneryList>

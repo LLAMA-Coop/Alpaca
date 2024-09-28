@@ -1,17 +1,11 @@
 "use client";
 
+import { Permissions, Spinner, Select, Input, Form } from "@client";
 import { useStore, useAlerts } from "@/store/store";
+import { getChangedFields } from "@/lib/objects";
 import { validation } from "@/lib/validation";
 import { useEffect, useReducer } from "react";
 import { Validator } from "@/lib/validation";
-import {
-    Permissions,
-    DeletePopup,
-    Spinner,
-    Select,
-    Input,
-    Form,
-} from "@client";
 import { getNanoId } from "@/lib/random";
 
 const defaultState = {
@@ -86,7 +80,7 @@ function stateReducer(state, action) {
                 ...state,
                 ...action.value,
                 courses:
-                    action.value.courses.map((id) => {
+                    action.value.courses?.map((id) => {
                         const course = action.courses.find((x) => x.id === id);
 
                         return (
@@ -104,7 +98,7 @@ function stateReducer(state, action) {
     }
 }
 
-export function SourceInput({ source }) {
+export function SourceInput({ source, close }) {
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 
     const addAlert = useAlerts((state) => state.addAlert);
@@ -116,12 +110,34 @@ export function SourceInput({ source }) {
 
     useEffect(() => {
         if (!source) return;
-        dispatch({ type: "editing", source, courses });
-    }, []);
+        dispatch({ type: "editing", value: source, courses });
+    }, [source, courses]);
+
+    const sourceData = {
+        title: state.title.trim(),
+        medium: state.medium,
+        url: state.url.trim(),
+        publishedAt: state.publishedAt,
+        lastAccessed: state.lastAccessed,
+        locationType: state.locationType,
+        authors: state.authors,
+        courses: state.courses,
+        tags: state.tags,
+        permissions: state.permissions,
+    };
+
+    const canSubmitChange = () => {
+        if (!source) return true;
+
+        const changedFields = getChangedFields(source, sourceData);
+
+        return Object.keys(changedFields).length > 0;
+    };
 
     async function handleSubmit(e) {
         e.preventDefault();
         if (state.loading) return;
+        if (!canSubmitChange()) return;
 
         const validator = new Validator();
 
@@ -136,7 +152,7 @@ export function SourceInput({ source }) {
                 ["courses", state.courses],
                 ["locationType", state.locationType],
             ].map(([field, value]) => ({ field, value })),
-            "source",
+            "source"
         );
 
         if (state.medium === "website" && !state.url) {
@@ -153,26 +169,27 @@ export function SourceInput({ source }) {
         dispatch({ type: "loading", value: true });
 
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/source`,
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/source${source ? `/${source.id}` : ""}`,
             {
                 method: source ? "PATCH" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    id: source?.id,
-                    title: state.title.trim(),
-                    medium: state.medium,
-                    url: state.url.trim(),
-                    publishedAt: state.publishedAt,
-                    lastAccessed: state.lastAccessed,
-                    locationType: state.locationType,
-                    authors: state.authors,
-                    courses: state.courses,
-                    tags: state.tags,
-                    permissions: state.permissions,
-                }),
-            },
+                body: source
+                    ? JSON.stringify(getChangedFields(source, sourceData, true))
+                    : JSON.stringify({
+                          title: state.title.trim(),
+                          medium: state.medium,
+                          url: state.url.trim(),
+                          publishedAt: state.publishedAt,
+                          lastAccessed: state.lastAccessed,
+                          locationType: state.locationType,
+                          authors: state.authors,
+                          courses: state.courses,
+                          tags: state.tags,
+                          permissions: state.permissions,
+                      }),
+            }
         );
 
         dispatch({ type: "loading", value: false });
@@ -196,6 +213,8 @@ export function SourceInput({ source }) {
                 success: true,
                 message: data.message || "Successfully updated source.",
             });
+
+            if (close) close();
         } else {
             addAlert({
                 success: false,
@@ -213,12 +232,15 @@ export function SourceInput({ source }) {
     ];
 
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form
+            onSubmit={handleSubmit}
+            singleColumn={!!source}
+        >
             <Input
                 required
                 label="Title"
                 autoComplete="off"
-                value={state.title}
+                value={state.title || ""}
                 error={state.errors.title}
                 placeholder="George Washington's Teeth"
                 maxLength={validation.source.title.maxLength}
@@ -231,9 +253,9 @@ export function SourceInput({ source }) {
             <Select
                 noObject
                 label="Medium"
-                value={state.medium}
                 options={mediumChoices}
                 error={state.errors.medium}
+                value={state.medium || "article"}
                 onChange={(value) => {
                     dispatch({ type: "medium", value: value });
                     dispatch({ type: "errors", value: { medium: "" } });
@@ -241,10 +263,10 @@ export function SourceInput({ source }) {
             />
 
             <Input
-                value={state.url}
                 autoComplete="off"
                 pattern="https?://.+"
                 label="URL of Source"
+                value={state.url || ""}
                 error={state.errors.url}
                 placeholder="https://example.com"
                 required={state.medium === "website"}
@@ -257,7 +279,7 @@ export function SourceInput({ source }) {
             <Input
                 type="date"
                 label="Publication Date"
-                value={state.publishedAt}
+                value={state.publishedAt || ""}
                 error={state.errors.publishedAt}
                 description="The date at which the source was published"
                 onChange={(e) => {
@@ -269,7 +291,7 @@ export function SourceInput({ source }) {
             <Input
                 type="date"
                 label="Last Accessed"
-                value={state.lastAccessed}
+                value={state.lastAccessed || ""}
                 error={state.errors.lastAccessed}
                 description="The date at which you last accessed the source"
                 onChange={(e) => {
@@ -282,8 +304,8 @@ export function SourceInput({ source }) {
                 multiple
                 label="Authors"
                 autoComplete="off"
-                value={state.author}
                 data={state.authors}
+                value={state.author || ""}
                 error={state.errors.authors}
                 description="The author(s) of the source"
                 placeholder="Enter an author and press enter"
@@ -320,9 +342,9 @@ export function SourceInput({ source }) {
             <Input
                 multiple
                 label="Tags"
-                value={state.tag}
                 data={state.tags}
                 autoComplete="off"
+                value={state.tag || ""}
                 error={state.errors.tags}
                 placeholder="Enter a tag and press enter"
                 maxLength={validation.misc.tag.maxLength}
@@ -342,7 +364,7 @@ export function SourceInput({ source }) {
 
             <Select
                 label="Location Type"
-                value={state.locationType}
+                value={state.locationType || "page"}
                 options={[
                     { label: "Page", value: "page" },
                     {
@@ -384,13 +406,13 @@ export function SourceInput({ source }) {
                 <div />
             )}
 
-            <button className="button submit primary">
+            <button
+                type="submit"
+                className="button submit primary"
+                disabled={state.loading || !canSubmitChange()}
+            >
                 Submit Source {state.loading && <Spinner />}
             </button>
-
-            {isOwner && (
-                <DeletePopup resourceType="source" resourceId={source.id} />
-            )}
         </Form>
     );
 }

@@ -18,11 +18,15 @@ export default async function RegisterPage() {
         <main className={styles.main}>
             <section className={styles.container}>
                 <h2>Start your journey on Alpaca</h2>
+
                 <UserInput isRegistering={true} />
 
-                <div>
+                <div className={styles.other}>
                     Already have an acccount?{" "}
-                    <Link className="link" href="/login">
+                    <Link
+                        className="link"
+                        href="/login"
+                    >
                         Login here
                     </Link>
                 </div>

@@ -17,6 +17,7 @@
 .buttons {
     gap: 16px;
     display: flex;
+    flex-wrap: wrap;
 }
 
 .buttons.right {
@@ -26,5 +27,9 @@
 @media (max-width: 768px) {
     .form {
         grid-template-columns: 1fr;
+    }
+
+    .column {
+        gap: 40px;
     }
 }
