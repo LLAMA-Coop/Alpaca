@@ -14,25 +14,23 @@ export function Avatar({ src, username, size = 40, outline, background }) {
                 minWidth: size,
                 height: size,
                 minHeight: size,
-                fontSize: size / 3,
+                fontSize: size / 2.5,
                 lineHeight: `${size / 3}px`,
                 outline: outline ? "" : "0px solid transparent",
                 background: background || "",
             }}
         >
-            {/* {src ? (
+            {src ? (
                 <Image
-                    draggable={false}
-                    alt={`Avatar for ${username}`}
                     width={size}
                     height={size}
-                    src={`${cdn}/${src}/`}
+                    draggable={false}
+                    src={`${cdn}${src}`}
+                    alt={`Avatar for ${username || "User"}`}
                 />
             ) : (
-                <div>{letter}</div>
-            )} */}
-
-            {letter}
+                letter
+            )}
         </div>
     );
 }

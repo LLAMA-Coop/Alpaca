@@ -1,102 +1,114 @@
+import { catchRouteError, getNanoId, isGroupNameTaken } from "@/lib/db/helpers";
+import { unauthorized } from "@/lib/apiErrorResponses";
+import { Validator } from "@/lib/validation";
+import { utapi } from "@/lib/uploadthing.s";
 import { NextResponse } from "next/server";
-import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import { server, unauthorized } from "@/lib/apiErrorResponses";
-// import { Group } from "@mneme_app/database-models";
-// import User from "@mneme_app/database-models";
-// import { User, Group } from "@/app/api/models";
-import SubmitErrors from "@/lib/SubmitErrors";
-import { MAX } from "@/lib/constants";
+import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
-import { addError } from "@/lib/db/helpers";
+
+// CREATE GROUP
 
 export async function POST(req) {
+    const publicId = getNanoId();
+    let groupId = null;
+
+    const group = await req.json();
+    const { name, description, icon, isPublic } = group;
+
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
+
         if (!user) {
+            icon && (await utapi.deleteFiles(icon));
             return unauthorized;
         }
 
-        const submitErrors = new SubmitErrors();
+        const validator = new Validator();
 
-        const { name, description, isPublic, avatar } = await req.json();
+        validator.validateAll(
+            [
+                ["name", name.trim()],
+                ["description", description.trim()],
+                ["icon", icon],
+                ["isPublic", isPublic],
+            ].map(([field, value]) => ({ field, value })),
+            "group",
+        );
 
-        if (!name) {
-            submitErrors.addError("Missing name");
-        } else if (name?.length < 2 || name?.length > MAX.name) {
-            submitErrors.addError(
-                `The following group name is not 2 to ${MAX.name} characters in length:\n ${name}`,
-            );
-        }
-        // const sameName = await Group.findOne({ name });
-        const [sameName, sameNameFields] = await db
-            .promise()
-            .query("SELECT `id` FROM `Groups` WHERE `name` = ?", [name.trim()]);
-
-        if (sameName.length > 0) {
-            submitErrors.addError(`The group name ${name} already exists`);
-        }
-
-        if (description && description.length > MAX.description) {
-            submitErrors.addError(
-                `The following description exceeds the maximum permitted, which is ${MAX.description}: \n ${description}`,
-            );
-        }
-
-        if (submitErrors.cannotSend) {
+        if (!validator.isValid) {
+            icon && (await utapi.deleteFiles(icon));
             return NextResponse.json(
                 {
-                    message: submitErrors.displayErrors(),
-                    nameTaken: sameName != null,
+                    message: "Invalid group data",
+                    errors: validator.errors,
                 },
                 { status: 400 },
             );
         }
 
-        // const group = new Group({
-        //     name: name.trim(),
-        //     description: description.length > 0 ? description : null,
-        //     icon: icon,
-        //     owner: user.id,
-        //     users: [user.id],
-        //     admins: [user.id],
-        // });
-
-        const [group, groupFields] = await db
-            .promise()
-            .query(
-                "INSERT INTO `Groups` (`name`, `description`, `isPublic`, `avatar`) VALUES (?, ?, ?, ?)",
-                [name, description, isPublic, avatar],
+        if (await isGroupNameTaken(name)) {
+            icon && (await utapi.deleteFiles(icon));
+            return NextResponse.json(
+                {
+                    message: "Group name is already taken",
+                    errors: {
+                        name: "Group name is already taken",
+                    },
+                },
+                { status: 400 },
             );
+        }
 
-        // await User.updateOne(
-        //     { _id: user.id },
-        //     {
-        //         $push: {
-        //             groups: content.id,
-        //         },
-        //     },
-        // );
+        await db
+            .insertInto("groups")
+            .values({
+                publicId,
+                name,
+                description,
+                icon,
+                isPublic,
+                createdBy: user.id,
+            })
+            .execute();
 
-        const [member, memberFields] = await db
-            .promise()
-            .query(
-                "INSERT INTO `Members` (`groupId`, `userId`, `role`) VALUES (?, ?, 'owner')",
-                [group.insertId, user.id],
-            );
+        groupId = (
+            await db
+                .selectFrom("groups")
+                .select("id")
+                .where("publicId", "=", publicId)
+                .executeTakeFirstOrThrow()
+        ).id;
 
-        const content = { group, member };
+        await db
+            .insertInto("members")
+            .values({
+                groupId,
+                userId: user.id,
+                role: "owner",
+            })
+            .execute();
 
         return NextResponse.json(
             {
-                message: "Group created successfully",
-                content: content,
+                message: "Successfully created group",
+                content: {
+                    id: groupId,
+                    publicId,
+                    ...group,
+                },
             },
             { status: 201 },
         );
     } catch (error) {
-        console.error(`[Group] POST error: ${error}`);
-        addError(error, "/api/groups: POST");
-        return server;
+        db.deleteFrom("groups").where("publicId", "=", publicId).execute();
+
+        if (groupId) {
+            db.deleteFrom("members").where("groupId", "=", groupId).execute();
+        }
+
+        icon && (await utapi.deleteFiles(icon));
+
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

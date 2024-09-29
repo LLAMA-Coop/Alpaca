@@ -1,0 +1,87 @@
+.tabs {
+    margin: 0 var(--gutter-x);
+}
+
+.tabs > ol {
+    display: flex;
+    margin: 160px auto 40px auto;
+    max-width: var(--max-width);
+    justify-content: space-between;
+}
+
+.tabs > ol > li {
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 400;
+    user-select: none;
+    color: var(--fg-3);
+    padding: 10px 24px;
+    background-color: var(--bg-2);
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    transition:
+        background-color 0.1s ease,
+        color 0.1s ease;
+}
+
+.tabs > ol > li:not(.active, :active):hover {
+    color: var(--fg-1);
+    background-color: var(--bg-3);
+}
+
+.tabs > ol > li:active,
+.tabs > ol > li.active {
+    color: var(--fg-1);
+    background-color: var(--bg-4);
+}
+
+.content {
+    margin: 0 var(--gutter-x);
+}
+
+.content > div {
+    max-width: var(--max-width);
+    margin: 0 auto 120px auto;
+    padding: 24px;
+    border-radius: var(--radius-large);
+    background-color: var(--bg-2);
+}
+
+@media screen and (max-width: 1024px) {
+    .tabs > ol > li {
+        font-size: 18px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .tabs > ol > li {
+        font-size: clamp(16px, 2vw, 20px);
+    }
+
+    .content > div {
+        margin: 0 auto 80px auto;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .tabs > ol {
+        margin: 120px auto 40px auto;
+    }
+
+    .tabs > ol > li {
+        font-size: 14px;
+        padding: 8px 20px;
+    }
+
+    .content > div {
+        margin: 0 auto 40px auto;
+    }
+}
+
+@media screen and (max-width: 390px) {
+    .tabs > ol {
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: start;
+    }
+}

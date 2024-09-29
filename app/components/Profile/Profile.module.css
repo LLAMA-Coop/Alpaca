@@ -1,20 +1,28 @@
 .container {
     position: relative;
     width: fit-content;
+    cursor: pointer;
 }
 
-.avatarContainer {
-    cursor: pointer;
+.container > div {
     border-radius: 50%;
 }
 
-.avatarContainer > sub {
+.container > button {
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+}
+
+.notification {
     height: 20px;
     min-width: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--accent-1);
+    color: var(--accent-fg);
+    background-color: var(--accent);
+    border: 1px solid var(--accent);
     border-radius: 25vw;
     padding: 0 5px;
     font-weight: 700;

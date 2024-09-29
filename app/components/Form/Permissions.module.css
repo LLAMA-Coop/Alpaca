@@ -1,22 +1,89 @@
+.permissions > header {
+    display: flex;
+    user-select: none;
+    margin-bottom: 6px;
+    align-items: center;
+}
+
+.permissions > header > p {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--fg-2);
+    letter-spacing: 0.35px;
+}
+
+.permissions > header > button {
+    cursor: pointer;
+    font-size: 10px;
+    margin-left: 8px;
+    padding: 1px 6px;
+    font-weight: 500;
+    color: var(--fg-3);
+    font-family: var(--font-body);
+    background-color: var(--bg-3);
+    border-radius: var(--radius-full);
+    transition:
+        background-color 0.1s ease,
+        color 0.1s ease;
+}
+
+.permissions > header > button:hover {
+    color: var(--fg-1);
+    background-color: var(--bg-4);
+}
+
+.error {
+    font-size: 12px;
+    margin-left: 4px;
+    font-style: italic;
+    color: var(--danger);
+    letter-spacing: 0.3px;
+}
+
 .permissions > div {
-    margin: 1rem 0;
+    padding: 8px;
+    background-color: var(--bg-2);
+    border-radius: var(--radius-medium);
+    border: 1px solid var(--border-color);
 }
 
-.permissions h4 {
-    text-align: center;
+.permissions.hidden > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.permissions h5 {
-    font-weight: bold;
-    text-transform: uppercase;
+.permissions.hidden > div > *:not(button) {
+    display: none;
 }
 
-.permissions li {
-    margin: 4px;
-    padding: 4px;
-    background-color: var(--background-3);
+.show {
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 8px 16px;
+    color: var(--fg-3);
+    background-color: var(--bg-3);
+    font-family: var(--font-body);
+    border-radius: var(--radius-full);
+    transition:
+        background-color 0.1s ease,
+        color 0.1s ease;
 }
 
-.permissions li > * {
-    margin: 2px;
+.show:hover {
+    color: var(--fg-1);
+    background-color: var(--bg-4);
+}
+
+.permissions > div > hr {
+    border: none;
+    margin: 24px 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.permissions > div > div {
+    gap: 24px;
+    display: flex;
+    flex-direction: column;
 }

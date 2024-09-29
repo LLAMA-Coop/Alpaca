@@ -1,16 +1,16 @@
-.passwordTooltip {
+.expectations {
     position: absolute;
     width: 250px;
     padding: 12px;
     border-radius: 4px;
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
     left: calc(100% + 32px);
     top: calc(50% + 10px);
     transform: translateY(-50%);
     animation: popIn 0.15s ease-in-out;
 }
 
-.passwordTooltip::before {
+.expectations::before {
     content: "";
     position: absolute;
     left: -7px;
@@ -18,19 +18,17 @@
     transform: translateY(-50%);
     border-top: 8px solid transparent;
     border-bottom: 8px solid transparent;
-    border-right: 8px solid var(--background-3);
+    border-right: 8px solid var(--bg-3);
 }
 
-.passwordTooltip > p {
+.expectations > p,
+.expectationsBox > p {
     font-size: 14px;
     margin-bottom: 14px;
 }
 
-.passwordTooltip > ul {
-    list-style: none;
-}
-
-.passwordTooltip > ul > li {
+.expectations > ul > li,
+.expectationsBox > ul > li {
     margin-bottom: 4px;
     display: flex;
     align-items: center;
@@ -39,42 +37,76 @@
     font-weight: 300;
 }
 
-.passwordTooltip > ul > li::before {
+.expectations > ul > li::before,
+.expectationsBox > ul > li::before {
     content: "";
     display: inline-block;
     width: 4px;
     height: 4px;
     border-radius: 50%;
     margin-right: 8px;
-    background-color: var(--accent-1);
-    color: var(--accent-foreground);
+    background-color: var(--accent);
+    color: var(--accent-fg);
 }
 
-.passwordTooltip > ul > li.weakness > span {
+.expectations > ul > li.valid > span,
+.expectationsBox > ul > li.valid > span {
     text-decoration: line-through;
     opacity: 0.3;
     font-weight: 200;
 }
 
-.passwordTooltip > ul > li.weakness > div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.passwordTooltip > ul > li.weakness > div > svg {
+.expectations > ul > li.valid > svg,
+.expectationsBox > ul > li.valid > svg {
+    color: var(--success);
     width: 8px;
     height: 8px;
     margin-left: -2px;
     margin-right: 5px;
 }
 
-.passwordTooltip > ul > li.weakness > div path {
-    fill: var(--accent-3);
+.expectations > ul > li.valid::before,
+.expectationsBox > ul > li.valid::before {
+    display: none;
 }
 
-.passwordTooltip > ul > li.weakness::before {
+.hideBox {
     display: none;
+}
+
+@media (max-width: 1100px) {
+    .hideBox {
+        display: flex;
+    }
+
+    .expectations {
+        display: none;
+    }
+}
+
+.recoveryButton {
+    display: flex;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: -40px;
+    color: var(--fg-3);
+    width: fit-content;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    background-color: transparent;
+}
+
+.recoveryButton:hover {
+    color: var(--fg-1);
+    text-decoration: underline;
+}
+
+a.forgotPassword {
+    font-size: 13px;
+    margin-top: -30px;
+    color: var(--fg-4);
 }
 
 @keyframes popIn {

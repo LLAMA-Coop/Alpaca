@@ -1,0 +1,35 @@
+.form {
+    display: grid;
+    grid-gap: 40px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.form > button {
+    align-self: self-end;
+}
+
+.buttons {
+    gap: 16px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.buttons.right {
+    justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+    .form {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .column {
+        gap: 40px;
+    }
+}

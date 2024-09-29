@@ -1,120 +1,63 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAlerts, useModals } from "@/store/store";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, useEffect } from "react";
+import { TooltipContent, TooltipTrigger, Tooltip, Spinner, Input, Form, InfoBox } from "@client";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Validator } from "@/lib/validation";
+import { useEffect, useState } from "react";
 import styles from "./UserInput.module.css";
-import { useRouter } from "next/navigation";
-import { Input, Spinner } from "@client";
+import { useAlerts } from "@/store/store";
+import Link from "next/link";
 
 export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
-    const [usernameError, setUsernameError] = useState("");
-
     const [password, setPassword] = useState("");
-    const [passwordError, setPasswordError] = useState("");
+    const [confirm, setConfirm] = useState("");
 
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [confirmPasswordError, setConfirmPasswordError] = useState("");
+    const [showTwoFactor, setShowTwoFactor] = useState(true);
+    const [twoFactorToken, setTwoFactorToken] = useState("");
+    const [twoFactorCode, setTwoFactorCode] = useState("");
 
     const [loading, setLoading] = useState(false);
-
-    const [passwordFocus, setPasswordFocus] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [open, setOpen] = useState(false);
 
     const addAlert = useAlerts((state) => state.addAlert);
-    const addModal = useModals((state) => state.addModal);
-
-    const passwordTooltip = useRef(null);
-    const passwordInput = useRef(null);
+    const searchParams = useSearchParams();
     const router = useRouter();
 
     useEffect(() => {
-        const handleOutsideClick = (e) => {
-            if (
-                passwordFocus &&
-                !passwordTooltip.current?.contains(e.target) &&
-                !passwordInput.current?.contains(e.target)
-            ) {
-                setPasswordFocus(false);
-            }
-        };
-
-        document.addEventListener("click", handleOutsideClick);
-        return () => document.removeEventListener("click", handleOutsideClick);
-    }, [passwordFocus]);
-
-    const passwordWeaknesses = [
-        "At least 8 characters",
-        "Upper & lowercase letters",
-        "A number",
-        "A special character (@$!%*?&:)",
-    ];
-
-    function getWeaknesses() {
-        let weaknesses = [];
-
-        if (password.length < 8) {
-            weaknesses.push("At least 8 characters");
+        if (twoFactorToken && showTwoFactor && twoFactorCode.length === 6) {
+            handleTwoFactor({ preventDefault: () => {} });
+        } else if (twoFactorToken && !showTwoFactor && twoFactorCode.length === 11) {
+            handleTwoFactor({ preventDefault: () => {} });
         }
-
-        if (!/^(?=.*[a-z])(?=.*[A-Z]).+$/.test(password)) {
-            weaknesses.push("Upper & lowercase letters");
-        }
-
-        if (!/(?=.*\d)/.test(password)) {
-            weaknesses.push("A number");
-        }
-
-        if (!/(?=.*[@$!%*?&:])/.test(password)) {
-            weaknesses.push("A special character (@$!%*?&:)");
-        }
-
-        return weaknesses;
-    }
+    }, [twoFactorCode, showTwoFactor, twoFactorToken]);
 
     async function handleRegister(e) {
         e.preventDefault();
 
-        if (username.length === 0) {
-            setUsernameError("Username cannot be empty");
-        }
+        const validator = new Validator();
+        const name = username.trim();
 
-        if (password.length === 0) {
-            setPasswordError("Password cannot be empty");
-        }
+        validator.validateAll([
+            {
+                field: "username",
+                value: name,
+                type: "user",
+            },
+            {
+                field: "password",
+                value: password,
+                type: "user",
+            },
+        ]);
 
-        if (
-            !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:]).{8,}$/g.test(
-                password,
-            )
-        ) {
-            setPasswordError("Password is too weak");
-            setPasswordFocus(true);
-            let weaknessesModal = (
-                <ul>
-                    {getWeaknesses().map((w, index) => (
-                        <li key={index}>{w}</li>
-                    ))}
-                </ul>
-            );
-            addModal({
-                title: "Please correct in password",
-                content: weaknessesModal,
+        if (!validator.isValid || password !== confirm) {
+            return setErrors({
+                ...validator.errors,
+                confirm: password !== confirm ? "Passwords do not match" : "",
             });
-            return;
         }
-
-        if (password !== confirmPassword) {
-            setConfirmPasswordError("Passwords do not match");
-            return;
-        }
-
-        if (username.length === 0 || password.length === 0) {
-            return;
-        }
-
-        const user = { username: username.trim(), password };
 
         setLoading(true);
 
@@ -125,181 +68,405 @@ export function UserInput({ isRegistering, onSubmit }) {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(user),
-            },
+                body: JSON.stringify({
+                    username: name,
+                    password,
+                }),
+            }
         );
 
         setLoading(false);
 
-        if (response.status === 400) {
-            setUsernameError("Username already exists");
-            return;
-        }
-
         if (response.status === 201) {
-            if (!onSubmit) router.push("/login");
-
             setUsername("");
             setPassword("");
-            setConfirmPassword("");
-            setUsernameError("");
-            setPasswordError("");
-            setConfirmPasswordError("");
-            setPasswordFocus(false);
+            setConfirm("");
+            setErrors({});
 
             addAlert({
                 success: true,
-                message: "Account created successfully",
+                message: "Successfully registered",
             });
-            if (onSubmit) onSubmit();
+
+            if (!onSubmit) {
+                router.push("/login");
+            } else {
+                onSubmit();
+            }
         } else {
-            addAlert({
-                success: false,
-                message: "Something went wrong",
-            });
+            const data = await response.json();
+            setErrors(data.errors || {});
+
+            if (data.errors?.server) {
+                addAlert({
+                    success: false,
+                    message: data.errors.server,
+                });
+            }
         }
     }
 
     async function handleLogin(e) {
         e.preventDefault();
 
-        if (username.length === 0) {
-            setUsernameError("Username cannot be empty");
-        }
-
-        if (password.length === 0) {
-            setPasswordError("Password cannot be empty");
-        }
-
         if (username.length === 0 || password.length === 0) {
             return;
         }
 
-        const user = { username: username.trim(), password };
-
         setLoading(true);
 
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/login`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(user),
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-        );
+            body: JSON.stringify({
+                username,
+                password,
+            }),
+        });
 
         setLoading(false);
 
         if (response.status === 200) {
-            if (!onSubmit) router.push(`/users/${username}`);
-            router.refresh();
+            const data = await response.json();
+
+            if (response.status === 200 && data.token) {
+                return setTwoFactorToken(data.token);
+            }
 
             setUsername("");
             setPassword("");
-            setConfirmPassword("");
-            setUsernameError("");
-            setPasswordError("");
-            setConfirmPasswordError("");
-            setPasswordFocus(false);
+            setErrors({});
 
             addAlert({
                 success: true,
-                message: "Logged in successfully",
+                message: "Successfully logged in",
             });
-            if (onSubmit) onSubmit();
+
+            if (!onSubmit) {
+                const redirectUrl = searchParams.get("next");
+
+                if (redirectUrl) router.push(redirectUrl);
+                else router.push("/me/dashboard");
+            } else {
+                onSubmit();
+            }
+
+            router.refresh();
         } else {
-            setUsernameError("Invalid username or password");
+            const data = await response.json();
+            setErrors(data.errors || {});
+
+            if (errors.server) {
+                addAlert({
+                    success: false,
+                    message: errors.server,
+                });
+            }
         }
     }
 
+    async function handleTwoFactor(e) {
+        e.preventDefault();
+        if (loading) return;
+
+        if (showTwoFactor && twoFactorCode.length !== 6) {
+            return setErrors({ code: "Invalid code" });
+        }
+
+        if (!showTwoFactor && twoFactorCode.length !== 11) {
+            return setErrors({ code: "Invalid recovery code" });
+        }
+
+        setLoading(true);
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/auth/2fa`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                token: twoFactorToken,
+                code: showTwoFactor ? twoFactorCode : undefined,
+                recovery: !showTwoFactor ? twoFactorCode : undefined,
+            }),
+        });
+
+        setLoading(false);
+
+        if (response.status === 200) {
+            setUsername("");
+            setPassword("");
+            setErrors({});
+
+            addAlert({
+                success: true,
+                message: `Successfully logged in ${!showTwoFactor ? " - this code is no longer valid" : ""}`,
+            });
+
+            if (!onSubmit) {
+                const redirectUrl = new URLSearchParams(window.location.search).get("redirect");
+
+                if (redirectUrl) {
+                    router.push(redirectUrl);
+                } else {
+                    router.push("/me/dashboard");
+                }
+            } else {
+                onSubmit();
+            }
+
+            router.refresh();
+        } else {
+            const data = await response.json();
+            setErrors(data.errors || {});
+
+            if (errors.server) {
+                addAlert({
+                    success: false,
+                    message: errors.server,
+                });
+            }
+        }
+    }
+
+    const expectations = [
+        {
+            name: "Between 8 and 72 characters",
+            regex: /^.{8,72}$/,
+        },
+        {
+            name: "At least 1 uppercase letter",
+            regex: /[A-Z]/,
+        },
+        {
+            name: "At least 1 lowercase letter",
+            regex: /[a-z]/,
+        },
+        {
+            name: "At least 1 number",
+            regex: /\d/,
+        },
+        {
+            name: "At least 1 special character",
+            regex: /[^A-Za-z0-9]/,
+        },
+    ];
+
+    if (twoFactorToken) {
+        return (
+            <Form onSubmit={handleTwoFactor}>
+                <InfoBox>
+                    {showTwoFactor ? (
+                        <span>
+                            You have two factor authentication enabled.
+                            <br />
+                            Please enter the code from your authenticator app.
+                        </span>
+                    ) : (
+                        <span>
+                            Lost your authenticator app? Enter a recovery code to login.
+                            <br />
+                            Once used, this code is no longer valid.
+                        </span>
+                    )}
+                </InfoBox>
+
+                {showTwoFactor ? (
+                    <Input
+                        required
+                        autoFocus
+                        maxLength={6}
+                        error={errors.code}
+                        value={twoFactorCode}
+                        label="Two Factor Code"
+                        placeholder="Two Factor Code"
+                        onChange={(e) => {
+                            setTwoFactorCode(e.target.value);
+                            setErrors({ ...errors, code: "" });
+                        }}
+                    />
+                ) : (
+                    <Input
+                        required
+                        autoFocus
+                        maxLength={11}
+                        error={errors.code}
+                        value={twoFactorCode}
+                        label="Recovery Code"
+                        placeholder="Recovery Code"
+                        onChange={(e) => {
+                            setTwoFactorCode(e.target.value);
+                            setErrors({ ...errors, code: "" });
+                        }}
+                    />
+                )}
+
+                <button
+                    type="button"
+                    className={styles.recoveryButton}
+                    onClick={() => {
+                        setShowTwoFactor((show) => !show);
+                    }}
+                >
+                    I {!!showTwoFactor && "don't"} have my authenticator app
+                </button>
+
+                {(!!errors.server || !!errors.token) && (
+                    <InfoBox type="danger">{errors.server || errors.token}</InfoBox>
+                )}
+
+                <button
+                    type="submit"
+                    className="button submit primary"
+                >
+                    Submit {loading && <Spinner primary />}
+                </button>
+            </Form>
+        );
+    }
+
     return (
-        <form className="formGrid">
+        <Form onSubmit={isRegistering ? handleRegister : handleLogin}>
             <Input
-                required={true}
+                required
+                autoFocus
+                label="Username"
+                value={username}
+                placeholder="Username"
+                error={errors.username}
                 onChange={(e) => {
                     setUsername(e.target.value);
-                    setUsernameError("");
+                    setErrors((errors) => ({ ...errors, username: "" }));
                 }}
-                value={username}
-                error={usernameError}
-                label={"Username"}
-                autoFocus={true}
             />
 
-            <div style={{ position: "relative" }} ref={passwordInput}>
-                <Input
-                    type={"password"}
-                    required={true}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                        setPasswordError("");
-                    }}
-                    value={password}
-                    error={isRegistering && passwordError}
-                    label={"Password"}
-                    onFocus={() => setPasswordFocus(true)}
-                    onBlur={() => setPasswordFocus(false)}
-                />
+            <Tooltip placement="right">
+                <TooltipTrigger>
+                    <div>
+                        <Input
+                            required
+                            type="password"
+                            label="Password"
+                            value={password}
+                            placeholder="Password"
+                            error={errors.password}
+                            onChange={(e) => {
+                                setPassword(e.target.value);
+                                setErrors((errors) => ({
+                                    ...errors,
+                                    password: "",
+                                    username: isRegistering ? errors.username : "",
+                                }));
+                            }}
+                        />
+                    </div>
+                </TooltipTrigger>
 
-                {passwordFocus && isRegistering && (
-                    <div
-                        className={styles.passwordTooltip}
-                        ref={passwordTooltip}
-                        aria-live="polite"
-                    >
-                        <p>Your password must contain:</p>
+                {isRegistering && (
+                    <TooltipContent noStyle>
+                        <div className={styles.expectations}>
+                            <p>Your password must meet the following expectations:</p>
+
+                            <ul>
+                                {expectations.map((exp) => {
+                                    return (
+                                        <li
+                                            key={exp.name}
+                                            className={exp.regex.test(password) ? styles.valid : ""}
+                                        >
+                                            {exp.regex.test(password) && (
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 507.506 507.506"
+                                                    fill="currentColor"
+                                                    x="0px"
+                                                    y="0px"
+                                                >
+                                                    <g>
+                                                        <path d="M163.865,436.934c-14.406,0.006-28.222-5.72-38.4-15.915L9.369,304.966c-12.492-12.496-12.492-32.752,0-45.248l0,0   c12.496-12.492,32.752-12.492,45.248,0l109.248,109.248L452.889,79.942c12.496-12.492,32.752-12.492,45.248,0l0,0   c12.492,12.496,12.492,32.752,0,45.248L202.265,421.019C192.087,431.214,178.271,436.94,163.865,436.934z" />
+                                                    </g>
+                                                </svg>
+                                            )}
+
+                                            <span>{exp.name}</span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    </TooltipContent>
+                )}
+            </Tooltip>
+
+            {isRegistering && (
+                <InfoBox
+                    asDiv
+                    fullWidth
+                    className={styles.hideBox}
+                >
+                    <div className={styles.expectationsBox}>
+                        <p>Your password must meet the following expectations:</p>
 
                         <ul>
-                            {passwordWeaknesses.map((weakness, index) => {
+                            {expectations.map((exp) => {
                                 return (
                                     <li
-                                        key={index}
-                                        className={
-                                            !getWeaknesses().includes(weakness)
-                                                ? styles.weakness
-                                                : ""
-                                        }
+                                        key={exp.name}
+                                        className={exp.regex.test(password) ? styles.valid : ""}
                                     >
-                                        <div>
-                                            {!getWeaknesses().includes(
-                                                weakness,
-                                            ) && (
-                                                <FontAwesomeIcon
-                                                    icon={faCheck}
-                                                />
-                                            )}
-                                        </div>
-                                        <span>{weakness}</span>
+                                        {exp.regex.test(password) && (
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 507.506 507.506"
+                                                fill="currentColor"
+                                                x="0px"
+                                                y="0px"
+                                            >
+                                                <g>
+                                                    <path d="M163.865,436.934c-14.406,0.006-28.222-5.72-38.4-15.915L9.369,304.966c-12.492-12.496-12.492-32.752,0-45.248l0,0   c12.496-12.492,32.752-12.492,45.248,0l109.248,109.248L452.889,79.942c12.496-12.492,32.752-12.492,45.248,0l0,0   c12.492,12.496,12.492,32.752,0,45.248L202.265,421.019C192.087,431.214,178.271,436.94,163.865,436.934z" />
+                                                </g>
+                                            </svg>
+                                        )}
+
+                                        <span>{exp.name}</span>
                                     </li>
                                 );
                             })}
                         </ul>
                     </div>
-                )}
-            </div>
+                </InfoBox>
+            )}
 
             {isRegistering && (
                 <Input
-                    type={"password"}
-                    required={true}
+                    required
+                    type="password"
+                    value={confirm}
+                    error={errors.confirm}
+                    label="Password Match"
+                    placeholder="Confirm Password"
                     onChange={(e) => {
-                        setConfirmPassword(e.target.value);
-                        setConfirmPasswordError("");
+                        setConfirm(e.target.value);
+                        setErrors({ ...errors, confirm: "" });
                     }}
-                    value={confirmPassword}
-                    error={confirmPasswordError}
-                    label={"Password Match"}
                 />
             )}
 
-            <button
-                onClick={isRegistering ? handleRegister : handleLogin}
-                className="button submit"
+            <Link
+                href="/forgot-password"
+                className={`link ${styles.forgotPassword}`}
             >
-                {loading ? <Spinner /> : isRegistering ? "Register" : "Login"}
+                Forgot password?
+            </Link>
+
+            <button
+                type="submit"
+                className="button submit primary"
+            >
+                {isRegistering ? "Register" : "Login"} {loading && <Spinner primary />}
             </button>
-        </form>
+        </Form>
     );
 }

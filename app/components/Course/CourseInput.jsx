@@ -1,347 +1,421 @@
 "use client";
 
-import { useStore, useModals, useAlerts } from "@/store/store";
-import { useEffect, useState } from "react";
-import { serializeOne } from "@/lib/db";
-import { MAX } from "@/lib/constants";
-import SubmitErrors from "@/lib/SubmitErrors";
+import { useStore, useAlerts } from "@/store/store";
+import { useEffect, useReducer } from "react";
+import { validation } from "@/lib/validation";
+import { Validator } from "@/lib/validation";
+import { getNanoId } from "@/lib/random";
 import {
-    Input,
-    InputPopup,
-    Label,
-    Spinner,
-    UserInput,
     DeletePopup,
-    ListAdd,
+    Permissions,
+    Checkbox,
+    TextArea,
+    Spinner,
+    Column,
+    Select,
+    Input,
+    Form,
 } from "@client";
-import styles from "./CourseInput.module.css";
-import { PermissionsDisplay } from "../Form/PermissionsDisplay";
-import { buildPermissions } from "@/lib/permissions";
+import { getChangedFields } from "@/lib/objects";
 
-export function CourseInput({ course }) {
-    const [name, setName] = useState("");
-    const [nameError, setNameError] = useState("");
-    const [description, setDescription] = useState("");
-    const [descriptionError, setDescriptionError] = useState("");
-    const [enrollment, setEnrollment] = useState("open");
-    const [permissions, setPermissions] = useState("");
+const defaultState = {
+    name: "",
+    description: "",
+    enrollment: "open",
+    parents: [],
+    prerequisites: [],
+    sources: [],
+    notes: [],
+    quizzes: [],
+    addAllFromSources: false,
+    addAllFromNotes: false,
+    permissions: {
+        allRead: false,
+        allWrite: false,
+        read: [],
+        write: [],
+        groupId: null,
+        groupLocked: false,
+    },
+    loading: false,
+    errors: {},
+};
 
-    const [parentCourses, setParentCourses] = useState([]);
-    const [prerequisites, setPrerequisites] = useState([]);
-    const [sources, setSources] = useState([]);
-    const [addAllFromSources, setAddAllFromSources] = useState(false);
-    const [notes, setNotes] = useState([]);
-    const [addAllFromNotes, setAddAllFromNotes] = useState(false);
-    const [quizzes, setQuizzes] = useState([]);
+function stateReducer(state, action) {
+    switch (action.type) {
+        case "name":
+            return { ...state, name: action.value };
+        case "description":
+            return { ...state, description: action.value };
+        case "enrollment":
+            return { ...state, enrollment: action.value };
+        case "parents":
+            return { ...state, parents: action.value };
+        case "prerequisites":
+            return { ...state, prerequisites: action.value };
+        case "sources":
+            return { ...state, sources: action.value };
+        case "notes":
+            return { ...state, notes: action.value };
+        case "quizzes":
+            return { ...state, quizzes: action.value };
+        case "addAllFromSources":
+            return { ...state, addAllFromSources: action.value };
+        case "addAllFromNotes":
+            return { ...state, addAllFromNotes: action.value };
+        case "permissions":
+            return { ...state, permissions: action.value };
+        case "loading":
+            return { ...state, loading: action.value };
+        case "errors":
+            return { ...state, errors: { ...state.errors, ...action.value } };
+        case "reset":
+            return defaultState;
+        case "editing":
+            return {
+                ...state,
+                ...action.value,
+                parents: action.value.parents || [],
+                prerequisites: action.value.prerequisites || [],
+                sources: action.value.sources || [],
+                notes: action.value.notes || [],
+                quizzes: action.value.quizzes || [],
+            };
+        default:
+            return state;
+    }
+}
 
-    const [loading, setLoading] = useState(false);
+export function CourseInput({ course, close }) {
+    course = {
+        ...course,
+        permissions: {
+            ...course.permissions,
+            allRead: course.permissions.allRead === 1,
+            allWrite: course.permissions.allWrite === 1,
+            groupLocked: course.permissions.groupLocked === 1,
+        },
+    };
 
-    const availableCourses = useStore((state) => state.courses);
-    const availableSources = useStore((state) => state.sources);
-    const availableNotes = useStore((state) => state.notes);
-    const availableQuizzes = useStore((state) => state.quizzes);
-    const user = useStore((state) => state.user);
-    const canDelete = course && user && course.createdBy === user.id;
-    const addModal = useModals((state) => state.addModal);
-    const removeModal = useModals((state) => state.removeModal);
+    console.log(course);
+
+    const [state, dispatch] = useReducer(stateReducer, defaultState);
+
     const addAlert = useAlerts((state) => state.addAlert);
+    const courses = useStore((state) => state.courses);
+    const sources = useStore((state) => state.sources);
+    const quizzes = useStore((state) => state.quizzes);
+    const notes = useStore((state) => state.notes);
+    const user = useStore((state) => state.user);
+
+    const isOwner = course && user && course.creator.id === user.id;
+    const canChangePermissions = isOwner || !course;
 
     useEffect(() => {
         if (!course) return;
-        console.log(course, availableCourses);
+        dispatch({ type: "editing", value: course, parents: courses, sources, notes, quizzes });
+    }, [courses, sources, notes, quizzes]);
 
-        setName(course.name);
-        setDescription(course.description);
+    const courseData = {
+        name: state.name,
+        description: state.description,
+        enrollment: state.enrollment,
+        parents: state.parents?.map((c) => c.id),
+        prerequisites: state.prerequisites?.map((c) => c.id),
+        sources: state.sources?.map((s) => s.id),
+        notes: state.notes?.map((n) => n.id),
+        quizzes: state.quizzes?.map((q) => q.id),
+        addAllFromSources: state.addAllFromSources,
+        addAllFromNotes: state.addAllFromNotes,
+        permissions: state.permissions,
+    };
 
-        setParentCourses(
-            course.parentCourses.map((crs) =>
-                availableCourses.find((x) => x.id === crs.id),
-            ),
+    const canSubmitChange = () => {
+        if (!course) return true;
+
+        const changedFields = getChangedFields(
+            {
+                ...course,
+                parents: course.parents?.map((c) => c.id),
+                prerequisites: course.prerequisites?.map((c) => c.id),
+                sources: course.sources?.map((s) => s.id),
+                notes: course.notes?.map((n) => n.id),
+                quizzes: course.quizzes?.map((q) => q.id),
+            },
+            courseData
         );
 
-        setPrerequisites(
-            course.prerequisites.map((prereq) =>
-                availableCourses.find((x) => x.id === prereq.course.id),
-            ),
-        );
-
-        if (course.permissions)
-            setPermissions(serializeOne(course.permissions));
-    }, []);
-
-    useEffect(() => {
-        console.log(parentCourses);
-    }, [parentCourses]);
+        return Object.keys(changedFields).length > 0;
+    };
 
     async function handleSubmit(e) {
         e.preventDefault();
-        if (loading) return;
-        const submitErrors = new SubmitErrors();
+        if (state.loading) return;
 
-        if (name.length === 0) {
-            submitErrors.addMessage(
-                `Course name must be between 1 and ${MAX.name} characters`,
-                setNameError,
-            );
-        }
-        if (description.length === 0) {
-            submitErrors.addMessage(
-                `Course description must be between 1 and ${MAX.description} characters`,
-                setDescriptionError,
-            );
-        }
-        if (!["open", "paid", "private"].includes(enrollment)) {
-            submitErrors.addMessage(
-                `Enrollment type must one of the following: ${[
-                    "open",
-                    "paid",
-                    "private",
-                ]}`,
-            );
-        }
-        if (submitErrors.errors.length > 0) {
-            addAlert({
-                success: false,
-                message: submitErrors.displayErrors(),
-            });
-        }
-        if (submitErrors.cannotSend) {
-            return;
-        }
+        const validator = new Validator();
 
-        const crsPayload = {
-            name: name.trim(),
-            description,
-            enrollment,
-            parentCourses: parentCourses.map((course) => course.id),
-            prerequisites: prerequisites.map((course) => ({
-                averageLevelRequired: 1,
-                minimumLevelRequired: 1,
-                course: course.id,
-            })),
-            sources: sources.map((source) => source.id),
-            notes: notes.map((note) => note.id),
-            quizzes: quizzes.map((quiz) => quiz.id),
-            addAllFromSources,
-            addAllFromNotes,
-            permissions,
-        };
-        crsPayload.permissions = buildPermissions(
-            permissions,
-            course ? course.id : null,
-            "course",
+        validator.validateAll(
+            [
+                ["name", state.name.trim()],
+                ["description", state.description.trim()],
+                ["enrollment", state.enrollment],
+                ["parents", state.parents],
+                ["prerequisites", state.prerequisites],
+                ["sources", state.sources],
+                ["notes", state.notes],
+                ["quizzes", state.quizzes],
+            ].map(([field, value]) => ({ field, value })),
+            "course"
         );
-        if (course && course.id) {
-            // this will change to implement PATCH in /[id]/route.js
-            crsPayload.id = course.id;
+
+        const permissions = validator.validatePermissions(state.permissions);
+
+        if (!validator.isValid) {
+            return dispatch({ type: "errors", value: validator.errors });
         }
 
-        setLoading(true);
+        dispatch({ type: "loading", value: true });
 
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/course`,
+            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/course${course ? `/${course.id}` : ""}`,
             {
-                method: course && course.id ? "PUT" : "POST",
+                method: course ? "PATCH" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(crsPayload),
-            },
+                body: course
+                    ? JSON.stringify(
+                          getChangedFields(
+                              {
+                                  ...course,
+                                  parents: course.parents?.map((c) => c.id),
+                                  prerequisites: course.prerequisites?.map((c) => c.id),
+                                  sources: course.sources?.map((s) => s.id),
+                                  notes: course.notes?.map((n) => n.id),
+                                  quizzes: course.quizzes?.map((q) => q.id),
+                              },
+                              courseData,
+                              true
+                          )
+                      )
+                    : JSON.stringify({
+                          name: state.name.trim(),
+                          description: state.description.trim(),
+                          enrollment: state.enrollment,
+                          parents: state.parents.map((c) => c.id),
+                          prerequisites: state.prerequisites.map((c) => c.id),
+                          sources: state.sources.map((s) => s.id),
+                          notes: state.notes.map((n) => n.id),
+                          quizzes: state.quizzes.map((q) => q.id),
+                          addAllFromSources: state.addAllFromSources,
+                          addAllFromNotes: state.addAllFromNotes,
+                          permissions,
+                      }),
+            }
         );
 
-        setLoading(false);
+        dispatch({ type: "loading", value: false });
+
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (e) {
+            console.log(`Error parsing response: ${e}`);
+        }
 
         if (response.status === 201) {
-            setName("");
-            setDescription("");
+            dispatch({ type: "reset" });
 
             addAlert({
                 success: true,
-                message: "Course added successfully",
+                message: data.message || "Successfully created course.",
             });
         } else if (response.status === 200) {
             addAlert({
                 success: true,
-                message: "Course edited successfully",
+                message: data.message || "Successfully updated course.",
             });
-        } else if (response.status === 401) {
-            addAlert({
-                success: false,
-                message: "You have been signed out. Please sign in again.",
-            });
-            addModal({
-                title: "Sign back in",
-                content: <UserInput onSubmit={removeModal} />,
-            });
+
+            if (close) close();
         } else {
             addAlert({
                 success: false,
-                message: "Something went wrong",
+                message: data.errors.server || "Something went wrong.",
             });
         }
     }
 
     return (
-        <div className={styles.form}>
-            <Input
-                required={true}
-                onChange={(e) => {
-                    setName(e.target.value);
-                }}
-                value={name}
-                error={nameError}
-                label={"Name"}
-                maxLength={MAX.title}
-            />
-
-            <Input
-                type="textarea"
-                required={true}
-                onChange={(e) => {
-                    setDescription(e.target.value);
-                }}
-                value={description}
-                error={descriptionError}
-                label={"Description"}
-                maxLength={MAX.description}
-            />
-
-            <Input
-                type="select"
-                label="Enrollment Type"
-                required={true}
-                value={enrollment}
-                onChange={(e) => {
-                    setEnrollment(e.target.value);
-                }}
-                choices={[
-                    { value: "open", label: "Open" },
-                    { value: "paid", label: "Paid" },
-                    { value: "private", label: "Private" },
-                ]}
-            />
-
-            <div>
-                <Label required={false} label="Parent Courses" />
-
-                <ListAdd
-                    item="Add parent course"
-                    listChoices={availableCourses}
-                    listChosen={parentCourses}
-                    listProperty={"name"}
-                    listSetter={setParentCourses}
-                    createNew={<InputPopup type="course" />}
-                    type="datalist"
-                    messageIfNone="No parent course"
-                />
-            </div>
-
-            <div>
-                <Label
-                    required={false}
-                    label="Prerequisite courses (to be studied before this course)"
+        <Form
+            singleColumn={course}
+            onSubmit={handleSubmit}
+        >
+            <Column gap={course ? 40 : null}>
+                <Input
+                    required
+                    label="Name"
+                    value={state.name}
+                    error={state.errors.name}
+                    placeholder="Learn to code"
+                    maxLength={validation.course.name.maxLength}
+                    onChange={(e) => {
+                        dispatch({ type: "name", value: e.target.value });
+                        dispatch({ type: "errors", errors: { name: "" } });
+                    }}
                 />
 
-                <ListAdd
-                    item="Add prerequisite course"
-                    listChoices={availableCourses}
-                    listChosen={prerequisites}
-                    listProperty={"name"}
-                    listSetter={setPrerequisites}
-                    createNew={<InputPopup type="course" />}
-                    type="datalist"
-                    messageIfNone="No prerequisites"
+                <Select
+                    label="Enrollment Type"
+                    value={state.enrollment}
+                    error={state.errors.enrollment}
+                    options={[
+                        { value: "open", label: "Open" },
+                        { value: "paid", label: "Paid" },
+                        { value: "private", label: "Private" },
+                    ]}
+                    onChange={(e) => {
+                        dispatch({ type: "enrollment", value: e });
+                    }}
                 />
-            </div>
+            </Column>
 
-            <div className={styles.links}>
-                <div className={styles.sources}>
-                    <Label
-                        required={false}
-                        label="Sources Used by This Course"
-                    />
+            <TextArea
+                required
+                label="Description"
+                value={state.description}
+                error={state.errors.description}
+                maxLength={validation.course.description.maxLength}
+                placeholder="This course will teach you how to code in JavaScript."
+                onChange={(e) => {
+                    dispatch({ type: "description", value: e.target.value });
+                    dispatch({ type: "errors", errors: { description: "" } });
+                }}
+            />
 
-                    <ListAdd
-                        item="Add a source"
-                        listChoices={availableSources}
-                        listChosen={sources}
-                        listProperty={"title"}
-                        listSetter={setSources}
-                        createNew={<InputPopup type="source" />}
-                        type="datalist"
-                        messageIfNone="No sources added"
-                    />
+            <Select
+                multiple
+                itemValue="id"
+                itemLabel="name"
+                options={courses}
+                data={state.parents}
+                label="Parent Courses"
+                placeholder="Select courses"
+                error={state.errors.parents}
+                description="Courses that this course is a part of"
+                setter={(value) => {
+                    dispatch({ type: "parents", value });
+                    dispatch({ type: "errors", value: { parents: "" } });
+                }}
+            />
 
-                    <Input
-                        label="Add all notes and quizzes linked to these sources"
-                        type="checkbox"
-                        value={addAllFromSources}
-                        onChange={() =>
-                            setAddAllFromSources(!addAllFromSources)
-                        }
-                    />
-                </div>
+            <Select
+                multiple
+                itemValue="id"
+                itemLabel="name"
+                options={courses}
+                data={state.prerequisites}
+                label="Prerequisite Courses"
+                placeholder="Select courses"
+                error={state.errors.prerequisites}
+                description="Courses that must be taken before this course"
+                setter={(value) => {
+                    dispatch({ type: "prerequisites", value });
+                    dispatch({ type: "errors", value: { prerequisites: "" } });
+                }}
+            />
 
-                <div className={styles.notes}>
-                    <Label label="Notes Used by This Course" />
+            <Select
+                multiple
+                itemValue="id"
+                label="Sources"
+                itemLabel="title"
+                options={sources}
+                data={state.sources}
+                placeholder="Select sources"
+                error={state.errors.sources}
+                description="The sources used by this course"
+                setter={(value) => {
+                    dispatch({ type: "sources", value });
+                    dispatch({ type: "errors", value: { sources: "" } });
+                }}
+            />
 
-                    <ListAdd
-                        item="Add a note"
-                        listChoices={availableNotes}
-                        listChosen={notes}
-                        listProperty={["title", "text"]}
-                        listSetter={setNotes}
-                        createNew={<InputPopup type="note" />}
-                        type="datalist"
-                        messageIfNone="No notes added"
-                    />
+            <Checkbox
+                value={state.addAllFromSources}
+                label="Add all notes and quizzes linked to these sources"
+                onChange={(value) =>
+                    dispatch({
+                        type: "addAllFromSources",
+                        value: value,
+                    })
+                }
+            />
 
-                    <Input
-                        label="Add all quizzes linked to these notes"
-                        type="checkbox"
-                        value={addAllFromNotes}
-                        onChange={() => setAddAllFromNotes(!addAllFromNotes)}
-                    />
-                </div>
+            <Select
+                multiple
+                itemValue="id"
+                label="Notes"
+                options={notes}
+                itemLabel="title"
+                data={state.notes}
+                placeholder="Select notes"
+                error={state.errors.notes}
+                description="The notes used by this course"
+                setter={(value) => {
+                    dispatch({ type: "notes", value });
+                    dispatch({ type: "errors", value: { notes: "" } });
+                }}
+            />
 
-                <div className={styles.quizzes}>
-                    <Label label="Quizzes Used by This Course" />
+            <Checkbox
+                value={state.addAllFromNotes}
+                label="Add all quizzes linked to these notes"
+                onChange={(value) =>
+                    dispatch({
+                        type: "addAllFromNotes",
+                        value: value,
+                    })
+                }
+            />
 
-                    <ListAdd
-                        item="Add a quiz"
-                        listChoices={availableQuizzes}
-                        listChosen={quizzes}
-                        listProperty={"prompt"}
-                        listSetter={setQuizzes}
-                        createNew={<InputPopup type="quiz" />}
-                        type="datalist"
-                        messageIfNone="No quizzes added"
-                    />
-                </div>
-            </div>
+            <Select
+                multiple
+                itemValue="id"
+                label="Quizzes"
+                options={quizzes}
+                itemLabel="prompt"
+                data={state.quizzes}
+                placeholder="Select quizzes"
+                error={state.errors.quizzes}
+                description="The quizzes used by this course"
+                setter={(value) => {
+                    dispatch({ type: "quizzes", value });
+                    dispatch({ type: "errors", value: { quizzes: "" } });
+                }}
+            />
 
-            <div className={styles.permissions}>
-                <PermissionsDisplay permissions={permissions} />
-
-                {(!course || !user || course.createdBy === user.id) && (
-                    <InputPopup
-                        type="permissions"
-                        resource={permissions}
-                        setter={setPermissions}
-                    />
-                )}
-            </div>
+            {canChangePermissions && (
+                <Permissions
+                    disabled={state.loading}
+                    permissions={state.permissions}
+                    error={state.errors.permissions}
+                    setPermissions={(value) => {
+                        dispatch({ type: "permissions", value });
+                        dispatch({
+                            type: "errors",
+                            value: { permissions: "" },
+                        });
+                    }}
+                />
+            )}
 
             <button
-                onClick={handleSubmit}
-                className={`button submit ${styles.submit}`}
+                type="submit"
+                className="button submit primary"
+                disabled={state.loading || !canSubmitChange()}
             >
-                {loading ? <Spinner /> : "Submit Course"}
+                Submit Course {state.loading && <Spinner />}
             </button>
-
-            {canDelete && (
-                <DeletePopup resourceType="course" resourceId={course.id} />
-            )}
-        </div>
+        </Form>
     );
 }

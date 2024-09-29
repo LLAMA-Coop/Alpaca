@@ -1,9 +1,11 @@
+import { catchRouteError, isUserInGroup } from "@/lib/db/helpers";
 import { unauthorized } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
-import { addError } from "@/lib/db/helpers";
+
+// ACCEPT GROUP INVITE
 
 export async function POST(req, { params }) {
     const { id, memberId } = params;
@@ -12,67 +14,50 @@ export async function POST(req, { params }) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const [notifResult, deleteFields] = await db
-            .promise()
-            .query(
-                "DELETE FROM `Notifications` WHERE `type` = 'invite' AND `recipientId` = ? AND `groupId` = ?",
-                [memberId, id],
-            );
+        const invite = await db
+            .selectFrom("notifications")
+            .select("id")
+            .where("type", "=", "invite")
+            .where("recipientId", "=", memberId)
+            .where("groupId", "=", id)
+            .executeTakeFirst();
 
-        if (notifResult.affectedRows === 0) {
+        if (!invite) {
             return NextResponse.json(
                 {
-                    success: false,
-                    message: "This user hasn't been invited to this group yet.",
+                    message: "This user hasn't been invited to this group yet",
                 },
                 { status: 404 },
             );
         }
 
-        // const group = await Group.findOne({ _id: id });
-        // const member = await User.findOne({ _id: memberId });
-        const [memberResults, fields] = await db
-            .promise()
-            .query(
-                "SELECT `Groups`.`id`, `Groups`.`name`, `Groups`.`description`, `Groups`.`isPublic`, `Groups`.`avatar`, EXISTS (SELECT 1 FROM `Users` WHERE `id` = ?) AS `user_exists`, EXISTS (SELECT 1 FROM `Members` WHERE `groupId` = ? AND userId = ?) AS membership_exists FROM `Groups` WHERE `Groups`.`id` = ?",
-                [memberId, id, memberId, id],
-            );
-
-        const result = memberResults.length > 0 ? memberResults[0] : false;
-
-        if (!result || result.membership_exists) {
+        if (await isUserInGroup(memberId, id)) {
             return NextResponse.json(
                 {
-                    success: false,
-                    message: "Data is invalid.",
+                    message: "User is already in group",
                 },
-                { status: 404 },
-            );
-        } else {
-            return NextResponse.json(
-                {
-                    success: true,
-                    message: "Successfully joined group.",
-                    group: {
-                        id: result.id,
-                        name: result.name,
-                        description: result.description,
-                        avatar: result.avatar,
-                        isPublic: result.isPublic,
-                    },
-                },
-                { status: 200 },
+                { status: 400 },
             );
         }
-    } catch (error) {
-        console.error("[ERROR] /api/groups/id/members/id/accept:POST ", error);
-        addError(error, "/api/groups/[id]/members/[memberId]/accept: POST");
+
+        await db
+            .insertInto("members")
+            .values({
+                userId: memberId,
+                groupId: id,
+                role: "user",
+            })
+            .execute();
+
+        db.deleteFrom("notifications").where("id", "=", invite.id).execute();
+
         return NextResponse.json(
             {
-                success: false,
-                message: "Something went wrong.",
+                message: "Successfully joined group",
             },
-            { status: 500 },
+            { status: 200 },
         );
+    } catch (error) {
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

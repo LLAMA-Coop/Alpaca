@@ -1,4 +1,4 @@
-import styles from "../../page.module.css";
+import styles from "../../(mainapp)/page.module.css";
 
 export function DBConnectError() {
     return (

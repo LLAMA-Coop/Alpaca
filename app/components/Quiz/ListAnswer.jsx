@@ -1,188 +1,224 @@
 "use client";
 
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { Form, FormButtons, InfoBox, Input, Spinner } from "@client";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { correctConfetti } from "@/lib/correctConfetti";
-import { useModals, useAlerts } from "@/store/store";
-import { Card, Input, UserInput } from "@client";
+import { useAlerts, useStore } from "@/store/store";
+import styles from "./QuizInput.module.css";
 import { useEffect, useState } from "react";
+import { nanoid } from "nanoid";
 
-export function ListAnswer({
-    canClientCheck,
-    quiz,
-    isOrdered,
-    handleWhenCorrect,
-    isFlashcard,
-}) {
-    const [userResponse, setUserResponse] = useState(
-        [...Array(quiz.correctResponses.length)].map(() => ""),
-    );
-    const [responseStatus, setResponseStatus] = useState("empty");
-    const [responseCorrect, setResponseCorrect] = useState(false);
-    const [failures, setFailures] = useState(0);
+export function ListAnswer({ quiz, lighter, setCorrect, canClientCheck }) {
+    const [answers, setAnswers] = useState(new Array(quiz.numOfAnswers).fill(""));
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
+    const [hasAnswered, setHasAnswered] = useState(false);
+    const [isCorrect, setIsCorrect] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [failures, setFailures] = useState(0);
+    const [errors, setErrors] = useState({});
+    const [hints, setHints] = useState([]);
 
-    const [showAnswer, setShowAnswer] = useState(false);
-
-    const addModal = useModals((state) => state.addModal);
-    const removeModal = useModals((state) => state.removeModal);
     const addAlert = useAlerts((state) => state.addAlert);
+    const user = useStore((state) => state.user);
+    const showConfetti = user.settings?.showConfetti ?? true;
+
+    const isOrdered = quiz.type === "ordered-list-answer";
 
     useEffect(() => {
-        if (responseStatus === "empty") return;
-        if (incorrectIndexes.length === 0) {
-            setResponseCorrect(true);
-            setFailures(0);
-            correctConfetti();
-            handleWhenCorrect();
-        } else {
-            setFailures(failures + 1);
+        setCorrect(isCorrect);
+    }, [isCorrect]);
+
+    async function handleSubmitAnswer(e) {
+        e.preventDefault();
+        if (hasAnswered || !answers.length) return;
+
+        if (quiz.multipleAnswers) {
+            if (answers.length !== quiz.numOfAnswers) {
+                return setErrors({ answers: `Please select all ${quiz.numOfAnswers} answers` });
+            }
         }
-    }, [incorrectIndexes]);
 
-    function handleChange(index, value) {
-        setResponseStatus("incomplete");
-        let array = [...userResponse];
-        array[index] = value;
-        setUserResponse(array);
-    }
+        setLoading(true);
 
-    async function handleCheckAnswer() {
         if (canClientCheck) {
-            setIncorrectIndexes(
-                whichIndexesIncorrect(
-                    userResponse,
-                    quiz.correctResponses,
-                    isOrdered,
-                ),
+            const incorrect = whichIndexesIncorrect(
+                answers,
+                quiz.answers,
+                quiz.type !== "unordered-list-answer"
             );
-            setResponseStatus("complete");
-        } else {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${
-                    quiz.id
-                }`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ userResponse }),
-                },
-            );
+            const isCorrect = quiz.answers.every((a) => answers.includes(a));
 
-            if (response.status === 401) {
-                addAlert({
-                    success: false,
-                    message: "You have been signed out. Please sign in again.",
-                });
-                addModal({
-                    title: "Sign back in",
-                    content: <UserInput onSubmit={removeModal} />,
-                });
+            if (!isCorrect) {
+                setIncorrectIndexes(incorrect);
+                setFailures((prev) => prev + 1);
+                setIsCorrect(false);
+                setHasAnswered(true);
+
+                const showHints = failures >= 2;
+
+                if (showHints) {
+                    setHints(quiz.hints);
+                }
+
+                return setLoading(false);
             }
 
-            const resJson = await response.json();
-            console.log(resJson);
-            const message = resJson.message;
-            setIncorrectIndexes(message.incorrectIndexes);
-            setResponseStatus("complete");
+            setHints([]);
+            setIsCorrect(true);
+            setHasAnswered(true);
+
+            if (showConfetti) {
+                correctConfetti();
+            }
+        } else {
+            try {
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${quiz.id}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ answers }),
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to check answer");
+                } else {
+                    const data = await response.json();
+                    if (!data?.content) throw new Error("No data returned");
+
+                    const { isCorrect, incorrectIndexes, hints } = data.content;
+
+                    setIncorrectIndexes(incorrectIndexes ?? []);
+                    setIsCorrect(isCorrect);
+                    setHasAnswered(true);
+                    setHints(hints);
+
+                    if (!isCorrect) {
+                        setFailures((prev) => prev + 1);
+                    } else {
+                        setHints([]);
+
+                        if (showConfetti) {
+                            correctConfetti();
+                        }
+                    }
+                }
+            } catch (error) {
+                setHasAnswered(false);
+                addAlert({
+                    success: false,
+                    message: error.message,
+                });
+            } finally {
+                setLoading(false);
+            }
         }
-    }
-
-    function handleShowAnswer() {
-        if (!isFlashcard) return;
-        setShowAnswer((prev) => !prev);
-    }
-
-    let label, color, icon;
-    if (isFlashcard) {
-        label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
-        color = showAnswer ? "var(--accent-3)" : undefined;
-    } else if (responseStatus === "complete") {
-        label = incorrectIndexes.length ? "Incorrect" : "Correct";
-        color = incorrectIndexes.length ? "var(--accent-2)" : "var(--accent-3)";
-        icon = incorrectIndexes.length ? faXmark : faCheck;
-    } else {
-        label = "Check Answer";
     }
 
     return (
-        <Card
-            title={quiz.prompt}
-            buttons={[
-                {
-                    label,
-                    icon,
-                    color,
-                    onClick: isFlashcard ? handleShowAnswer : handleCheckAnswer,
-                },
-            ]}
+        <Form
+            gap={20}
+            singleColumn
+            onSubmit={handleSubmitAnswer}
         >
-            <ul className="flexColumn">
-                {userResponse.map((ans, index) => {
-                    let isCorrect = "";
-                    if (incorrectIndexes.includes(index)) {
-                        isCorrect = false;
-                    } else if (responseStatus === "complete") {
-                        isCorrect = true;
-                    }
-                    return (
-                        <li key={index}>
-                            <Input
-                                type="text"
-                                isCorrect={isCorrect}
-                                aria-labelledby="prompt"
-                                id={"ans_" + index}
-                                value={
-                                    isFlashcard && showAnswer
-                                        ? quiz.correctResponses[index]
-                                        : ans
-                                }
-                                onChange={(e) =>
-                                    handleChange(index, e.target.value)
-                                }
-                                outlineColor={
-                                    isFlashcard && showAnswer
-                                        ? "var(--accent-tertiary-outline)"
-                                        : undefined
-                                }
-                            ></Input>
-                        </li>
-                    );
-                })}
-            </ul>
+            {isOrdered && <InfoBox fullWidth>Order the answers correctly</InfoBox>}
 
-            {/* <button
-                onClick={isFlashcard ? handleShowAnswer : handleCheckAnswer}
-                className="button"
-                style={{ backgroundColor: color }}
-            >
-                {isFlashcard && showAnswer
-                    ? "Return to Your Answers"
-                    : "Show Correct Answers"}
-                {!isFlashcard && "Check Answer"}
-            </button> */}
+            {answers.map((a, i) => {
+                const hasError = incorrectIndexes.includes(i);
 
-            {responseCorrect && responseStatus === "complete" && (
-                <div>Correct!</div>
+                return (
+                    <div
+                        key={`answer-${i}`}
+                        draggable={isOrdered}
+                        className={styles.dragContainer}
+                    >
+                        {isOrdered && (
+                            <span className={styles.dragHandle}>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    height="16"
+                                    width="16"
+                                >
+                                    <path d="m17,6c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3Zm0,18c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3Zm0-9c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3ZM7,6c-1.654,0-3-1.346-3-3S5.346,0,7,0s3,1.346,3,3-1.346,3-3,3Zm0,18c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3Zm0-9c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3Z" />
+                                </svg>
+                            </span>
+                        )}
+
+                        <Input
+                            value={a}
+                            type="text"
+                            darker={lighter}
+                            label={`Answer ${i + 1}`}
+                            placeholder="Type your answer here"
+                            disabled={hasAnswered && !hasError}
+                            error={hasError && "Incorrect answer"}
+                            success={hasAnswered && !hasError && "- Yay! You got it right!"}
+                            onChange={(e) => {
+                                const newAnswers = [...answers];
+                                newAnswers[i] = e.target.value;
+                                setAnswers(newAnswers);
+                                setHasAnswered(false);
+
+                                // Remove error for current index
+                                if (hasError) {
+                                    setIncorrectIndexes((prev) => prev.filter((ii) => ii !== i));
+                                }
+                            }}
+                        />
+                    </div>
+                );
+            })}
+
+            {!!hints.length && (
+                <InfoBox
+                    fullWidth
+                    asDiv
+                >
+                    <h4>Here are some hints to help you out</h4>
+                    <ul className={styles.hints}>
+                        {hints.map((hint) => (
+                            <li key={nanoid()}>{hint}</li>
+                        ))}
+                    </ul>
+                </InfoBox>
             )}
 
-            {!responseCorrect &&
-                responseStatus === "complete" &&
-                quiz.hints &&
-                quiz.hints.length > 0 &&
-                failures > 2 && (
-                    <div data-type="hints">
-                        <p>You're having some trouble. Here are some hints:</p>
+            <FormButtons>
+                <button
+                    type="submit"
+                    disabled={(hasAnswered && !isCorrect) || !answers.length || loading}
+                    className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
+                >
+                    {isCorrect ? "Correct!" : hasAnswered ? "Incorrect" : "Check Answer "}{" "}
+                    {loading && (
+                        <Spinner
+                            primary
+                            size={14}
+                            margin={2}
+                        />
+                    )}
+                </button>
 
-                        <ul>
-                            {quiz.hints.map((hint, index) => {
-                                return <li key={`hint_${index}`}>{hint}</li>;
-                            })}
-                        </ul>
-                    </div>
+                {hasAnswered && isCorrect && (
+                    <button
+                        type="button"
+                        className="button small border"
+                        onClick={() => {
+                            setIncorrectIndexes([]);
+                            setAnswers(new Array(quiz.numOfAnswers).fill(""));
+                            setIsCorrect(false);
+                            setHasAnswered(false);
+                        }}
+                    >
+                        Try Again
+                    </button>
                 )}
-        </Card>
+            </FormButtons>
+        </Form>
     );
 }

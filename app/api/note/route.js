@@ -1,186 +1,130 @@
-import { useUser } from "@/lib/auth";
-import { server, unauthorized } from "@/lib/apiErrorResponses";
-import SubmitErrors from "@/lib/SubmitErrors";
+import { catchRouteError, getNanoId } from "@/lib/db/helpers";
+import { unauthorized } from "@/lib/apiErrorResponses";
+import { Validator } from "@/lib/validation";
 import { NextResponse } from "next/server";
-import { MIN, MAX } from "@/lib/constants";
 import { cookies } from "next/headers";
+import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
-import {
-    addError,
-    getPermittedNotes,
-    insertPermissions,
-    insertCourseResources,
-    updateNote,
-} from "@/lib/db/helpers";
 
-export async function GET(req) {
+// CREATE NOTE
+
+export async function POST(req) {
+    const publicId = getNanoId();
+    let noteId = null;
+
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const content = await getPermittedNotes(user.id);
+        const note = await req.json();
+        const { title, text, sources, courses, tags, permissions: perm } = note;
+
+        const validator = new Validator();
+
+        validator.validate(
+            [
+                ["title", title],
+                ["text", text],
+                ["sources", sources],
+                ["tags", tags],
+            ].map(([field, value]) => ({ field, value })),
+            "note"
+        );
+
+        validator.validate([{ field: "tags", value: tags, type: "misc" }]);
+
+        const permissions = validator.validatePermissions(perm, true);
+
+        if (!validator.isValid) {
+            return NextResponse.json(
+                {
+                    message: "Invalid note data",
+                    errors: validator.errors,
+                },
+                { status: 400 }
+            );
+        }
+
+        await db
+            .insertInto("notes")
+            .values({
+                publicId,
+                title,
+                text,
+                tags: JSON.stringify(tags),
+                createdBy: user.id,
+            })
+            .execute();
+
+        noteId = (
+            await db
+                .selectFrom("notes")
+                .select("id")
+                .where("publicId", "=", publicId)
+                .executeTakeFirstOrThrow()
+        ).id;
+
+        await db
+            .insertInto("resource_permissions")
+            .values({
+                resourceId: noteId,
+                resourceType: "note",
+                ...permissions,
+            })
+            .execute();
+
+        if (courses.length) {
+            await db
+                .insertInto("resource_relations")
+                .values(
+                    courses.map((c) => ({
+                        A: noteId,
+                        B: c,
+                        A_type: "note",
+                        B_type: "course",
+                        // includeReference: c.includeReference || false,
+                        // reference: c.reference || null,
+                        // referenceType: c.referenceType || null,
+                    }))
+                )
+                .execute();
+        }
+
+        if (sources.length) {
+            await db
+                .insertInto("resource_relations")
+                .values(
+                    sources.map((s) => ({
+                        A: s,
+                        B: noteId,
+                        A_type: "source",
+                        B_type: "note",
+                        // includeReference: s.includeReference || false,
+                        // reference: s.reference || null,
+                        // referenceType: s.referenceType || null,
+                    }))
+                )
+                .execute();
+        }
 
         return NextResponse.json(
             {
-                content,
+                message: "Note created successfully",
+                content: {
+                    id: noteId,
+                    publicId,
+                    ...note,
+                },
             },
-            { status: 200 },
+            { status: 201 }
         );
     } catch (error) {
-        console.error(`[Note] GET error: ${error}`);
-        addError(error, "/api/note: GET");
-        return server;
-    }
-}
+        db.deleteFrom("notes").where("publicId", "=", publicId).execute();
 
-export async function POST(req) {
-    const noteInsertQuery = `INSERT INTO \`Notes\` (\`title\`, \`text\`, \`tags\`, \`createdBy\`) VALUES (?, ?, ?, ?)`;
-
-    try {
-        const user = await useUser({ token: cookies().get("token")?.value });
-        if (!user) return unauthorized;
-
-        const { title, text, sources, courses, tags, permissions } =
-            await req.json();
-
-        const submitErrors = new SubmitErrors();
-
-        if (text.length < MIN.noteText || text.length > MAX.noteText) {
-            submitErrors.addError(
-                `Text must be between ${MIN.noteText} and ${MAX.noteText} characters long`,
-            );
+        if (noteId) {
+            db.deleteFrom("resource_permissions").where("resourceId", "=", noteId).execute();
         }
 
-        if (title.length < MIN.title || title.length > MAX.title) {
-            submitErrors.addError(
-                `Title must be between ${MIN.title} and ${MAX.title} characters long`,
-            );
-        }
-
-        if (sources.length === 0) {
-            submitErrors.addError(
-                "At least one source is required to create a note",
-            );
-        }
-
-        tags.forEach((tag) => {
-            if (typeof tag !== "string") {
-                return submitErrors.addError(
-                    `"${typeof tag}" is not a valid tag type. Tags must be strings.`,
-                );
-            }
-
-            if (tag.length < MIN.tag || tag.length > MAX.tag) {
-                submitErrors.addError(
-                    `Tags must be between ${MIN.tag} and ${MAX.tag} characters long`,
-                );
-            }
-        });
-
-        if (submitErrors.cannotSend) {
-            return NextResponse.json(
-                { message: submitErrors.displayErrors() },
-                { status: 400 },
-            );
-        }
-
-        const fieldsArray = [title, text, JSON.stringify(tags), user.id];
-
-        const [noteInsert, fields] = await db
-            .promise()
-            .query(noteInsertQuery, fieldsArray);
-
-        const noteId = noteInsert.insertId;
-
-        const noteSourceQuery = `INSERT INTO \`ResourceSources\` (resourceId, resourceType, sourceId, locInSource, locType) VALUES ?`;
-
-        const noteSourceValues = sources.map((s) => [
-            noteId,
-            "note",
-            s,
-            "0",
-            "page",
-        ]);
-
-        const [noteSourceInserts, fieldsNS] = await db
-            .promise()
-            .query(noteSourceQuery, [noteSourceValues]);
-
-        const permInsert = await insertPermissions(
-            permissions,
-            noteId,
-            user.id,
-        );
-
-        if (courses && courses.length > 0) {
-            insertCourseResources({
-                courseIDs: courses,
-                resourceId: noteId,
-                resourceType: "note",
-            });
-        }
-
-        const content = noteInsert;
-        return NextResponse.json(
-            { message: "Note created successfully", content },
-            { status: 201 },
-        );
-    } catch (error) {
-        console.error(`[Note] POST error: ${error}`);
-        addError(error, "/api/note: POST");
-        return server;
-    }
-}
-
-export async function PUT(req) {
-    try {
-        const user = await useUser({ token: cookies().get("token")?.value });
-        if (!user) return unauthorized;
-
-        const { id, title, text, sources, courses, tags, permissions } =
-            await req.json();
-
-        const note = (await getPermittedNotes({ userId: user.id })).find(
-            (x) => x.id === id,
-        );
-        if (!note) {
-            return NextResponse.json(
-                {
-                    message: `No note found with id ${id}`,
-                },
-                { status: 404 },
-            );
-        }
-
-        const isCreator =
-            (note.createdBy && note.createdBy === user.id) ||
-            (note.creator && note.creator.id === user.id);
-        const canEdit = isCreator || note.permissionType === "write";
-
-        if (!canEdit) {
-            return NextResponse.json(
-                {
-                    message: `You are not permitted to edit note ${id}`,
-                },
-                { status: 403 },
-            );
-        }
-
-        const content = await updateNote({
-            id,
-            title,
-            text,
-            sources,
-            courses,
-            tags,
-            permissions: isCreator ? permissions : [],
-            contributorId: user.id,
-        });
-
-        return NextResponse.json({ content });
-    } catch (error) {
-        console.error(`[Note] PUT error: ${error}`);
-        addError(error, "/api/note: PUT");
-        return server;
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

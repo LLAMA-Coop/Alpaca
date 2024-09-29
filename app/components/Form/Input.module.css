@@ -1,244 +1,398 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    border-radius: 4px;
-}
-
-.container.inline {
-    display: inline-flex;
-    width: fit-content;
-    margin: 0 5px 5px;
-}
-
-/* .container.inline:first-child {
-    margin-left: 0;
-} */
-
-.inlineContainer {
-    display: flex;
-    cursor: pointer;
-    margin-bottom: 8px;
-}
-
-.inlineContainer.disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.inlineContainer.disabled * {
-    cursor: not-allowed !important;
-}
-
-.inputContainer {
+    max-width: 100%;
     position: relative;
-    border-radius: 4px;
-    background-color: var(--background-2);
+}
+
+.container.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.container.disabled .label {
+    color: var(--fg-4);
+}
+
+.label {
+    display: flex;
+    font-size: 14px;
+    font-weight: 400;
+    user-select: none;
+    color: var(--fg-2);
+    margin-bottom: 6px;
+    align-items: center;
+    letter-spacing: 0.35px;
+}
+
+.label > span {
+    font-size: 12px;
+    margin-top: 2px;
+    margin-left: 4px;
+    font-style: italic;
+    font-weight: 400;
+}
+
+.label > .required,
+.label > .error {
+    color: var(--danger);
+}
+
+.label > .success {
+    color: var(--success);
+}
+
+.wrapper {
+    padding: 0;
+    height: 42px;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+    max-height: 450px;
+    position: relative;
+    align-items: center;
+    overflow: hidden auto;
+    background-color: var(--bg-3);
+    border-radius: var(--radius-medium);
+    border: 1px solid var(--border-color);
+    transition:
+        border 0.1s ease,
+        box-shadow 0.1s ease;
+}
+
+.wrapper.select {
+    cursor: pointer;
+}
+
+.wrapper.textarea {
+    padding: 0;
+    min-height: 160px;
+    height: fit-content;
+}
+
+.wrapper.multiple {
+    gap: 8px;
+    height: unset;
+    padding: 8px 10px;
+    min-height: 42px;
+}
+
+.wrapper.select.multiple {
+    padding-right: calc(10px + 32px + 4px);
+}
+
+.wrapper:focus-within,
+.wrapper.active {
+    --bs-1: var(--accent-20);
+    --bs-2: var(--accent-08);
+    border: 1px solid var(--accent-50);
+    box-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.03),
+        0 3px 6px rgba(0, 0, 0, 0.02),
+        0 0 0 3px var(--bs-1),
+        0 1px 1px 0 var(--bs-2);
+}
+
+.input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    outline: none;
+    max-width: 100%;
+    font-size: 15px;
+    padding: 0 10px;
+    font-weight: 400;
+    color: var(--fg-2);
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent;
+    border-radius: var(--radius-medium);
+}
+
+.input:disabled {
+    cursor: default;
+}
+
+.input.textarea {
+    padding: 10px;
+    display: block;
+    resize: vertical;
+    min-height: 160px;
+    align-self: stretch;
+    font-family: var(--font-body);
+}
+
+.wrapper.multiple .input,
+.wrapper.multiple .selected {
+    flex: 1;
+    border-radius: 0;
+    min-width: 100px;
+    height: 23px;
+}
+
+.wrapper.multiple .input {
+    padding: 0;
+}
+
+.input::placeholder {
+    font-weight: 400;
+    color: var(--fg-4);
+}
+
+.chip {
+    display: flex;
+    font-size: 12px;
+    cursor: pointer;
+    max-width: 250px;
+    overflow: hidden;
+    user-select: none;
+    color: var(--fg-3);
+    white-space: nowrap;
+    align-items: center;
+    height: fit-content;
+    text-overflow: ellipsis;
+    padding: 4px 4px 4px 8px;
+    background-color: var(--bg-2);
+    border-radius: var(--radius-medium);
+}
+
+.chip:hover {
+    color: var(--fg-1);
+    background-color: var(--bg-4);
+}
+
+.chip > span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.chip > svg {
+    min-width: 12px;
+    margin-left: 4px;
+}
+
+.selected {
+    flex-grow: 1;
+    display: flex;
+    user-select: none;
+    color: var(--fg-4);
+    align-items: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.selected.isValue {
+    padding: 0 10px;
+    color: var(--fg-3);
+}
+
+.selectButton {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    outline: none;
+    cursor: pointer;
+    color: var(--fg-3);
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-3);
+    border: 1px solid transparent;
+    border-radius: var(--radius-small);
+    transition:
+        background-color 0.1s ease,
+        color 0.1s ease,
+        border 0.1s ease;
+}
+
+.selectButton:hover,
+.selectButton:focus {
+    color: var(--fg-2);
+    background-color: var(--bg-4);
+}
+
+.wrapper.active .selectButton {
+    color: var(--accent);
+    background-color: var(--bg-4);
+}
+
+.options {
+    gap: 4px;
+    padding: 4px;
+    display: flex;
+    z-index: 100000;
+    max-height: 400px;
+    overflow: hidden auto;
+    flex-direction: column;
+    background-color: var(--bg-2);
+    border-radius: var(--radius-medium);
     border: 1px solid var(--border-color);
 }
 
-.inputContainer > input,
-.inputContainer > select,
-.inputContainer > textarea,
-.inputContainer > .select {
-    width: 100%;
-    height: 40px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 16px;
-    background-color: transparent;
-    color: var(--foreground-1);
-    outline-color: var(--accent-1);
-}
-
-.inputContainer > input:focus-visible,
-.inputContainer > select:focus-visible,
-.inputContainer > textarea:focus-visible,
-.inputContainer > .select:focus-visible {
-    border: 1px solid transparent !important;
-}
-
-.inputContainer > input::placeholder,
-.inputContainer > select::placeholder,
-.inputContainer > textarea::placeholder {
-    font-size: 14px;
-}
-
-.select {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    user-select: none;
-    cursor: pointer;
-}
-
-.inline .inputContainer > input,
-.inline .inputContainer > select,
-.inline .inputContainer > textarea {
-    padding: 0 5px;
-    height: 24px;
-    /* font-family: "Courier New", monospace; */
-    /* font-size: 1.2rem; */
-    /* font-weight: bolder; */
-}
-
-.inputContainer > textarea {
-    height: 80px;
-    min-height: 40px;
-    max-height: 550px;
-    resize: vertical;
-    font-family: "Sofia sans", sans-serif;
-}
-
-.inputContainer > select {
-    border-right: 10px solid transparent;
-}
-
-.inputContainer > select > option {
-    background-color: var(--background-2);
-    color: var(--foreground-1);
-    font-size: 16px;
-}
-
-.container > div > .actionButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 30px;
-    height: 30px;
+.option {
+    gap: 8px;
     border: none;
-    border-radius: 4px;
-    margin: 5px 5px 0 0;
+    padding: 10px;
+    display: flex;
     cursor: pointer;
-    color: var(--accent-foreground);
-    background-color: var(--accent-1);
-}
-
-.container > div > .actionButton:hover {
-    background-color: var(--accent-1-hover);
-}
-
-.container > div > .actionButton:active {
-    background-color: var(--accent-1-active);
-}
-
-.labelContainer.normal {
-    flex: 1;
-}
-
-.labelContainer {
-    margin-bottom: 8px;
-}
-
-.labelContainer > label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    font-size: 15px;
+    font-weight: 400;
     user-select: none;
+    color: var(--fg-3);
+    align-items: center;
+    font-family: var(--font-body);
+    background-color: transparent;
+    justify-content: space-between;
+    border-radius: var(--radius-small);
 }
 
-.labelContainer.normal > label {
-    text-transform: none;
-    font-size: 16px;
-    line-height: 24px;
-    cursor: pointer;
-    font-weight: 500;
+.option > p {
+    text-align: left;
+    overflow: hidden;
+    white-space: wrap;
+    word-break: break-all;
 }
 
-.labelContainer > label > span {
-    color: var(--error);
+.option > svg {
+    min-width: 14px;
 }
 
-.labelContainer > span {
-    color: var(--error);
-    font-size: 14px;
-    margin-left: 4px;
-    font-style: italic;
-    user-select: none;
+.option.empty {
+    cursor: default;
+}
+
+.option.active {
+    color: var(--fg-2);
+    background-color: var(--bg-3);
+}
+
+.option:focus,
+.option:focus-visible {
+    border: none;
+    outline: none;
+    box-shadow: none;
 }
 
 .checkbox {
-    opacity: 1;
-    border-radius: 14px;
+    width: 100%;
+    display: flex;
     cursor: pointer;
-    position: relative;
-    width: 40px;
-    height: 24px;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px outset transparent;
+    border-radius: var(--radius-medium);
 }
 
-.checkbox > svg {
-    display: block;
-    position: absolute;
-    width: 28px;
-    height: 18px;
-    margin: 3px;
-    transition: left 0.2s ease-in-out;
+.checkbox:focus-visible {
+    outline: none;
+    border: 1px solid var(--accent-50);
+    box-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.03),
+        0 3px 6px rgba(0, 0, 0, 0.02),
+        0 0 0 3px var(--accent-20),
+        0 1px 1px 0 var(--accent-08);
+}
+
+.checkbox > span {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    color: var(--fg-2);
+    font-size: 16px;
+    font-weight: 400;
 }
 
 .checkbox > input {
-    position: absolute;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    margin: 0;
-    border-radius: 14px;
+    display: none;
+}
+
+.checker {
+    width: 40px;
+    height: 24px;
     cursor: pointer;
+    min-width: 40px;
+    position: relative;
+    background-color: var(--bg-4);
+    border-radius: var(--radius-full);
 }
 
-.count {
+.checker.checked {
+    background-color: var(--success);
+}
+
+.checker > div {
+    top: 50%;
+    left: 12px;
+    width: 20px;
+    height: 20px;
     display: flex;
-    justify-content: flex-end;
-    font-size: 14px;
-    margin-top: 4px;
-    user-select: none;
-}
-
-.dropdown {
     position: absolute;
-    top: calc(100% + 8px);
-    left: -1px;
-    width: calc(100% + 2px);
-    max-height: 200px;
-    overflow-y: auto;
-    border-radius: 4px;
-    background-color: var(--background-2);
-    border: 1px solid var(--border-color);
-    z-index: 100;
-}
-
-.dropdown > li {
-    display: flex;
+    color: var(--bg-4);
     align-items: center;
-    padding: 6px 10px;
-    font-size: 15px;
-    line-height: 20px;
-    cursor: pointer;
-    user-select: none;
+    justify-content: center;
+    transition: left 0.1s ease;
+    transform: translate(-50%, -50%);
+    border-radius: var(--radius-full);
+    background-color: var(--success-fg);
 }
 
-.dropdown > li:hover {
-    background-color: var(--background-3);
+.checker.checked > div {
+    color: var(--success);
+    left: calc(100% - 12px);
 }
 
-.dropdown > li:focus-visible {
-    outline: none;
-    background-color: var(--background-3);
+/* Checker loading spinner */
+
+.spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--fg-1);
+    border-top-color: var(--success);
+    animation: spinner 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }
 
-.inputContainer .incorrect {
-    border: 1px solid red;
+.description {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg-4);
 }
 
-.inputContainer .correct {
-    border: 1px solid green;
+/* Skeletons */
+
+.label.skeleton {
+    width: 30%;
+    height: 17px;
+    border-radius: var(--radius-medium);
 }
 
-.container textarea {
-    height: 200px;
+.input.skeleton {
+    height: 42px;
+}
+
+.skeleton {
+    pointer-events: none;
+    background: linear-gradient(to right, var(--bg-2) 0%, var(--bg-3) 50%, var(--bg-2) 100%);
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    animation: skeleton 1.5s infinite linear;
+}
+
+@keyframes skeleton {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
 }

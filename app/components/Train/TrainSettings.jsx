@@ -3,7 +3,6 @@
 import { useDailyTrain, useStore } from "@/store/store";
 import styles from "./DailyTrain.module.css";
 import { useState, useEffect } from "react";
-import { Input, ListAdd } from "@client";
 
 export function TrainSettings({ tags, courses }) {
     const settings = useDailyTrain((state) => state.settings);
@@ -72,7 +71,7 @@ export function TrainSettings({ tags, courses }) {
         <div className={styles.settings}>
             <div>
                 <h3>Time Limit</h3>
-                <Input
+                {/* <Input
                     inline
                     label={"Minutes"}
                     type="number"
@@ -94,10 +93,10 @@ export function TrainSettings({ tags, courses }) {
                     onChange={(e) =>
                         updateTime("seconds", Number(e.target.value))
                     }
-                />
+                /> */}
             </div>
 
-            <div>
+            {/* <div>
                 <h3>Filter by Tags</h3>
 
                 <ListAdd
@@ -119,7 +118,7 @@ export function TrainSettings({ tags, courses }) {
                     listProperty={"name"}
                     listSetter={setSettingCourses}
                 />
-            </div>
+            </div> */}
         </div>
     );
 }

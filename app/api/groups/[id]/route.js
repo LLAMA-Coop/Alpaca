@@ -1,23 +1,66 @@
+import { canUserWriteToGroup, catchRouteError } from "@/lib/db/helpers";
+import { unauthorized } from "@/lib/apiErrorResponses";
+import { Validator } from "@/lib/validation";
 import { NextResponse } from "next/server";
-import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import { server, unauthorized } from "@/lib/apiErrorResponses";
+import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db.js";
 
-export function PUT(req) {
-    // For changing description (admin only), and escalating users (owner only)
-}
+// UPDATE GROUP
 
-export function DELETE() {}
-
-export async function GET(req, { params }) {
+export async function PATCH(req, { params }) {
     const { id } = params;
-    console.log(`You have reached the route for Group ${id}`);
+    const { name, description, icon, isPublic } = await req.json();
 
-    return NextResponse.json(
-        {
-            success: true,
-            message: "Successfully invited user to group.",
-        },
-        { status: 200 },
-    );
+    try {
+        const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) return unauthorized;
+
+        if (!(await canUserWriteToGroup(user.id, id))) {
+            return unauthorized;
+        }
+
+        const validator = new Validator();
+
+        validator.validateAll(
+            [
+                ["name", name],
+                ["description", description],
+                ["icon", icon],
+                ["isPublic", isPublic],
+            ].map(([field, value]) => ({ field, value })),
+            "group",
+        );
+
+        if (!validator.isValid) {
+            return NextResponse.json(
+                {
+                    message: "Invalid input",
+                    errors: validator.errors,
+                },
+                { status: 400 },
+            );
+        }
+
+        if (name || description || icon || isPublic) {
+            await db
+                .updateTable("groups")
+                .set({
+                    name,
+                    description,
+                    icon,
+                    isPublic,
+                })
+                .execute();
+        }
+
+        return NextResponse.json(
+            {
+                message: "Successfully updated group",
+            },
+            { status: 200 },
+        );
+    } catch (error) {
+        return catchRouteError({ error, route: req.nextUrl.pathname });
+    }
 }

@@ -3,15 +3,15 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./QuizInput.module.css";
 import { Input } from "@client";
-import { MAX } from "@/lib/constants";
+import { validation } from "@/lib/validation";
+import { getNanoId } from "@/lib/random";
 
 export function BlankableInput({
     prompt,
     setPrompt,
-    promptError,
-    setPromptError,
-    responses,
-    setResponses,
+    error,
+    answers,
+    setAnswers,
 }) {
     const [promptInput, setPromptInput] = useState("");
     const [promptWords, setPromptWords] = useState([]);
@@ -24,9 +24,9 @@ export function BlankableInput({
             .filter((x) => x !== undefined && x !== "")
             .map((x) => {
                 if (/(<blank\s*\/>)/.test(x)) {
-                    let newWord = responses[resIndex];
+                    let newWord = answers[resIndex];
                     resIndex++;
-                    if (resIndex === responses.length) {
+                    if (resIndex === answers.length) {
                         resIndex = 0;
                     }
                     return {
@@ -53,7 +53,6 @@ export function BlankableInput({
 
     function handleChangePrompt(e) {
         setPromptInput(e.target.value);
-        setPromptError("");
         let promptArray = e.target.value
             .split(/([A-Za-z]+(?:'[A-Za-z]+)?|\W)/)
             .filter((x) => x !== undefined && x !== "")
@@ -116,7 +115,7 @@ export function BlankableInput({
         });
 
         setPromptWords(promptArray);
-        setResponses(promptArray.filter((x) => x.isBlank).map((x) => x.word));
+        setAnswers(promptArray.filter((x) => x.isBlank).map((x) => x.word));
         setPrompt(
             promptArray
                 .map((x) => {
@@ -135,8 +134,10 @@ export function BlankableInput({
         let promptArray = [];
         let responseArray = [];
         let words = [...promptWords];
+
         spans.forEach((x, index) => {
             let input = x.querySelector("input");
+
             if (input && input.checked) {
                 promptArray.push("<blank />");
                 words[index].isBlank = true;
@@ -148,38 +149,52 @@ export function BlankableInput({
                 promptArray.push(x.textContent);
             }
         });
+
         setPrompt(promptArray.join(""));
         setPromptWords(words);
-        setResponses(responseArray);
+        setAnswers(responseArray);
     }
 
     return (
         <div>
             <Input
-                label={"Enter text that you wish to make blanks within"}
-                description={"Question prompt. Can be a question or statement"}
-                required={true}
+                required
+                error={error}
                 value={promptInput}
-                maxLength={MAX.prompt}
-                error={promptError}
                 onChange={handleChangePrompt}
+                maxLength={validation.quiz.prompt.maxLength}
+                label="Enter text that you wish to make blanks within"
             />
+
             <div className={styles.blankBank} ref={promptBank}>
                 <p>Click the words you would like to be blank.</p>
-                {promptWords.map((x, index) => {
+
+                {promptWords.map((x) => {
+                    const id = getNanoId();
+
                     if (x.punctuation) {
-                        return <span key={index}>{x.punctuation}</span>;
+                        return <span key={id}>{x.punctuation}</span>;
                     } else {
                         return (
-                            <span key={index} data-word={x.word}>
+                            <span key={id} data-word={x.word}>
                                 <input
-                                    autoCapitalize="none"
+                                    id={id}
                                     type="checkbox"
-                                    id={`${index}_${x.word}`}
+                                    autoCapitalize="none"
                                     checked={x.isBlank}
                                     onChange={handleChangeBlank}
                                 />
-                                <label htmlFor={`${index}_${x.word}`}>
+
+                                <label
+                                    htmlFor={id}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            document.getElementById(id).click();
+                                            e.currentTarget.focus();
+                                        }
+                                    }}
+                                >
                                     {x.word}
                                 </label>
                             </span>

@@ -8,8 +8,8 @@ import { links } from "@/lib/nav";
 import Link from "next/link";
 
 export function RightContainer({ user }) {
-    const [open, setOpen] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
+    const [open, setOpen] = useState(false);
     const pathname = usePathname();
 
     function handleClose() {
@@ -19,7 +19,7 @@ export function RightContainer({ user }) {
         setTimeout(() => {
             setOpen(false);
             setIsClosing(false);
-        }, 200);
+        }, 180);
     }
 
     function handleOpen() {
@@ -28,10 +28,6 @@ export function RightContainer({ user }) {
             document.documentElement.style.overflow = "hidden";
         }, 200);
     }
-
-    // useEffect(() => {
-    //     handleClose();
-    // }, [pathname]);
 
     useEffect(() => {
         function handleResize() {
@@ -47,9 +43,17 @@ export function RightContainer({ user }) {
     return (
         <div className={styles.container}>
             {user ? (
-                <Profile user={user} size={44} />
+                <Profile
+                    user={user}
+                    size={44}
+                />
             ) : (
-                <Link href="/login">Login</Link>
+                <Link
+                    className="button round primary"
+                    href="/login"
+                >
+                    Login
+                </Link>
             )}
 
             {open && (
@@ -61,31 +65,25 @@ export function RightContainer({ user }) {
                             : "",
                     }}
                 >
-                    {/* <button
-                        onClick={() => {
-                            if (open) return handleClose();
-                            handleOpen();
-                        }}
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            width="24"
-                            height="24"
-                        >
-                            <path d="M18 6l-12 12" />
-                            <path d="M6 6l12 12" />
-                        </svg>
-                    </button> */}
-
                     <nav>
-                        <ul>
+                        <ul className={styles.links}>
                             {links.map((link) => (
-                                <li
-                                    key={link.name}
-                                    onClick={() => handleClose()}
-                                >
-                                    <Link href={link.href}>{link.name}</Link>
+                                <li key={link.name}>
+                                    <Link
+                                        href={link.href}
+                                        tabIndex={link.href === pathname ? -1 : 0}
+                                        onClick={(e) => {
+                                            if (link.href === pathname) {
+                                                e.preventDefault();
+                                            }
+                                            handleClose();
+                                        }}
+                                        className={`${styles.link} ${
+                                            pathname === link.href ? styles.active : ""
+                                        }`}
+                                    >
+                                        {link.name}
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
@@ -102,9 +100,10 @@ export function RightContainer({ user }) {
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
-                    width="28"
                     height="28"
+                    width="28"
                 >
                     <path d="M4 6l16 0" />
                     <path d="M4 12l16 0" />

@@ -1,81 +1,87 @@
+import { getNanoId, catchRouteError } from "@/lib/db/helpers";
+import { validation } from "@/lib/validation";
 import { NextResponse } from "next/server";
-import bcrypt from "bcrypt";
-import { server } from "@/lib/apiErrorResponses";
 import { db } from "@/lib/db/db";
-import { addError } from "@/lib/db/helpers";
+import bcrypt from "bcrypt";
 
 export async function POST(req) {
-    // This may or may not require admin authorization
-    // For now, anybody can make account
-
     const { username, password } = await req.json();
 
-    if (!(username && password)) {
+    const name = username.trim();
+    const publicId = getNanoId();
+
+    if (!(name && password)) {
         return NextResponse.json(
             {
-                message: "Username and password required",
+                errors: {
+                    username: "Username is required",
+                    password: "Password is required",
+                },
             },
-            { status: 400 },
+            { status: 400 }
         );
     }
 
-    const pwdRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&:]).{8,}$/g;
-
-    if (!pwdRegex.test(password)) {
+    if (!validation.user.password.regex.test(password)) {
         return NextResponse.json(
             {
-                message: "Password does not meet requirements.",
+                errors: {
+                    password: validation.user.password.error,
+                },
             },
-            { status: 400 },
+            { status: 400 }
         );
     }
 
-    if (!/^.{2,32}$/.test(username)) {
+    if (!validation.user.username.regex.test(name)) {
         return NextResponse.json(
             {
-                message: "Username does not meet requirements.",
+                errors: {
+                    username: validation.user.username.error,
+                },
             },
-            { status: 400 },
+            { status: 400 }
         );
     }
 
     try {
-        const [resultSameUser, fieldsSame] = await db
-            .promise()
-            .query("SELECT `id` FROM Users WHERE username = ? LIMIT 1", [
-                username.trim(),
-            ]);
+        const exists = await db
+            .selectFrom("users")
+            .select("id")
+            .where(({ or, eb }) => or([eb("username", "=", name), eb("email", "=", name)]))
+            .executeTakeFirst();
 
-        if (resultSameUser.length > 0) {
+        if (exists) {
             return NextResponse.json(
                 {
-                    message: "Username already taken",
+                    errors: {
+                        username: "Username is already taken",
+                    },
                 },
-                { status: 400 },
+                { status: 400 }
             );
         }
 
-        const displayName = username.trim();
-        const passwordHash = await bcrypt.hash(password, 10);
-        const sql =
-            "INSERT INTO `Users` (`username`, `displayName`, `passwordHash`, `refreshToken`) VALUES (?, ?, ?, ?)";
-        const values = [username.trim(), displayName, passwordHash, "{}"];
-        const [result, fields] = await db.promise().query(sql, values);
-        const user = {
-            id: result.insertId,
-            username,
-            displayName,
-        };
+        await db
+            .insertInto("users")
+            .values({
+                publicId,
+                username: name,
+                displayName: name,
+                settings: JSON.stringify({}),
+                password: await bcrypt.hash(password, 10),
+                tokens: JSON.stringify([]),
+            })
+            .execute();
 
         return NextResponse.json(
             {
-                content: user,
+                message: "User registered successfully",
             },
-            { status: 201 },
+            { status: 201 }
         );
     } catch (error) {
-        console.error(`[REGISTER] POST error: ${error}`);
-        addError(error, "/api/auth/register: POST");
-        return server;
+        db.deleteFrom("users").where("publicId", "=", publicId).execute();
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

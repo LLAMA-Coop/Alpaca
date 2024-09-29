@@ -1,195 +1,189 @@
 "use client";
 
-import { PermissionsDisplay } from "../Form/PermissionsDisplay";
-import { useStore, useModals, useAlerts } from "@/store/store";
 import { DeletePopup } from "../DeletePopup/DeletePopup";
-import { buildPermissions, permissionsListToObject } from "@/lib/permissions";
-import { useEffect, useState, useRef } from "react";
-import SubmitErrors from "@/lib/SubmitErrors";
-import styles from "./QuizInput.module.css";
-import { MAX } from "@/lib/constants";
-import {
-    Input,
-    Label,
-    ListItem,
-    InputPopup,
-    Spinner,
-    ListAdd,
-    BlankableInput,
-    UserInput,
-} from "@client";
+import { useStore, useAlerts } from "@/store/store";
+import { useEffect, useReducer } from "react";
+import { validation } from "@/lib/validation";
+import { Validator } from "@/lib/validation";
+import { getNanoId } from "@/lib/random";
+import { BlankableInput, Permissions, Spinner, Select, Input, Form } from "@client";
+
+const defaultState = {
+    type: "prompt-response",
+    prompt: "",
+    answer: "",
+    answers: [],
+    choice: "",
+    choices: [],
+    hint: "",
+    hints: [],
+    sources: [],
+    notes: [],
+    courses: [],
+    tag: "",
+    tags: [],
+    permissions: {
+        allRead: false,
+        allWrite: false,
+        read: [],
+        write: [],
+        groupId: null,
+        groupLocked: false,
+    },
+    loading: false,
+    errors: {},
+};
+
+function stateReducer(state, action) {
+    switch (action.type) {
+        case "type":
+            return { ...state, type: action.value };
+        case "prompt":
+            return { ...state, prompt: action.value };
+        case "answer":
+            return { ...state, answer: action.value };
+        case "addAnswer":
+            return {
+                ...state,
+                answers: [...state.answers, action.value],
+            };
+        case "removeAnswer":
+            return {
+                ...state,
+                answers: state.answers.filter((x) => x !== action.value),
+            };
+        case "answers":
+            return { ...state, answers: action.value };
+        case "choice":
+            return { ...state, choice: action.value };
+        case "addChoice":
+            return {
+                ...state,
+                choices: [...state.choices, action.value],
+            };
+        case "removeChoice":
+            return {
+                ...state,
+                choices: state.choices.filter((x) => x !== action.value),
+            };
+        case "choices":
+            return { ...state, choices: action.value };
+        case "hint":
+            return { ...state, hint: action.value };
+        case "addHint":
+            return {
+                ...state,
+                hints: [...state.hints, action.value],
+            };
+        case "removeHint":
+            return {
+                ...state,
+                hints: state.hints.filter((x) => x !== action.value),
+            };
+        case "hints":
+            return { ...state, hints: action.value };
+        case "sources":
+            return { ...state, sources: action.value };
+        case "notes":
+            return { ...state, notes: action.value };
+        case "courses":
+            return { ...state, courses: action.value };
+        case "tag":
+            return { ...state, tag: action.value };
+        case "addTag":
+            return {
+                ...state,
+                tags: [...state.tags, action.value],
+            };
+        case "removeTag":
+            return {
+                ...state,
+                tags: state.tags.filter((x) => x !== action.value),
+            };
+        case "tags":
+            return { ...state, tags: action.value };
+        case "permissions":
+            return { ...state, permissions: action.value };
+        case "loading":
+            return { ...state, loading: action.value };
+        case "errors":
+            return { ...state, errors: { ...state.errors, ...action.value } };
+        case "editing":
+            return {
+                ...state,
+                ...action.value,
+                sources:
+                    action.value.sources.map((id) => {
+                        const source = action.sources.find((x) => x.id === id);
+
+                        return (
+                            source ?? {
+                                id: getNanoId(),
+                                title: "Unavailable",
+                            }
+                        );
+                    }) ?? [],
+                notes:
+                    action.value.notes.map((id) => {
+                        const note = action.notes.find((x) => x.id === id);
+
+                        return (
+                            note ?? {
+                                id: getNanoId(),
+                                title: "Unavailable",
+                            }
+                        );
+                    }) ?? [],
+                courses:
+                    action.value.courses.map((id) => {
+                        const course = action.courses.find((x) => x.id === id);
+
+                        return (
+                            course ?? {
+                                id: getNanoId(),
+                                name: "Unavailable",
+                            }
+                        );
+                    }) ?? [],
+            };
+        case "reset":
+            return defaultState;
+        default:
+            return state;
+    }
+}
 
 export function QuizInput({ quiz }) {
-    const [type, setType] = useState("prompt-response");
-    const [typeError, setTypeError] = useState("");
+    const [state, dispatch] = useReducer(stateReducer, defaultState);
 
-    const [prompt, setPrompt] = useState("");
-    const [promptError, setPromptError] = useState("");
-
-    const [responses, setResponses] = useState([]);
-    const [newResponse, setNewResponse] = useState("");
-    const [responsesError, setResponsesError] = useState("");
-
-    const [choices, setChoices] = useState([]);
-    const [newChoice, setNewChoice] = useState("");
-    const [choicesError, setChoicesError] = useState("");
-
-    const [hints, setHints] = useState([]);
-    const [newHint, setNewHint] = useState([]);
-
-    const [courses, setCourses] = useState([]);
-
-    const [tags, setTags] = useState([]);
-    const [newTag, setNewTag] = useState("");
-
-    const [permissions, setPermissions] = useState({});
-
-    const [sources, setSources] = useState([]);
-    const [sourcesError, setSourcesError] = useState("");
-    const [notes, setNotes] = useState([]);
-    const [notesError, setNotesError] = useState("");
-
-    const [isSourceSelectOpen, setIsSourceSelectOpen] = useState(false);
-    const [isNoteSelectOpen, setIsNoteSelectOpen] = useState(false);
-
-    const [loading, setLoading] = useState(false);
-
-    const availableSources = useStore((state) => state.sources);
-    const availableCourses = useStore((state) => state.courses);
-    const availableTags = useStore((state) => state.tags);
-    const addTags = useStore((state) => state.addTags);
-    const availableNotes = useStore((state) => state.notes);
-
+    const addAlert = useAlerts((state) => state.addAlert);
+    const sources = useStore((state) => state.sources);
+    const courses = useStore((state) => state.courses);
+    const notes = useStore((state) => state.notes);
     const user = useStore((state) => state.user);
 
-    const addModal = useModals((state) => state.addModal);
-    const removeModal = useModals((state) => state.removeModal);
-    const addAlert = useAlerts((state) => state.addAlert);
-
-    const canDelete =
-        quiz &&
-        user &&
-        (quiz.createdBy === user.id || quiz.creator?.id === user.id);
-    const canChangePermissions =
-        !quiz ||
-        (user && (quiz.createdBy === user.id || quiz.creator?.id === user.id));
+    const isOwner = quiz && user && quiz.creator.id === user.id;
+    const canChangePermissions = isOwner || !quiz;
 
     useEffect(() => {
         if (!quiz) return;
-        if (quiz.type) setType(quiz.type);
-        if (quiz.prompt) setPrompt(quiz.prompt);
-        if (quiz.choices) {
-            setChoices([...quiz.choices]);
-        }
-        if (quiz.correctResponses) {
-            setResponses([...quiz.correctResponses]);
-        }
-        if (quiz.hints) {
-            setHints([...quiz.hints]);
-        }
-        if (quiz.notes) {
-            setNotes(
-                quiz.notes.map((noteId) =>
-                    availableNotes.find((x) => x.id === noteId),
-                ),
-            );
-        }
-        if (quiz.courses) {
-            setCourses(
-                quiz.courses.map((courseId) =>
-                    availableCourses.find((x) => x.id === courseId),
-                ),
-            );
-        }
-        if (quiz.sources) {
-            setSources(
-                quiz.sources.map((src) => {
-                    const source = availableSources.find(
-                        (x) => x.id === src.id,
-                    );
-                    return {
-                        id: src.id,
-                        title: source.title,
-                        locInSource: src.locInSource,
-                        locType: src.locType,
-                    };
-                }),
-            );
-        }
-        if (quiz.tags && quiz.tags.length > 0) setTags([...quiz.tags]);
-        if (quiz.permissions) {
-            const settingPermissions = permissionsListToObject(
-                quiz.permissions,
-            );
-            console.log("SETTING PERMISSIONS", settingPermissions);
-            setPermissions(settingPermissions);
-        }
+
+        dispatch({
+            type: "editing",
+            value: quiz,
+            sources,
+            notes,
+            courses,
+        });
     }, []);
 
-    useEffect(() => {
-        if (!quiz || sources.length === 0) return;
-        if (
-            quiz.sources &&
-            !(quiz.sourceReferences && quiz.sourceReferences.length)
-        ) {
-            setSources(
-                quiz.sources.map((src) => {
-                    let source = availableSources.find((x) => x.id === src);
-                    if (!source) {
-                        source = {
-                            title: "unavailable",
-                            id: src.id,
-                        };
-                    }
-                    return source;
-                }),
-            );
-        }
-    }, [availableSources]);
-
-    const addSourceRef = useRef(null);
-    useEffect(() => {
-        const handleOutsideClick = (e) => {
-            if (
-                isSourceSelectOpen &&
-                !addSourceRef.current?.contains(e.target)
-            ) {
-                setIsSourceSelectOpen(false);
-            }
-        };
-
-        document.addEventListener("click", handleOutsideClick);
-    }, [isSourceSelectOpen]);
-
-    const addNoteRef = useRef(null);
-    useEffect(() => {
-        if (!addNoteRef.current) return;
-
-        const handleOutsideClick = (e) => {
-            if (isNoteSelectOpen && !addNoteRef.current.contains(e.target)) {
-                setIsNoteSelectOpen(false);
-            }
-        };
-
-        document.addEventListener("click", handleOutsideClick);
-    }, [isNoteSelectOpen]);
-
-    useEffect(() => {
-        if (sources.length > 0 || notes.length > 0) {
-            setSourcesError("");
-            setNotesError("");
-        }
-    }, [sources, notes]);
-
-    useEffect(() => {
-        if (type === "multiple-choice") {
-            responses.forEach((response) => {
-                if (!choices.includes(response)) {
-                    setChoices((prev) => [...prev, response]);
-                }
-            });
-        }
-    }, [type, choices, responses, prompt]);
+    if (state.type === "multiple-choice" && state.answers.find((x) => !state.choices.includes(x))) {
+        // Remove answers that are not in the choices
+        dispatch({
+            type: "answers",
+            value: state.answers.filter((x) => state.choices.includes(x)),
+        });
+    }
 
     const types = [
         { label: "Prompt/Response", value: "prompt-response" },
@@ -200,501 +194,335 @@ export function QuizInput({ quiz }) {
         { label: "Verbatim", value: "verbatim" },
     ];
 
-    function handleAddHint(e) {
-        e.preventDefault();
-        if (!newHint || hints.includes(newHint)) return;
-        setHints([...hints, newHint]);
-        if (!availableTags.includes(newTag)) {
-            addTags(newTag);
-        }
-        setNewHint("");
-    }
-
-    function handleAddTag(e) {
-        e.preventDefault();
-        if (!newTag || tags.includes(newTag)) return;
-        setTags([...tags, newTag]);
-        setNewTag("");
-    }
-
     async function handleSubmit(e) {
         e.preventDefault();
-        if (loading) return;
-        const submitErrors = new SubmitErrors();
+        if (state.loading) return;
 
-        if (!types.find((x) => x.value === type)) {
-            submitErrors.addMessage("Invalid type selected", setTypeError);
-        }
+        const validator = new Validator();
 
-        if (prompt === "") {
-            submitErrors.addMessage("Prompt cannot be empty", setPromptError);
-        }
+        validator.validateAll(
+            [
+                ["type", state.type],
+                ["prompt", state.prompt.trim()],
+                ["answers", state.answers],
+                ["choices", state.choices],
+                ["hints", state.hints],
+                ["sources", state.sources],
+                ["notes", state.notes],
+                ["courses", state.courses],
+            ].map(([field, value]) => ({ field, value })),
+            "quiz"
+        );
 
-        if (responses.length === 0) {
-            submitErrors.addMessage(
-                "Need at least one answer",
-                setResponsesError,
-            );
-        }
+        validator.validate({ field: "tags", value: state.tags, type: "misc" });
+        const perm = validator.validatePermissions(state.permissions);
 
-        if (sources.length === 0 && notes.length === 0) {
-            submitErrors.addMessage("Need one note or source", [
-                setSourcesError,
-                setNotesError,
-            ]);
-        }
+        // Why ??? We should be able to have only one answer from the choices
+        // if (state.type === "multiple-choice" && state.answer.length < 2) {
+        //     validator.addError({
+        //         field: "answers",
+        //         message: "Must have at least 2 answers",
+        //     });
+        // }
 
-        if (type === "multiple-choice" && choices.length === 0) {
-            submitErrors.addMessage(
-                "Need at least one choice",
-                setChoicesError,
-            );
-        }
+        if (!validator.isValid) {
+            dispatch({ type: "errors", value: validator.errors });
 
-        if (submitErrors.errors.length > 0) {
-            addAlert({
+            return addAlert({
                 success: false,
-                message: submitErrors.displayErrors(),
+                message: "Please fix the errors before submitting",
             });
         }
-        if (submitErrors.cannotSend) {
-            return;
-        }
 
-        const quizPayload = {
-            type: type,
-            prompt: prompt.trim(),
-            choices: choices,
-            correctResponses: responses,
-            hints: hints,
-            sources: sources.map((src) => ({
-                resourceId: quiz ? quiz.id : undefined,
-                resourceType: "quiz",
-                sourceId: src.id,
-                locInSource: "unknown",
-                locType: "page",
-            })),
-            notes: notes.map((nt) => nt.id),
-            courses: courses.map((course) => course.id),
-            tags,
-        };
-        if (quiz && quiz.id) {
-            quizPayload.id = quiz.id;
-        }
+        dispatch({ type: "loading", value: true });
 
-        quizPayload.permissions = buildPermissions(
-            permissions,
-            quiz ? quiz.id : null,
-            "quiz",
-        );
-
-        setLoading(true);
-
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`,
-            {
-                method: quiz && quiz.id ? "PUT" : "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(quizPayload),
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz`, {
+            method: quiz && quiz.id ? "PUT" : "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-        );
+            body: JSON.stringify({
+                id: quiz?.id,
+                type: state.type,
+                prompt: state.prompt.trim(),
+                answers: state.answers,
+                choices: state.choices,
+                hints: state.hints,
+                tags: state.tags,
+                // sources: sources.map((src) => ({
+                //     resourceId: quiz ? quiz.id : undefined,
+                //     resourceType: "quiz",
+                //     sourceId: src.id,
+                //     locInSource: "unknown",
+                //     locType: "page",
+                // })),
+                sources: state.sources.map((s) => s.id),
+                notes: notes.map((n) => n.id),
+                courses: courses.map((c) => c.id),
+                permissions: perm,
+            }),
+        });
 
-        setLoading(false);
+        dispatch({ type: "loading", value: false });
 
         if (response.status === 201) {
-            setTypeError("");
-
-            setPrompt("");
-            setPromptError("");
-
-            setResponses([]);
-            setNewResponse("");
-            setResponsesError("");
-
-            setChoices([]);
-            setNewChoice("");
-            setChoicesError("");
-
-            setSources([]);
-            setNotes([]);
-            setSourcesError("");
-            setNotesError("");
+            dispatch({ type: "reset" });
 
             addAlert({
                 success: true,
-                message: "Quiz created successfully",
+                message: "Successfully created quiz.",
             });
         } else if (response.status === 200) {
             addAlert({
                 success: true,
-                message: "Quiz updated successfully",
-            });
-        } else if (response.status === 401) {
-            addAlert({
-                success: false,
-                message: "You have been signed out. Please sign in again.",
-            });
-            addModal({
-                title: "Sign back in",
-                content: <UserInput onSubmit={removeModal} />,
+                message: "Successfully updated quiz.",
             });
         } else {
-            const json = await response.json();
+            const data = await response.json();
+
+            dispatch({ type: "errors", value: data.errors });
+
             addAlert({
                 success: false,
-                message: json.message,
+                message: data.message,
             });
         }
-    }
-
-    function handleAddResponse(e) {
-        e.preventDefault();
-        const answer = newResponse.trim();
-
-        if (!answer || responses.includes(answer)) {
-            return;
-        }
-
-        if (type === "verbatim") {
-            setResponses(newResponse.split(" "));
-            setResponsesError("");
-            return;
-        }
-
-        setResponses([...responses, answer]);
-        setNewResponse("");
-        setResponsesError("");
-    }
-
-    function handleAddChoice(e) {
-        e.preventDefault();
-
-        const choice = newChoice.trim();
-        if (!choice || choices.includes(choice)) {
-            return;
-        }
-
-        setChoices([...choices, choice]);
-        setNewChoice("");
-        setChoicesError("");
     }
 
     return (
-        <form className={styles.form}>
-            <Input
-                type={"select"}
+        <Form onSubmit={handleSubmit}>
+            <Select
+                required
                 label="Type"
-                choices={types}
-                description={"Type of quiz question"}
-                required={true}
-                value={type}
-                error={typeError}
-                onChange={(e) => setType(e.target.value)}
+                options={types}
+                value={state.type}
+                error={state.errors.type}
+                description="The type of quiz question"
+                onChange={(value) => dispatch({ type: "type", value })}
             />
 
-            {type === "fill-in-the-blank" ? (
+            {state.type === "fill-in-the-blank" ? (
                 <BlankableInput
-                    prompt={prompt}
-                    setPrompt={setPrompt}
-                    promptError={promptError}
-                    setPromptError={setPromptError}
-                    responses={responses}
-                    setResponses={setResponses}
+                    prompt={state.prompt}
+                    answers={state.answers}
+                    error={state.errors.prompt}
+                    setPrompt={(value) => {
+                        dispatch({ type: "prompt", value });
+                        dispatch({ type: "errors", value: { prompt: "" } });
+                    }}
+                    setAnswers={(value) => {
+                        dispatch({ type: "answers", value });
+                        dispatch({ type: "errors", value: { answers: "" } });
+                    }}
                 />
             ) : (
                 <Input
-                    label={"Prompt"}
-                    type={type === "verbatim" ? "textarea" : "text"}
-                    description={
-                        "Question prompt. Can be a question or statement"
-                    }
-                    required={true}
-                    value={prompt}
-                    maxLength={MAX.prompt}
-                    error={promptError}
+                    required
+                    label="Prompt"
+                    value={state.prompt}
+                    error={state.errors.prompt}
+                    placeholder="What is the capital of France?"
+                    maxLength={validation.quiz.prompt.maxLength}
+                    type={state.type === "verbatim" ? "textarea" : "text"}
+                    description="Question prompt. Can be a question or statement"
                     onChange={(e) => {
-                        setPrompt(e.target.value);
-                        setPromptError("");
+                        dispatch({ type: "prompt", value: e.target.value });
+                        dispatch({ type: "errors", value: { prompt: "" } });
                     }}
                 />
             )}
 
-            {type === "multiple-choice" && (
-                <div className={styles.multipleChoice}>
-                    <Input
-                        label="Add new choice"
-                        description={"Add a new choice. Press enter to add"}
-                        value={newChoice}
-                        maxLength={MAX.response}
-                        required={choices.length < 1}
-                        onSubmit={handleAddChoice}
-                        error={choicesError}
-                        onChange={(e) => setNewChoice(e.target.value)}
-                        action="Add new choice"
-                        onActionTrigger={handleAddChoice}
-                    />
-
-                    <div style={{ marginTop: "24px" }}>
-                        <Label label="Choices" />
-                        <ul className="chipList">
-                            {choices.map((res, index) => (
-                                <ListItem
-                                    key={index}
-                                    item={res}
-                                    actionType={"delete"}
-                                    action={() => {
-                                        setResponses((prev) =>
-                                            prev.filter((x) => x !== res),
-                                        );
-                                        setChoices((prev) =>
-                                            prev.filter((x) => x !== res),
-                                        );
-                                    }}
-                                />
-                            ))}
-
-                            {choices.length === 0 && (
-                                <ListItem item={"No choices added yet"} />
-                            )}
-                        </ul>
-                    </div>
-                </div>
-            )}
-
-            {type !== "fill-in-the-blank" && (
-                <div className={styles.answer}>
-                    <Input
-                        type={type === "verbatim" ? "textarea" : "text"}
-                        choices={choices.map((x) => ({ label: x, value: x }))}
-                        label="Add new answer"
-                        description={"Add a new answer. Press enter to add"}
-                        value={newResponse}
-                        maxLength={
-                            type !== "verbatim" ? MAX.response : MAX.description
-                        }
-                        required={responses.length === 0}
-                        onSubmit={handleAddResponse}
-                        error={responsesError}
-                        onChange={(e) => {
-                            setNewResponse(e.target.value);
-                            if (type === "multiple-choice") {
-                                setNewChoice(e.target.value);
-                            }
-                        }}
-                        action={type !== "multiple-choice" && "Add new answer"}
-                        onActionTrigger={(e) => {
-                            handleAddResponse(e);
-                            if (type === "multiple-choice") {
-                                handleAddChoice(e);
-                            }
-                        }}
-                    />
-
-                    <div style={{ marginTop: "24px" }}>
-                        <Label label="Answers" />
-
-                        <ol className="chipList">
-                            {responses.map((res, index) => (
-                                <ListItem
-                                    key={index}
-                                    item={res}
-                                    actionType={"delete"}
-                                    action={() =>
-                                        setResponses((prev) =>
-                                            prev.filter((x) => x !== res),
-                                        )
-                                    }
-                                />
-                            ))}
-
-                            {responses.length === 0 && (
-                                <ListItem item={"No answers added yet"} />
-                            )}
-                        </ol>
-                    </div>
-                </div>
-            )}
-
-            <div className={styles.links}>
-                <div className={styles.sources}>
-                    <Label
-                        required={true}
-                        error={sourcesError}
-                        label="Related Sources"
-                    />
-
-                    <ListAdd
-                        item="Add a source"
-                        listChoices={availableSources}
-                        listChosen={sources}
-                        listProperty={"title"}
-                        listSetter={setSources}
-                        createNew={<InputPopup type="source" />}
-                        type="datalist"
-                        messageIfNone="No sources added"
-                    />
-                </div>
-
-                <div className={styles.notes}>
-                    <Label
-                        required={true}
-                        error={notesError}
-                        label="Related Notes"
-                    />
-
-                    <ListAdd
-                        item="Add a note"
-                        listChoices={availableNotes}
-                        listChosen={notes}
-                        listProperty={["title", "text"]}
-                        listSetter={setNotes}
-                        createNew={<InputPopup type="note" />}
-                        type="datalist"
-                        messageIfNone="No notes added"
-                    />
-                </div>
-            </div>
-
-            <div className={styles.courses}>
-                <Label required={false} label="Courses" />
-
-                <ListAdd
-                    item="Add to a course"
-                    listChoices={availableCourses}
-                    listChosen={courses}
-                    listProperty={"name"}
-                    listSetter={setCourses}
-                    type="datalist"
-                    messageIfNone="Not added to any course"
+            {state.type === "multiple-choice" && (
+                <Input
+                    multiple
+                    label="Choices"
+                    data={state.choices}
+                    value={state.choice}
+                    placeholder="Marseille"
+                    error={state.errors.choices}
+                    maxLength={validation.quiz.choice.maxLength}
+                    description="Enter a choice and press enter"
+                    removeItem={(item) => {
+                        dispatch({ type: "removeChoice", value: item });
+                    }}
+                    addItem={(item) => {
+                        dispatch({ type: "addChoice", value: item });
+                        dispatch({ type: "choice", value: "" });
+                        dispatch({ type: "errors", value: { choices: "" } });
+                    }}
+                    onChange={(e) => {
+                        dispatch({ type: "choice", value: e.target.value });
+                        dispatch({ type: "errors", value: { choices: "" } });
+                    }}
                 />
-            </div>
+            )}
 
-            <div className={styles.permissions}>
-                <PermissionsDisplay permissions={permissions} />
+            {state.type !== "fill-in-the-blank" && (
+                <Input
+                    multiple
+                    notObject
+                    label="Answers"
+                    data={state.answers}
+                    value={state.answer}
+                    options={state.choices}
+                    error={state.errors.answers}
+                    setter={(value) => dispatch({ type: "answers", value })}
+                    placeholder={state.type === "multiple-choice" ? "Select answers" : "Paris"}
+                    description={
+                        state.type === "multiple-choice"
+                            ? "Select answers from the choices"
+                            : "Enter an answer and press enter"
+                    }
+                    type={state.type === "multiple-choice" ? "select" : "text"}
+                    maxLength={
+                        state.type !== "verbatim" ? validation.quiz.choice : validation.quiz.prompt
+                    }
+                    removeItem={(item) => {
+                        dispatch({ type: "removeAnswer", value: item });
+                    }}
+                    addItem={(item) => {
+                        if (state.type === "verbatim") {
+                            // If verbatime, we want to split the answer by word and add each word as an answer
+                            const words = item.split(" ");
 
-                {canChangePermissions && (
-                    <InputPopup
-                        type="permissions"
-                        resource={permissions}
-                        setter={setPermissions}
-                    />
-                )}
-            </div>
+                            for (const word of words) {
+                                dispatch({ type: "addAnswer", value: word });
+                            }
+                        } else {
+                            dispatch({ type: "addAnswer", value: item });
+                        }
 
-            <div className={styles.advanced}>
-                <h4>Advanced</h4>
-                <div className={styles.hints}>
-                    <Label label="Hints" />
+                        dispatch({ type: "answer", value: "" });
+                    }}
+                    onChange={(e) => {
+                        dispatch({ type: "answer", value: e.target.value });
+                        dispatch({ type: "errors", value: { answers: "" } });
+                    }}
+                />
+            )}
 
-                    <ul className="chipList">
-                        {hints.length === 0 && (
-                            <ListItem item="No hints added" />
-                        )}
+            <Select
+                multiple
+                required
+                itemValue="id"
+                label="Sources"
+                options={sources}
+                itemLabel="title"
+                data={state.sources}
+                placeholder="Select sources"
+                error={state.errors.sources}
+                description="The sources you used to create this note"
+                setter={(value) => {
+                    dispatch({ type: "sources", value });
+                    dispatch({ type: "errors", value: { sources: "" } });
+                }}
+            />
 
-                        {hints.map((hint) => (
-                            <ListItem
-                                key={hint}
-                                item={hint}
-                                action={() => {
-                                    setHints(hints.filter((h) => h !== hint));
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                    </ul>
+            <Select
+                multiple
+                label="Notes"
+                itemValue="id"
+                options={notes}
+                itemLabel="title"
+                data={state.notes}
+                placeholder="Select notes"
+                error={state.errors.notes}
+                description="The notes this quiz is related to"
+                setter={(value) => {
+                    dispatch({ type: "notes", value });
+                    dispatch({ type: "errors", value: { notes: "" } });
+                }}
+            />
 
-                    <Input
-                        label={"Add Hint"}
-                        value={newHint}
-                        maxLength={MAX.response}
-                        description="A hint that may help the user remember the correct answer"
-                        onChange={(e) => setNewHint(e.target.value)}
-                        action="Add hint"
-                        onActionTrigger={handleAddHint}
-                    />
-                </div>
+            <Select
+                multiple
+                itemValue="id"
+                label="Courses"
+                itemLabel="name"
+                options={courses}
+                data={state.courses}
+                placeholder="Select courses"
+                error={state.errors.courses}
+                description="The courses this note is related to"
+                setter={(value) => {
+                    dispatch({ type: "courses", value });
+                    dispatch({ type: "errors", value: { courses: "" } });
+                }}
+            />
 
-                <div className={styles.tags}>
-                    {/* <Label label="Tags" />
+            <Input
+                multiple
+                label="Hints"
+                value={state.hint}
+                data={state.hints}
+                autoComplete="off"
+                error={state.errors.hints}
+                placeholder="Enter a hint and press enter"
+                maxLength={validation.misc.tag.maxLength}
+                description="A hint to help the user answer the question"
+                removeItem={(item) => {
+                    dispatch({ type: "removeHint", value: item });
+                }}
+                addItem={(item) => {
+                    dispatch({ type: "addHint", value: item });
+                    dispatch({ type: "hint", value: "" });
+                }}
+                onChange={(e) => {
+                    dispatch({ type: "hint", value: e.target.value });
+                    dispatch({ type: "errors", value: { hints: "" } });
+                }}
+            />
 
-                    <ul className="chipList">
-                        {tags.length === 0 && <ListItem item="No tags added" />}
+            <Input
+                multiple
+                label="Tags"
+                value={state.tag}
+                data={state.tags}
+                autoComplete="off"
+                error={state.errors.tags}
+                placeholder="Enter a tag and press enter"
+                maxLength={validation.misc.tag.maxLength}
+                description="A word or phrase that could be used to search for this note"
+                removeItem={(item) => {
+                    dispatch({ type: "removeTag", value: item });
+                }}
+                addItem={(item) => {
+                    dispatch({ type: "addTag", value: item });
+                    dispatch({ type: "tag", value: "" });
+                }}
+                onChange={(e) => {
+                    dispatch({ type: "tag", value: e.target.value });
+                    dispatch({ type: "errors", value: { tags: "" } });
+                }}
+            />
 
-                        {tags.map((tag) => (
-                            <ListItem
-                                key={tag}
-                                item={tag}
-                                action={() => {
-                                    setTags(tags.filter((t) => t !== tag));
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                    </ul> */}
+            {canChangePermissions && (
+                <Permissions
+                    disabled={state.loading}
+                    permissions={state.permissions}
+                    error={state.errors.permissions}
+                    setPermissions={(value) => {
+                        dispatch({ type: "permissions", value });
+                        dispatch({
+                            type: "errors",
+                            value: { permissions: "" },
+                        });
+                    }}
+                />
+            )}
 
-                    <Input
-                        type="datalist"
-                        choices={availableTags}
-                        label={"Add Tag"}
-                        value={newTag}
-                        maxLength={MAX.tag}
-                        description="A word or phrase that could be used to search for this note"
-                        autoComplete="off"
-                        onChange={(e) => setNewTag(e.target.value)}
-                        action="Add tag"
-                        onActionTrigger={handleAddTag}
-                        placeholder="Quiz Tags"
-                    />
-                    <ul className="chipList">
-                        {tags.length === 0 && <ListItem item="No tags added" />}
+            {["fill-in-the-blank", "prompt-response"].includes(state.type) && <div />}
 
-                        {tags.map((tag) => (
-                            <ListItem
-                                key={tag}
-                                item={tag}
-                                action={() => {
-                                    setTags(tags.filter((t) => t !== tag));
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                    </ul>
-
-                    {/* <div style={{ marginTop: "24px" }}>
-                        <Label label="Tags" />
-
-                        <ul className="chipList">
-                            {tags.length === 0 && (
-                                <ListItem item="No tags added" />
-                            )}
-
-                            {tags.map((tag) => (
-                                <ListItem
-                                    key={tag}
-                                    item={tag}
-                                    action={() => {
-                                        setTags(tags.filter((t) => t !== tag));
-                                    }}
-                                    actionType={"delete"}
-                                />
-                            ))}
-                        </ul>
-                    </div> */}
-                </div>
-            </div>
-
-            <button
-                onClick={handleSubmit}
-                className={`button submit ${styles.submit}`}
-            >
-                {loading ? <Spinner /> : "Submit Quiz"}
+            <button className="button submit primary">
+                Submit Quiz {state.loading && <Spinner />}
             </button>
 
-            {canDelete && (
-                <DeletePopup resourceType="quiz" resourceId={quiz.id} />
+            {isOwner && (
+                <DeletePopup
+                    resourceType="quiz"
+                    resourceId={quiz.id}
+                />
             )}
-        </form>
+        </Form>
     );
 }

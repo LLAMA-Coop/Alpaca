@@ -19,9 +19,7 @@ export function FillStore({
     const setUser = useStore((state) => state.setUser);
 
     useEffect(() => {
-        const ws = webSocketURL
-            ? new WebSocket(webSocketURL)
-            : { close: () => {} };
+        const ws = webSocketURL ? new WebSocket(webSocketURL) : { close: () => {} };
 
         ws.onopen = () => {
             console.log(`Web socket connection opened to ${webSocketURL}`);
@@ -56,5 +54,7 @@ export function FillStore({
             ws.close();
             console.log(`Web socket connection closed to ${webSocketURL}`);
         };
-    }, []);
+    }, [user, sources, notes, quizzes, courses, groups, associates, notifications]);
+
+    return null;
 }

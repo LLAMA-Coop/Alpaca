@@ -1,13 +1,17 @@
+.wrapper {
+    width: 100%;
+}
+
 .container {
-    position: relative;
-    display: flex;
-    align-items: center;
     gap: 16px;
-    padding: 16px 24px 16px 16px;
-    border-radius: 6px;
-    background-color: var(--background-3);
-    max-width: 360px;
+    width: 100%;
+    display: flex;
     cursor: pointer;
+    position: relative;
+    align-items: center;
+    padding: 16px 24px 16px 16px;
+    background-color: var(--bg-3);
+    border-radius: var(--radius-medium);
     transition:
         transform 0.1s ease-in-out,
         box-shadow 0.1s ease-in-out;
@@ -18,7 +22,7 @@
 .container:focus-within,
 .container.active {
     transform: translate(2px, -2px);
-    box-shadow: -3px 3px 0px var(--background-4);
+    box-shadow: -3px 3px 0px var(--bg-4);
 }
 
 .container > div {
@@ -33,7 +37,7 @@
     font-size: 20px;
     line-height: 24px;
     margin-bottom: 8px;
-    color: var(--foreground-1);
+    color: var(--fg-1);
     display: flex;
     gap: 8px;
 }
@@ -44,7 +48,8 @@
 }
 
 .container > div > p {
-    color: var(--foreground-3);
+    font-size: 15px;
+    color: var(--fg-3);
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 4;
@@ -53,28 +58,28 @@
     word-break: break-word;
 }
 
-.container > button {
-    position: absolute;
+.menuButton {
     top: -10px;
+    width: 32px;
     right: -10px;
+    height: 32px;
     display: flex;
+    position: absolute;
+    color: var(--fg-2);
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 5px;
-    border: 1px solid var(--background-4);
-    background-color: var(--background-3);
-    color: var(--foreground-2);
+    border: 1px solid var(--bg-4);
+    background-color: var(--bg-3);
+    border-radius: var(--radius-medium);
     cursor: pointer;
     transition:
         background-color 0.1s ease-in-out,
         color 0.1s ease-in-out;
 }
 
-.container > button:hover,
-.container > button:focus-visible,
-.container > button.active {
-    background-color: var(--background-4);
-    color: var(--foreground-1);
+.menuButton:hover,
+.menuButton:focus-visible,
+.menuButton.open {
+    color: var(--fg-1);
+    background-color: var(--bg-4);
 }

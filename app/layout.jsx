@@ -1,18 +1,22 @@
-import { FillStore, Timer, Alerts, Modals, Menu } from "@client";
-import { Header, Footer } from "@server";
+import { getGroups, getPermittedResources } from "@/lib/db/helpers";
+import { FillStore, Timer, Alerts, ThemeSetter } from "@client";
+import { Inter, Sofia_Sans } from "next/font/google";
 import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import "./globals.css";
-import {
-    getUserXp,
-    getPermittedCourses,
-    getPermittedNotes,
-    getPermittedQuizzes,
-    // getPermittedResources,
-    getPermittedSources,
-} from "@/lib/db/helpers";
-import { db } from "@/lib/db/db";
+
+const inter = Inter({
+    subsets: ["latin"],
+    variable: "--font-body",
+    display: "swap",
+});
+
+const sofia = Sofia_Sans({
+    subsets: ["latin"],
+    variable: "--font-heading",
+    display: "swap",
+});
 
 export const metadata = {
     metadataBase: new URL(metadatas.layout.url),
@@ -31,60 +35,47 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-    const user = await useUser({ token: cookies().get("token")?.value });
+    const user = await useUser({
+        token: cookies().get("token")?.value,
+        select: ["id", "username", "displayName", "avatar", "settings"],
+        withAssociates: true,
+        withNotifications: true,
+    });
 
-    // const permittedResources = user
-    //     ? await getPermittedResources(user.id)
-    //     : { sources: [], notes: [], quizzes: [], notifications: [] };
+    const { sources, notes, quizzes, courses } = await getPermittedResources({
+        userId: user?.id,
+        takeAll: true,
+    });
 
-    const [userQuizzes, fields] = user
-        ? await db
-              .promise()
-              .query("SELECT * FROM `UserQuizzes` WHERE `userId` = ?", [
-                  user.id,
-              ])
-        : [[], null];
-
-    if (user) {
-        user.quizzes = userQuizzes;
-        user.xp = await getUserXp(user.id);
-    }
-
-    const [users, uFields] = await db
-        .promise()
-        .query("SELECT `id`, `username`, `displayName` FROM `Users`");
-    const sources = await getPermittedSources(user?.id);
-    const notes = await getPermittedNotes(user?.id);
-    const quizzes = await getPermittedQuizzes(user?.id);
-    const courses = await getPermittedCourses(user?.id);
-    const notifications = user ? user.notifications : [];
+    const groups = await getGroups(user?.id);
 
     return (
-        <html lang="en">
+        <html
+            lang="en"
+            className={`${inter.variable} ${sofia.variable}`}
+        >
             {user && (
                 <FillStore
                     user={user}
-                    users={users}
                     sources={sources}
-                    notes={notes}
                     quizzes={quizzes}
                     courses={courses}
-                    groups={user.groups}
+                    groups={groups}
                     associates={user.associates}
-                    notifications={notifications}
-                    // webSocketURL={process.env.WS_URL}
+                    notifications={user.notifications || []}
                 />
             )}
 
+            <ThemeSetter settings={user?.settings} />
+
             <body>
-                <Header />
+                {/* So Firefox displays page after css has loaded */}
+                <script>0</script>
+
                 {children}
-                <Footer />
 
                 <Timer />
                 <Alerts />
-                <Modals />
-                <Menu />
             </body>
         </html>
     );

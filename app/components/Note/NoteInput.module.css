@@ -1,70 +1,24 @@
-.form {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.form > div:first-child,
-.form > div:nth-child(4),
-.form > :nth-child(7) {
-    flex-basis: 100%;
-}
-
-.form > button {
-    flex-basis: 50%;
-}
-
-.column{
-    margin: 20px 0px;
-    width: 100%;
-}
-
-.column Input {
-    background-color: var(--background-1);
-    border-radius: var(--radius-1);
-    border: none;
-    padding: 0px 15px;
-    background-color: var(--background-1);
-}
-
-.column Input::placeholder{
-    color: var(--foreground-1);
-    font-size: 14px;
-    font-weight: 100;
-}
-.column label{
-    font-size: 25px;
-    font-family: var(--font-heading);
-    font-weight: 600;
-}
-
-.tags,
-.permissions {
-    flex-basis: calc(50% - 5px);
+.editor {
+    padding: 10px;
+    color: var(--fg-2);
     border-radius: 4px;
-    width: 100%;
+    background-color: var(--bg-3);
+    border: 1px solid var(--border-color);
+    min-height: 160px;
+    height: fit-content;
+    max-width: 100%;
+    transition:
+        border 0.1s ease,
+        box-shadow 0.1s ease;
 }
 
-.sources,
-.courses {
-    flex-basis: calc(50% - 5px);
-    border-radius: 4px;
-    width: 100%;
-}
-
-.sourceLink {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 4px;
-    padding: 4px 8px;
-    height: 48px;
-    margin-top: 6px;
-    color: var(--foreground-1);
-    background-color: var(--background-2);
-    text-transform: capitalize;
-}
-
-.sourceLink:hover {
-    background-color: var(--background-1);
+.editor:focus {
+    --bs-1: var(--accent-20);
+    --bs-2: var(--accent-08);
+    border: 1px solid var(--accent-50);
+    box-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.03),
+        0 3px 6px rgba(0, 0, 0, 0.02),
+        0 0 0 3px var(--bs-1),
+        0 1px 1px 0 var(--bs-2);
 }

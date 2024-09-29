@@ -1,103 +1,167 @@
+import { getToken, catchRouteError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
-import { SignJWT } from "jose";
-import bcrypt from "bcrypt";
-import { server } from "@/lib/apiErrorResponses";
+import { headers } from "next/headers";
 import { db } from "@/lib/db/db";
-import { addError } from "@/lib/db/helpers";
+import bcrypt from "bcrypt";
+import { nanoid } from "nanoid";
+
+function isCorrectIP(ip) {
+    return /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip);
+}
 
 export async function POST(req) {
     const { username, password } = await req.json();
 
-    if (!username || !password) {
-        return NextResponse.json(
-            {
-                message: "Login or password is invalid",
-            },
-            { status: 400 },
-        );
-    }
-
     try {
-        const [users, fields] = await db
-            .promise()
-            .query(
-                "SELECT `id`, `passwordHash` FROM Users WHERE username = ? LIMIT 1",
-                [username],
+        const select = ["id", "username", "password", "tokens", "twoFactorEnabled"];
+
+        let user = await db
+            .selectFrom("users")
+            .select([...select, "emailVerified"])
+            .where("email", "=", username)
+            .executeTakeFirst();
+
+        if (!user) {
+            user = await db
+                .selectFrom("users")
+                .select(select)
+                .where("username", "=", username)
+                .executeTakeFirst();
+        } else if (user.emailVerified === 0) {
+            return NextResponse.json(
+                {
+                    errors: {
+                        username: "Please verify your email address before logging in using it",
+                        password: "Please verify your email address before logging in using it",
+                    },
+                },
+                { status: 401 }
             );
-        const user = users[0];
+        }
 
         if (!user) {
             return NextResponse.json(
                 {
-                    message: "Login or password is invalid",
+                    errors: {
+                        username: "Incorrect credentials provided",
+                        password: "Incorrect credentials provided",
+                    },
                 },
-                { status: 401 },
+                { status: 401 }
             );
         }
 
-        const passwordsMatch = await bcrypt.compare(
-            password,
-            user.passwordHash,
-        );
+        if (await bcrypt.compare(password, user.password)) {
+            if (user.twoFactorEnabled) {
+                const token = nanoid(32);
 
-        if (passwordsMatch) {
-            const accessSecret = new TextEncoder().encode(
-                process.env.ACCESS_TOKEN_SECRET,
-            );
-            const refreshSecret = new TextEncoder().encode(
-                process.env.REFRESH_TOKEN_SECRET,
-            );
+                await db
+                    .updateTable("users")
+                    .set({
+                        twoFactorTemp: token,
+                    })
+                    .where("id", "=", user.id)
+                    .execute();
 
-            // Generate access and refresh tokens
-            const accessToken = await new SignJWT({ id: user.id })
-                .setProtectedHeader({ alg: "HS256" })
-                .setIssuedAt()
-                .setExpirationTime("1h")
-                .setIssuer("Alpaca")
-                .setAudience("Alpaca")
-                .sign(accessSecret);
+                return NextResponse.json(
+                    {
+                        message: "Two factor authentication is enabled",
+                        token,
+                    },
+                    { status: 200 }
+                );
+            }
 
-            const refreshToken = await new SignJWT({ id: user.id })
-                .setProtectedHeader({ alg: "HS256" })
-                .setIssuedAt()
-                .setExpirationTime("1d")
-                .setIssuer("Alpaca")
-                .setAudience("Alpaca")
-                .sign(refreshSecret);
+            const refreshToken = await getToken(user.username, true);
+            const accessToken = await getToken(user.username, false);
 
-            console.log("REFRESH", refreshToken);
+            const userAgent = headers().get("user-agent") || "Unknown";
+            // const ip = (req.headers.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
+            const ip = "91.162.93.92";
+            let location = {};
 
-            const [resultsUpdate, fieldsUpdate] = await db
-                .promise()
-                .query("UPDATE Users SET refreshToken = ? WHERE id = ?", [
-                    refreshToken,
-                    user.id,
-                ]);
-            console.log("\nUPDATE TOKENS", resultsUpdate, fieldsUpdate);
+            if (isCorrectIP(ip)) {
+                try {
+                    const {
+                        city,
+                        region,
+                        country_name: country,
+                    } = await fetch(`https://ipapi.co/${ip}/json/`).then((res) => res.json());
+
+                    location = {
+                        city,
+                        region,
+                        country,
+                    };
+                } catch (error) {
+                    console.error("Error getting location from IP", error);
+                }
+            }
+
+            const tokenObject = {
+                token: refreshToken,
+                login: Date.now(),
+                expires: Date.now() + 2592000000,
+                userAgent,
+                location,
+                device: getDeviceFromUserAgent(userAgent),
+                ip,
+            };
+
+            // To prevent someone loggin in a lot of times and filling up the tokens array
+            // we also want to filter out tokens where the user agent or ip is the same
+            // Refrain from using ip though, as someone could be using more than one browser on the same device
+            const newTokens = [
+                ...user.tokens.filter((token) => {
+                    return (
+                        token.expires > Date.now() &&
+                        (token.ip === ip ? token.userAgent !== userAgent : true)
+                    );
+                }),
+                tokenObject,
+            ];
+
+            await db
+                .updateTable("users")
+                .set({
+                    tokens: JSON.stringify(newTokens),
+                })
+                .where("id", "=", user.id)
+                .execute();
 
             return NextResponse.json(
                 {
-                    content: user,
                     token: accessToken,
+                    message: "Successfully logged in",
                 },
                 {
                     status: 200,
                     headers: {
-                        "Set-Cookie": `token=${refreshToken}; path=/; HttpOnly; SameSite=Lax; Max-Age=86400; Secure`,
+                        "Set-Cookie": `token=${refreshToken}; path=/; HttpOnly; SameSite=Lax; Max-Age=2592000; Secure`,
                     },
-                },
+                }
             );
         } else {
             return NextResponse.json(
                 {
-                    message: "Login or password is invalid",
+                    errors: {
+                        username: "Incorrect credentials provided",
+                        password: "Incorrect credentials provided",
+                    },
                 },
-                { status: 401 },
+                { status: 401 }
             );
         }
     } catch (error) {
-        console.error(error);
-        addError(error, "/api/auth/login: POST");
-        return server;
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
+}
+
+function getDeviceFromUserAgent(userAgent) {
+    if (userAgent.includes("Mobile")) return "Mobile";
+    if (userAgent.includes("Tablet")) return "Tablet";
+    if (userAgent.includes("Windows")) return "Windows";
+    if (userAgent.includes("Macintosh")) return "Macintosh";
+    if (userAgent.includes("Linux")) return "Linux";
+    return "Unknown";
 }

@@ -1,226 +1,174 @@
+import { catchRouteError, getNanoId } from "@/lib/db/helpers";
+import { unauthorized } from "@/lib/apiErrorResponses";
+import { Validator } from "@/lib/validation";
 import { NextResponse } from "next/server";
-import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import { unauthorized, server } from "@/lib/apiErrorResponses";
-import { MAX } from "@/lib/constants";
-import SubmitErrors from "@/lib/SubmitErrors";
-import {
-    addError,
-    getPermittedCourses,
-    insertPermissions,
-    updateCourse,
-} from "@/lib/db/helpers";
+import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
 
-export async function GET(req) {
-    try {
-        const user = await useUser({ token: cookies().get("token")?.value });
-
-        const content = await getPermittedCourses(user?.id);
-        return NextResponse.json({
-            content,
-        });
-    } catch (error) {
-        console.error(`[Course] GET error: ${error}`);
-        addError(error, "/api/course: GET");
-        return server;
-    }
-}
+// CREATE COURSE
 
 export async function POST(req) {
-    const baseQuery = `INSERT INTO \`Courses\`
-        (\`name\`, \`description\`, \`enrollment\`, \`createdBy\`) 
-        VALUES (?, ?, ?, ?)`;
+    const publicId = getNanoId();
+    let courseId = null;
+
+    const course = await req.json();
+    const {
+        name,
+        description,
+        enrollment,
+        parents,
+        prerequisites,
+        sources,
+        notes,
+        quizzes,
+        addAllFromSources,
+        addAllFromNotes,
+        permissions: perm,
+    } = course;
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const submitErrors = new SubmitErrors();
+        const validator = new Validator();
 
-        const {
-            name,
-            description,
-            enrollment,
-            parentCourses,
-            prerequisites,
-            sources,
-            notes,
-            quizzes,
-            addAllFromSources,
-            addAllFromNotes,
-            permissions,
-        } = await req.json();
-
-        if (!name) {
-            submitErrors.addError("Missing name");
-        } else if (name.length > MAX.name) {
-            submitErrors.addError(
-                `The following name is longer than the maximum permitted, which is ${MAX.name} characters:\n ${name}`,
-            );
-        }
-
-        if (!description) {
-            submitErrors.addError("Missing description");
-        } else if (description.length > MAX.description) {
-            submitErrors.addError(
-                `The following description is longer than the maximum permitted, which is ${MAX.description} characters:\n ${description}`,
-            );
-        }
-
-        if (submitErrors.cannotSend) {
-            return NextResponse.json(
-                {
-                    message: submitErrors.displayErrors(),
-                },
-                { status: 400 },
-            );
-        }
-
-        const fieldsArray = [name, description, enrollment, user.id];
-
-        const [courseInsert, fields] = await db
-            .promise()
-            .query(baseQuery, fieldsArray);
-
-        const courseId = courseInsert.insertId;
-
-        const permsInsert = await insertPermissions(
-            permissions,
-            courseId,
-            user.id,
+        validator.validateAll(
+            [
+                ["name", name],
+                ["description", description],
+                ["enrollment", enrollment],
+                ["parents", parents],
+                ["prerequisites", prerequisites],
+                ["sources", sources],
+                ["notes", notes],
+                ["quizzes", quizzes],
+                ["addAllFromSources", addAllFromSources],
+                ["addAllFromNotes", addAllFromNotes],
+            ].map(([field, value]) => ({ field, value })),
+            "course"
         );
 
-        const hierQuery = `INSERT INTO \`CourseHierarchy\` 
-            (\`inferiorCourse\`, \`superiorCourse\`, \`relationship\`, \`averageLevelRequired\`)
-            VALUES ?`;
+        const permissions = validator.validatePermissions(perm, true);
 
-        const hierValues = [];
-        parentCourses.forEach((crs) => {
-            hierValues.push([courseId, crs, "encompasses", 0]);
-        });
-        prerequisites.forEach((crs) => {
-            hierValues.push([
+        if (!validator.isValid) {
+            return NextResponse.json(
+                {
+                    message: "Invalid course data",
+                    errors: validator.errors,
+                },
+                { status: 400 }
+            );
+        }
+
+        await db
+            .insertInto("courses")
+            .values({
+                publicId,
+                name,
+                description,
+                enrollment,
+                createdBy: user.id,
+            })
+            .execute();
+
+        courseId = (
+            await db
+                .selectFrom("courses")
+                .select("id")
+                .where("publicId", "=", publicId)
+                .executeTakeFirstOrThrow()
+        ).id;
+
+        await db
+            .insertInto("course_users")
+            .values({
                 courseId,
-                crs.course,
-                "prerequisite",
-                crs.requiredAverageLevel,
-            ]);
-        });
+                userId: user.id,
+                role: "owner",
+            })
+            .execute();
 
-        const [hierInserts, fieldsHier] =
-            hierValues.length > 0
-                ? await db.promise().query(hierQuery, [hierValues])
-                : [[], undefined];
+        await db
+            .insertInto("resource_permissions")
+            .values({
+                resourceId: courseId,
+                resourceType: "course",
+                ...permissions,
+            })
+            .execute();
 
-        const crsResrcQuery = `INSERT INTO \`CourseResources\` 
-            (\`courseId\`, \`resourceId\`, \`resourceType\`, \`includeReferencingResources\`)
-            VALUES ?`;
+        if (parents.length || prerequisites.length) {
+            await db
+                .insertInto("courses_hierarchy")
+                .values([
+                    ...parents.map((p) => ({
+                        inferior: courseId,
+                        superior: p,
+                        relationship: "encompasses",
+                    })),
+                    ...prerequisites.map((p) => ({
+                        inferior: courseId,
+                        superior: p,
+                        relationship: "prerequisite",
+                        averageLevelRequired: 0,
+                        minimumLevelRequired: 0,
+                    })),
+                ])
+                .execute();
+        }
 
-        const crsResrcValues = [];
-        sources.forEach((s) => {
-            crsResrcValues.push([courseId, s, "source", addAllFromSources]);
-        });
-        notes.forEach((n) => {
-            crsResrcValues.push([courseId, n, "note", addAllFromNotes]);
-        });
-        quizzes.forEach((q) => {
-            crsResrcValues.push([courseId, q, "quiz", false]);
-        });
-
-        const [crsResrcInserts, fieldsCrsResrc] = await db
-            .promise()
-            .query(crsResrcQuery, [crsResrcValues]);
-
-        const content = courseInsert;
+        if (sources.length || notes.length || quizzes.length) {
+            await db
+                .insertInto("resource_relations")
+                .values([
+                    ...sources.map((s) => ({
+                        A: s,
+                        B: courseId,
+                        A_type: "source",
+                        B_type: "course",
+                        includeReference: addAllFromSources,
+                        // reference: null,
+                        // referenceType: "page",
+                    })),
+                    ...notes.map((n) => ({
+                        A: n,
+                        B: courseId,
+                        A_type: "note",
+                        B_type: "course",
+                        includeReference: addAllFromNotes,
+                        // reference: null,
+                        // referenceType: "page",
+                    })),
+                    ...quizzes.map((q) => ({
+                        A: q,
+                        B: courseId,
+                        A_type: "quiz",
+                        B_type: "course",
+                        includeReference: false,
+                        // reference: null,
+                        // referenceType: "page",
+                    })),
+                ])
+                .execute();
+        }
 
         return NextResponse.json(
             {
                 message: "Course created successfully",
-                content,
+                content: {
+                    id: courseId,
+                    publicId,
+                    ...course,
+                },
             },
-            { status: 201 },
+            { status: 201 }
         );
     } catch (error) {
-        console.error(`[Course] POST error: ${error}`);
-        addError(error, "/api/course: POST");
-        return server;
-    }
-}
-
-export async function PUT(req) {
-    try {
-        const user = await useUser({ token: cookies().get("token")?.value });
-        if (!user) return unauthorized;
-
-        const {
-            id,
-            name,
-            description,
-            enrollment,
-            parentCourses,
-            prerequisites,
-            sources,
-            notes,
-            quizzes,
-            addAllFromSources,
-            addAllFromNotes,
-            permissions,
-        } = await req.json();
-
-        const course = (await getPermittedCourses(user.id)).find(
-            (x) => x.id === id,
-        );
-        if (!course) {
-            return NextResponse.json(
-                {
-                    message: `No course found with id ${id}`,
-                },
-                { status: 404 },
-            );
+        if (courseId) {
+            await db.deleteFrom("courses").where("id", "=", courseId).execute();
         }
 
-        const isCreator =
-            (course.createdBy && course.createdBy === user.id) ||
-            (course.creator && course.creator.id === user.id);
-        const canEdit = isCreator || course.permissionType === "write";
-
-        if (!canEdit) {
-            return NextResponse.json(
-                {
-                    message: `You are not permitted to edit course ${id}`,
-                },
-                { status: 403 },
-            );
-        }
-
-        if (name) {
-            course.name = name.trim();
-        }
-        if (description) {
-            course.description = description;
-        }
-
-        const content = await updateCourse({
-            id,
-            name,
-            description,
-            enrollment,
-            parentCourses,
-            prerequisites,
-            sources,
-            notes,
-            quizzes,
-            addAllFromSources,
-            addAllFromNotes,
-            permissions: isCreator ? permissions : [],
-            contributorId: user.id,
-        });
-
-        return NextResponse.json({ content });
-    } catch (error) {
-        console.error(`[Course] PUT error: ${error}`);
-        addError(error, "/api/course: PUT");
-        return server;
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

@@ -1,133 +1,145 @@
-import { unauthorized, server } from "@/lib/apiErrorResponses";
+import { unauthorized } from "@/lib/apiErrorResponses";
+import { areFieldsEqual } from "@/lib/objects";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { addError, getPermittedCourses } from "@/lib/db/helpers.js";
 import { db } from "@/lib/db/db.js";
+import {
+    getResourcePermissions,
+    canDeleteResource,
+    canEditResource,
+    catchRouteError,
+    updateCourse,
+} from "@/lib/db/helpers.js";
 
-export async function DELETE(req, { params }) {
+// UPDATE COURSE
+
+export async function PATCH(req, { params }) {
     const { id } = params;
+
+    const data = await req.json();
+    const {
+        name,
+        description,
+        enrollment,
+        parents,
+        prerequisites,
+        sources,
+        notes,
+        quizzes,
+        addAllFromSources,
+        addAllFromNotes,
+        permissions,
+    } = data;
+
+    if (!Object.keys(data).length) {
+        return NextResponse.json(
+            {
+                message: "No data provided to update",
+            },
+            { status: 400 }
+        );
+    }
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const course = (await getPermittedCourses(user.id)).find(
-            (c) => c.id === id,
-        );
+        if (!(await canEditResource(user.id, id, "courses", "course"))) {
+            return NextResponse.json(
+                {
+                    message: "You do not have permission to edit this course",
+                },
+                { status: 400 }
+            );
+        }
+
+        const course = await db
+            .selectFrom("courses")
+            .select(({ eb }) => ["id", "createdBy", getResourcePermissions("course", id, eb)])
+            .where("id", "=", id)
+            .executeTakeFirst();
+
         if (!course) {
             return NextResponse.json(
                 {
-                    message: `Course with id ${id} could not be found`,
+                    message: "Course not found",
                 },
-                { status: 404 },
+                { status: 404 }
             );
         }
 
-        const isCreator =
-            (course.createdBy && course.createdBy == user.id) ||
-            (course.creator && course.creator.id == user.id);
-
-        if (!isCreator) {
+        if (!areFieldsEqual(permissions, course.permissions) && course.createdBy !== user.id) {
             return NextResponse.json(
                 {
-                    message: "You are not authorized to delete this course",
+                    message: "You do not have permission to edit permissions for this note",
                 },
-                { status: 403 },
+                { status: 403 }
             );
         }
 
-        const [deletion, fields] = await db
-            .promise()
-            .query("DELETE FROM `Courses` WHERE `id` = ?", [id]);
-        if (deletion.affectedRows === 0) {
-            console.error(`Unable to delete course with id ${id}`);
-            addError(
-                { name: "Unable to Delete Course", stack: deletion },
-                `Unable to delete course with id ${id}`,
-            );
+        const content = await updateCourse({
+            id,
+            name,
+            description,
+            enrollment,
+            parents,
+            prerequisites,
+            sources,
+            notes,
+            quizzes,
+            addAllFromSources,
+            addAllFromNotes,
+            permissions,
+            contributorId: user.id,
+        });
+
+        if (!content.valid) {
             return NextResponse.json(
-                { message: `Unable to delete course ${id}` },
-                { status: 500 },
+                {
+                    message: "Invalid course data",
+                    errors: content.errors,
+                },
+                { status: 400 }
             );
         }
 
-        return new NextResponse(null, { status: 204 });
+        return NextResponse.json({
+            message: "Successfully updated course",
+            content,
+        });
     } catch (error) {
-        console.error(`[Course] DELETE error:\n ${error}`);
-        addError(error, "/api/course/[id]: DELETE");
-        return server;
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }
 
-// export async function PATCH(req, { params }) {
-//     const { id } = params;
-//     const { name, description, enrollment, prerequisites, permissions } =
-//         await req.json();
+// DELETE COURSE
 
-//     try {
-//         const user = await useUser({ token: cookies().get("token")?.value });
-//         if (!user) return unauthorized;
+export async function DELETE(req, { params }) {
+    try {
+        const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) return unauthorized;
 
-//         const course = await Course.findById(id);
-//         if (!course) {
-//             return NextResponse.json(
-//                 {
-//                     message: `Course with id ${id} could not be found`,
-//                 },
-//                 { status: 404 },
-//             );
-//         }
+        const { id } = params;
 
-//         if (course.createdBy.toString() !== user.id.toString()) {
-//             return NextResponse.json(
-//                 {
-//                     message: "You are not authorized to edit this course",
-//                 },
-//                 { status: 403 },
-//             );
-//         }
+        if (!(await canDeleteResource(user.id, id, "course"))) {
+            return NextResponse.json(
+                {
+                    message: "You do not have permission to delete this course",
+                },
+                { status: 404 }
+            );
+        }
 
-//         if (name && name <= MAX.courseName) {
-//             course.name = name;
-//         }
+        await db.deleteFrom("courses").where("id", "=", id).execute();
 
-//         if (description && description <= MAX.courseDescription) {
-//             course.description = description;
-//         }
-
-//         if (enrollment && ["open", "private", "paid"].includes(enrollment)) {
-//             course.enrollment = enrollment;
-//         }
-
-//         if (prerequisites) course.prerequisites = prerequisites;
-
-//         if (permissions) {
-//             course.permissions = {
-//                 allRead: permissions.allRead ?? course.permissions.allRead,
-//                 allWrite: permissions.allWrite ?? course.permissions.allWrite,
-//                 usersRead:
-//                     permissions.usersRead || course.permissions.usersRead,
-//                 usersWrite:
-//                     permissions.usersWrite || course.permissions.usersWrite,
-//                 groupsRead:
-//                     permissions.groupsRead || course.permissions.groupsRead,
-//                 groupsWrite:
-//                     permissions.groupsWrite || course.permissions.groupsWrite,
-//             };
-//         }
-
-//         await course.save();
-
-//         return NextResponse.json(
-//             {
-//                 success: true,
-//                 message: `Successfully updated course`,
-//             },
-//             { status: 200 },
-//         );
-//     } catch (error) {
-//         console.error(`[Course] PATCH error:\n ${error}`);
-//         return server;
-//     }
-// }
+        return NextResponse.json(
+            {
+                message: "Successfully deleted course",
+            },
+            { status: 200 }
+        );
+    } catch (error) {
+        return catchRouteError({ error, route: req.nextUrl.pathname });
+    }
+}

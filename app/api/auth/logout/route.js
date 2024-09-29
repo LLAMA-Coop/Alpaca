@@ -1,50 +1,31 @@
+import { catchRouteError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { server } from "@/lib/apiErrorResponses";
 import { useUser } from "@/lib/auth";
-import { addError } from "@/lib/db/helpers";
+import { db } from "@/lib/db/db";
 
 export async function POST(req) {
-    const token = cookies().get("token")?.value;
-
-    if (!token) {
-        return NextResponse.json(
-            {
-                success: false,
-                message: "No cookie found",
-            },
-            { status: 401 },
-        );
-    }
-
     try {
-        const user = await useUser({ token });
+        const token = cookies().get("token")?.value || "";
+        const user = await useUser({ token, select: ["id", "tokens"] });
 
-        if (!user) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "No user found",
-                },
-                {
-                    status: 400,
-                    headers: {
-                        "Set-Cookie": `token=; path=/; HttpOnly; SameSite=Strict; Max-Age=-1;`,
-                    },
-                },
-            );
+        if (user) {
+            const newTokens = user.tokens.filter((t) => t.token !== token);
+
+            if (newTokens.length !== user.tokens.length) {
+                await db
+                    .updateTable("users")
+                    .set({
+                        tokens: JSON.stringify(newTokens),
+                    })
+                    .where("id", "=", user.id)
+                    .execute();
+            }
         }
 
-        await db
-            .promise()
-            .query("UPDATE `Users` SET `refreshToken` = '' WHERE `id` = ?", [
-                user.id,
-            ]);
-
         return NextResponse.json(
             {
-                success: true,
-                message: "Logged out",
+                message: "Successfully logged out",
             },
             {
                 status: 200,
@@ -54,8 +35,6 @@ export async function POST(req) {
             },
         );
     } catch (error) {
-        console.error(`[LOGOUT] POST error: ${error}`);
-        addError(error, "/api/auth/logout: POST");
-        return server;
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

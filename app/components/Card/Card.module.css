@@ -1,207 +1,205 @@
 .container {
+    /* z-index: 2; */
+    padding: 16px;
+    display: block;
+    width: max-content;
     position: relative;
-    border-radius: 10px;
-    max-width: 550px;
-    overflow: hidden;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    border-radius: 4px;
+    max-width: min(100%, 550px);
+    background-color: var(--bg-2);
+    border: 1px solid transparent;
 }
 
-.container:hover::before,
-.focused::before {
+a.container:hover {
+    border: 1px solid var(--accent);
+}
+
+/* .container:hover::before,
+.container:focus-visible::before {
     content: "";
-    position: absolute;
+    top: 50%;
+    left: 50%;
     width: 300%;
     height: 300%;
+    position: absolute;
+    transform: translate(-50%, -50%);
     background-image: conic-gradient(
-        var(--accent-1),
+        var(--accent),
         transparent,
         transparent,
-        var(--accent-1-hover),
+        var(--accent-50),
         transparent,
         transparent,
-        var(--accent-1-active),
+        var(--accent),
         transparent,
         transparent
     );
-    opacity: 0.5;
+    opacity: 0;
+    z-index: 0;
     animation: animate 4s linear infinite;
-}
-
-.content_container {
-    width: 100%;
-}
-
-.content {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s;
-    border-radius: 5px;
-    height: 100%;
-    padding: 24px;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-self: flex-start;
-}
-
-.description {
-    white-space: pre-wrap;
-    max-width: 100%;
-    margin-bottom: 12px;
-}
+} */
 
 @keyframes animate {
     0% {
-        transform: rotate(0deg);
+        transform: translate(-50%, -50%) rotate(0deg);
     }
 
     100% {
-        transform: rotate(360deg);
+        transform: translate(-50%, -50%) rotate(360deg);
     }
 }
 
-/***
- * Just change the top, right, bottom and left property
- * to modify the effect's width
- **/
-.span {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    bottom: 2px;
-    left: 2px;
-    border-radius: 8px;
-    background-color: var(--background-3);
-    z-index: 2;
-}
-
-.container:hover > .content {
-    background-color: var(--background-3);
-}
-
-.textContent {
+.container > header {
+    gap: 12px;
     display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.textContent > header > h4 {
-    font-size: 20px;
-    line-height: 28px;
-    font-weight: 600;
-    word-wrap: break-word;
-}
-
-.textContent > header > h5 {
-    font-size: 12px;
-    letter-spacing: 0.02rem;
-    line-height: 16px;
-    font-weight: 400;
-    word-wrap: break-word;
-    text-transform: capitalize;
-}
-
-.textContent > p {
-    word-wrap: break-word;
-}
-
-.content [data-type="hints"] {
-    margin-top: 24px;
-}
-
-.content [data-type="hints"] > p {
-    margin-bottom: 8px;
-}
-
-.content [data-type="hints"] li {
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 400;
-    word-wrap: break-word;
-    margin-left: 16px;
-    position: relative;
-}
-
-.content [data-type="hints"] li::before {
-    content: "";
-    position: absolute;
-    left: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: var(--accent-1);
-}
-
-.buttonContainer {
-    display: flex;
-    margin-top: 24px;
-    gap: 16px;
-}
-
-.buttonContainer > * {
-    display: flex;
-    gap: 8px;
+    max-width: 100%;
+    overflow: hidden;
     align-items: center;
-    border: none;
+    margin-bottom: 24px;
+}
+
+.container > header > h4 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--text-1);
+    text-overflow: ellipsis;
+}
+
+.container > header > .chip {
+    font-size: 12px;
+    padding: 2px 8px;
+    font-weight: 600;
+    color: var(--fg-2);
+    white-space: nowrap;
+    border-radius: 1000px;
+    text-transform: capitalize;
+    background-color: var(--accent-50);
+}
+
+.container > section {
+    padding: 6px;
+    border-radius: 4px;
+    background-color: var(--bg-3);
+}
+
+.container.lighter > section {
+    background-color: var(--bg-4);
+}
+
+.container > section:not(:last-child) {
+    margin-bottom: 24px;
+}
+
+.container > section > h5 {
+    gap: 8px;
+    display: flex;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--fg-2);
+    margin-bottom: 6px;
+    align-items: center;
+}
+
+.container > section > h5 > .chip {
+    font-size: 12px;
+    padding: 1px 6px;
+    font-weight: 700;
+    color: var(--fg-2);
+    border-radius: 1000px;
+    text-transform: capitalize;
+    background-color: var(--accent-50);
+}
+
+.container > section > p {
     font-size: 14px;
-    padding: 8px 12px;
-    border-radius: 3px;
+    margin-bottom: 6px;
+    color: var(--fg-4);
+}
+
+.description {
+    font-size: 15px;
+    color: var(--fg-3);
+    margin-bottom: 24px;
+}
+
+.list {
+    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.listItem {
+    gap: 8px;
+    display: flex;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 4px 8px;
+    color: var(--fg-3);
+    border-radius: 4px;
+    align-items: center;
+    background-color: var(--bg-2);
+}
+
+.lighter .listItem {
+    background-color: var(--bg-3);
+}
+
+.container > footer {
+    display: flex;
+    font-size: 14px;
+    margin-top: 40px;
+    color: var(--fg-4);
+    align-items: center;
+    justify-content: space-between;
+}
+
+.createdAt {
+    font-size: 11px;
+    cursor: default;
+    padding: 2px 4px;
+    font-weight: 600;
+    background-color: var(--bg-3);
+    border-radius: var(--radius-small);
+}
+
+.lighter .createdAt {
+    background-color: var(--bg-2);
+}
+
+.lighter input,
+.lighter textarea,
+.lighter select {
+    background-color: var(--bg-1);
+}
+
+.tools {
+    gap: 12px;
+    display: flex;
+}
+
+.edit,
+.delete {
+    padding: 6px;
+    display: flex;
     cursor: pointer;
-    user-select: none;
-    color: var(--accent-foreground);
-    background-color: var(--accent-1);
-    transition: background-color 0.2s ease-in-out;
+    margin-top: 20px;
+    color: var(--fg-3);
+    align-items: center;
+    margin-bottom: -20px;
+    justify-content: center;
+    background-color: var(--bg-3);
+    border-radius: var(--radius-small);
 }
 
-.buttonContainer > *:hover {
-    background-color: var(--accent-1-hover);
+.edit:hover,
+.edit:focus-visible {
+    color: var(--accent);
 }
 
-.buttonContainer > *:active {
-    background-color: var(--accent-1-active);
-}
-/* 
-.childrenContent {
-    margin-top: 24px;
-} */
-
-@property --gradient-angle {
-    syntax: "<angle>";
-    initial-value: 360deg;
-    inherits: false;
-}
-
-[data-theme="light"] .container > div:first-child {
-    background: linear-gradient(
-        var(--gradient-angle),
-        var(--accent-primary-outline),
-        hsla(0, 0%, 100%, 0.1),
-        var(--accent-1),
-        hsla(0, 0%, 100%, 0.3)
-    );
-}
-
-.container > div:first-child {
-    background: linear-gradient(
-        var(--gradient-angle),
-        hsla(0, 0%, 100%, 0.5),
-        hsla(0, 0%, 100%, 0.1),
-        hsl(0, 0%, 100%),
-        hsla(0, 0%, 100%, 0.3)
-    );
-    border-radius: 14px;
-    height: calc(100% + 2px);
-    width: calc(100% + 2px);
-    left: 0;
-    top: 0;
-    position: absolute;
-    opacity: 0;
-    transform: translate(-1px, -1px);
-    z-index: 0;
+.delete:hover,
+.delete:focus-visible {
+    color: var(--danger);
 }

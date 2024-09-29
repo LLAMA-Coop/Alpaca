@@ -1,0 +1,63 @@
+.container {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--bg-3);
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+    animation: topToBottom 0.3s ease-in-out;
+    width: 250px;
+}
+
+.container > p {
+    flex: 1;
+}
+
+.container > p.paused {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.container > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: 10px;
+    background-color: var(--bg-2);
+    color: var(--fg-2);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: color 0.1s ease-in-out;
+}
+
+.container > button:hover {
+    color: var(--fg-1);
+}
+
+@keyframes topToBottom {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}

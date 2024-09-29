@@ -1,0 +1,40 @@
+.main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: var(--padding);
+    margin: 180px 0;
+}
+
+.container > h2 {
+    font-size: 42px;
+    margin-bottom: 24px;
+    font-family: var(--font-heading);
+}
+
+.container form {
+    padding-top: 24px;
+    grid-template-columns: 1fr;
+}
+
+.container form > :last-child {
+    margin-top: 24px;
+}
+
+.container > div {
+    font-size: 13px;
+    margin-top: 8px;
+    line-height: 20px;
+    color: var(--fg-3);
+}
+
+.container > div > a {
+    font-size: 13px;
+    border-radius: var(--radius-small);
+}

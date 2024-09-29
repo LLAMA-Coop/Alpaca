@@ -1,226 +1,130 @@
+import { catchRouteError, getNanoId } from "@/lib/db/helpers";
+import { unauthorized } from "@/lib/apiErrorResponses";
+import { Validator } from "@/lib/validation";
 import { NextResponse } from "next/server";
-import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
-import { unauthorized, server } from "@/lib/apiErrorResponses";
-import SubmitErrors from "@/lib/SubmitErrors";
-import { MAX } from "@/lib/constants";
-import {
-    addError,
-    getPermittedSources,
-    insertCourseResources,
-    insertPermissions,
-    updateSource,
-} from "@/lib/db/helpers";
+import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 
-export async function GET(req) {
-    try {
-        const user = await useUser({ token: cookies().get("token")?.value });
-        if (!user) {
-            return unauthorized;
-        }
-
-        const content = await getPermittedSources(user.id);
-        return NextResponse.json({ content }, { status: 200 });
-    } catch (error) {
-        console.error(`[Source] GET error: ${error}`);
-        addError(error, "/api/source: GET");
-        return server;
-    }
-}
+// CREATE SOURCE
 
 export async function POST(req) {
-    const baseQuery = `INSERT INTO \`Sources\`
-        (\`title\`, \`medium\`, \`url\`, \`tags\`, \`createdBy\`, \`publishedUpdated\`, \`lastAccessed\`) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const publicId = getNanoId();
+    let sourceId = null;
+
+    const source = await req.json();
+    const {
+        title,
+        medium,
+        url,
+        publishedAt,
+        lastAccessed, // Do we want publishedUpdated to be the one date? Good question...
+        authors,
+        courses,
+        tags,
+        permissions: perm,
+    } = source;
 
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        const {
-            title,
-            medium,
-            url,
-            publishDate,
-            lastAccessed,
-            authors,
-            courses,
-            tags,
-            permissions,
-        } = await req.json();
+        const validator = new Validator();
 
-        const submitErrors = new SubmitErrors();
-
-        if (!title) {
-            submitErrors.addError("Missing title");
-        } else if (title.length > MAX.title) {
-            submitErrors.addError(
-                `The following title is longer than the maximum permitted, which is ${MAX.title} characters:\n ${title}`,
-            );
-        }
-
-        if (!medium) {
-            submitErrors.addError("Missing medium");
-        } else if (medium === "website" && !url) {
-            submitErrors.addError("A website requires a URL");
-        }
-
-        authors.forEach((author) => {
-            if (typeof author !== "string") {
-                submitErrors.addError(
-                    `The following author is not valid:\n  ${author.toString()}`,
-                );
-                return;
-            }
-            if (author.length > MAX.name) {
-                submitErrors.addError(
-                    `The following author name is longer than the maximum permitted, which is ${MAX.name} characters: \n ${author}`,
-                );
-            }
-        });
-
-        tags.forEach((tag) => {
-            if (typeof tag !== "string") {
-                submitErrors.addError(
-                    `The following tag is not valid:\n ${tag.toString()}`,
-                );
-                return;
-            }
-            if (tag.length > MAX.tag) {
-                submitErrors.addError(
-                    `The following tag is longer than the maximum permitted, which is ${MAX.tag} characters: \n ${tag}`,
-                );
-            }
-        });
-
-        if (submitErrors.cannotSend) {
-            return NextResponse.json(
-                { message: submitErrors.displayErrors() },
-                { status: 400 },
-            );
-        }
-
-        const fieldsArray = [
-            title,
-            medium,
-            url,
-            JSON.stringify(tags),
-            user.id,
-            publishDate ? publishDate.split("T")[0] : null,
-            lastAccessed ? lastAccessed.split("T")[0] : null,
-        ];
-
-        const [sourceInsert, fields] = await db
-            .promise()
-            .query(baseQuery, fieldsArray);
-
-        const sourceId = sourceInsert.insertId;
-
-        if (authors && authors.length) {
-            const creditInsertValues = authors.map((a) => [sourceId, a]);
-            const creditsQuery = `INSERT INTO \`SourceCredits\` (sourceId, name) VALUES ?`;
-
-            const [creditsInsert, fieldsCredits] = await db
-                .promise()
-                .query(creditsQuery, [creditInsertValues]);
-        }
-
-        const permsInsert = await insertPermissions(
-            permissions,
-            sourceId,
-            user.id,
+        validator.validateAll(
+            [
+                ["title", title],
+                ["medium", medium],
+                ["url", url],
+                ["publishedAt", publishedAt],
+                ["lastAccessed", lastAccessed],
+                ["authors", authors],
+            ].map(([field, value]) => ({ field, value })),
+            "source"
         );
 
-        if (courses && courses.length > 0) {
-            insertCourseResources({
-                courseIDs: courses,
-                resourceId: sourceId,
-                resourceType: "source",
-            });
+        validator.validate({ field: "tags", value: tags, type: "misc" });
+
+        if (medium === "website" && !url) {
+            validator.errors.url = "Website sources must have a URL";
+            validator.isValid = false;
         }
 
-        const content = sourceInsert;
+        const permissions = validator.validatePermissions(perm, true);
+
+        if (!validator.isValid) {
+            return NextResponse.json(
+                {
+                    message: "Invalid source data",
+                    errors: validator.errors,
+                },
+                { status: 400 }
+            );
+        }
+
+        await db
+            .insertInto("sources")
+            .values({
+                publicId,
+                title,
+                medium,
+                url,
+                tags: JSON.stringify(tags),
+                credits: JSON.stringify(authors),
+                createdBy: user.id,
+                publishedAt: publishedAt?.split("T")[0] || null,
+            })
+            .execute();
+
+        sourceId = (
+            await db
+                .selectFrom("sources")
+                .select("id")
+                .where("publicId", "=", publicId)
+                .executeTakeFirstOrThrow()
+        ).id;
+
+        await db
+            .insertInto("resource_permissions")
+            .values({
+                resourceId: sourceId,
+                resourceType: "source",
+                ...permissions,
+            })
+            .execute();
+
+        if (courses.length > 0) {
+            db.insertInto("resource_relations")
+                .values(
+                    courses.map((course) => ({
+                        A: sourceId,
+                        B: course.id,
+                        A_type: "source",
+                        B_type: "course",
+                        includeReference: course.includeReference || false,
+                    }))
+                )
+                .execute();
+        }
 
         return NextResponse.json(
             {
-                message: "Source created successfully",
-                content,
+                message: "Successfully created source",
+                content: {
+                    id: sourceId,
+                    publicId,
+                    ...source,
+                },
             },
-            { status: 201 },
+            { status: 201 }
         );
     } catch (error) {
-        console.error(`[Source] POST error: ${error}`);
-        addError(error, "/api/source: POST");
-        return server;
-    }
-}
+        db.deleteFrom("sources").where("publicId", "=", publicId).execute();
 
-export async function PUT(req) {
-    try {
-        const user = await useUser({ token: cookies().get("token")?.value });
-
-        if (!user) {
-            return unauthorized;
+        if (sourceId) {
+            db.deleteFrom("resource_permissions").where("resourceId", "=", sourceId).execute();
         }
 
-        const {
-            id,
-            title,
-            medium,
-            url,
-            publishDate,
-            lastAccessed,
-            authors,
-            courses,
-            tags,
-            permissions,
-        } = await req.json();
-
-        const source = (await getPermittedSources(user.id)).find(
-            (x) => x.id == id,
-        );
-
-        if (!source) {
-            return NextResponse.json(
-                {
-                    message: `No source found with id ${id}`,
-                },
-                { status: 404 },
-            );
-        }
-
-        const isCreator =
-            source.createdBy == user.id || source.creator?.id == user.id;
-        const canEdit = isCreator || source.permissionType === "write";
-
-        if (!canEdit) {
-            return NextResponse.json(
-                {
-                    message: `You are not permitted to edit source ${id}`,
-                },
-                { status: 403 },
-            );
-        }
-
-        const content = updateSource({
-            id,
-            title,
-            medium,
-            url,
-            tags,
-            publishedUpdated: publishDate,
-            lastAccessed,
-            authors,
-            courses,
-            permissions: isCreator ? permissions : [],
-            contributorId: user.id,
-        });
-
-        return NextResponse.json({ content });
-    } catch (error) {
-        console.error(`[Source] PUT error: ${error}`);
-        addError(error, "/api/source: PUT");
-        return server;
+        return catchRouteError({ error, route: req.nextUrl.pathname });
     }
 }

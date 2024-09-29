@@ -25,7 +25,7 @@
     padding: 24px;
     border-radius: 5px;
     position: relative;
-    background-color: var(--background-3);
+    background-color: var(--bg-3);
     animation: popIn 0.225s ease-in-out;
     overflow-y: scroll;
 }
@@ -53,12 +53,12 @@
     cursor: pointer;
     padding: 2px;
     border: none;
-    color: var(--foreground-3);
+    color: var(--fg-3);
     background-color: transparent;
 }
 
 .closeButton:hover {
-    color: var(--foreground-1);
+    color: var(--fg-1);
 }
 
 /* .popup > div > div,
