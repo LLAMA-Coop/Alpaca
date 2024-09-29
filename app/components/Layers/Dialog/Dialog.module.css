@@ -9,7 +9,7 @@
     position: relative;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.95);
+    background-color: rgba(0, 0, 0, 0.975);
 }
 
 .dialog {
@@ -17,6 +17,7 @@
     padding: 24px;
     max-width: 550px;
     max-height: 80vh;
+    z-index: 1000013;
     position: relative;
     overflow: hidden auto;
     background-color: var(--bg-2);

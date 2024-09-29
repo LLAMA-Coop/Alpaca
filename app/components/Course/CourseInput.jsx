@@ -75,59 +75,11 @@ function stateReducer(state, action) {
             return {
                 ...state,
                 ...action.value,
-                parents:
-                    action.value.parents?.map((id) => {
-                        const parent = action.parents.find((x) => x.id === id);
-
-                        return (
-                            parent ?? {
-                                id: getNanoId(),
-                                name: "Unavailable",
-                            }
-                        );
-                    }) ?? [],
-                prerequisites:
-                    action.value.prerequisites?.map((p) => {
-                        const course = action.parents.find((x) => x.id === p.id);
-
-                        return {
-                            ...p,
-                            name: course?.name ?? "Unavailable",
-                        };
-                    }) ?? [],
-                sources:
-                    action.value.sources?.map((id) => {
-                        const source = action.sources.find((x) => x.id === id);
-
-                        return (
-                            source ?? {
-                                id: getNanoId(),
-                                name: "Unavailable",
-                            }
-                        );
-                    }) ?? [],
-                notes:
-                    action.value.notes?.map((id) => {
-                        const note = action.notes.find((x) => x.id === id);
-
-                        return (
-                            note ?? {
-                                id: getNanoId(),
-                                name: "Unavailable",
-                            }
-                        );
-                    }) ?? [],
-                quizzes:
-                    action.value.quizzes?.map((id) => {
-                        const quiz = action.quizzes.find((x) => x.id === id);
-
-                        return (
-                            quiz ?? {
-                                id: getNanoId(),
-                                name: "Unavailable",
-                            }
-                        );
-                    }) ?? [],
+                parents: action.value.parents || [],
+                prerequisites: action.value.prerequisites || [],
+                sources: action.value.sources || [],
+                notes: action.value.notes || [],
+                quizzes: action.value.quizzes || [],
             };
         default:
             return state;
@@ -135,6 +87,18 @@ function stateReducer(state, action) {
 }
 
 export function CourseInput({ course, close }) {
+    course = {
+        ...course,
+        permissions: {
+            ...course.permissions,
+            allRead: course.permissions.allRead === 1,
+            allWrite: course.permissions.allWrite === 1,
+            groupLocked: course.permissions.groupLocked === 1,
+        },
+    };
+
+    console.log(course);
+
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 
     const addAlert = useAlerts((state) => state.addAlert);
@@ -150,17 +114,17 @@ export function CourseInput({ course, close }) {
     useEffect(() => {
         if (!course) return;
         dispatch({ type: "editing", value: course, parents: courses, sources, notes, quizzes });
-    }, [course, courses, sources, notes, quizzes]);
+    }, [courses, sources, notes, quizzes]);
 
     const courseData = {
         name: state.name,
         description: state.description,
         enrollment: state.enrollment,
-        parents: state.parents,
-        prerequisites: state.prerequisites,
-        sources: state.sources,
-        notes: state.notes,
-        quizzes: state.quizzes,
+        parents: state.parents?.map((c) => c.id),
+        prerequisites: state.prerequisites?.map((c) => c.id),
+        sources: state.sources?.map((s) => s.id),
+        notes: state.notes?.map((n) => n.id),
+        quizzes: state.quizzes?.map((q) => q.id),
         addAllFromSources: state.addAllFromSources,
         addAllFromNotes: state.addAllFromNotes,
         permissions: state.permissions,
@@ -169,7 +133,17 @@ export function CourseInput({ course, close }) {
     const canSubmitChange = () => {
         if (!course) return true;
 
-        const changedFields = getChangedFields(course, courseData);
+        const changedFields = getChangedFields(
+            {
+                ...course,
+                parents: course.parents?.map((c) => c.id),
+                prerequisites: course.prerequisites?.map((c) => c.id),
+                sources: course.sources?.map((s) => s.id),
+                notes: course.notes?.map((n) => n.id),
+                quizzes: course.quizzes?.map((q) => q.id),
+            },
+            courseData
+        );
 
         return Object.keys(changedFields).length > 0;
     };
@@ -210,17 +184,26 @@ export function CourseInput({ course, close }) {
                     "Content-Type": "application/json",
                 },
                 body: course
-                    ? JSON.stringify(getChangedFields(course, courseData, true))
+                    ? JSON.stringify(
+                          getChangedFields(
+                              {
+                                  ...course,
+                                  parents: course.parents?.map((c) => c.id),
+                                  prerequisites: course.prerequisites?.map((c) => c.id),
+                                  sources: course.sources?.map((s) => s.id),
+                                  notes: course.notes?.map((n) => n.id),
+                                  quizzes: course.quizzes?.map((q) => q.id),
+                              },
+                              courseData,
+                              true
+                          )
+                      )
                     : JSON.stringify({
                           name: state.name.trim(),
                           description: state.description.trim(),
                           enrollment: state.enrollment,
-                          parents: state.parents.map((c) => ({ id: c.id })),
-                          prerequisites: state.prerequisites.map((c) => ({
-                              averageLevelRequired: 1,
-                              minimumLevelRequired: 1,
-                              id: c.id,
-                          })),
+                          parents: state.parents.map((c) => c.id),
+                          prerequisites: state.prerequisites.map((c) => c.id),
                           sources: state.sources.map((s) => s.id),
                           notes: state.notes.map((n) => n.id),
                           quizzes: state.quizzes.map((q) => q.id),

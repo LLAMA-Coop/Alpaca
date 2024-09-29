@@ -250,7 +250,7 @@ export function SelectElement({
                                 );
                             }}
                         >
-                            {notObject ? item : item[itemLabel]}
+                            <span>{notObject ? item : item[itemLabel]}</span>
 
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -345,7 +345,7 @@ export function Option({ label, active, multiple }) {
                 onClick: () => handleSelect(index),
             })}
         >
-            {label}
+            <p>{label}</p>
 
             {((isSelected && !multiple) || active) && (
                 <svg

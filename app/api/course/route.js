@@ -46,7 +46,7 @@ export async function POST(req) {
                 ["addAllFromSources", addAllFromSources],
                 ["addAllFromNotes", addAllFromNotes],
             ].map(([field, value]) => ({ field, value })),
-            "course",
+            "course"
         );
 
         const permissions = validator.validatePermissions(perm, true);
@@ -57,7 +57,7 @@ export async function POST(req) {
                     message: "Invalid course data",
                     errors: validator.errors,
                 },
-                { status: 400 },
+                { status: 400 }
             );
         }
 
@@ -104,15 +104,15 @@ export async function POST(req) {
                 .values([
                     ...parents.map((p) => ({
                         inferior: courseId,
-                        superior: p.id,
+                        superior: p,
                         relationship: "encompasses",
                     })),
                     ...prerequisites.map((p) => ({
                         inferior: courseId,
-                        superior: p.id,
+                        superior: p,
                         relationship: "prerequisite",
-                        averageLevelRequired: p.averageLevelRequired,
-                        minimumLevelRequired: p.minimumLevelRequired,
+                        averageLevelRequired: 0,
+                        minimumLevelRequired: 0,
                     })),
                 ])
                 .execute();
@@ -123,7 +123,7 @@ export async function POST(req) {
                 .insertInto("resource_relations")
                 .values([
                     ...sources.map((s) => ({
-                        A: s.id,
+                        A: s,
                         B: courseId,
                         A_type: "source",
                         B_type: "course",
@@ -132,7 +132,7 @@ export async function POST(req) {
                         // referenceType: "page",
                     })),
                     ...notes.map((n) => ({
-                        A: n.id,
+                        A: n,
                         B: courseId,
                         A_type: "note",
                         B_type: "course",
@@ -141,7 +141,7 @@ export async function POST(req) {
                         // referenceType: "page",
                     })),
                     ...quizzes.map((q) => ({
-                        A: q.id,
+                        A: q,
                         B: courseId,
                         A_type: "quiz",
                         B_type: "course",
@@ -162,7 +162,7 @@ export async function POST(req) {
                     ...course,
                 },
             },
-            { status: 201 },
+            { status: 201 }
         );
     } catch (error) {
         if (courseId) {

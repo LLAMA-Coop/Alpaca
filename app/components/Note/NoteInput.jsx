@@ -53,28 +53,8 @@ function stateReducer(state, action) {
             return {
                 ...state,
                 ...action.value,
-                sources:
-                    action.value.sources?.map((id) => {
-                        const source = action.sources.find((x) => x.id === id);
-
-                        return (
-                            source ?? {
-                                id: getNanoId(),
-                                title: "Unavailable",
-                            }
-                        );
-                    }) ?? [],
-                courses:
-                    action.value.courses?.map((id) => {
-                        const course = action.courses.find((x) => x.id === id);
-
-                        return (
-                            course ?? {
-                                id: getNanoId(),
-                                name: "Unavailable",
-                            }
-                        );
-                    }) ?? [],
+                sources: action.value.sources || [],
+                courses: action.value.courses || [],
             };
         case "errors":
             return { ...state, errors: { ...state.errors, ...action.value } };
@@ -86,6 +66,16 @@ function stateReducer(state, action) {
 }
 
 export function NoteInput({ note, close }) {
+    note = {
+        ...note,
+        permissions: {
+            ...note.permissions,
+            allRead: note.permissions.allRead === 1,
+            allWrite: note.permissions.allWrite === 1,
+            groupLocked: note.permissions.groupLocked === 1,
+        },
+    };
+
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 
     const addAlert = useAlerts((state) => state.addAlert);
@@ -99,7 +89,7 @@ export function NoteInput({ note, close }) {
     useEffect(() => {
         if (!note) return;
         dispatch({ type: "editing", value: note, sources, courses });
-    }, [note, sources, courses]);
+    }, [sources, courses]);
 
     const noteData = {
         title: state.title,
@@ -113,7 +103,14 @@ export function NoteInput({ note, close }) {
     const canSubmitChange = () => {
         if (!note) return true;
 
-        const changedFields = getChangedFields(note, noteData);
+        const changedFields = getChangedFields(
+            {
+                ...note,
+                sources: note.sources.map((src) => src.id),
+                courses: note.courses.map((course) => course.id),
+            },
+            noteData
+        );
 
         return Object.keys(changedFields).length > 0;
     };
@@ -152,12 +149,22 @@ export function NoteInput({ note, close }) {
                     "Content-Type": "application/json",
                 },
                 body: note
-                    ? JSON.stringify(getChangedFields(note, noteData, true))
+                    ? JSON.stringify(
+                          getChangedFields(
+                              {
+                                  ...note,
+                                  sources: note.sources.map((src) => src.id),
+                                  courses: note.courses.map((course) => course.id),
+                              },
+                              noteData,
+                              true
+                          )
+                      )
                     : JSON.stringify({
                           title: state.title.trim(),
                           text: state.text.trim(),
-                          sources: state.sources.map((src) => src.id),
-                          courses: state.courses.map((course) => course.id),
+                          sources: state.sources.map((s) => s.id),
+                          courses: state.courses.map((c) => c.id),
                           tags: state.tags,
                           permissions,
                       }),
@@ -241,7 +248,15 @@ export function NoteInput({ note, close }) {
                 required
                 itemValue="id"
                 label="Sources"
-                options={sources}
+                options={
+                    note
+                        ? // Filter duplicates
+                          [...sources, ...state.sources].filter(
+                              (source, index, self) =>
+                                  index === self.findIndex((s) => s.id === source.id)
+                          )
+                        : sources
+                }
                 itemLabel="title"
                 data={state.sources}
                 placeholder="Select sources"

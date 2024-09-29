@@ -6,6 +6,7 @@ import { useStore } from "@/store/store";
 import { useState } from "react";
 import {
     DialogDescription,
+    CardDescription,
     TooltipTrigger,
     TooltipContent,
     DialogContent,
@@ -43,7 +44,9 @@ export function NoteDisplay({ note }) {
                 <h4 title={note.title}>{note.title}</h4>
             </header>
 
-            <p>{note.text.length > 200 ? note.text.substring(0, 200) + "..." : note.text}</p>
+            <CardDescription>
+                {note.text.length > 200 ? note.text.substring(0, 200) + "..." : note.text}
+            </CardDescription>
 
             {!!note.tags.length && (
                 <section>
@@ -88,7 +91,7 @@ export function NoteDisplay({ note }) {
 
                     <CardList>
                         {note.sources.map((s) => (
-                            <CardListItem key={s.id}>{s.name}</CardListItem>
+                            <CardListItem key={s.id}>{s.title}</CardListItem>
                         ))}
                     </CardList>
                 </section>

@@ -79,17 +79,7 @@ function stateReducer(state, action) {
             return {
                 ...state,
                 ...action.value,
-                courses:
-                    action.value.courses?.map((id) => {
-                        const course = action.courses.find((x) => x.id === id);
-
-                        return (
-                            course ?? {
-                                id: getNanoId(),
-                                name: "Unavailable",
-                            }
-                        );
-                    }) ?? [],
+                courses: action.value.courses || [],
             };
         case "reset":
             return defaultState;
@@ -99,6 +89,16 @@ function stateReducer(state, action) {
 }
 
 export function SourceInput({ source, close }) {
+    source = {
+        ...source,
+        permissions: {
+            ...source.permissions,
+            allRead: source.permissions.allRead === 1,
+            allWrite: source.permissions.allWrite === 1,
+            groupLocked: source.permissions.groupLocked === 1,
+        },
+    };
+
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 
     const addAlert = useAlerts((state) => state.addAlert);
@@ -111,7 +111,7 @@ export function SourceInput({ source, close }) {
     useEffect(() => {
         if (!source) return;
         dispatch({ type: "editing", value: source, courses });
-    }, [source, courses]);
+    }, [courses]);
 
     const sourceData = {
         title: state.title.trim(),
@@ -121,7 +121,7 @@ export function SourceInput({ source, close }) {
         lastAccessed: state.lastAccessed,
         locationType: state.locationType,
         authors: state.authors,
-        courses: state.courses,
+        courses: state.courses.map((c) => c.id),
         tags: state.tags,
         permissions: state.permissions,
     };
@@ -129,7 +129,13 @@ export function SourceInput({ source, close }) {
     const canSubmitChange = () => {
         if (!source) return true;
 
-        const changedFields = getChangedFields(source, sourceData);
+        const changedFields = getChangedFields(
+            {
+                ...source,
+                courses: source.courses.map((c) => c.id),
+            },
+            sourceData
+        );
 
         return Object.keys(changedFields).length > 0;
     };
@@ -176,7 +182,16 @@ export function SourceInput({ source, close }) {
                     "Content-Type": "application/json",
                 },
                 body: source
-                    ? JSON.stringify(getChangedFields(source, sourceData, true))
+                    ? JSON.stringify(
+                          getChangedFields(
+                              {
+                                  ...source,
+                                  courses: source.courses.map((c) => c.id),
+                              },
+                              sourceData,
+                              true
+                          )
+                      )
                     : JSON.stringify({
                           title: state.title.trim(),
                           medium: state.medium,

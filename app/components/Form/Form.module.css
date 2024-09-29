@@ -1,7 +1,7 @@
 .form {
     display: grid;
     grid-gap: 40px;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .column {
@@ -26,7 +26,7 @@
 
 @media (max-width: 768px) {
     .form {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .column {

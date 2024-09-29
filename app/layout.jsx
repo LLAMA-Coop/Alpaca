@@ -50,7 +50,10 @@ export default async function RootLayout({ children }) {
     const groups = await getGroups(user?.id);
 
     return (
-        <html lang="en" className={`${inter.variable} ${sofia.variable}`}>
+        <html
+            lang="en"
+            className={`${inter.variable} ${sofia.variable}`}
+        >
             {user && (
                 <FillStore
                     user={user}

@@ -233,8 +233,8 @@ export function UserInput({ isRegistering, onSubmit }) {
 
     const expectations = [
         {
-            name: "At least 8 characters",
-            regex: /.{8,}/,
+            name: "Between 8 and 72 characters",
+            regex: /^.{8,72}$/,
         },
         {
             name: "At least 1 uppercase letter",
@@ -367,7 +367,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                 {isRegistering && (
                     <TooltipContent noStyle>
                         <div className={styles.expectations}>
-                            <p>Your password must contain:</p>
+                            <p>Your password must meet the following expectations:</p>
 
                             <ul>
                                 {expectations.map((exp) => {
@@ -407,7 +407,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                     className={styles.hideBox}
                 >
                     <div className={styles.expectationsBox}>
-                        <p>Your password must contain:</p>
+                        <p>Your password must meet the following expectations:</p>
 
                         <ul>
                             {expectations.map((exp) => {

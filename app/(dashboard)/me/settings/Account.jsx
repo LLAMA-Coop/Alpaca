@@ -270,8 +270,8 @@ export function Account({ user }) {
 
     const expectations = [
         {
-            name: "At least 8 characters",
-            regex: /.{8,}/,
+            name: "Between 8 and 72 characters",
+            regex: /^.{8,72}$/,
         },
         {
             name: "At least 1 uppercase letter",
@@ -329,7 +329,7 @@ export function Account({ user }) {
                         fullWidth
                     >
                         <div className={styles.expectationsBox}>
-                            <p>Your password must contain:</p>
+                            <p>Your password must meet the following expectations:</p>
 
                             <ul>
                                 {expectations.map((exp) => {

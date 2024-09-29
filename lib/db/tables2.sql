@@ -235,6 +235,9 @@ CREATE TABLE IF NOT EXISTS `resource_permissions` (
     KEY `resource_permissions_resource_id_idx` (`resource_id`),
     KEY `resource_permissions_group_id_idx` (`group_id`),
 
+    -- can only have one row with same resource_id and resource_type
+    UNIQUE KEY `resource_permissions_resource_id_resource_type_idx` (`resource_id`, `resource_type`),
+
     -- If all_edit is true, then all_read must be true
     CHECK (`all_write` = 0 OR `all_read` = 1)
 );

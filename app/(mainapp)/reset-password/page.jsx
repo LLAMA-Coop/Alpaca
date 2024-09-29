@@ -22,6 +22,21 @@ export default async function ResetPasswordPage({ searchParams }) {
         );
     }
 
+    if (user.passwordResetExpiration < new Date()) {
+        return (
+            <main className={styles.main}>
+                <header>
+                    <h1>Expired token</h1>
+                    <p>
+                        The token provided has expired.
+                        <br />
+                        Please request a new one.
+                    </p>
+                </header>
+            </main>
+        );
+    }
+
     return (
         <main className={styles.main}>
             <header>

@@ -525,7 +525,7 @@ export function Security({ user }) {
 
                                         <div className={styles.right}>
                                             <button
-                                                className="button success"
+                                                className="button success border"
                                                 onClick={async () => {
                                                     try {
                                                         await navigator.clipboard.writeText(
@@ -546,7 +546,7 @@ export function Security({ user }) {
                                             </button>
 
                                             <button
-                                                className="button success"
+                                                className="button success border"
                                                 onClick={async () => {
                                                     const blob = new Blob(
                                                         [codes.map((c) => c.code).join("\n")],
@@ -573,7 +573,7 @@ export function Security({ user }) {
                                                 disabled={
                                                     (!hasCopied || loading) && !twoFactorEnabled
                                                 }
-                                                className="button success"
+                                                className="button"
                                                 onClick={() => {
                                                     if (twoFactorEnabled) {
                                                         return setOpen(false);
