@@ -10,7 +10,7 @@ export function QuizTest() {
   useEffect(() => {
     setQuiz({
       type: "prompt-response",
-      prompt: "What is the capital of France? So if I were to make an especially long prompt, this would mostly be ellispes, and that's probably not a good idea.",
+      prompt: "What is the capital of France?",
       answers: ["Paris"],
       level: 1,
       numOfAnswers: 1,
