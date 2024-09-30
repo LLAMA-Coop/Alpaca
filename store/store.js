@@ -1,6 +1,17 @@
 import { getNanoId } from "@/lib/random";
 import { create } from "zustand";
 
+const keyMap = {
+    source: "sources",
+    note: "notes",
+    quiz: "quizzes",
+    course: "courses",
+    group: "groups",
+    associate: "associates",
+    blocked: "blocked",
+    notification: "notifications",
+};
+
 export const useStore = create((set) => ({
     user: null,
 
@@ -10,7 +21,10 @@ export const useStore = create((set) => ({
     courses: [],
 
     groups: [],
+
     associates: [],
+    blocked: [],
+
     notifications: [],
 
     setUser: (user) => set(() => ({ user })),
@@ -33,64 +47,28 @@ export const useStore = create((set) => ({
         });
     },
 
-    fillInitialData: (data) => {
-        return set(() => ({
-            user: data.user,
-            sources: data.sources,
-            notes: data.notes,
-            quizzes: data.quizzes,
-            courses: data.courses,
-            groups: data.groups,
-            associates: data.associates,
-            notifications: data.notifications,
+    fillInitialData: (data) => set(() => ({ ...data })),
+
+    addItem: (type, item) => {
+        if (!keyMap[type]) {
+            return;
+        }
+
+        return set((state) => ({
+            ...state,
+            [keyMap[type]]: [...state[keyMap[type]], item],
         }));
     },
 
-    addItem: (type, item) => {
-        return set((state) => {
-            return {
-                sources: type === "source" ? [...state.sources, item] : state.sources,
-                notes: type === "note" ? [...state.notes, item] : state.notes,
-                quizzes: type === "quiz" ? [...state.quizzes, item] : state.quizzes,
-                courses: type === "course" ? [...state.courses, item] : state.courses,
-                groups: type === "group" ? [...state.groups, item] : state.groups,
-                associates: type === "associate" ? [...state.associates, item] : state.associates,
-                notifications:
-                    type === "notification" ? [...state.notifications, item] : state.notifications,
-            };
-        });
-    },
-
     removeItem: (type, id) => {
-        return set((state) => {
-            return {
-                sources:
-                    type === "source"
-                        ? state.sources.filter((source) => source.id !== id)
-                        : state.sources,
-                notes: type === "note" ? state.notes.filter((note) => note.id !== id) : state.notes,
-                quizzes:
-                    type === "quiz"
-                        ? state.quizzes.filter((quiz) => quiz.id !== id)
-                        : state.quizzes,
-                courses:
-                    type === "course"
-                        ? state.courses.filter((course) => course.id !== id)
-                        : state.courses,
-                groups:
-                    type === "group"
-                        ? state.groups.filter((group) => group.id !== id)
-                        : state.groups,
-                associates:
-                    type === "associate"
-                        ? state.associates.filter((associate) => associate.id !== id)
-                        : state.associates,
-                notifications:
-                    type === "notification"
-                        ? state.notifications.filter((notification) => notification.id !== id)
-                        : state.notifications,
-            };
-        });
+        if (!keyMap[type]) {
+            return;
+        }
+
+        return set((state) => ({
+            ...state,
+            [keyMap[type]]: state[keyMap[type]].filter((item) => item.id !== id),
+        }));
     },
 
     readNotification: (id) => {

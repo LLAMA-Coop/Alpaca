@@ -5,7 +5,6 @@ import { Validator, validation } from "@/lib/validation";
 import { useStore, useAlerts } from "@/store/store";
 import { getChangedFields } from "@/lib/objects";
 import { useEffect, useReducer } from "react";
-import { getNanoId } from "@/lib/random";
 
 const defaultState = {
     title: "",
@@ -66,15 +65,17 @@ function stateReducer(state, action) {
 }
 
 export function NoteInput({ note, close }) {
-    note = {
-        ...note,
-        permissions: {
-            ...note.permissions,
-            allRead: note.permissions.allRead === 1,
-            allWrite: note.permissions.allWrite === 1,
-            groupLocked: note.permissions.groupLocked === 1,
-        },
-    };
+    if (note) {
+        note = {
+            ...note,
+            permissions: {
+                ...note.permissions,
+                allRead: note.permissions.allRead === 1,
+                allWrite: note.permissions.allWrite === 1,
+                groupLocked: note.permissions.groupLocked === 1,
+            },
+        };
+    }
 
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 

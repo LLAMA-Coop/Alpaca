@@ -121,12 +121,11 @@ h6 {
 }
 
 .link {
-    font-size: 15px;
     font-weight: 500;
-    width: fit-content;
     color: var(--accent);
     font-family: var(--font-body);
     background-color: transparent;
+    border-radius: var(--radius-medium);
 }
 
 .link:hover {

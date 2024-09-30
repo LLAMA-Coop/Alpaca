@@ -243,3 +243,46 @@
         display: none;
     }
 }
+
+.steps {
+    gap: 40px;
+    display: flex;
+    margin-top: 24px;
+    flex-direction: column;
+}
+
+.steps > li {
+    gap: 8px;
+    display: flex;
+    padding: 16px;
+    line-height: 1.75;
+    color: var(--fg-2);
+    flex-direction: column;
+    background-color: var(--bg-2);
+    border-radius: var(--radius-large);
+    border: 1px solid var(--border-color);
+}
+
+.quizTypes {
+    gap: 4px;
+    display: flex;
+    margin: 20px;
+    flex-direction: column;
+}
+
+.quizTypes > li {
+    gap: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.quizTypes > li::before {
+    width: 4px;
+    height: 4px;
+    content: "";
+    margin-right: 4px;
+    border-radius: 50%;
+    display: inline-block;
+    color: var(--accent-fg);
+    background-color: var(--accent);
+}

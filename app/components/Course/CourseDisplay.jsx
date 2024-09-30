@@ -83,6 +83,7 @@ export function CourseDisplay({ lighter = false, darker = false, course }) {
                             <TooltipTrigger>
                                 <button
                                     className={styles.edit}
+                                    style={{ backgroundColor: lighter ? "var(--bg-2)" : "" }}
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
@@ -111,6 +112,7 @@ export function CourseDisplay({ lighter = false, darker = false, course }) {
                             <TooltipTrigger>
                                 <button
                                     className={styles.delete}
+                                    style={{ backgroundColor: lighter ? "var(--bg-2)" : "" }}
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();

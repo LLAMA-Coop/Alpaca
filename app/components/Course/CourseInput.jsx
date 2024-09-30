@@ -87,17 +87,17 @@ function stateReducer(state, action) {
 }
 
 export function CourseInput({ course, close }) {
-    course = {
-        ...course,
-        permissions: {
-            ...course.permissions,
-            allRead: course.permissions.allRead === 1,
-            allWrite: course.permissions.allWrite === 1,
-            groupLocked: course.permissions.groupLocked === 1,
-        },
-    };
-
-    console.log(course);
+    if (course) {
+        course = {
+            ...course,
+            permissions: {
+                ...course.permissions,
+                allRead: course.permissions.allRead === 1,
+                allWrite: course.permissions.allWrite === 1,
+                groupLocked: course.permissions.groupLocked === 1,
+            },
+        };
+    }
 
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 

@@ -41,8 +41,8 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 
     -- Invite is for groups, request is for associates
     `type` ENUM("invite", "request", "message", "alert"),
-    `subject` VARCHAR(32),
-    `message` VARCHAR(256),
+    `subject` VARCHAR(100),
+    `message` VARCHAR(1024),
 
     -- Having a hard time understanding how this is useful
     `action` ENUM("Accept", "Decline", "Request", "Join", "Invite", "Ignore", "Send Message", "Reply", "Delete") NULL,
@@ -55,6 +55,14 @@ CREATE TABLE IF NOT EXISTS `associates` (
 
     UNIQUE KEY `associates_AB_idx` (`A`, `B`),
     UNIQUE KEY `associates_BA_idx` (`B`, `A`)
+);
+
+CREATE TABLE IF NOT EXISTS `blocked` (
+    `blocker` BIGINT NOT NULL,
+    `blocked` BIGINT NOT NULL,
+
+    UNIQUE KEY `blocked_blocker_blocked_idx` (`blocker`, `blocked`),
+    UNIQUE KEY `blocked_blocked_blocker_idx` (`blocked`, `blocker`)
 );
 
 CREATE TABLE IF NOT EXISTS `groups` (
@@ -242,6 +250,19 @@ CREATE TABLE IF NOT EXISTS `resource_permissions` (
     CHECK (`all_write` = 0 OR `all_read` = 1)
 );
 
+CREATE TABLE IF NOT EXISTS `user_reports` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+    `reporter` BIGINT NOT NULL,
+    `reported` BIGINT NOT NULL,
+
+    `type` ENUM("spam", "harassment", "hate speech", "violence", "nudity", "other"),
+    `reason` VARCHAR(256) NULL,
+    `link` VARCHAR(256) NULL,
+
+    `created_at` TIMESTAMP DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS `error_logs` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
 
@@ -250,6 +271,8 @@ CREATE TABLE IF NOT EXISTS `error_logs` (
     `message` VARCHAR(1024),
     `code` VARCHAR(256),
     `stack` LONGTEXT,
+
+    `note` VARCHAR(1024) NULL,
 
     `triggered_at` TIMESTAMP DEFAULT NOW()
 );

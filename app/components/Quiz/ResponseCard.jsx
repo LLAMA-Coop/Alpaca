@@ -55,6 +55,8 @@ export function ResponseCard({ quiz, canClientCheck, setCorrect, lighter }) {
             if (showConfetti) {
                 correctConfetti();
             }
+
+            return setLoading(false);
         } else {
             try {
                 const response = await fetch(

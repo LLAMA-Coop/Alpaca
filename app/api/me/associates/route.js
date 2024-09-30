@@ -1,4 +1,4 @@
-import { catchRouteError, isUserAssociate } from "@/lib/db/helpers";
+import { catchRouteError, isUserAssociate, isUserBlocked } from "@/lib/db/helpers";
 import { unauthorized } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -23,7 +23,16 @@ export async function POST(req) {
                 {
                     message: "Cannot add yourself as an associate",
                 },
-                { status: 400 },
+                { status: 400 }
+            );
+        }
+
+        if (await isUserBlocked(user.id, userId)) {
+            return NextResponse.json(
+                {
+                    message: "You can't send a request to this user",
+                },
+                { status: 400 }
             );
         }
 
@@ -38,7 +47,7 @@ export async function POST(req) {
                 {
                     message: "No user found with that username or ID",
                 },
-                { status: 404 },
+                { status: 404 }
             );
         }
 
@@ -47,7 +56,7 @@ export async function POST(req) {
                 {
                     message: "User is already an associate",
                 },
-                { status: 400 },
+                { status: 400 }
             );
         } else {
             const alreadyReceived = await db
@@ -58,7 +67,7 @@ export async function POST(req) {
                         eb("type", "=", "request"),
                         eb("recipientId", "=", user.id),
                         eb("senderId", "=", associate.id),
-                    ]),
+                    ])
                 )
                 .executeTakeFirst();
 
@@ -71,10 +80,7 @@ export async function POST(req) {
                     })
                     .execute();
 
-                await db
-                    .deleteFrom("notifications")
-                    .where("id", "=", alreadyReceived.id)
-                    .execute();
+                await db.deleteFrom("notifications").where("id", "=", alreadyReceived.id).execute();
 
                 return NextResponse.json(
                     {
@@ -83,7 +89,7 @@ export async function POST(req) {
                             associate: associate,
                         },
                     },
-                    { status: 200 },
+                    { status: 200 }
                 );
             }
 
@@ -95,7 +101,7 @@ export async function POST(req) {
                         eb("type", "=", "request"),
                         eb("senderId", "=", user.id),
                         eb("recipientId", "=", associate.id),
-                    ]),
+                    ])
                 )
                 .executeTakeFirst();
 
@@ -104,7 +110,7 @@ export async function POST(req) {
                     {
                         message: "Request already sent to this user",
                     },
-                    { status: 400 },
+                    { status: 400 }
                 );
             } else {
                 // If not already sent nor received, send the request
@@ -125,7 +131,7 @@ export async function POST(req) {
                     {
                         message: "Successfully sent associate request",
                     },
-                    { status: 200 },
+                    { status: 200 }
                 );
             }
         }

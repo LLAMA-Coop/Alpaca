@@ -37,7 +37,7 @@ export const metadata = {
 export default async function RootLayout({ children }) {
     const user = await useUser({
         token: cookies().get("token")?.value,
-        select: ["id", "username", "displayName", "avatar", "settings"],
+        select: ["id", "username", "displayName", "avatar", "role", "settings"],
         withAssociates: true,
         withNotifications: true,
     });
@@ -57,10 +57,11 @@ export default async function RootLayout({ children }) {
             {user && (
                 <FillStore
                     user={user}
+                    notes={notes}
+                    groups={groups}
                     sources={sources}
                     quizzes={quizzes}
                     courses={courses}
-                    groups={groups}
                     associates={user.associates}
                     notifications={user.notifications || []}
                 />

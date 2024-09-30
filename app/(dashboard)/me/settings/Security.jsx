@@ -502,7 +502,7 @@ export function Security({ user }) {
                                         </InfoBox>
 
                                         <ul className={styles.codes}>
-                                            {codes.map((code) => (
+                                            {codes?.map((code) => (
                                                 <li
                                                     key={code.code}
                                                     className={`${code.used ? styles.used : ""}`}
@@ -529,7 +529,7 @@ export function Security({ user }) {
                                                 onClick={async () => {
                                                     try {
                                                         await navigator.clipboard.writeText(
-                                                            codes.map((c) => c.code).join("\n")
+                                                            codes?.map((c) => c.code).join("\n")
                                                         );
                                                         setHasCopied(true);
                                                         addAlert({
@@ -549,7 +549,7 @@ export function Security({ user }) {
                                                 className="button success border"
                                                 onClick={async () => {
                                                     const blob = new Blob(
-                                                        [codes.map((c) => c.code).join("\n")],
+                                                        [codes?.map((c) => c.code).join("\n")],
                                                         {
                                                             type: "text/plain",
                                                         }
@@ -612,14 +612,12 @@ export function Security({ user }) {
                 ) : (
                     <>
                         <ul>
-                            {user.sessions.map((session) => (
+                            {user.sessions?.map((session) => (
                                 <li
                                     key={nanoid()}
                                     className={styles.device}
                                 >
-                                    <aside>
-                                        {deviceIcons[session.device] || deviceIcons.Unknown}
-                                    </aside>
+                                    <aside>{deviceIcons[session.device ?? "Unknown"]}</aside>
 
                                     <main>
                                         <header>
@@ -630,10 +628,10 @@ export function Security({ user }) {
                                             {!!session.isCurrent && <span>Current Session</span>}
                                         </header>
 
-                                        {!!Object.keys(session.location).length && (
+                                        {!!session.location && (
                                             <p>
-                                                {session.location.city}, {session.location.region},{" "}
-                                                {session.location.country}
+                                                {session.location?.city}, {session.location?.region}
+                                                , {session.location?.country}
                                             </p>
                                         )}
 

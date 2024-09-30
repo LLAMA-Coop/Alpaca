@@ -37,7 +37,8 @@ export function MultipleChoiceCard({ quiz, canClientCheck, setCorrect, lighter }
         setLoading(true);
 
         if (canClientCheck) {
-            const isCorrect = quiz.answers.every((a) => answers.includes(a));
+            const isCorrect =
+                quiz.answers.every((a) => answers.includes(a)) && !!quiz.answers.length;
 
             if (!isCorrect) {
                 setFailures((prev) => prev + 1);
@@ -60,6 +61,8 @@ export function MultipleChoiceCard({ quiz, canClientCheck, setCorrect, lighter }
             if (showConfetti) {
                 correctConfetti();
             }
+
+            return setLoading(false);
         } else {
             try {
                 const response = await fetch(

@@ -3,6 +3,8 @@
 import { Avatar, Card, CardChip, CardCreatedAt } from "@client";
 
 export function GroupDisplay({ group, lighter, darker }) {
+    const creator = group.members.find((member) => member.id === group.createdBy);
+
     return (
         <Card
             fullWidth
@@ -31,10 +33,8 @@ export function GroupDisplay({ group, lighter, darker }) {
             <p>{group.description}</p>
 
             <footer>
-                <p>Created by {group.creator?.displayName}</p>
-                <CardCreatedAt>
-                    {group.createdAt.toLocaleDateString()}
-                </CardCreatedAt>
+                <p>Created by {creator.username}</p>
+                <CardCreatedAt>{group.createdAt.toLocaleDateString()}</CardCreatedAt>
             </footer>
         </Card>
     );

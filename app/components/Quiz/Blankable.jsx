@@ -35,7 +35,7 @@ export function Blankable({ canClientCheck, quiz, setCorrect }) {
 
         if (canClientCheck) {
             const incorrect = whichIndexesIncorrect(answers, quiz.answers, true);
-            const isCorrect = incorrect.length === 0;
+            const isCorrect = incorrect.length === 0 && !!quiz.answers.length;
 
             if (!isCorrect) {
                 setIncorrectIndexes(incorrect);
@@ -59,6 +59,8 @@ export function Blankable({ canClientCheck, quiz, setCorrect }) {
             if (showConfetti) {
                 correctConfetti();
             }
+
+            return setLoading(false);
         } else {
             try {
                 const response = await fetch(

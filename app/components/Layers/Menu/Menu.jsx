@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./Menu.module.css";
+import { nanoid } from "nanoid";
 
 export function Menu({ items = [], close }) {
     return (
@@ -11,18 +12,30 @@ export function Menu({ items = [], close }) {
             }}
             className={styles.container}
         >
-            {items.map((item, index) => {
-                if (item.show === false) {
+            {items.map((item) => {
+                if (!item || item.show === false) {
                     return null;
                 }
 
                 if (item.name === "hr") {
-                    return <hr key={index} />;
+                    return <hr key={nanoid()} />;
+                }
+
+                if (item.username) {
+                    return (
+                        <p
+                            key={nanoid()}
+                            className={styles.small}
+                        >
+                            <span>{item.username}</span>
+                            {item.email && <span>{item.email}</span>}
+                        </p>
+                    );
                 }
 
                 return (
                     <li
-                        key={index}
+                        key={nanoid()}
                         tabIndex={item.disabled ? -1 : 0}
                         className={`${item.danger ? styles.danger : ""} ${item.disabled ? styles.disabled : ""}`}
                         onClick={(e) => {

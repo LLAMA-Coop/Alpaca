@@ -46,7 +46,8 @@ export function ListAnswer({ quiz, lighter, setCorrect, canClientCheck }) {
                 quiz.answers,
                 quiz.type !== "unordered-list-answer"
             );
-            const isCorrect = quiz.answers.every((a) => answers.includes(a));
+            const isCorrect =
+                quiz.answers.every((a) => answers.includes(a)) && !!quiz.answers.length;
 
             if (!isCorrect) {
                 setIncorrectIndexes(incorrect);
@@ -70,6 +71,8 @@ export function ListAnswer({ quiz, lighter, setCorrect, canClientCheck }) {
             if (showConfetti) {
                 correctConfetti();
             }
+
+            return setLoading(false);
         } else {
             try {
                 const response = await fetch(

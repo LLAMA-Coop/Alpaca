@@ -18,11 +18,11 @@ export async function PATCH(req) {
             .where("recipientId", "=", user.id)
             .execute();
 
-        return new NextResponse(
+        return NextResponse.json(
             {
                 message: "Successfully marked all notifications as read",
             },
-            { status: 200 },
+            { status: 200 }
         );
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });
@@ -36,16 +36,13 @@ export async function DELETE(req) {
         const user = await useUser({ token: cookies().get("token")?.value });
         if (!user) return unauthorized;
 
-        await db
-            .deleteFrom("notifications")
-            .where("recipientId", "=", user.id)
-            .execute();
+        await db.deleteFrom("notifications").where("recipientId", "=", user.id).execute();
 
-        return new NextResponse(
+        return NextResponse.json(
             {
                 message: "Successfully deleted all notifications",
             },
-            { status: 200 },
+            { status: 200 }
         );
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });

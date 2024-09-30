@@ -1,16 +1,50 @@
 "use client";
 
-import { Popover, PopoverContent, PopoverTrigger, Avatar } from "@client";
 import { useAlerts, useStore } from "@/store/store";
+import { Validator } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import styles from "./UserCard.module.css";
 import { useState } from "react";
 import Link from "next/link";
+import {
+    DialogDescription,
+    PopoverContent,
+    PopoverTrigger,
+    DialogButtons,
+    DialogContent,
+    DialogHeading,
+    TextArea,
+    Popover,
+    Spinner,
+    Select,
+    Avatar,
+    Dialog,
+    Input,
+    Form,
+} from "@client";
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
 export function UserCard({ user, group, isOwner, isAdmin }) {
+    const [reportLoading, setReportLoading] = useState(false);
+    const [reportMessage, setReportMessage] = useState("");
+    const [reportType, setReportType] = useState(null);
+    const [reportOpen, setReportOpen] = useState(false);
+    const [reportLink, setReportLink] = useState("");
     const [menuOpen, setMenuOpen] = useState(false);
+
+    const [blockLoading, setBlockLoading] = useState(false);
+    const [blockOpen, setBlockOpen] = useState(false);
+
+    const [removeLoading, setRemoveLoading] = useState(false);
+    const [removeOpen, setRemoveOpen] = useState(false);
+
+    const [messageLoading, setMessageLoading] = useState(false);
+    const [messageContent, setMessageContent] = useState("");
+    const [messageOpen, setMessageOpen] = useState(false);
+    const [messageTitle, setMessageTitle] = useState("");
+
+    const [errors, setErrors] = useState({});
 
     const removeItem = useStore((state) => state.removeItem);
     const associates = useStore((state) => state.associates);
@@ -21,6 +55,15 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
     const isAssociate = associates.map((a) => a.id).includes(user.id);
     const isMe = user.id === myself.id;
     const router = useRouter();
+
+    const reportTypes = [
+        { value: "spam", label: "Spam" },
+        { value: "harassment", label: "Harassment" },
+        { value: "hate speech", label: "Hate Speech" },
+        { value: "violence", label: "Violence" },
+        { value: "nudity", label: "Nudity" },
+        { value: "other", label: "Other" },
+    ];
 
     async function requestAssociate(userId) {
         const response = await fetch(`${basePath}/api/me/associates`, {
@@ -44,6 +87,8 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
     }
 
     async function removeAssociate(userId) {
+        setRemoveLoading(true);
+
         const response = await fetch(`${basePath}/api/me/associates/${userId}`, {
             method: "DELETE",
         });
@@ -61,6 +106,135 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
             success: response.ok,
             message: data?.message || "Something went wrong",
         });
+
+        if (response.ok) {
+            setRemoveOpen(false);
+        }
+
+        setRemoveLoading(false);
+    }
+
+    async function submitReport(e) {
+        e.preventDefault();
+        if (reportLoading) return;
+
+        const validator = new Validator();
+
+        validator.validateAll(
+            [
+                ["type", reportType],
+                ["reason", reportMessage],
+                ["link", reportLink],
+            ].map(([field, value]) => ({ field, value })),
+            "report"
+        );
+
+        if (!validator.isValid) {
+            return setErrors(validator.errors);
+        }
+
+        setReportLoading(true);
+
+        const response = await fetch(`${basePath}/api/me/users/${user.id}/report`, {
+            method: "POST",
+            body: JSON.stringify({
+                type: reportType,
+                reason: reportMessage,
+                link: reportLink,
+            }),
+        });
+
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (e) {}
+
+        addAlert({
+            success: response.ok,
+            message: data?.message || "Something went wrong",
+        });
+
+        if (response.ok) {
+            setReportMessage("");
+            setReportType(null);
+            setReportLink("");
+            setReportOpen(false);
+        }
+
+        setReportLoading(false);
+    }
+
+    async function submitMessage(e) {
+        e.preventDefault();
+        if (messageLoading) return;
+
+        const validator = new Validator();
+
+        validator.validateAll(
+            [
+                ["title", messageTitle],
+                ["message", messageContent],
+            ].map(([field, value]) => ({ field, value })),
+            "message"
+        );
+
+        if (!validator.isValid) {
+            return setErrors(validator.errors);
+        }
+
+        setMessageLoading(true);
+
+        const response = await fetch(`${basePath}/api/me/users/${user.id}/message`, {
+            method: "POST",
+            body: JSON.stringify({
+                title: messageTitle,
+                message: messageContent,
+            }),
+        });
+
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (e) {}
+
+        addAlert({
+            success: response.ok,
+            message: data?.message || "Something went wrong",
+        });
+
+        if (response.ok) {
+            setMessageTitle("");
+            setMessageContent("");
+            setMessageOpen(false);
+        }
+
+        setMessageLoading(false);
+    }
+
+    async function submitBlock() {
+        if (blockLoading) return;
+
+        setBlockLoading(true);
+
+        const response = await fetch(`${basePath}/api/me/users/${user.id}/block`, {
+            method: "POST",
+        });
+
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (e) {}
+
+        addAlert({
+            success: response.ok,
+            message: data?.message || "Something went wrong",
+        });
+
+        if (response.ok) {
+            setBlockOpen(false);
+        }
+
+        setBlockLoading(false);
     }
 
     return (
@@ -119,6 +293,7 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
 
                 <Popover
                     open={menuOpen}
+                    placement="bottom-start"
                     onOpenChange={(val) => setMenuOpen(val)}
                 >
                     <PopoverTrigger>
@@ -182,10 +357,11 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                         </g>
                                     </svg>
                                 ),
+                                show: !isMe,
                             },
                             {
                                 name: "Send Message",
-                                onClick: () => {},
+                                onClick: () => setMessageOpen(true),
                                 icon: (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -196,7 +372,6 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                     </svg>
                                 ),
                                 show: !isMe,
-                                disabled: true,
                             },
                             {
                                 name: "hr",
@@ -206,7 +381,7 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                 name: isAssociate ? "Remove Associate" : "Add As Associate",
                                 onClick: () => {
                                     if (isAssociate) {
-                                        removeAssociate(user.id);
+                                        setRemoveOpen(true);
                                     } else {
                                         requestAssociate(user.id);
                                     }
@@ -257,7 +432,7 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                             },
                             {
                                 name: "Block User",
-                                onClick: () => {},
+                                onClick: () => setBlockOpen(true),
                                 icon: (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -269,7 +444,6 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                 ),
                                 danger: true,
                                 show: !isMe,
-                                disabled: true,
                             },
                             {
                                 name: "hr",
@@ -278,9 +452,21 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                             {
                                 name: "Copy Profile Link",
                                 onClick: async () => {
-                                    await navigator.clipboard.writeText(
-                                        `${window.location.origin}/users/${user.username}`
-                                    );
+                                    try {
+                                        await navigator.clipboard.writeText(
+                                            `${window.location.origin}/users/${user.username}`
+                                        );
+
+                                        addAlert({
+                                            success: true,
+                                            message: "Profile link copied to clipboard",
+                                        });
+                                    } catch (e) {
+                                        addAlert({
+                                            success: false,
+                                            message: "Failed to copy profile link",
+                                        });
+                                    }
                                 },
                                 icon: (
                                     <svg
@@ -300,10 +486,11 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                             },
                             {
                                 name: "hr",
+                                show: !isMe,
                             },
                             {
                                 name: "Report User",
-                                onClick: () => {},
+                                onClick: () => setReportOpen(true),
                                 icon: (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -314,12 +501,232 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
                                     </svg>
                                 ),
                                 danger: true,
-                                disabled: true,
+                                show: !isMe,
                             },
                         ]}
                     />
                 </Popover>
             </Link>
+
+            <Dialog
+                open={reportOpen}
+                onOpenChange={() => setReportOpen(false)}
+            >
+                <DialogContent>
+                    <DialogHeading>Report User</DialogHeading>
+
+                    <DialogDescription>
+                        Please provide a reason for reporting this user.
+                    </DialogDescription>
+
+                    <Form
+                        singleColumn
+                        onSubmit={submitReport}
+                    >
+                        <Select
+                            required
+                            value={reportType}
+                            label="Report Type"
+                            options={reportTypes}
+                            error={errors.reportType}
+                            placeholder="What are you reporting this user for?"
+                            onChange={(val) => {
+                                setReportType(val);
+                                setErrors((prev) => ({ ...prev, reportType: "" }));
+                            }}
+                        />
+
+                        <TextArea
+                            label="Reason"
+                            value={reportMessage}
+                            error={errors.reportMessage}
+                            placeholder="Explain further why you are reporting this user."
+                            onChange={(e) => {
+                                setReportMessage(e.target.value);
+                                setErrors((prev) => ({ ...prev, reportMessage: "" }));
+                            }}
+                        />
+
+                        <Input
+                            value={reportLink}
+                            error={errors.reportLink}
+                            label="Link to offending content"
+                            placeholder="Link to offending content"
+                            onChange={(e) => {
+                                setReportLink(e.target.value);
+                                setErrors((prev) => ({ ...prev, reportLink: "" }));
+                            }}
+                        />
+
+                        <DialogButtons>
+                            <button
+                                type="button"
+                                className="button"
+                                onClick={() => setReportOpen(false)}
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="submit"
+                                className="button danger"
+                                disabled={reportLoading || !reportType}
+                            >
+                                Report
+                                {reportLoading && (
+                                    <Spinner
+                                        size={16}
+                                        margin={0}
+                                    />
+                                )}
+                            </button>
+                        </DialogButtons>
+                    </Form>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog
+                open={blockOpen}
+                onOpenChange={() => setBlockOpen(false)}
+            >
+                <DialogContent>
+                    <DialogHeading>Block User</DialogHeading>
+
+                    <DialogDescription>
+                        Are you sure you want to block this user?
+                        <br />
+                        You will no longer receive messages or notifications from them.
+                    </DialogDescription>
+
+                    <DialogButtons>
+                        <button
+                            type="button"
+                            className="button"
+                            onClick={() => setBlockOpen(false)}
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="button"
+                            className="button danger"
+                            onClick={submitBlock}
+                            disabled={blockLoading}
+                        >
+                            Block
+                            {blockLoading && (
+                                <Spinner
+                                    size={16}
+                                    margin={0}
+                                />
+                            )}
+                        </button>
+                    </DialogButtons>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog
+                open={messageOpen}
+                onOpenChange={() => setMessageOpen(false)}
+            >
+                <DialogContent>
+                    <DialogHeading>Send Message</DialogHeading>
+
+                    <DialogDescription>Send a message to {user.username}.</DialogDescription>
+
+                    <Form
+                        singleColumn
+                        onSubmit={submitMessage}
+                    >
+                        <Input
+                            label="Title"
+                            maxLength={100}
+                            value={messageTitle}
+                            error={errors.messageTitle}
+                            placeholder="Message Title"
+                            onChange={(e) => {
+                                setMessageTitle(e.target.value);
+                                setErrors((prev) => ({ ...prev, messageTitle: "" }));
+                            }}
+                        />
+
+                        <TextArea
+                            required
+                            label="Message"
+                            maxLength={1024}
+                            value={messageContent}
+                            error={errors.messageContent}
+                            placeholder="Message Content"
+                            onChange={(e) => {
+                                setMessageContent(e.target.value);
+                                setErrors((prev) => ({ ...prev, messageContent: "" }));
+                            }}
+                        />
+
+                        <DialogButtons>
+                            <button
+                                type="button"
+                                className="button"
+                                onClick={() => setMessageOpen(false)}
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="submit"
+                                disabled={messageLoading}
+                                className="button primary"
+                            >
+                                Send
+                                {messageLoading && (
+                                    <Spinner
+                                        size={16}
+                                        margin={0}
+                                    />
+                                )}
+                            </button>
+                        </DialogButtons>
+                    </Form>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog
+                open={removeOpen}
+                onOpenChange={() => setRemoveOpen(false)}
+            >
+                <DialogContent>
+                    <DialogHeading>Remove Associate</DialogHeading>
+
+                    <DialogDescription>
+                        Are you sure you want to remove {user.username} as an associate?
+                    </DialogDescription>
+
+                    <DialogButtons>
+                        <button
+                            type="button"
+                            className="button"
+                            onClick={() => setRemoveOpen(false)}
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="button"
+                            disabled={removeLoading}
+                            className="button danger"
+                            onClick={() => removeAssociate(user.id)}
+                        >
+                            Remove
+                            {removeLoading && (
+                                <Spinner
+                                    size={16}
+                                    margin={0}
+                                />
+                            )}
+                        </button>
+                    </DialogButtons>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

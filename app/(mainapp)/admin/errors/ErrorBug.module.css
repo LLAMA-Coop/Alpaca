@@ -1,0 +1,72 @@
+.errors {
+    gap: 80px;
+    display: flex;
+    flex-direction: column;
+}
+
+.error {
+    width: 100%;
+    padding: 16px;
+    background-color: var(--bg-2);
+    border-radius: var(--radius-large);
+    border: 1px solid var(--border-color);
+}
+
+.error > header {
+    margin-bottom: 24px;
+}
+
+.error > header > h2 {
+    display: flex;
+    font-size: 28px;
+    align-items: center;
+}
+
+.colored {
+    color: var(--accent);
+    margin-left: 8px;
+}
+
+.chip {
+    display: flex;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 4px 12px;
+    margin-left: 12px;
+    color: var(--fg-1);
+    height: fit-content;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    background-color: var(--accent-50);
+}
+
+.error > p:not(:last-child) {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--fg-2);
+    margin-bottom: 24px;
+}
+
+.error > div {
+    margin-bottom: 24px;
+}
+
+.error > div > p {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fg-2);
+    margin-bottom: 6px;
+}
+
+.error > div > code {
+    padding: 16px;
+    display: flex;
+    overflow: auto;
+    font-weight: 500;
+    max-height: 500px;
+    color: var(--fg-2);
+    font-family: var(--font-mono);
+    background-color: var(--bg-1);
+    border-radius: var(--radius-medium);
+}

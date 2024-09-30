@@ -1,12 +1,10 @@
 "use client";
 
-import { DeletePopup } from "../DeletePopup/DeletePopup";
+import { BlankableInput, Permissions, Spinner, Select, Input, Form } from "@client";
 import { useStore, useAlerts } from "@/store/store";
 import { useEffect, useReducer } from "react";
 import { validation } from "@/lib/validation";
 import { Validator } from "@/lib/validation";
-import { getNanoId } from "@/lib/random";
-import { BlankableInput, Permissions, Spinner, Select, Input, Form } from "@client";
 
 const defaultState = {
     type: "prompt-response",
@@ -112,39 +110,9 @@ function stateReducer(state, action) {
             return {
                 ...state,
                 ...action.value,
-                sources:
-                    action.value.sources.map((id) => {
-                        const source = action.sources.find((x) => x.id === id);
-
-                        return (
-                            source ?? {
-                                id: getNanoId(),
-                                title: "Unavailable",
-                            }
-                        );
-                    }) ?? [],
-                notes:
-                    action.value.notes.map((id) => {
-                        const note = action.notes.find((x) => x.id === id);
-
-                        return (
-                            note ?? {
-                                id: getNanoId(),
-                                title: "Unavailable",
-                            }
-                        );
-                    }) ?? [],
-                courses:
-                    action.value.courses.map((id) => {
-                        const course = action.courses.find((x) => x.id === id);
-
-                        return (
-                            course ?? {
-                                id: getNanoId(),
-                                name: "Unavailable",
-                            }
-                        );
-                    }) ?? [],
+                sources: action.value.sources || [],
+                notes: action.value.notes || [],
+                courses: action.value.courses || [],
             };
         case "reset":
             return defaultState;
@@ -153,7 +121,7 @@ function stateReducer(state, action) {
     }
 }
 
-export function QuizInput({ quiz }) {
+export function QuizInput({ quiz, setQuiz }) {
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 
     const addAlert = useAlerts((state) => state.addAlert);
@@ -175,7 +143,22 @@ export function QuizInput({ quiz }) {
             notes,
             courses,
         });
-    }, []);
+    }, [sources, notes, courses]);
+
+    useEffect(() => {
+        if (setQuiz) {
+            setQuiz({
+                type: state.type,
+                prompt: state.prompt,
+                answers: state.answers,
+                choices: state.choices,
+                hints: state.hints,
+                sources: state.sources,
+                notes: state.notes,
+                courses: state.courses,
+            });
+        }
+    }, [state]);
 
     if (state.type === "multiple-choice" && state.answers.find((x) => !state.choices.includes(x))) {
         // Remove answers that are not in the choices
@@ -217,14 +200,6 @@ export function QuizInput({ quiz }) {
         validator.validate({ field: "tags", value: state.tags, type: "misc" });
         const perm = validator.validatePermissions(state.permissions);
 
-        // Why ??? We should be able to have only one answer from the choices
-        // if (state.type === "multiple-choice" && state.answer.length < 2) {
-        //     validator.addError({
-        //         field: "answers",
-        //         message: "Must have at least 2 answers",
-        //     });
-        // }
-
         if (!validator.isValid) {
             dispatch({ type: "errors", value: validator.errors });
 
@@ -249,13 +224,6 @@ export function QuizInput({ quiz }) {
                 choices: state.choices,
                 hints: state.hints,
                 tags: state.tags,
-                // sources: sources.map((src) => ({
-                //     resourceId: quiz ? quiz.id : undefined,
-                //     resourceType: "quiz",
-                //     sourceId: src.id,
-                //     locInSource: "unknown",
-                //     locType: "page",
-                // })),
                 sources: state.sources.map((s) => s.id),
                 notes: notes.map((n) => n.id),
                 courses: courses.map((c) => c.id),
@@ -496,7 +464,7 @@ export function QuizInput({ quiz }) {
                 }}
             />
 
-            {canChangePermissions && (
+            {canChangePermissions && !setQuiz && (
                 <Permissions
                     disabled={state.loading}
                     permissions={state.permissions}
@@ -511,17 +479,17 @@ export function QuizInput({ quiz }) {
                 />
             )}
 
-            {["fill-in-the-blank", "prompt-response"].includes(state.type) && <div />}
+            {[
+                "prompt-response",
+                "ordered-list-answer",
+                "unordered-list-answer",
+                "verbatim",
+            ].includes(state.type) && <div />}
 
-            <button className="button submit primary">
-                Submit Quiz {state.loading && <Spinner />}
-            </button>
-
-            {isOwner && (
-                <DeletePopup
-                    resourceType="quiz"
-                    resourceId={quiz.id}
-                />
+            {!setQuiz && (
+                <button className="button submit primary">
+                    Submit Quiz {state.loading && <Spinner />}
+                </button>
             )}
         </Form>
     );

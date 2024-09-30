@@ -1,4 +1,4 @@
-import { catchRouteError, isUserAssociate } from "@/lib/db/helpers";
+import { catchRouteError, isUserAssociate, isUserBlocked } from "@/lib/db/helpers";
 import { unauthorized } from "@/lib/apiErrorResponses";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -19,9 +19,18 @@ export async function POST(req, { params }) {
                 {
                     message: "User is already an associate",
                 },
-                { status: 400 },
+                { status: 400 }
             );
         } else {
+            if (await isUserBlocked(user.id, id)) {
+                return NextResponse.json(
+                    {
+                        message: "You can't accept a request from this user",
+                    },
+                    { status: 400 }
+                );
+            }
+
             const received = await db
                 .selectFrom("notifications")
                 .select("id")
@@ -30,7 +39,7 @@ export async function POST(req, { params }) {
                         eb("type", "=", "request"),
                         eb("recipientId", "=", user.id),
                         eb("senderId", "=", id),
-                    ]),
+                    ])
                 )
                 .executeTakeFirst();
 
@@ -39,7 +48,7 @@ export async function POST(req, { params }) {
                     {
                         message: "No request found",
                     },
-                    { status: 404 },
+                    { status: 404 }
                 );
             } else {
                 await db
@@ -50,20 +59,11 @@ export async function POST(req, { params }) {
                     })
                     .execute();
 
-                await db
-                    .deleteFrom("notifications")
-                    .where("id", "=", received.id)
-                    .execute();
+                await db.deleteFrom("notifications").where("id", "=", received.id).execute();
 
                 const associate = await useUser({
                     id,
-                    select: [
-                        "id",
-                        "username",
-                        "displayName",
-                        "description",
-                        "avatar",
-                    ],
+                    select: ["id", "username", "displayName", "description", "avatar"],
                 });
 
                 return NextResponse.json(
@@ -73,7 +73,7 @@ export async function POST(req, { params }) {
                             associate,
                         },
                     },
-                    { status: 200 },
+                    { status: 200 }
                 );
             }
         }
@@ -100,16 +100,13 @@ export async function DELETE(req, { params }) {
             .executeTakeFirst();
 
         if (received) {
-            await db
-                .deleteFrom("notifications")
-                .where("id", "=", received.id)
-                .execute();
+            await db.deleteFrom("notifications").where("id", "=", received.id).execute();
 
             return NextResponse.json(
                 {
                     message: "Successfully declined request",
                 },
-                { status: 200 },
+                { status: 200 }
             );
         }
 
@@ -122,16 +119,13 @@ export async function DELETE(req, { params }) {
             .executeTakeFirst();
 
         if (sent) {
-            await db
-                .deleteFrom("notifications")
-                .where("id", "=", sent.id)
-                .execute();
+            await db.deleteFrom("notifications").where("id", "=", sent.id).execute();
 
             return NextResponse.json(
                 {
                     message: "Successfully cancelled request",
                 },
-                { status: 200 },
+                { status: 200 }
             );
         }
 
@@ -144,7 +138,7 @@ export async function DELETE(req, { params }) {
                     or([
                         and([eb("A", "=", user.id), eb("B", "=", id)]),
                         and([eb("A", "=", id), eb("B", "=", user.id)]),
-                    ]),
+                    ])
                 )
                 .execute();
 
@@ -152,7 +146,7 @@ export async function DELETE(req, { params }) {
                 {
                     message: "Successfully removed associate",
                 },
-                { status: 200 },
+                { status: 200 }
             );
         }
 
@@ -160,7 +154,7 @@ export async function DELETE(req, { params }) {
             {
                 message: "No request or associate found",
             },
-            { status: 404 },
+            { status: 404 }
         );
     } catch (error) {
         return catchRouteError({ error, route: req.nextUrl.pathname });

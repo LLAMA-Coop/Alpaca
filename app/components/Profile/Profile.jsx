@@ -175,6 +175,13 @@ export function Profile({ user, size = 44 }) {
 
     const menuItems = [
         {
+            username: user.username,
+            email: user.email,
+        },
+        {
+            name: "hr",
+        },
+        {
             name: "Dashboard",
             icon: (
                 <svg
@@ -240,6 +247,47 @@ export function Profile({ user, size = 44 }) {
             onClick: logout,
         },
     ];
+
+    if (user.role === "admin") {
+        const adminItems = [
+            {
+                name: "hr",
+            },
+            {
+                name: "Errors and Bugs",
+                onClick: () => {
+                    router.push("/admin/errors");
+                },
+                icon: (
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                    >
+                        <path d="m23,18c.553,0,1-.448,1-1s-.447-1-1-1h-1.45l-.595-2h.044c1.654,0,3-1.346,3-3,0-.552-.447-1-1-1s-1,.448-1,1-.448,1-1,1h-.703c-.636-1.212-1.909-2-3.297-2-1.545,0-2.947.975-3.51,2.49l-1.041,3.51h-1.449c-.552,0-1,.448-1,1s.448,1,1,1h1c0,.731.158,1.426.441,2.053-1.388.263-2.441,1.484-2.441,2.947,0,.552.448,1,1,1s1-.448,1-1,.449-1,1-1h1s.002,0,.003,0c.836.628,1.873,1,2.997,1s2.161-.372,2.997-1c.001,0,.002,0,.003,0h1c.552,0,1,.449,1,1s.447,1,1,1,1-.448,1-1c0-1.463-1.053-2.684-2.441-2.947.283-.627.441-1.322.441-2.053h1Zm-11-10h1c.553,0,1-.448,1-1s-.447-1-1-1h-1.45l-.594-2h.044c1.654,0,3-1.346,3-3,0-.552-.447-1-1-1s-1,.448-1,1-.449,1-1,1h-.703c-.636-1.212-1.909-2-3.297-2-1.371,0-2.629.768-3.288,2h-.712c-.551,0-1-.449-1-1s-.448-1-1-1S0,.448,0,1c0,1.654,1.346,3,3,3h.043l-.594,2h-1.449c-.552,0-1,.448-1,1s.448,1,1,1h1c0,.731.158,1.426.441,2.053-1.388.263-2.441,1.484-2.441,2.947,0,.552.448,1,1,1s1-.448,1-1,.449-1,1-1h1s.002,0,.003,0c.836.628,1.873,1,2.997,1,2.757,0,5-2.243,5-5Z" />
+                    </svg>
+                ),
+            },
+            {
+                name: "User Reports",
+                onClick: () => {
+                    router.push("/admin/reports");
+                },
+                icon: (
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                    >
+                        <path d="m22,2v16h-14V0h12c1.105,0,2,.895,2,2Zm-9.5,4.5c0,1.379,1.121,2.5,2.5,2.5s2.5-1.121,2.5-2.5-1.121-2.5-2.5-2.5-2.5,1.121-2.5,2.5Zm6.5,6c0-1.378-1.121-2.5-2.5-2.5h-3c-1.379,0-2.5,1.122-2.5,2.5v1.5h2v-1.5c0-.276.225-.5.5-.5h3c.275,0,.5.224.5.5v1.5h2v-1.5Zm-13,5.5V0h-1c-1.657,0-3,1.343-3,3v15.765c.549-.494,1.262-.766,2-.765h2Zm-2,2h18v4H4c-1.105,0-2-.895-2-2s.895-2,2-2Z" />
+                    </svg>
+                ),
+            },
+        ];
+
+        // add all these items right after the "report a bug" item
+        menuItems.splice(6, 0, ...adminItems);
+    }
 
     return (
         <div className={styles.container}>
@@ -349,10 +397,17 @@ export function Profile({ user, size = 44 }) {
                         </button>
 
                         <button
-                            className="button primary"
+                            className="button danger"
                             onClick={handleReportSubmit}
+                            disabled={loading || !reportDescription.length}
                         >
-                            Send {loading && <Spinner primary />}
+                            Report
+                            {loading && (
+                                <Spinner
+                                    primary
+                                    size={16}
+                                />
+                            )}
                         </button>
                     </DialogButtons>
                 </DialogContent>

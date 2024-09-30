@@ -6,7 +6,6 @@ import { getChangedFields } from "@/lib/objects";
 import { validation } from "@/lib/validation";
 import { useEffect, useReducer } from "react";
 import { Validator } from "@/lib/validation";
-import { getNanoId } from "@/lib/random";
 
 const defaultState = {
     title: "",
@@ -89,15 +88,17 @@ function stateReducer(state, action) {
 }
 
 export function SourceInput({ source, close }) {
-    source = {
-        ...source,
-        permissions: {
-            ...source.permissions,
-            allRead: source.permissions.allRead === 1,
-            allWrite: source.permissions.allWrite === 1,
-            groupLocked: source.permissions.groupLocked === 1,
-        },
-    };
+    if (source) {
+        source = {
+            ...source,
+            permissions: {
+                ...source.permissions,
+                allRead: source.permissions.allRead === 1,
+                allWrite: source.permissions.allWrite === 1,
+                groupLocked: source.permissions.groupLocked === 1,
+            },
+        };
+    }
 
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 

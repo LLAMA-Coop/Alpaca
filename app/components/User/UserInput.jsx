@@ -131,8 +131,8 @@ export function UserInput({ isRegistering, onSubmit }) {
         if (response.status === 200) {
             const data = await response.json();
 
-            if (response.status === 200 && data.token) {
-                return setTwoFactorToken(data.token);
+            if (response.status === 200 && data.code) {
+                return setTwoFactorToken(data.code);
             }
 
             setUsername("");

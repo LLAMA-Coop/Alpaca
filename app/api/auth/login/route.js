@@ -2,8 +2,8 @@ import { getToken, catchRouteError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { db } from "@/lib/db/db";
-import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
+import bcrypt from "bcrypt";
 
 function isCorrectIP(ip) {
     return /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip);
@@ -66,7 +66,7 @@ export async function POST(req) {
                 return NextResponse.json(
                     {
                         message: "Two factor authentication is enabled",
-                        token,
+                        code: token,
                     },
                     { status: 200 }
                 );
@@ -76,8 +76,7 @@ export async function POST(req) {
             const accessToken = await getToken(user.username, false);
 
             const userAgent = headers().get("user-agent") || "Unknown";
-            // const ip = (req.headers.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
-            const ip = "91.162.93.92";
+            const ip = (req.headers.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
             let location = {};
 
             if (isCorrectIP(ip)) {

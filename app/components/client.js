@@ -27,6 +27,7 @@ export { CourseInput } from "./Course/CourseInput";
 export { NoteDisplay } from "./Note/NoteDisplay";
 export { SourceDisplay } from "./Source/SourceDisplay";
 export { CourseDisplay } from "./Course/CourseDisplay";
+export { QuizTest } from "./Quiz/QuizTest";
 
 export { MasoneryList } from "./Display/MasoneryList";
 export { InfoBox } from "./Display/InfoBox/InfoBox";

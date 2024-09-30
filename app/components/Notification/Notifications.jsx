@@ -123,21 +123,23 @@ export function Notifications() {
                             <p>{n.message}</p>
                         </header>
 
-                        <div className={styles.actions}>
-                            <button
-                                className="button success small"
-                                onClick={() => accept(n)}
-                            >
-                                Accept
-                            </button>
+                        {notifications.type === "request" && (
+                            <div className={styles.actions}>
+                                <button
+                                    className="button success small"
+                                    onClick={() => accept(n)}
+                                >
+                                    Accept
+                                </button>
 
-                            <button
-                                className="button danger border small"
-                                onClick={() => decline(n)}
-                            >
-                                Decline
-                            </button>
-                        </div>
+                                <button
+                                    className="button danger border small"
+                                    onClick={() => decline(n)}
+                                >
+                                    Decline
+                                </button>
+                            </div>
+                        )}
 
                         <Tooltip>
                             <TooltipTrigger>

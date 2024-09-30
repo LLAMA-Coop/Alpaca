@@ -83,7 +83,6 @@
 }
 
 .actions > button {
-    background-color: var(--bg-2);
     margin-right: 12px;
 }
 
@@ -115,7 +114,7 @@
 .readButton:focus-visible,
 .removeButton:hover,
 .removeButton:focus-visible {
-    color: var(--fg-1);
+    color: var(--accent);
     filter: brightness(1.15);
 }
 
