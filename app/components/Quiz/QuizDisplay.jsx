@@ -94,7 +94,7 @@ export function QuizDisplay({ quiz, canClientCheck, isFlashcard, lighter }) {
             })()}
 
             <footer>
-                <p>Created By {quiz.creator.username}</p>
+                <p>Created By {quiz.creator ? quiz.creator.username : "No one"}</p>
                 <CardCreatedAt>{new Date(quiz.createdAt).toLocaleDateString()}</CardCreatedAt>
             </footer>
         </Card>

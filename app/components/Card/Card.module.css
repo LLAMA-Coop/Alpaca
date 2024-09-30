@@ -62,8 +62,6 @@ a.container:hover {
     margin: 0;
     font-size: 20px;
     font-weight: 500;
-    overflow: hidden;
-    white-space: nowrap;
     color: var(--text-1);
     text-overflow: ellipsis;
 }

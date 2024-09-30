@@ -85,7 +85,7 @@ export function Appearance({ user }) {
             return;
         }
 
-        if (user.settings.theme === themeName && user.settings.accent === accentName) {
+        if (user.settings && user.settings.theme === themeName && user.settings.accent === accentName) {
             return;
         }
 
