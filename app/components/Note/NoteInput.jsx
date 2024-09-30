@@ -1,6 +1,6 @@
 "use client";
 
-import { Permissions, Spinner, Select, Input, Label, Form } from "@client";
+import { Permissions, Spinner, Select, Input, Label, Form, TextArea } from "@client";
 import { Validator, validation } from "@/lib/validation";
 import { useStore, useAlerts } from "@/store/store";
 import { getChangedFields } from "@/lib/objects";
@@ -286,12 +286,25 @@ export function NoteInput({ note, close }) {
             />
 
             <div>
-                <Label
+                <TextArea
+                    required
+                    label="Text"
+                    value={state.text}
+                    error={state.errors.text}
+                    placeholder="How to make a sandwich"
+                    maxLength={validation.note.text.maxLength}
+                    onChange={(e) => {
+                        dispatch({ type: "text", value: e.target.value });
+                        dispatch({ type: "errors", value: { text: "" } });
+                    }}
+                />
+
+                {/* <Label
                     required
                     id={"ejjeiahdiopaehdi3289ry2380"}
                 >
                     Text
-                </Label>
+                </Label> */}
 
                 {/* <PlateEditor /> */}
             </div>
