@@ -298,6 +298,7 @@ export function Account({ user }) {
             <div className={styles.column}>
                 <Form
                     fullWidth
+                    className={styles.accountForm}
                     onSubmit={handlePasswordSubmit}
                 >
                     <Input
@@ -460,7 +461,10 @@ export function Account({ user }) {
             <h2>Change your email</h2>
 
             <div>
-                <Form onSubmit={handleEmailSubmit}>
+                <Form
+                    onSubmit={handleEmailSubmit}
+                    className={styles.accountForm}
+                >
                     <Input
                         type="email"
                         label="Email"

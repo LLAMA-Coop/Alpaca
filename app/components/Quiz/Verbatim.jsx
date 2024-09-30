@@ -123,8 +123,8 @@ export function Verbatim({ quiz, lighter, setCorrect, canClientCheck }) {
                         key={nanoid()}
                         darker={lighter}
                         label={`Answer ${index + 1}`}
-                        disabled={hasAnswered && isCorrect}
                         width={`calc(${a.length + 1}ch)`}
+                        disabled={hasAnswered && isCorrect}
                         error={error && incorrectIndexes.includes(index)}
                         success={hasAnswered && !incorrectIndexes.includes(index)}
                         onChange={(e) => {

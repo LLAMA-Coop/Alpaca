@@ -2,7 +2,7 @@
 
 import styles from "./Form.module.css";
 
-export function Form({ gap = 40, fullWidth, singleColumn, children, ...props }) {
+export function Form({ className, gap = 40, fullWidth, singleColumn, children, ...props }) {
     // This is just a styled component to apply css to the form
     // It does not have any logic
 
@@ -13,7 +13,7 @@ export function Form({ gap = 40, fullWidth, singleColumn, children, ...props }) 
                 width: fullWidth ? "100%" : "",
                 gridTemplateColumns: singleColumn ? "1fr" : "",
             }}
-            className={styles.form}
+            className={`${styles.form} ${className}`}
             {...props}
         >
             {children}

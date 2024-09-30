@@ -41,6 +41,8 @@
     min-width: 100dvw;
     min-height: 100dvh;
     background-color: var(--bg-1);
+    padding-left: calc(100vw - 100%);
+    padding-left: calc(100dvw - 100%);
     animation: rightToLeft 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -139,15 +141,12 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .container {
         gap: 8px;
     }
 
-    .menu {
-        display: flex;
-    }
-
+    .menu,
     .button {
         display: flex;
     }

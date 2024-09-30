@@ -11,7 +11,7 @@ import { nanoid } from "nanoid";
 export function Blankable({ canClientCheck, quiz, setCorrect }) {
     const texts = quiz.prompt.split(/<blank \/>/);
 
-    const [answers, setAnswers] = useState(new Array(texts.length).fill(""));
+    const [answers, setAnswers] = useState(new Array(texts.length - 1).fill(""));
     const [incorrectIndexes, setIncorrectIndexes] = useState([]);
     const [hasAnswered, setHasAnswered] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
@@ -173,9 +173,7 @@ export function Blankable({ canClientCheck, quiz, setCorrect }) {
                 <button
                     type="submit"
                     disabled={
-                        (hasAnswered && !isCorrect) ||
-                        !answers.every((answer) => answer.length > 0) ||
-                        loading
+                        (hasAnswered && isCorrect) || !answers.every((a) => a.length > 0) || loading
                     }
                     className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
                 >
@@ -195,7 +193,7 @@ export function Blankable({ canClientCheck, quiz, setCorrect }) {
                         className="button small border"
                         onClick={() => {
                             setIncorrectIndexes([]);
-                            setAnswers(new Array(texts.length).fill(""));
+                            setAnswers(new Array(texts.length - 1).fill(""));
                             setIsCorrect(false);
                             setHasAnswered(false);
                         }}
