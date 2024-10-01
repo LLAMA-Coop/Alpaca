@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import styles from "@/app/page.module.css";
+import styles from "@/app/(mainapp)/page.module.css";
 import { cookies } from "next/headers";
 import {
     QuizDisplay,
@@ -7,31 +6,28 @@ import {
     QuizInput,
     Card,
 } from "@/app/components/client";
-import { canRead, useUser } from "@/lib/auth";
-import { getQuizzesById } from "@/lib/db/helpers";
+import { useUser } from "@/lib/auth";
+import { getPermittedResources } from "@/lib/db/helpers";
 
 export default async function QuizPage({ params }) {
     const { id } = params;
 
-    const quiz = (await getQuizzesById({ id }))[0];
-
     const user = await useUser({ token: cookies().get("token")?.value });
-    if (!canRead(quiz, user)) {
-        return redirect("/quizzes");
-    }
+
+    const resources = await getPermittedResources({
+        withQuizzes: true,
+        userId: user?.id,
+        selectById: id
+    })
+
+    const quiz = resources.quizzes[0]
+
+    // console.log("RESOURCES QUIZ", resources, quiz);
 
     return (
         <main className={styles.main}>
             <div className={styles.titleBlock}>
                 Created By: <UserCard user={quiz.creator} />
-                <div>
-                    <p>Contributors:</p>
-                    <ul>
-                        {quiz.contributors.map((c) => (
-                            <li key={c.id}>{c.username}</li>
-                        ))}
-                    </ul>
-                </div>
             </div>
             <section>
                 <QuizDisplay quiz={quiz} />
