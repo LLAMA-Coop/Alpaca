@@ -55,7 +55,7 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
     console.log(myself);
 
     const isAssociate = associates.map((a) => a.id).includes(user.id);
-    const isMe = user.id === myself.id;
+    const isMe = user && myself && user.id === myself.id;
     const router = useRouter();
 
     const reportTypes = [

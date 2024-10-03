@@ -7,6 +7,8 @@ CREATE TABLE IF NOT EXISTS `users` (
     `display_name` VARCHAR (32) NOT NULL,
     `role` ENUM("admin", "moderator", "user") DEFAULT "user",
 
+    `role` ENUM("owner", "admin", "moderator", "user"),
+
     `email` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_bin NULL UNIQUE,
     `email_verified` TINYINT DEFAULT 0,
     `email_code` CHAR(6) NULL,

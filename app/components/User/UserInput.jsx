@@ -11,6 +11,7 @@ import Link from "next/link";
 export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [revealPass, setRevealPass] = useState(false);
     const [confirm, setConfirm] = useState("");
 
     const [showTwoFactor, setShowTwoFactor] = useState(true);
@@ -347,7 +348,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                     <div>
                         <Input
                             required
-                            type="password"
+                            type={revealPass ? "text" : "password"}
                             label="Password"
                             value={password}
                             placeholder="Password"
@@ -442,7 +443,7 @@ export function UserInput({ isRegistering, onSubmit }) {
             {isRegistering && (
                 <Input
                     required
-                    type="password"
+                    type={revealPass ? "text" : "password"}
                     value={confirm}
                     error={errors.confirm}
                     label="Password Match"
