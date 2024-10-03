@@ -396,3 +396,30 @@
         transform: rotate(360deg);
     }
 }
+
+.reveal {
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    width: 36px;
+    display: flex;
+    cursor: pointer;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--bg-0);
+    background-color: var(--bg-0);
+    border-radius: var(--radius-medium);
+}
+
+.reveal:hover,
+.reveal:focus-visible {
+    border-color: var(--bg-1);
+    background-color: var(--bg-1);
+}
+
+.reveal > svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}

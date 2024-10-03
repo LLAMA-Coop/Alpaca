@@ -1,33 +1,34 @@
 "use client";
 
-import {
-    Input,
-    MasoneryList,
-    QuizDisplay,
-    Spinner,
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@client";
-import { getQuizzes } from "@/app/actions/getQuizzes";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getQuizzes } from "@/app/actions/getQuizzes";
 import styles from "@main/page.module.css";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import {
+    TooltipContent,
+    TooltipTrigger,
+    MasoneryList,
+    QuizDisplay,
+    Tooltip,
+    Spinner,
+    Input,
+} from "@client";
 
-const NUMBER_OF_QUIZZES_TO_FETCH = 2;
+const NUMBER_OF_QUIZZES_TO_FETCH = 20;
 
 export default function Quizzes({ user, initialQuizzes, more }) {
-    const [offset, setOffset] = useState(NUMBER_OF_QUIZZES_TO_FETCH);
-    const [quizzes, setQuizzes] = useState(initialQuizzes);
-    const [tagSearch, setTagSearch] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(more);
-
     const searchParams = useSearchParams();
     const tag = searchParams?.get("tag");
     const router = useRouter();
+
+    const [offset, setOffset] = useState(NUMBER_OF_QUIZZES_TO_FETCH);
+    const [quizzes, setQuizzes] = useState(initialQuizzes);
+    const [tagSearch, setTagSearch] = useState(tag || "");
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(more);
+    const [inputId, setInputId] = useState(null);
 
     async function loadMoreQuizzes() {
         if (loading) return;
@@ -46,36 +47,41 @@ export default function Quizzes({ user, initialQuizzes, more }) {
         setLoading(false);
     }
 
-    console.log("Has more quizzes", hasMore);
-
     return (
         <section>
-            {quizzes.length > 0 ? (
+            {quizzes.length > 0 || !!tag ? (
                 <>
                     <header>
                         <h2>Available Quiz Questions</h2>
 
-                        <div className={styles.search}>
-                            <Input
-                                hideLabel
-                                maxLength={32}
-                                value={tagSearch}
-                                label="Search by tag"
-                                placeholder="Search by tag"
-                                onChange={(e) => setTagSearch(e.target.value)}
-                            />
+                        <form
+                            className={styles.search}
+                            onSubmit={() => {
+                                if (tagSearch) {
+                                    router.push(`/quizzes?tag=${tagSearch}`);
+                                    window.location.reload();
+                                } else if (tag) {
+                                    router.push("/quizzes");
+                                    window.location.reload();
+                                }
+                            }}
+                        >
+                            {useMemo(
+                                () => (
+                                    <Input
+                                        hideLabel
+                                        maxLength={32}
+                                        value={tagSearch}
+                                        label="Search by tag"
+                                        onIdChange={setInputId}
+                                        placeholder="Search by tag"
+                                        onChange={(e) => setTagSearch(e.target.value)}
+                                    />
+                                ),
+                                [tagSearch]
+                            )}
 
-                            <button
-                                onClick={() => {
-                                    if (tagSearch) {
-                                        router.push(`/quizzes?tag=${tagSearch}`);
-                                    } else {
-                                        router.push("/quizzes");
-                                    }
-
-                                    router.refresh();
-                                }}
-                            >
+                            <button type="submit">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 513.749 513.749"
@@ -90,33 +96,63 @@ export default function Quizzes({ user, initialQuizzes, more }) {
                                     </g>
                                 </svg>
                             </button>
-                        </div>
+                        </form>
                     </header>
 
-                    <MasoneryList>
-                        {quizzes.map((quiz) => (
-                            <QuizDisplay
-                                key={quiz.id}
-                                quiz={quiz}
+                    {quizzes.length > 0 ? (
+                        <>
+                            <MasoneryList>
+                                {quizzes.map((quiz) => (
+                                    <QuizDisplay
+                                        quiz={quiz}
+                                        key={quiz.id}
+                                    />
+                                ))}
+                            </MasoneryList>
+
+                            <div className={styles.loadMore}>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <button
+                                            disabled={!hasMore}
+                                            onClick={loadMoreQuizzes}
+                                            className="button primary round"
+                                        >
+                                            Load more quizzes {loading && <Spinner size={16} />}
+                                        </button>
+                                    </TooltipTrigger>
+
+                                    {!hasMore && (
+                                        <TooltipContent>No more quizzes to load</TooltipContent>
+                                    )}
+                                </Tooltip>
+                            </div>
+                        </>
+                    ) : (
+                        <div className={styles.noResults}>
+                            <Image
+                                src="/assets/no-results.svg"
+                                alt="No quizzes"
+                                height={400}
+                                width={400}
                             />
-                        ))}
-                    </MasoneryList>
 
-                    <div className={styles.loadMore}>
-                        <Tooltip>
-                            <TooltipTrigger>
-                                <button
-                                    disabled={!hasMore}
-                                    onClick={loadMoreQuizzes}
-                                    className="button primary round"
-                                >
-                                    Load more quizzes {loading && <Spinner size={16} />}
-                                </button>
-                            </TooltipTrigger>
+                            <p>
+                                There are no quizzes with the tag <strong>{tag}</strong>.
+                            </p>
 
-                            {!hasMore && <TooltipContent>No more quizzes to load</TooltipContent>}
-                        </Tooltip>
-                    </div>
+                            <button
+                                className="button primary"
+                                onClick={() => {
+                                    console.log(inputId);
+
+                                    document.getElementById(inputId)?.focus();
+                                }}
+                            >
+                                Change tag
+                            </button>
+                        </div>
+                    )}
                 </>
             ) : (
                 <div className={styles.noResults}>
@@ -134,20 +170,21 @@ export default function Quizzes({ user, initialQuizzes, more }) {
                             "Maybe you should try again later or create your own quizzes."
                         ) : (
                             <>
-                                You may find more when you
+                                You may find more when you{" "}
                                 <Link
                                     className="link"
                                     href="/login?next=/quizzes"
                                 >
-                                    log in
+                                    log in{" "}
                                 </Link>
-                                or
+                                or{" "}
                                 <Link
                                     className="link"
                                     href="/register"
                                 >
                                     register
                                 </Link>
+                                .
                             </>
                         )}
                     </p>

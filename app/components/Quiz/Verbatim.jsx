@@ -120,13 +120,13 @@ export function Verbatim({ quiz, lighter, setCorrect, canClientCheck }) {
                         inline
                         hideLabel
                         value={a}
-                        key={nanoid()}
                         darker={lighter}
                         label={`Answer ${index + 1}`}
-                        width={`calc(${a.length + 1}ch)`}
                         disabled={hasAnswered && isCorrect}
+                        key={`quiz-${quiz.id}-answer-${index}`}
                         error={error && incorrectIndexes.includes(index)}
                         success={hasAnswered && !incorrectIndexes.includes(index)}
+                        width={`calc(calc(${answers[index]?.length + 1}ch) - 4px)`}
                         onChange={(e) => {
                             const newAnswers = [...answers];
                             newAnswers[index] = e.target.value;
@@ -163,7 +163,8 @@ export function Verbatim({ quiz, lighter, setCorrect, canClientCheck }) {
                     disabled={
                         (hasAnswered && !isCorrect) ||
                         !answers.every((answer) => answer.length > 0) ||
-                        loading
+                        loading ||
+                        isCorrect
                     }
                     className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
                 >

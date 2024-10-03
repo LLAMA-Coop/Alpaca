@@ -142,7 +142,7 @@ export function ResponseCard({ quiz, canClientCheck, setCorrect, lighter }) {
             <FormButtons>
                 <button
                     type="submit"
-                    disabled={(hasAnswered && !isCorrect) || !answer || loading}
+                    disabled={(hasAnswered && !isCorrect) || !answer || loading || isCorrect}
                     className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
                 >
                     {isCorrect ? "Correct!" : hasAnswered ? "Incorrect" : "Check Answer "}{" "}

@@ -1,7 +1,7 @@
 "use client";
 
 import { TooltipContent, TooltipTrigger, Tooltip, Spinner, Input, Form, InfoBox } from "@client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Validator } from "@/lib/validation";
 import { useEffect, useState } from "react";
 import styles from "./UserInput.module.css";
@@ -11,7 +11,6 @@ import Link from "next/link";
 export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [revealPass, setRevealPass] = useState(false);
     const [confirm, setConfirm] = useState("");
 
     const [showTwoFactor, setShowTwoFactor] = useState(true);
@@ -20,10 +19,8 @@ export function UserInput({ isRegistering, onSubmit }) {
 
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
-    const [open, setOpen] = useState(false);
 
     const addAlert = useAlerts((state) => state.addAlert);
-    const searchParams = useSearchParams();
     const router = useRouter();
 
     useEffect(() => {
@@ -145,16 +142,8 @@ export function UserInput({ isRegistering, onSubmit }) {
                 message: "Successfully logged in",
             });
 
-            if (!onSubmit) {
-                const redirectUrl = searchParams.get("next");
-
-                if (redirectUrl) router.push(redirectUrl);
-                else router.push("/me/dashboard");
-            } else {
-                onSubmit();
-            }
-
-            router.refresh();
+            if (!onSubmit) window.location.reload();
+            else onSubmit();
         } else {
             const data = await response.json();
             setErrors(data.errors || {});
@@ -203,22 +192,11 @@ export function UserInput({ isRegistering, onSubmit }) {
 
             addAlert({
                 success: true,
-                message: `Successfully logged in ${!showTwoFactor ? " - this code is no longer valid" : ""}`,
+                message: `Successfully logged in${!showTwoFactor ? " - this code is no longer valid" : ""}`,
             });
 
-            if (!onSubmit) {
-                const redirectUrl = new URLSearchParams(window.location.search).get("redirect");
-
-                if (redirectUrl) {
-                    router.push(redirectUrl);
-                } else {
-                    router.push("/me/dashboard");
-                }
-            } else {
-                onSubmit();
-            }
-
-            router.refresh();
+            if (!onSubmit) window.location.reload();
+            else onSubmit();
         } else {
             const data = await response.json();
             setErrors(data.errors || {});
@@ -258,7 +236,7 @@ export function UserInput({ isRegistering, onSubmit }) {
     if (twoFactorToken) {
         return (
             <Form onSubmit={handleTwoFactor}>
-                <InfoBox>
+                <InfoBox fullWidth>
                     {showTwoFactor ? (
                         <span>
                             You have two factor authentication enabled.
@@ -348,7 +326,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                     <div>
                         <Input
                             required
-                            type={revealPass ? "text" : "password"}
+                            type="password"
                             label="Password"
                             value={password}
                             placeholder="Password"
@@ -443,7 +421,7 @@ export function UserInput({ isRegistering, onSubmit }) {
             {isRegistering && (
                 <Input
                     required
-                    type={revealPass ? "text" : "password"}
+                    type="password"
                     value={confirm}
                     error={errors.confirm}
                     label="Password Match"

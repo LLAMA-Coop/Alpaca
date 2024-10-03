@@ -107,20 +107,21 @@ export default async function SourcesPage({ searchParams }) {
                                 "Maybe you should try again later or create your own sources."
                             ) : (
                                 <>
-                                    You may find more when you
+                                    You may find more when you{" "}
                                     <Link
                                         className="link"
                                         href="/login?next=/sources"
                                     >
-                                        log in
+                                        log in{" "}
                                     </Link>
-                                    or
+                                    or{" "}
                                     <Link
                                         className="link"
                                         href="/register"
                                     >
                                         register
                                     </Link>
+                                    .
                                 </>
                             )}
                         </p>

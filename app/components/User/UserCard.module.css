@@ -25,7 +25,8 @@
     box-shadow: -3px 3px 0px var(--bg-4);
 }
 
-.container > div {
+.container > div:not(.avatar) {
+    min-width: 0;
     height: 100%;
 }
 
@@ -34,12 +35,20 @@
 }
 
 .container > div > h3 {
-    font-size: 20px;
-    line-height: 24px;
-    margin-bottom: 8px;
-    color: var(--fg-1);
-    display: flex;
     gap: 8px;
+    display: flex;
+    max-width: 100%;
+    margin-bottom: 8px;
+}
+
+.container > div > h3 > span:not(.owner) {
+    font-size: 20px;
+    max-width: 100%;
+    overflow: hidden;
+    line-height: 24px;
+    color: var(--fg-1);
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .container > div > h3 > .owner {

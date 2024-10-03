@@ -55,20 +55,21 @@ export default async function CoursesPage() {
                                 "Maybe you should try again later or create your own courses."
                             ) : (
                                 <>
-                                    You may find more when you
+                                    You may find more when you{" "}
                                     <Link
                                         className="link"
                                         href="/login?next=/courses"
                                     >
-                                        log in
+                                        log in{" "}
                                     </Link>
-                                    or
+                                    or{" "}
                                     <Link
                                         className="link"
                                         href="/register"
                                     >
                                         register
                                     </Link>
+                                    .
                                 </>
                             )}
                         </p>

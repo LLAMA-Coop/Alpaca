@@ -131,9 +131,9 @@ export function Blankable({ canClientCheck, quiz, setCorrect }) {
                                     value={answers[index]}
                                     label={`Blank ${index + 1}`}
                                     disabled={hasAnswered && isCorrect}
-                                    width={`calc(${answers[index]?.length + 1}ch)`}
                                     error={error && incorrectIndexes.includes(index)}
                                     success={hasAnswered && !incorrectIndexes.includes(index)}
+                                    width={`calc(calc(${answers[index]?.length + 1}ch) - 4px)`}
                                     onChange={(e) => {
                                         const newAnswers = [...answers];
                                         newAnswers[index] = e.target.value;
@@ -173,7 +173,10 @@ export function Blankable({ canClientCheck, quiz, setCorrect }) {
                 <button
                     type="submit"
                     disabled={
-                        (hasAnswered && isCorrect) || !answers.every((a) => a.length > 0) || loading
+                        (hasAnswered && isCorrect) ||
+                        !answers.every((a) => a.length > 0) ||
+                        loading ||
+                        isCorrect
                     }
                     className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
                 >

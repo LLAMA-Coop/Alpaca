@@ -31,8 +31,8 @@ export function Dashboard({ more = false }) {
     const addAssociate = useStore((state) => state.addAssociate);
     const addAlert = useAlerts((state) => state.addAlert);
 
-    const myGroups = groups.filter((g) => g.createdBy === user.id);
-    const otherGroups = groups.filter((g) => g.createdBy !== user.id);
+    const myGroups = groups.filter((g) => g.createdBy === user?.id);
+    const otherGroups = groups.filter((g) => g.createdBy !== user?.id);
 
     const [associate, setAssociate] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +44,8 @@ export function Dashboard({ more = false }) {
             setCurrentTab(parseInt(localStorage ? localStorage.getItem("currentTab") || 0 : 0));
         }
     }, []);
+
+    if (!user) return null;
 
     const tabs = [
         {

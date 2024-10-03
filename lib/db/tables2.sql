@@ -259,7 +259,7 @@ CREATE TABLE IF NOT EXISTS `user_reports` (
     `reporter` BIGINT NOT NULL,
     `reported` BIGINT NOT NULL,
 
-    `type` ENUM("spam", "harassment", "hate speech", "violence", "nudity", "other"),
+    `type` ENUM("spam", "harassment", "hate-speech", "violence", "nudity", "other"),
     `reason` VARCHAR(256) NULL,
     `link` VARCHAR(256) NULL,
 

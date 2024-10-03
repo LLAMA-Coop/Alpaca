@@ -214,7 +214,12 @@ export function ListAnswer({ quiz, lighter, setCorrect, canClientCheck }) {
             <FormButtons>
                 <button
                     type="submit"
-                    disabled={(hasAnswered && !isCorrect) || !answers.every((a) => a) || loading}
+                    disabled={
+                        (hasAnswered && !isCorrect) ||
+                        !answers.every((a) => a) ||
+                        loading ||
+                        isCorrect
+                    }
                     className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
                 >
                     {isCorrect ? "Correct!" : hasAnswered ? "Incorrect" : "Check Answer "}

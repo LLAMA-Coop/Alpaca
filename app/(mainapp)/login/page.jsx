@@ -10,9 +10,15 @@ export const metadata = {
     description: "Log in to Alpaca",
 };
 
-export default async function LoginPage() {
+export default async function LoginPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    if (user) return redirect(`/me/dashboard`);
+
+    if (user) {
+        const { next } = searchParams;
+
+        if (next) return redirect(next);
+        else return redirect("/me/dashboard");
+    }
 
     return (
         <main className={styles.main}>
