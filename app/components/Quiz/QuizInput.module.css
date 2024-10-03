@@ -80,9 +80,6 @@
 .dragContainer {
     display: flex;
     align-items: center;
-}
-
-.dragContainer:not(:last-child) {
     margin-bottom: 24px;
 }
 
@@ -90,7 +87,11 @@
     margin-top: 22px;
     margin-right: 4px;
     user-select: none;
-    display: inline-block;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    padding: 6px 1px;
+    border-radius: var(--radius-small);
 }
 
 .dragContainer > :last-child {
