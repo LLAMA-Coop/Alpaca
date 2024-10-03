@@ -103,7 +103,26 @@ export default async function SourcesPage({ searchParams }) {
                         <p>
                             Hey, we searched high and low, but we couldn't find any sources.
                             <br />
-                            Maybe you should try again later or create your own sources.
+                            {user ? (
+                                "Maybe you should try again later or create your own sources."
+                            ) : (
+                                <>
+                                    You may find more when you
+                                    <Link
+                                        className="link"
+                                        href="/login?next=/sources"
+                                    >
+                                        log in
+                                    </Link>
+                                    or
+                                    <Link
+                                        className="link"
+                                        href="/register"
+                                    >
+                                        register
+                                    </Link>
+                                </>
+                            )}
                         </p>
 
                         <Link

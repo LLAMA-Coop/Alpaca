@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     -- Need this for case sensitivity
 	`username` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL UNIQUE,
     `display_name` VARCHAR (32) NOT NULL,
+    `role` ENUM("admin", "moderator", "user") DEFAULT "user",
 
     `email` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_bin NULL UNIQUE,
     `email_verified` TINYINT DEFAULT 0,

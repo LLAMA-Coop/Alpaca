@@ -6,7 +6,7 @@ export default async function SourcePage({ params }) {
     const { id } = params;
 
     const user = await useUser({ token: cookies().get("token")?.value });
-    if (!user) return redirect("/login");
+    if (!user) return redirect(`/login?next=/sources/${id}`);
 
     // const {source} = await getS
     // if (!source) return redirect("/sources");

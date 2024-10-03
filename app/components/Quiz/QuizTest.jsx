@@ -1,28 +1,32 @@
 "use client";
 
 import { QuizDisplay } from "./QuizDisplay";
+import { useState, useEffect } from "react";
 import { QuizInput } from "./QuizInput";
-import { useState } from "react";
 
 export function QuizTest() {
-    const [quiz, setQuiz] = useState({
-        type: "prompt-response",
-        prompt: "What is the capital of France?",
-        answers: ["Paris"],
-        level: 1,
-        numOfAnswers: 1,
-        sources: [],
-        notes: [],
-        courses: [],
-        choices: [],
-        tags: [],
-        hints: [],
-        creator: {
-            id: 1,
-            username: "Llama",
-        },
-        createdAt: -62135596800000,
-    });
+    const [quiz, setQuiz] = useState({});
+
+    useEffect(() => {
+        setQuiz({
+            type: "prompt-response",
+            prompt: "What is the capital of France?",
+            answers: ["Paris"],
+            level: 1,
+            numOfAnswers: 1,
+            sources: [],
+            notes: [],
+            courses: [],
+            choices: [],
+            tags: [],
+            hints: [],
+            creator: {
+                id: 1,
+                username: "You",
+            },
+            createdAt: -1000,
+        });
+    }, []);
 
     return (
         <div
@@ -42,14 +46,7 @@ export function QuizTest() {
                 canClientCheck
             />
 
-            <QuizInput
-                setQuiz={(val) =>
-                    setQuiz((prev) => ({
-                        ...prev,
-                        ...val,
-                    }))
-                }
-            />
+            <QuizInput setQuiz={(val) => setQuiz((prev) => ({ ...prev, ...val }))} />
         </div>
     );
 }

@@ -19,7 +19,7 @@ export function Verbatim({ quiz, lighter, setCorrect, canClientCheck }) {
 
     const addAlert = useAlerts((state) => state.addAlert);
     const user = useStore((state) => state.user);
-    const showConfetti = user.settings?.showConfetti ?? true;
+    const showConfetti = (user && user.settings && user.settings.showConfetti) ?? true;
 
     useEffect(() => {
         setCorrect(isCorrect);

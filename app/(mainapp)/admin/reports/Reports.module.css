@@ -77,10 +77,22 @@
     align-items: center;
 }
 
+.user > header > h3 {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .user > p {
     gap: 24px;
     display: flex;
+    max-width: 100%;
     font-size: 14px;
     color: var(--fg-3);
     justify-content: space-between;
+}
+
+.user > p > :first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

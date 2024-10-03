@@ -5,8 +5,6 @@
     --gutter-y: 150px;
     --gutter: var(--gutter-y) var(--gutter-x);
 
-    --font-mono: Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace;
-
     --bg-0: #ffffff;
     --bg-1: #eff1f5;
     --bg-2: #e6e9ef;

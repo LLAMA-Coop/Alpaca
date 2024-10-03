@@ -454,12 +454,14 @@ export function UserInput({ isRegistering, onSubmit }) {
                 />
             )}
 
-            <Link
-                href="/forgot-password"
-                className={`link ${styles.forgotPassword}`}
-            >
-                Forgot password?
-            </Link>
+            {!isRegistering && (
+                <Link
+                    href="/forgot-password"
+                    className={`link ${styles.forgotPassword}`}
+                >
+                    Forgot password?
+                </Link>
+            )}
 
             <button
                 type="submit"

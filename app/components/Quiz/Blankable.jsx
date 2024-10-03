@@ -21,7 +21,7 @@ export function Blankable({ canClientCheck, quiz, setCorrect }) {
 
     const addAlert = useAlerts((state) => state.addAlert);
     const user = useStore((state) => state.user);
-    const showConfetti = user.settings?.showConfetti ?? true;
+    const showConfetti = (user && user.settings && user.settings.showConfetti) ?? true;
 
     useEffect(() => {
         setCorrect(isCorrect);
@@ -131,7 +131,7 @@ export function Blankable({ canClientCheck, quiz, setCorrect }) {
                                     value={answers[index]}
                                     label={`Blank ${index + 1}`}
                                     disabled={hasAnswered && isCorrect}
-                                    width={`calc(${answers[index].length + 1}ch)`}
+                                    width={`calc(${answers[index]?.length + 1}ch)`}
                                     error={error && incorrectIndexes.includes(index)}
                                     success={hasAnswered && !incorrectIndexes.includes(index)}
                                     onChange={(e) => {

@@ -3,7 +3,7 @@
 import { Input, InfoBox, Form, Spinner, FormButtons } from "@client";
 import { correctConfetti } from "@/lib/correctConfetti";
 import { useAlerts, useStore } from "@/store/store";
-import stringCompare from "@/lib/stringCompare";
+import { stringCompare } from "@/lib/stringCompare";
 import styles from "./QuizInput.module.css";
 import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
@@ -18,7 +18,7 @@ export function ResponseCard({ quiz, canClientCheck, setCorrect, lighter }) {
 
     const addAlert = useAlerts((state) => state.addAlert);
     const user = useStore((state) => state.user);
-    const showConfetti = user.settings?.showConfetti ?? true;
+    const showConfetti = (user && user.settings && user.settings.showConfetti) ?? true;
 
     useEffect(() => {
         setCorrect(isCorrect);
@@ -31,8 +31,7 @@ export function ResponseCard({ quiz, canClientCheck, setCorrect, lighter }) {
         setLoading(true);
 
         if (canClientCheck) {
-            const isCorrect =
-                quiz.answers.find((a) => stringCompare(a, answer) >= 0.8) !== undefined;
+            const isCorrect = quiz.answers.find((a) => stringCompare(a, answer) >= 0.8);
 
             if (!isCorrect) {
                 setFailures((prev) => prev + 1);

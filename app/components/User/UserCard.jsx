@@ -52,6 +52,8 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
     const addItem = useStore((state) => state.addItem);
     const myself = useStore((state) => state.user);
 
+    console.log(myself);
+
     const isAssociate = associates.map((a) => a.id).includes(user.id);
     const isMe = user.id === myself.id;
     const router = useRouter();

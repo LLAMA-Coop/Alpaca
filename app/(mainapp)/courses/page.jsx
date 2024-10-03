@@ -20,11 +20,10 @@ export default async function CoursesPage() {
                 <h1>Courses</h1>
 
                 <p>
-                    A course is a collection of sources, notes, and quizzes that
-                    are organized around a particular topic. You can create a
-                    course to help you study for a test, prepare for a
-                    presentation, or learn a new skill. Or you can join a course
-                    that someone else has created to learn from their research.
+                    A course is a collection of sources, notes, and quizzes that are organized
+                    around a particular topic. You can create a course to help you study for a test,
+                    prepare for a presentation, or learn a new skill. Or you can join a course that
+                    someone else has created to learn from their research.
                 </p>
             </header>
 
@@ -50,14 +49,34 @@ export default async function CoursesPage() {
                         />
 
                         <p>
-                            Hey, we searched high and low, but we couldn't find
-                            any courses for you.
+                            Hey, we searched high and low, but we couldn't find any courses for you.
                             <br />
-                            Maybe you should try again later or create your own
-                            course.
+                            {user ? (
+                                "Maybe you should try again later or create your own courses."
+                            ) : (
+                                <>
+                                    You may find more when you
+                                    <Link
+                                        className="link"
+                                        href="/login?next=/courses"
+                                    >
+                                        log in
+                                    </Link>
+                                    or
+                                    <Link
+                                        className="link"
+                                        href="/register"
+                                    >
+                                        register
+                                    </Link>
+                                </>
+                            )}
                         </p>
 
-                        <Link className="button primary" href="/create">
+                        <Link
+                            className="button primary"
+                            href="/create"
+                        >
                             Create a course
                         </Link>
                     </div>

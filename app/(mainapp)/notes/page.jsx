@@ -14,11 +14,7 @@ export default async function NotesPage({ searchParams }) {
     const amount = Number(searchParams["amount"] ?? 10);
 
     if (page < 1 || amount < 1) {
-        return redirect(
-            `/notes?page=${page < 1 ? 1 : page}&amount=${
-                amount < 1 ? 10 : amount
-            }`,
-        );
+        return redirect(`/notes?page=${page < 1 ? 1 : page}&amount=${amount < 1 ? 10 : amount}`);
     }
 
     const { notes } = await getPermittedResources({
@@ -38,9 +34,8 @@ export default async function NotesPage({ searchParams }) {
                 <h1>Notes</h1>
 
                 <p>
-                    A note is a record of your thoughts, ideas, or summaries of
-                    a source. You can use notes to create quiz questions or to
-                    help you study.{` `}
+                    A note is a record of your thoughts, ideas, or summaries of a source. You can
+                    use notes to create quiz questions or to help you study.{` `}
                     {user
                         ? `These are the notes that are publicly viewable, as well as the ones you made.`
                         : `You are only viewing the publicly available notes.
@@ -70,7 +65,10 @@ export default async function NotesPage({ searchParams }) {
                                     Previous page
                                 </Link>
                             ) : (
-                                <button disabled className="button submit">
+                                <button
+                                    disabled
+                                    className="button submit"
+                                >
                                     Previous page
                                 </button>
                             )}
@@ -83,7 +81,10 @@ export default async function NotesPage({ searchParams }) {
                                     Next page
                                 </Link>
                             ) : (
-                                <button disabled className="button submit">
+                                <button
+                                    disabled
+                                    className="button submit"
+                                >
                                     Next page
                                 </button>
                             )}
@@ -99,14 +100,34 @@ export default async function NotesPage({ searchParams }) {
                         />
 
                         <p>
-                            Hey, we searched high and low, but we couldn't find
-                            any notes.
+                            Hey, we searched high and low, but we couldn't find any notes.
                             <br />
-                            Maybe you should try again later or create your own
-                            notes.
+                            {user ? (
+                                "Maybe you should try again later or create your own notes."
+                            ) : (
+                                <>
+                                    You may find more when you
+                                    <Link
+                                        className="link"
+                                        href="/login?next=/notes"
+                                    >
+                                        log in
+                                    </Link>
+                                    or
+                                    <Link
+                                        className="link"
+                                        href="/register"
+                                    >
+                                        register
+                                    </Link>
+                                </>
+                            )}
                         </p>
 
-                        <Link className="button primary" href="/create">
+                        <Link
+                            className="button primary"
+                            href="/create"
+                        >
                             Create a note
                         </Link>
                     </div>

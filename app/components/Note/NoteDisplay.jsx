@@ -32,9 +32,10 @@ export function NoteDisplay({ note }) {
     const router = useRouter();
 
     const canEdit =
-        note.creator.id === user?.id ||
-        note.permissions.write.includes(user?.id) ||
-        note.permissions.allWrite;
+        !!user &&
+        (note.creator.id === user?.id ||
+            note.permissions.write.includes(user?.id) ||
+            note.permissions.allWrite);
 
     const canDelete = note.creator.id === user?.id;
 

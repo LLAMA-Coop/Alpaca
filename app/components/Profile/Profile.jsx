@@ -176,7 +176,11 @@ export function Profile({ user, size = 44 }) {
     const menuItems = [
         {
             username: user.username,
-            email: user.email,
+            // If email too long, only show first characters and the @domain
+            email:
+                user.email?.length > 20
+                    ? `${user.email.slice(0, 3)}...${user.email.slice(user.email.indexOf("@"))}`
+                    : user.email,
         },
         {
             name: "hr",

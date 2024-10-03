@@ -123,7 +123,7 @@ export function Notifications() {
                             <p>{n.message}</p>
                         </header>
 
-                        {notifications.type === "request" && (
+                        {n.type === "request" && (
                             <div className={styles.actions}>
                                 <button
                                     className="button success small"

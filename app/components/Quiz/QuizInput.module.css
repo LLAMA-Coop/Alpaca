@@ -82,10 +82,12 @@
     align-items: center;
 }
 
+.dragContainer:not(:last-child) {
+    margin-bottom: 24px;
+}
+
 .dragHandle {
-    cursor: move;
     margin-top: 22px;
-    font-size: 1.2rem;
     margin-right: 4px;
     user-select: none;
     display: inline-block;

@@ -28,9 +28,10 @@ export function SourceDisplay({ source }) {
     const router = useRouter();
 
     const canEdit =
-        source.creator.id === user?.id ||
-        source.permissions.write.includes(user?.id) ||
-        source.permissions.allWrite;
+        !!user &&
+        (source.creator.id === user?.id ||
+            source.permissions.write.includes(user?.id) ||
+            source.permissions.allWrite);
 
     const canDelete = source.creator.id === user?.id;
 
