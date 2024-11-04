@@ -6,10 +6,6 @@ Welcome to **Alpaca**, where learning meets innovation! 📚
 
 Traditional flashcards are so last season! Mneme brings a breath of fresh air to your learning journey. Imagine having the power to create not just flashcards but engaging quizzes in various formats. Whether it's filling in the blanks, matching unordered lists, or even memorizing a line verbatim, Mneme has got your back. But that's not all – each quiz question is backed by reliable sources to ensure accuracy. If something seems off, you can cross-check and correct it right away.
 
-/*## What's in a Name? 🤔
-
-**M**, named after the [Greek Muse for memory](https://en.wikipedia.org/wiki/Mneme), is not just an ordinary learning platform. It's a web application and API designed to revolutionize how you interact with knowledge. You can submit, store, and retrieve a wealth of learning materials in a seamlessly organized database. Dive into articles, news reports, official documents, scientific papers, and more. And don't forget those handy notes that distill complex information into bite-sized chunks. Mneme empowers you with diverse quiz questions and prompts to put your knowledge to the test. */
-
 ## Join the Revolution 🚀
 
 Mneme is an open-source project, and we're calling all passionate learners and developers to join us on this journey. [Explore the source code on GitHub](https://github.com/mneme-app/app.git), create your own fork, and send pull requests to shape the future of Mneme. Together, we can make learning an exciting adventure!
