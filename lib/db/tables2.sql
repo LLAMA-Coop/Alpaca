@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     -- Need this for case sensitivity
 	`username` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL UNIQUE,
     `display_name` VARCHAR (32) NOT NULL,
+    `role` ENUM("admin", "moderator", "user") DEFAULT "user",
 
     `role` ENUM("owner", "admin", "moderator", "user"),
 
@@ -258,7 +259,7 @@ CREATE TABLE IF NOT EXISTS `user_reports` (
     `reporter` BIGINT NOT NULL,
     `reported` BIGINT NOT NULL,
 
-    `type` ENUM("spam", "harassment", "hate speech", "violence", "nudity", "other"),
+    `type` ENUM("spam", "harassment", "hate-speech", "violence", "nudity", "other"),
     `reason` VARCHAR(256) NULL,
     `link` VARCHAR(256) NULL,
 

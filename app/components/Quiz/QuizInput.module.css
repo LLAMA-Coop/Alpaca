@@ -80,15 +80,18 @@
 .dragContainer {
     display: flex;
     align-items: center;
+    margin-bottom: 24px;
 }
 
 .dragHandle {
-    cursor: move;
     margin-top: 22px;
-    font-size: 1.2rem;
     margin-right: 4px;
     user-select: none;
-    display: inline-block;
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    padding: 6px 1px;
+    border-radius: var(--radius-small);
 }
 
 .dragContainer > :last-child {

@@ -3,7 +3,7 @@
 import { Input, InfoBox, Form, Spinner, FormButtons } from "@client";
 import { correctConfetti } from "@/lib/correctConfetti";
 import { useAlerts, useStore } from "@/store/store";
-import stringCompare from "@/lib/stringCompare";
+import { stringCompare } from "@/lib/stringCompare";
 import styles from "./QuizInput.module.css";
 import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
@@ -31,8 +31,7 @@ export function ResponseCard({ quiz, canClientCheck, setCorrect, lighter }) {
         setLoading(true);
 
         if (canClientCheck) {
-            const isCorrect =
-                quiz.answers.find((a) => stringCompare(a, answer) >= 0.8) !== undefined;
+            const isCorrect = quiz.answers.find((a) => stringCompare(a, answer) >= 0.8);
 
             if (!isCorrect) {
                 setFailures((prev) => prev + 1);
@@ -143,7 +142,7 @@ export function ResponseCard({ quiz, canClientCheck, setCorrect, lighter }) {
             <FormButtons>
                 <button
                     type="submit"
-                    disabled={(hasAnswered && !isCorrect) || !answer || loading}
+                    disabled={(hasAnswered && !isCorrect) || !answer || loading || isCorrect}
                     className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
                 >
                     {isCorrect ? "Correct!" : hasAnswered ? "Incorrect" : "Check Answer "}{" "}

@@ -10,7 +10,7 @@ export default async function UserPage({ params: { username } }) {
         select: ["id", "username"],
     });
 
-    if (!user) return redirect("/login");
+    if (!user) return redirect(`/login?next=/users/${username}`);
 
     const usernameDecoded = decodeURIComponent(username);
     if (user.username === usernameDecoded) return redirect("/me/dashboard");
@@ -41,11 +41,13 @@ export default async function UserPage({ params: { username } }) {
                 {canView ? (
                     <h1>
                         {profile.avatar && (
-                            <Avatar
-                                size={300}
-                                src={profile.avatar}
-                                username={profile.username}
-                            />
+                            <div style={{ margin: "0 auto 24px", width: "fit-content" }}>
+                                <Avatar
+                                    size={300}
+                                    src={profile.avatar}
+                                    username={profile.username}
+                                />
+                            </div>
                         )}
                         {profile.username}'s Profile
                     </h1>

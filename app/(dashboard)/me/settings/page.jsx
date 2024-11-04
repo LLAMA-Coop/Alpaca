@@ -25,7 +25,7 @@ export default async function SettingsPage() {
         ],
     });
 
-    if (!user) return redirect("/login");
+    if (!user) return redirect("/login?next=/me/settings");
 
     user.sessions = user.tokens.map((t) => {
         const isCurrent = t.token === token;

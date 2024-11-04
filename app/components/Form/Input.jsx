@@ -33,14 +33,22 @@ export function Input({
     darker,
     loading,
     close,
+    onIdChange,
     ...props
 }) {
+    const [revealPassword, setRevealPassword] = useState(false);
     const [hasLoaded, setHasLoaded] = useState(false);
     const id = getNanoId();
 
     useEffect(() => {
         setHasLoaded(true);
     }, []);
+
+    useEffect(() => {
+        if (onIdChange) {
+            onIdChange(id);
+        }
+    }, [id]);
 
     if (props.type === "textarea") {
         textarea = true;
@@ -140,7 +148,9 @@ export function Input({
             <label
                 htmlFor={id}
                 style={{
-                    display: hideLabel ? "none" : "",
+                    visibility: hideLabel ? "hidden" : "",
+                    position: hideLabel ? "absolute" : "",
+                    top: hideLabel ? "-9999px" : "",
                 }}
                 className={styles.label}
             >
@@ -221,14 +231,16 @@ export function Input({
                         value={value}
                         aria-label={label}
                         className={styles.input}
+                        type={props.type === "password" && revealPassword ? "text" : props.type}
                         style={{
                             backgroundColor: darker ? "var(--bg-1)" : "",
-                            padding: inline ? "0 4px" : small ? "0 6px" : "",
+                            padding: inline ? "0 2px" : small ? "0 6px" : "",
                             fontSize: inline || small ? "14px" : "",
                             width: width ? width : inline || small ? "fit-content" : "",
                             fontFamily: inline ? "var(--font-mono)" : "",
                             minWidth: inline ? "28px" : "",
                             color: inline ? "var(--fg-1)" : "",
+                            paddingRight: inline ? "2px" : props.type === "password" ? "50px" : "",
                         }}
                         aria-invalid={error ? "true" : "false"}
                         aria-multiline={multiple ? "true" : "false"}
@@ -253,6 +265,35 @@ export function Input({
                             }
                         }}
                     />
+                )}
+
+                {props.type === "password" && (
+                    <button
+                        type="button"
+                        className={styles.reveal}
+                        onClick={() => setRevealPassword((prev) => !prev)}
+                    >
+                        {revealPassword ? (
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                            >
+                                <path d="M23.821,11.181v0C22.943,9.261,19.5,3,12,3S1.057,9.261.179,11.181a1.969,1.969,0,0,0,0,1.64C1.057,14.739,4.5,21,12,21s10.943-6.261,11.821-8.181A1.968,1.968,0,0,0,23.821,11.181ZM12,18a6,6,0,1,1,6-6A6.006,6.006,0,0,1,12,18Z" />
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="4"
+                                />
+                            </svg>
+                        ) : (
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                            >
+                                <path d="M23.821,11.181v0a15.736,15.736,0,0,0-4.145-5.44l3.032-3.032L21.293,1.293,18,4.583A11.783,11.783,0,0,0,12,3C4.5,3,1.057,9.261.179,11.181a1.969,1.969,0,0,0,0,1.64,15.736,15.736,0,0,0,4.145,5.44L1.293,21.293l1.414,1.414L6,19.417A11.783,11.783,0,0,0,12,21c7.5,0,10.943-6.261,11.821-8.181A1.968,1.968,0,0,0,23.821,11.181ZM6,12a5.99,5.99,0,0,1,9.471-4.885L14.019,8.567A3.947,3.947,0,0,0,12,8a4,4,0,0,0-4,4,3.947,3.947,0,0,0,.567,2.019L7.115,15.471A5.961,5.961,0,0,1,6,12Zm6,6a5.961,5.961,0,0,1-3.471-1.115l1.452-1.452A3.947,3.947,0,0,0,12,16a4,4,0,0,0,4-4,3.947,3.947,0,0,0-.567-2.019l1.452-1.452A5.99,5.99,0,0,1,12,18Z" />
+                            </svg>
+                        )}
+                    </button>
                 )}
             </div>
 

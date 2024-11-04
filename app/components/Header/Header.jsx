@@ -8,12 +8,15 @@ export async function Header({ user }) {
         <div className={styles.header}>
             <header>
                 <div>
-                    <Link className={styles.link} href="/">
+                    <Link
+                        className={styles.link}
+                        href="/"
+                    >
                         Alpaca
                     </Link>
                 </div>
 
-                <DynamicNav />
+                <DynamicNav user={user} />
 
                 <RightContainer user={user} />
             </header>

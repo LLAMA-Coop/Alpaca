@@ -5,8 +5,6 @@
     --gutter-y: 150px;
     --gutter: var(--gutter-y) var(--gutter-x);
 
-    --font-mono: Menlo, Monaco, "Segoe UI Mono", "Roboto Mono", monospace;
-
     --bg-0: #ffffff;
     --bg-1: #eff1f5;
     --bg-2: #e6e9ef;
@@ -107,6 +105,8 @@ body {
 body {
     display: flex;
     flex-direction: column;
+    padding-left: calc(100vw - 100%);
+    padding-left: calc(100dvw - 100%);
 }
 
 h1,
@@ -351,5 +351,37 @@ input[type="date"] {
         --padding: 20px 10px;
         --gutter-x: 10px;
         --gutter-y: 60px;
+    }
+}
+
+@media (max-height: 1024px) {
+    :root {
+        --padding: 100px 40px;
+        --gutter-x: 40px;
+        --gutter-y: 100px;
+    }
+}
+
+@media (max-height: 768px) {
+    :root {
+        --padding: 60px 24px;
+        --gutter-x: 24px;
+        --gutter-y: 80px;
+    }
+}
+
+@media (max-height: 550px) {
+    :root {
+        --padding: 60px 20px;
+        --gutter-x: 20px;
+        --gutter-y: 60px;
+    }
+}
+
+@media (max-height: 320px) {
+    :root {
+        --padding: 20px 10px;
+        --gutter-x: 10px;
+        --gutter-y: 40px;
     }
 }

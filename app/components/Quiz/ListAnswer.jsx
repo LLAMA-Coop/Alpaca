@@ -1,6 +1,6 @@
 "use client";
 
-import { Form, FormButtons, InfoBox, Input, Spinner } from "@client";
+import { DraggableList, Form, FormButtons, InfoBox, Input, Spinner } from "@client";
 import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { correctConfetti } from "@/lib/correctConfetti";
 import { useAlerts, useStore } from "@/store/store";
@@ -129,33 +129,17 @@ export function ListAnswer({ quiz, lighter, setCorrect, canClientCheck }) {
         >
             {isOrdered && <InfoBox fullWidth>Order the answers correctly</InfoBox>}
 
-            {answers.map((a, i) => {
-                const hasError = incorrectIndexes.includes(i);
+            {isOrdered &&
+                // <DraggableList quizId={quiz.id}>
+                answers.map((a, i) => {
+                    const hasError = incorrectIndexes.includes(i);
 
-                return (
-                    <div
-                        key={`answer-${i}`}
-                        draggable={isOrdered}
-                        className={styles.dragContainer}
-                    >
-                        {isOrdered && (
-                            <span className={styles.dragHandle}>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    height="16"
-                                    width="16"
-                                >
-                                    <path d="m17,6c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3Zm0,18c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3Zm0-9c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3ZM7,6c-1.654,0-3-1.346-3-3S5.346,0,7,0s3,1.346,3,3-1.346,3-3,3Zm0,18c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3Zm0-9c-1.654,0-3-1.346-3-3s1.346-3,3-3,3,1.346,3,3-1.346,3-3,3Z" />
-                                </svg>
-                            </span>
-                        )}
-
+                    return (
                         <Input
                             value={a}
                             type="text"
                             darker={lighter}
+                            key={`answer-${i}`}
                             label={`Answer ${i + 1}`}
                             placeholder="Type your answer here"
                             disabled={hasAnswered && !hasError}
@@ -173,9 +157,43 @@ export function ListAnswer({ quiz, lighter, setCorrect, canClientCheck }) {
                                 }
                             }}
                         />
-                    </div>
-                );
-            })}
+                    );
+                })
+                // </DraggableList>
+            }
+
+            {!isOrdered &&
+                answers.map((a, i) => {
+                    const hasError = incorrectIndexes.includes(i);
+
+                    return (
+                        <div key={`answer-${i}`}>
+                            <Input
+                                value={a}
+                                type="text"
+                                darker={lighter}
+                                label={`Answer ${i + 1}`}
+                                placeholder="Type your answer here"
+                                disabled={hasAnswered && !hasError}
+                                error={hasError && "Incorrect answer"}
+                                success={hasAnswered && !hasError && "- Yay! You got it right!"}
+                                onChange={(e) => {
+                                    const newAnswers = [...answers];
+                                    newAnswers[i] = e.target.value;
+                                    setAnswers(newAnswers);
+                                    setHasAnswered(false);
+
+                                    // Remove error for current index
+                                    if (hasError) {
+                                        setIncorrectIndexes((prev) =>
+                                            prev.filter((ii) => ii !== i)
+                                        );
+                                    }
+                                }}
+                            />
+                        </div>
+                    );
+                })}
 
             {!!hints.length && (
                 <InfoBox
@@ -194,10 +212,15 @@ export function ListAnswer({ quiz, lighter, setCorrect, canClientCheck }) {
             <FormButtons>
                 <button
                     type="submit"
-                    disabled={(hasAnswered && !isCorrect) || !answers.length || loading}
+                    disabled={
+                        (hasAnswered && !isCorrect) ||
+                        !answers.every((a) => a) ||
+                        loading ||
+                        isCorrect
+                    }
                     className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
                 >
-                    {isCorrect ? "Correct!" : hasAnswered ? "Incorrect" : "Check Answer "}{" "}
+                    {isCorrect ? "Correct!" : hasAnswered ? "Incorrect" : "Check Answer "}
                     {loading && (
                         <Spinner
                             primary

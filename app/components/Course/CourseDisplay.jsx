@@ -32,9 +32,10 @@ export function CourseDisplay({ lighter = false, darker = false, course }) {
     const router = useRouter();
 
     const canEdit =
-        course.creator.id === user?.id ||
-        course.permissions.write.includes(user?.id) ||
-        course.permissions.allWrite;
+        !!user &&
+        (course.creator.id === user?.id ||
+            course.permissions.write.includes(user?.id) ||
+            course.permissions.allWrite);
 
     const canDelete = course.creator.id === user?.id;
 

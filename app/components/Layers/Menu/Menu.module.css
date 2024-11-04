@@ -1,6 +1,7 @@
 .container {
     padding: 4px;
-    min-width: 170px;
+    min-width: 180px;
+    max-width: 220px;
     background-color: var(--bg-2);
     border-radius: var(--radius-medium);
     border: 1px solid var(--border-color);
@@ -67,10 +68,15 @@
 }
 
 .small > :first-child {
+    max-width: 100%;
+    overflow: hidden;
     margin-bottom: 2px;
+    text-overflow: ellipsis;
 }
 
 .small > :nth-child(2) {
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 600;
     color: var(--fg-4);
+    font-family: var(--font-mono);
 }

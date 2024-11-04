@@ -116,11 +116,13 @@ function User({ user }) {
                     username={user.username}
                 />
 
-                <h3>{user.username}</h3>
+                <h3 title={user.username}>{user.username}</h3>
             </header>
 
             <p>
-                <span>{user.email || "No email registered"}</span>
+                <span title={user.email || "No email registered"}>
+                    {user.email || "No email registered"}
+                </span>
                 <span>{new Date(user.createdAt).toLocaleDateString()}</span>
             </p>
         </div>

@@ -62,8 +62,12 @@ a.container:hover {
     margin: 0;
     font-size: 20px;
     font-weight: 500;
-    color: var(--text-1);
+    max-width: 100%;
+    overflow: hidden;
+    white-space: wrap;
+    word-break: break-word;
     text-overflow: ellipsis;
+    color: var(--text-1);
 }
 
 .container > header > .chip {
@@ -146,12 +150,20 @@ a.container:hover {
 }
 
 .container > footer {
+    gap: 40px;
     display: flex;
     font-size: 14px;
     margin-top: 40px;
     color: var(--fg-4);
     align-items: center;
     justify-content: space-between;
+}
+
+.container > footer > :first-child {
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .createdAt {

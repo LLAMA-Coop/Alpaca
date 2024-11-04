@@ -1,6 +1,6 @@
 import { getGroups, getPermittedResources } from "@/lib/db/helpers";
+import { Inter, Sofia_Sans, Roboto_Mono } from "next/font/google";
 import { FillStore, Timer, Alerts, ThemeSetter } from "@client";
-import { Inter, Sofia_Sans } from "next/font/google";
 import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -15,6 +15,12 @@ const inter = Inter({
 const sofia = Sofia_Sans({
     subsets: ["latin"],
     variable: "--font-heading",
+    display: "swap",
+});
+
+const roboto = Roboto_Mono({
+    subsets: ["latin"],
+    variable: "--font-mono",
     display: "swap",
 });
 
@@ -52,7 +58,7 @@ export default async function RootLayout({ children }) {
     return (
         <html
             lang="en"
-            className={`${inter.variable} ${sofia.variable}`}
+            className={`${inter.variable} ${sofia.variable} ${roboto.variable}`}
         >
             {user && (
                 <FillStore

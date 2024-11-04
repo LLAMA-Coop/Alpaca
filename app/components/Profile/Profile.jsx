@@ -1,18 +1,23 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Avatar, Dialog, Form, Input, Spinner } from "@client";
 import { useAlerts, useStore } from "@/store/store";
-import { protectedPaths } from "@/app/data/paths";
 import styles from "./Profile.module.css";
 import { useState } from "react";
-import { PopoverTrigger, PopoverContent, Popover } from "../Layers/Popover/Popover";
 import {
     DialogDescription,
+    PopoverTrigger,
+    PopoverContent,
     DialogButtons,
     DialogContent,
     DialogHeading,
-} from "../Layers/Dialog/Dialog";
+    Popover,
+    Spinner,
+    Avatar,
+    Dialog,
+    Input,
+    Form,
+} from "@client";
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
@@ -165,18 +170,17 @@ export function Profile({ user, size = 44 }) {
         });
 
         setUser(null);
-
-        if (protectedPaths.includes(path)) {
-            router.push("/login");
-        }
-
-        router.refresh();
+        window.location.reload();
     }
 
     const menuItems = [
         {
             username: user.username,
-            email: user.email,
+            // If email too long, only show first characters and the @domain
+            email:
+                user.email?.length > 20
+                    ? `${user.email.slice(0, 3)}...${user.email.slice(user.email.indexOf("@"))}`
+                    : user.email,
         },
         {
             name: "hr",

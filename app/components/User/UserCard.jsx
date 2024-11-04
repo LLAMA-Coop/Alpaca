@@ -52,14 +52,14 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
     const addItem = useStore((state) => state.addItem);
     const myself = useStore((state) => state.user);
 
-    const isAssociate = associates.map((a) => a.id).includes(user.id);
-    const isMe = user && myself && user.id === myself.id;
+    const isAssociate = associates.map((a) => a.id).includes(user?.id);
+    const isMe = user?.id === myself?.id;
     const router = useRouter();
 
     const reportTypes = [
         { value: "spam", label: "Spam" },
         { value: "harassment", label: "Harassment" },
-        { value: "hate speech", label: "Hate Speech" },
+        { value: "hate-speech", label: "Hate Speech" },
         { value: "violence", label: "Violence" },
         { value: "nudity", label: "Nudity" },
         { value: "other", label: "Other" },
@@ -254,7 +254,7 @@ export function UserCard({ user, group, isOwner, isAdmin }) {
 
                 <div>
                     <h3>
-                        {user.username}
+                        <span>{user.username}</span>
 
                         {(isOwner || isAdmin) && (
                             <span

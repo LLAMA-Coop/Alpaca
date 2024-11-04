@@ -1,28 +1,24 @@
-# Mneme: Elevate Your Learning Game🚀
+# Alpaca: Elevate Your Learning Game🚀
 
-Welcome to **Mneme**, where learning meets innovation! 📚
+Welcome to **Alpaca**, where learning meets innovation! 📚
 
 ## Unleash Your Learning Potential 🌟
 
 Traditional flashcards are so last season! Mneme brings a breath of fresh air to your learning journey. Imagine having the power to create not just flashcards but engaging quizzes in various formats. Whether it's filling in the blanks, matching unordered lists, or even memorizing a line verbatim, Mneme has got your back. But that's not all – each quiz question is backed by reliable sources to ensure accuracy. If something seems off, you can cross-check and correct it right away.
 
-## What's in a Name? 🤔
-
-**Mneme**, named after the [Greek Muse for memory](https://en.wikipedia.org/wiki/Mneme), is not just an ordinary learning platform. It's a web application and API designed to revolutionize how you interact with knowledge. You can submit, store, and retrieve a wealth of learning materials in a seamlessly organized database. Dive into articles, news reports, official documents, scientific papers, and more. And don't forget those handy notes that distill complex information into bite-sized chunks. Mneme empowers you with diverse quiz questions and prompts to put your knowledge to the test.
-
 ## Join the Revolution 🚀
 
-Mneme is an open-source project, and we're calling all passionate learners and developers to join us on this journey. [Explore the source code on GitHub](https://github.com/mneme-app/app.git), create your own fork, and send pull requests to shape the future of Mneme. Together, we can make learning an exciting adventure!
+Aplaca is an open-source project, and we're calling all passionate learners and developers to join us on this journey. [Explore the source code on GitHub](https://github.com/LLAMA-Coop/Alpaca), create your own fork, and send pull requests to shape the future of Mneme. Together, we can make learning an exciting adventure!
 
-Need a place to discuss ideas and get involved? Visit our vibrant [Discord server](https://discord.com/invite/GNzuTVY9zF).
+Need a place to discuss ideas and get involved? Visit our vibrant [Discord server](https://discord.gg/JUc27txA95).
 
-## Get Started with Mneme 🏁
+## Get Started with Alpaca 🏁
 
 Ready to dive in? Setting up Mneme from the Git repository is a breeze:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/mneme-app/app.git
+   git clone https://github.com/LLAMA-Coop/Alpaca.git
    ```
 
 2. **Install Dependencies**:
@@ -41,14 +37,14 @@ Ready to dive in? Setting up Mneme from the Git repository is a breeze:
    ```
 
 4. **Configure Your Environment**:
-   Open the `mneme/sample.env` file and follow the instructions to create your personalized `.env` file. Don't forget to include the URL to your MongoDB database.
+   Open the `mneme/sample.env` file and follow the instructions to create your personalized `.env` file. Don't forget to include the URL to your MariaDB database.
 
 5. **Fire Up the Development Server**:
    ```bash
    npm run dev
    ```
 
-   Now, point your browser to [http://localhost:3000](http://localhost:3000) and experience Mneme in action!
+   Now, point your browser to [http://localhost:3000](http://localhost:3000) and experience Alpaca in action!
 
 ## Aesthetic and Performance 🎨
 
@@ -56,7 +52,7 @@ Mneme takes care of both aesthetics and performance. We use [`next/font`](https:
 
 ## The API World 🌐
 
-Mneme is a unified platform that serves both the website and the API. Currently, we offer multiple API endpoints and HTTP verbs for updating the database through the API. To set up your personal system, you'll need the URI of a MongoDB database. You can either run a local instance or follow our instructions in the "sample.env" file to configure the URI.
+Alpaca is a unified platform that serves both the website and the API. Currently, we offer multiple API endpoints and HTTP verbs for updating the database through the API. To set up your personal system, you'll need the URI of a MariaDB database. You can either run a local instance or follow our instructions in the "sample.env" file to configure the URI.
 
 
 ## Our Roadmap 🗺️
@@ -67,7 +63,7 @@ Our journey ahead involves creating three essential API endpoints, each correspo
 - **Note Model**: Expect a model that supports concise summaries or explanations drawn from multiple sources, enhancing note reliability.
 - **Quiz Model**: Dive into versatile question formats, including prompt/response, fill-in-the-blank, ordered or unordered lists, and more. We're even exploring multimedia prompts with WCAG-compliant text alternatives.
 
-Join us on this thrilling journey to reshape learning and knowledge sharing with Mneme!
+Join us on this thrilling journey to reshape learning and knowledge sharing with Alpaca!
 
 ## Calling All Developers 👩‍💻👨‍💻
 
@@ -81,7 +77,7 @@ Are you ready to be part of something big? We're thrilled to have developers lik
 2. **Clone Your Fork**:
    Clone your forked repository to your local machine using:
    ```bash
-   git clone https://github.com/YourUsername/Mneme/app.git
+   git clone https://github.com/YourUsername/LLAMA-Coop/Alpaca.git
    # Add the link to your forked repository
    ```
 

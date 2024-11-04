@@ -38,7 +38,13 @@
     width: 100%;
 }
 
-.main > section > h2 {
+.main > section > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.main > section h2 {
     font-size: 38px;
     margin-bottom: 24px;
 }
@@ -73,6 +79,13 @@
 
 .paginationButtons > button {
     max-width: 200px;
+}
+
+.loadMore {
+    display: flex;
+    margin-top: 80px;
+    align-items: center;
+    justify-content: center;
 }
 
 .buttons {
@@ -126,7 +139,6 @@
     display: flex;
     padding: 40px;
     border-radius: 8px;
-    margin-top: -140px;
     align-items: center;
     flex-direction: column;
     justify-content: center;
@@ -285,4 +297,35 @@
     display: inline-block;
     color: var(--accent-fg);
     background-color: var(--accent);
+}
+
+.search {
+    position: relative;
+    height: fit-content;
+    margin-bottom: 24px;
+}
+
+.search > div > div {
+    width: 180px;
+    height: 36px;
+    padding: 0 34px 0 2px;
+    border-radius: var(--radius-full);
+}
+
+.search > button {
+    top: 50%;
+    right: 4px;
+    cursor: pointer;
+    padding: 6px 12px;
+    position: absolute;
+    color: var(--accent-fg);
+    transform: translateY(-50%);
+    transition: filter 0.15s ease;
+    background-color: var(--accent);
+    border-radius: var(--radius-full);
+}
+
+.search > button:hover,
+.search > button:focus-visible {
+    filter: brightness(0.9);
 }

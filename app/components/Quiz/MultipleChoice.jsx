@@ -179,7 +179,9 @@ export function MultipleChoiceCard({ quiz, canClientCheck, setCorrect, lighter }
             <FormButtons>
                 <button
                     type="submit"
-                    disabled={(hasAnswered && !isCorrect) || !answers.length || loading}
+                    disabled={
+                        (hasAnswered && !isCorrect) || !answers.length || loading || isCorrect
+                    }
                     className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
                 >
                     {isCorrect ? "Correct!" : hasAnswered ? "Incorrect" : "Check Answer "}{" "}

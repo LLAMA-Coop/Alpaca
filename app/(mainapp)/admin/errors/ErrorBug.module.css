@@ -7,6 +7,7 @@
 .error {
     width: 100%;
     padding: 16px;
+    position: relative;
     background-color: var(--bg-2);
     border-radius: var(--radius-large);
     border: 1px solid var(--border-color);
@@ -46,6 +47,13 @@
     font-weight: 500;
     color: var(--fg-2);
     margin-bottom: 24px;
+    display: inline-flex;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.error > p:last-child {
+    margin-top: 24px;
 }
 
 .error > div {
@@ -69,4 +77,24 @@
     font-family: var(--font-mono);
     background-color: var(--bg-1);
     border-radius: var(--radius-medium);
+}
+
+.delete {
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    cursor: pointer;
+    position: absolute;
+    color: var(--fg-2);
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-3);
+    border-radius: var(--radius-small);
+}
+
+.delete:hover {
+    color: var(--danger);
+    background-color: var(--bg-4);
 }

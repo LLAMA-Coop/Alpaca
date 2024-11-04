@@ -1,9 +1,11 @@
 import styles2 from "@main/page.module.css";
 import styles from "./ErrorBug.module.css";
 import { redirect } from "next/navigation";
+import { ErrorNote } from "./ErrorNote";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
+import { DeleteNote } from "./DeleteNote";
 
 export default async function ErrorsBugsPage() {
     const user = await useUser({ token: cookies().get("token")?.value, select: ["id", "role"] });
@@ -40,6 +42,8 @@ export default async function ErrorsBugsPage() {
                                 key={error.id}
                                 className={styles.error}
                             >
+                                <DeleteNote error={error} />
+
                                 <header>
                                     <h2>
                                         {error.name} for{" "}
@@ -52,13 +56,15 @@ export default async function ErrorsBugsPage() {
 
                                 <div>
                                     <p>Code</p>
-                                    <code>{error.code}</code>
+                                    <code className="scrollbar">{error.code}</code>
                                 </div>
 
                                 <div>
                                     <p>Stack</p>
-                                    <code>{error.stack}</code>
+                                    <code className="scrollbar">{error.stack}</code>
                                 </div>
+
+                                <ErrorNote error={error} />
 
                                 <p className={styles.paragraph}>
                                     Occurred at {error.triggeredAt.toString()}

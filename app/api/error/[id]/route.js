@@ -29,10 +29,10 @@ export async function PUT(req, { params }) {
     const { id } = params;
     const { note } = await req.json();
 
-    if (!note || note.length > 1024) {
+    if (note.length > 1024) {
         return NextResponse.json(
             {
-                message: "Note must be between 1 and 1024 characters",
+                message: "Note is too long",
             },
             { status: 400 }
         );

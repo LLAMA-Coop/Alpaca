@@ -8,119 +8,132 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function NotesPage({ searchParams }) {
-  const user = await useUser({ token: cookies().get("token")?.value });
+    const user = await useUser({ token: cookies().get("token")?.value });
 
-  const page = Number(searchParams["page"] ?? 1);
-  const amount = Number(searchParams["amount"] ?? 10);
+    const page = Number(searchParams["page"] ?? 1);
+    const amount = Number(searchParams["amount"] ?? 10);
 
-  if (page < 1 || amount < 1) {
-    return redirect(
-      `/notes?page=${page < 1 ? 1 : page}&amount=${amount < 1 ? 10 : amount}`
-    );
-  }
+    if (page < 1 || amount < 1) {
+        return redirect(`/notes?page=${page < 1 ? 1 : page}&amount=${amount < 1 ? 10 : amount}`);
+    }
 
-  const { notes } = await getPermittedResources({
-    withNotes: true,
-    userId: user?.id,
-  });
+    const { notes } = await getPermittedResources({
+        withNotes: true,
+        userId: user?.id,
+    });
 
-  const hasMore = false;
+    const hasMore = false;
 
-  if (page > 1 && notes.length === 0) {
-    return redirect(`/notes?page=1&amount=${amount}`);
-  }
+    if (page > 1 && notes.length === 0) {
+        return redirect(`/notes?page=1&amount=${amount}`);
+    }
 
-  return (
-    <main className={styles.main}>
-      <header>
-        <h1>Notes</h1>
+    return (
+        <main className={styles.main}>
+            <header>
+                <h1>Notes</h1>
 
-        <p>
-          A note is a record of your thoughts, ideas, or summaries of a source.
-          You can use notes to create quiz questions or to help you study.{` `}
-          {user
-            ? `These are the notes that are publicly viewable, as well as the ones you made.`
-            : `You are only viewing the publicly available notes.
+                <p>
+                    A note is a record of your thoughts, ideas, or summaries of a source. You can
+                    use notes to create quiz questions or to help you study.{` `}
+                    {user
+                        ? `These are the notes that are publicly viewable, as well as the ones you made.`
+                        : `You are only viewing the publicly available notes.
                            Log in to see notes available to you.`}
-        </p>
-      </header>
+                </p>
+            </header>
 
-      <section>
-        {notes.length > 0 ? (
-          <>
-            <h2>Available Notes</h2>
+            <section>
+                {notes.length > 0 ? (
+                    <>
+                        <h2>Available Notes</h2>
 
-            <MasoneryList>
-              {notes.map((note) => (
-                <li key={note.id}>
-                  <NoteDisplay note={note} />
-                </li>
-              ))}
-            </MasoneryList>
+                        <MasoneryList>
+                            {notes.map((note) => (
+                                <li key={note.id}>
+                                    <NoteDisplay note={note} />
+                                </li>
+                            ))}
+                        </MasoneryList>
 
-            <div className={styles.paginationButtons}>
-              {page > 1 ? (
-                <Link
-                  className="button submit"
-                  href={`/notes?page=${page - 1}&amount=${amount}`}
-                >
-                  Previous page
-                </Link>
-              ) : (
-                <button disabled className="button submit">
-                  Previous page
-                </button>
-              )}
+                        <div className={styles.paginationButtons}>
+                            {page > 1 ? (
+                                <Link
+                                    className="button submit"
+                                    href={`/notes?page=${page - 1}&amount=${amount}`}
+                                >
+                                    Previous page
+                                </Link>
+                            ) : (
+                                <button
+                                    disabled
+                                    className="button submit"
+                                >
+                                    Previous page
+                                </button>
+                            )}
 
-              {hasMore ? (
-                <Link
-                  className="button submit"
-                  href={`/notes?page=${page + 1}&amount=${amount}`}
-                >
-                  Next page
-                </Link>
-              ) : (
-                <button disabled className="button submit">
-                  Next page
-                </button>
-              )}
-            </div>
-          </>
-        ) : (
-          <div className={styles.noResults}>
-            <Image
-              src="/assets/no-results.svg"
-              alt="No notes"
-              height={400}
-              width={400}
-            />
+                            {hasMore ? (
+                                <Link
+                                    className="button submit"
+                                    href={`/notes?page=${page + 1}&amount=${amount}`}
+                                >
+                                    Next page
+                                </Link>
+                            ) : (
+                                <button
+                                    disabled
+                                    className="button submit"
+                                >
+                                    Next page
+                                </button>
+                            )}
+                        </div>
+                    </>
+                ) : (
+                    <div className={styles.noResults}>
+                        <Image
+                            src="/assets/no-results.svg"
+                            alt="No notes"
+                            height={400}
+                            width={400}
+                        />
 
-            <p>
-              Hey, we searched high and low, but we couldn't find any notes.
-            </p>
-            {user ? (
-              <p>
-                Maybe you should try again later or create your own sources.
-              </p>
-            ) : (
-              <p>
-                You may find more when you{" "}
-                <Link className="link" href="/login">
-                  log in
-                </Link>{" "}
-                or{" "}
-                <Link className="link" href="/register">
-                  register
-                </Link>
-              </p>
-            )}
+                        <p>
+                            Hey, we searched high and low, but we couldn't find any notes.
+                            <br />
+                            {user ? (
+                                "Maybe you should try again later or create your own notes."
+                            ) : (
+                                <>
+                                    You may find more when you{" "}
+                                    <Link
+                                        className="link"
+                                        href="/login?next=/notes"
+                                    >
+                                        log in{" "}
+                                    </Link>
+                                    or{" "}
+                                    <Link
+                                        className="link"
+                                        href="/register"
+                                    >
+                                        register
+                                    </Link>
+                                    .
+                                </>
+                            )}
+                        </p>
 
-            <Link className="button primary" href="/create">
-              Create a note
-            </Link>
-          </div>
-        )}
-      </section>
-    </main>
-  );
+                        <Link
+                            className="button primary"
+                            href="/create"
+                        >
+                            Create a note
+                        </Link>
+                    </div>
+                )}
+            </section>
+        </main>
+    );
 }

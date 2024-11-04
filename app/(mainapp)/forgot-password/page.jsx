@@ -65,7 +65,9 @@ export default function forgotPasswordPage() {
 
                 <p>
                     Enter your email address below and we will send you a link to reset your
-                    password. This link will expire in 1 hour.
+                    password.
+                    <br />
+                    This link will expire in 1 hour.
                 </p>
             </header>
 

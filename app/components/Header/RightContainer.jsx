@@ -12,6 +12,11 @@ export function RightContainer({ user }) {
     const [open, setOpen] = useState(false);
     const pathname = usePathname();
 
+    const list = links.filter((link) => {
+        if (link.auth) return user;
+        return true;
+    });
+
     function handleClose() {
         setIsClosing(true);
         document.documentElement.style.overflow = "auto";
@@ -50,7 +55,7 @@ export function RightContainer({ user }) {
             ) : (
                 <Link
                     className="button round primary"
-                    href="/login"
+                    href={`/login?next=${pathname}`}
                 >
                     Login
                 </Link>
@@ -67,7 +72,7 @@ export function RightContainer({ user }) {
                 >
                     <nav>
                         <ul className={styles.links}>
-                            {links.map((link) => (
+                            {list.map((link) => (
                                 <li key={link.name}>
                                     <Link
                                         href={link.href}
