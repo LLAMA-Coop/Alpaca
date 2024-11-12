@@ -29,7 +29,7 @@ export { SourceDisplay } from "./Source/SourceDisplay";
 export { CourseDisplay } from "./Course/CourseDisplay";
 export { QuizTest } from "./Quiz/QuizTest";
 
-export { DraggableList } from "./Display/DraggableList";
+// export { DraggableList } from "./Display/DraggableList";
 
 export { MasoneryList } from "./Display/MasoneryList";
 export { InfoBox } from "./Display/InfoBox/InfoBox";
