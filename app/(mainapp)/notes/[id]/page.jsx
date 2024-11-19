@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import styles from "@/app/page.module.css";
+import styles from "@/app/(mainapp)/page.module.css";
 import { cookies } from "next/headers";
 import { NoteDisplay } from "@/app/components/server";
 import { useUser } from "@/lib/auth";
