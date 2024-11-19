@@ -37,33 +37,6 @@ export default async function SourcePage({ params }) {
     .where("public_id", "=", id)
     .executeTakeFirst();
 
-  const query = db
-    .selectFrom("sources")
-    .selectAll()
-    .select(({ selectFrom }) => [
-      selectFrom("resource_permissions as rp")
-        .select(
-          jsonObject({
-            list: permissionsDefaultColumns,
-            table: "rp",
-          })
-        )
-        .whereRef("rp.resourceId", "=", "sources.id")
-        .where("rp.resourceType", "=", "source")
-        .as("permissions"),
-      selectFrom("users")
-        .select(
-          jsonObject({
-            list: userDefaultColumns,
-            table: "users",
-          })
-        )
-        .whereRef("users.id", "=", "sources.createdBy")
-        .as("creator"),
-    ])
-    .where("public_id", "=", id)
-    .compile();
-
   const user = await useUser({ token: cookies().get("token")?.value });
   if (!user) return redirect(`/login?next=/sources/${id}`);
   source.creator = JSON.parse(source.creator);
@@ -86,6 +59,10 @@ export default async function SourcePage({ params }) {
           {source.title}
         </h1>
       </header>
+      <section>
+        <h2>Everything you need to know about source</h2>
+        <pre>{JSON.stringify(source, null, 2)}</pre>
+      </section>
     </main>
   );
 }
