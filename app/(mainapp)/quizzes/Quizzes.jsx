@@ -47,22 +47,23 @@ export default function Quizzes({ user, initialQuizzes, more }) {
     setLoading(false);
   }
 
-  return (
-    <section>
-      {quizzes.length > 0 || !!tag ? (
+  if (quizzes.length > 0 || !!tag) {
+    return (
+      <section>
         <>
           <header>
             <h2>Available Quiz Questions</h2>
 
             <form
               className={styles.search}
-              onSubmit={() => {
+              onSubmit={(e) => {
+                e.preventDefault();
                 if (tagSearch) {
                   router.push(`/quizzes?tag=${tagSearch}`);
-                  window.location.reload();
+                  window.location.href = `/quizzes?tag=${tagSearch}`;
                 } else if (tag) {
                   router.push("/quizzes");
-                  window.location.reload();
+                  window.location.href = `/quizzes`;
                 }
               }}
             >
@@ -99,7 +100,7 @@ export default function Quizzes({ user, initialQuizzes, more }) {
             </form>
           </header>
 
-          {quizzes.length > 0 ? (
+          {quizzes.length > 0 && (
             <>
               <MasoneryList>
                 {quizzes.map((quiz) => (
@@ -128,7 +129,9 @@ export default function Quizzes({ user, initialQuizzes, more }) {
                 </Tooltip>
               </div>
             </>
-          ) : (
+          )}
+
+          {quizzes.length === 0 && (
             <div className={styles.noResults}>
               <Image
                 src="/assets/no-results.svg"
@@ -144,8 +147,6 @@ export default function Quizzes({ user, initialQuizzes, more }) {
               <button
                 className="button primary"
                 onClick={() => {
-                  console.log(inputId);
-
                   document.getElementById(inputId)?.focus();
                 }}
               >
@@ -153,44 +154,49 @@ export default function Quizzes({ user, initialQuizzes, more }) {
               </button>
             </div>
           )}
-          <Link className="button primary" href="/create">
+
+          <Link className="button primary round" href="/create">
             Create a quiz
           </Link>
         </>
-      ) : (
-        <div className={styles.noResults}>
-          <Image
-            src="/assets/no-results.svg"
-            alt="No quizzes"
-            height={400}
-            width={400}
-          />
+      </section>
+    );
+  }
 
-          <p>
-            Hey, we searched high and low, but we couldn't find any quizzes.
-            <br />
-            {user ? (
-              "Maybe you should try again later or create your own quizzes."
-            ) : (
-              <>
-                You may find more when you{" "}
-                <Link className="link" href="/login?next=/quizzes">
-                  log in{" "}
-                </Link>
-                or{" "}
-                <Link className="link" href="/register">
-                  register
-                </Link>
-                .
-              </>
-            )}
-          </p>
+  return (
+    <section>
+      <div className={styles.noResults}>
+        <Image
+          src="/assets/no-results.svg"
+          alt="No quizzes"
+          height={400}
+          width={400}
+        />
 
-          <Link className="button primary" href="/create">
-            Create a quiz
-          </Link>
-        </div>
-      )}
+        <p>
+          Hey, we searched high and low, but we couldn't find any quizzes.
+          <br />
+          {user ? (
+            "Maybe you should try again later or create your own quizzes."
+          ) : (
+            <>
+              You may find more when you{" "}
+              <Link className="link" href="/login?next=/quizzes">
+                log in{" "}
+              </Link>
+              or{" "}
+              <Link className="link" href="/register">
+                register
+              </Link>
+              .
+            </>
+          )}
+        </p>
+
+        <Link className="button primary round" href="/create">
+          Create a quiz
+        </Link>
+      </div>
     </section>
   );
 }
