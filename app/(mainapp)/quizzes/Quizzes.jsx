@@ -153,6 +153,9 @@ export default function Quizzes({ user, initialQuizzes, more }) {
               </button>
             </div>
           )}
+          <Link className="button primary" href="/create">
+            Create a quiz
+          </Link>
         </>
       ) : (
         <div className={styles.noResults}>
