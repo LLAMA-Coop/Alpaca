@@ -1,17 +1,17 @@
 .container {
-    /* z-index: 2; */
-    padding: 16px;
-    display: block;
-    width: max-content;
-    position: relative;
-    border-radius: 4px;
-    max-width: min(100%, 550px);
-    background-color: var(--bg-2);
-    border: 1px solid transparent;
+  /* z-index: 2; */
+  padding: 16px;
+  display: block;
+  width: max-content;
+  position: relative;
+  border-radius: 4px;
+  max-width: min(100%, 550px);
+  background-color: var(--bg-2);
+  border: 1px solid transparent;
 }
 
 a.container:hover {
-    border: 1px solid var(--accent);
+  border: 1px solid var(--accent);
 }
 
 /* .container:hover::before,
@@ -40,176 +40,176 @@ a.container:hover {
 } */
 
 @keyframes animate {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
 
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 .container > header {
-    gap: 12px;
-    display: flex;
-    max-width: 100%;
-    overflow: hidden;
-    align-items: center;
-    margin-bottom: 24px;
+  gap: 12px;
+  display: flex;
+  max-width: 100%;
+  overflow: hidden;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
 .container > header > h4 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 500;
-    max-width: 100%;
-    overflow: hidden;
-    white-space: wrap;
-    word-break: break-word;
-    text-overflow: ellipsis;
-    color: var(--text-1);
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: wrap;
+  word-break: break-word;
+  text-overflow: ellipsis;
+  color: var(--text-1);
 }
 
 .container > header > .chip {
-    font-size: 12px;
-    padding: 2px 8px;
-    font-weight: 600;
-    color: var(--fg-2);
-    white-space: nowrap;
-    border-radius: 1000px;
-    text-transform: capitalize;
-    background-color: var(--accent-50);
+  font-size: 12px;
+  padding: 2px 8px;
+  font-weight: 600;
+  color: var(--fg-2);
+  white-space: nowrap;
+  border-radius: 1000px;
+  text-transform: capitalize;
+  background-color: var(--accent-50);
 }
 
 .container > section {
-    padding: 6px;
-    border-radius: 4px;
-    background-color: var(--bg-3);
+  padding: 6px;
+  border-radius: 4px;
+  background-color: var(--bg-3);
 }
 
 .container.lighter > section {
-    background-color: var(--bg-4);
+  background-color: var(--bg-4);
 }
 
 .container > section:not(:last-child) {
-    margin-bottom: 24px;
+  margin-bottom: 24px;
 }
 
 .container > section > h5 {
-    gap: 8px;
-    display: flex;
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--fg-2);
-    margin-bottom: 6px;
-    align-items: center;
+  gap: 8px;
+  display: flex;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--fg-2);
+  margin-bottom: 6px;
+  align-items: center;
 }
 
 .container > section > h5 > .chip {
-    font-size: 12px;
-    padding: 1px 6px;
-    font-weight: 700;
-    color: var(--fg-2);
-    border-radius: 1000px;
-    text-transform: capitalize;
-    background-color: var(--accent-50);
+  font-size: 12px;
+  padding: 1px 6px;
+  font-weight: 700;
+  color: var(--fg-2);
+  border-radius: 1000px;
+  text-transform: capitalize;
+  background-color: var(--accent-50);
 }
 
 .container > section > p {
-    font-size: 14px;
-    margin-bottom: 6px;
-    color: var(--fg-4);
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: var(--fg-4);
 }
 
 .description {
-    font-size: 15px;
-    color: var(--fg-3);
-    margin-bottom: 24px;
+  font-size: 15px;
+  color: var(--fg-3);
+  margin-bottom: 24px;
 }
 
 .list {
-    gap: 8px;
-    display: flex;
-    flex-wrap: wrap;
+  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .listItem {
-    gap: 8px;
-    display: flex;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 4px 8px;
-    color: var(--fg-3);
-    border-radius: 4px;
-    align-items: center;
-    background-color: var(--bg-2);
+  gap: 8px;
+  display: flex;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 8px;
+  color: var(--fg-3);
+  border-radius: 4px;
+  align-items: center;
+  background-color: var(--bg-2);
 }
 
 .lighter .listItem {
-    background-color: var(--bg-3);
+  background-color: var(--bg-3);
 }
 
 .container > footer {
-    gap: 40px;
-    display: flex;
-    font-size: 14px;
-    margin-top: 40px;
-    color: var(--fg-4);
-    align-items: center;
-    justify-content: space-between;
+  gap: 40px;
+  display: flex;
+  font-size: 14px;
+  margin-top: 40px;
+  color: var(--fg-4);
+  align-items: center;
+  justify-content: space-between;
 }
 
 .container > footer > :first-child {
-    max-width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .createdAt {
-    font-size: 11px;
-    cursor: default;
-    padding: 2px 4px;
-    font-weight: 600;
-    background-color: var(--bg-3);
-    border-radius: var(--radius-small);
+  font-size: 11px;
+  cursor: default;
+  padding: 2px 4px;
+  font-weight: 600;
+  background-color: var(--bg-3);
+  border-radius: var(--radius-small);
 }
 
 .lighter .createdAt {
-    background-color: var(--bg-2);
+  background-color: var(--bg-2);
 }
 
 .lighter input,
 .lighter textarea,
 .lighter select {
-    background-color: var(--bg-1);
+  background-color: var(--bg-1);
 }
 
 .tools {
-    gap: 12px;
-    display: flex;
+  gap: 12px;
+  display: flex;
 }
 
 .edit,
 .delete {
-    padding: 6px;
-    display: flex;
-    cursor: pointer;
-    margin-top: 20px;
-    color: var(--fg-3);
-    align-items: center;
-    margin-bottom: -20px;
-    justify-content: center;
-    background-color: var(--bg-3);
-    border-radius: var(--radius-small);
+  padding: 6px;
+  display: flex;
+  cursor: pointer;
+  margin-top: 20px;
+  color: var(--fg-3);
+  align-items: center;
+  margin-bottom: -20px;
+  justify-content: center;
+  background-color: var(--bg-3);
+  border-radius: var(--radius-small);
 }
 
 .edit:hover,
 .edit:focus-visible {
-    color: var(--accent);
+  color: var(--accent);
 }
 
 .delete:hover,
 .delete:focus-visible {
-    color: var(--danger);
+  color: var(--danger);
 }
