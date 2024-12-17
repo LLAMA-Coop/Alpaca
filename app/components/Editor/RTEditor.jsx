@@ -3,17 +3,21 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
+import { useRef } from "react";
+import styles from "./RTEditor.module.css";
 
 export default function RTEditor({ content, setContent }) {
+  const highlightInputRef = useRef(null);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
       Underline,
-      Highlight.configure({ multicolor: true, defaultColor: "#ff0" }),
+      Highlight.configure({ multicolor: true }),
     ],
     content,
     onUpdate: ({ editor }) => {
-      setContent(editor.getHTML());
+      setContent.dispatch({ type: setContent.type, value: editor.getHTML() });
     },
     immediatelyRender: false,
   });
@@ -21,10 +25,6 @@ export default function RTEditor({ content, setContent }) {
   if (!editor) {
     return null;
   }
-
-  const toggleHighlight = () => {
-    editor.chain().focus().toggleHighlight().run();
-  };
 
   return (
     <div>
@@ -79,7 +79,13 @@ export default function RTEditor({ content, setContent }) {
           </div>
         </button>
         <button
-          onClick={() => editor.chain().focus().toggleHighlight().run()}
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .toggleHighlight({ color: highlightInputRef.current.value })
+              .run()
+          }
           disabled={!editor.can().chain().focus().toggleHighlight().run()}
         >
           <div
@@ -93,6 +99,15 @@ export default function RTEditor({ content, setContent }) {
             <mark>Highlight</mark>
           </div>
         </button>
+        <label>
+          Change highlight color
+          <input
+            type="color"
+            id="highlightcolor"
+            defaultValue="#ffff00"
+            ref={highlightInputRef}
+          />
+        </label>
       </div>
 
       {/* Editor Component */}
