@@ -186,7 +186,7 @@ export function Profile({ user }) {
                                 disabled={isLoading || imageLoading}
                             >
                                 Save Changes
-                                {isLoading && <Spinner primary />}
+                                {isLoading && <Spinner />}
                             </button>
 
                             {!isLoading && (
@@ -266,10 +266,10 @@ export function Profile({ user }) {
 
                                 <p>{avatar ? "Change Avatar" : "Upload Avatar"}</p>
 
-                                {imageLoading && (
+                                {!imageLoading && (
                                     <Spinner
-                                        size={16}
-                                        margin={0}
+                                        size={18}
+                                        stroke="var(--fg-1)"
                                     />
                                 )}
                             </button>

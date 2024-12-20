@@ -1,16 +1,30 @@
 import styles from "./Spinner.module.css";
 
-export function Spinner({ size = 20, primary = false, margin = 12 }) {
+export function Spinner({ size = 22, margin = 0, stroke }) {
+    const radius = size / 2 - 5;
+    const strokeWidth = 2;
+
     return (
         <div
-            style={{
-                width: size,
-                height: size,
-                marginLeft: margin,
-                borderColor: primary ? "#f5f5f5A8" : "",
-                borderTopColor: primary ? "var(--accent-fg)" : "",
-            }}
-            className={styles.spinner}
-        />
+            className={styles.spinnerContainer}
+            style={{ width: size, height: size, marginLeft: `${margin}px` }}
+        >
+            <svg
+                className={styles.spinner}
+                viewBox={`0 0 ${size} ${size}`}
+                width={size}
+                height={size}
+            >
+                <circle
+                    className={styles.circle}
+                    stroke={stroke ?? "var(--accent-fg)"}
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    fill="none"
+                    strokeWidth={strokeWidth}
+                />
+            </svg>
+        </div>
     );
 }

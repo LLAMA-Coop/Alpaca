@@ -123,7 +123,10 @@ export default function Quizzes({ user, initialQuizzes, more }) {
                                     </TooltipTrigger>
 
                                     {!hasMore && (
-                                        <TooltipContent>No more quizzes to load</TooltipContent>
+                                        <TooltipContent>
+                                            No more quizzes available
+                                            {tag && <> with the tag "{tag}"</>}
+                                        </TooltipContent>
                                     )}
                                 </Tooltip>
                             </div>

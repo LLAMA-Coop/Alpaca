@@ -129,38 +129,40 @@ export function ListAnswer({ quiz, lighter, setCorrect, canClientCheck }) {
         >
             {isOrdered && <InfoBox fullWidth>Order the answers correctly</InfoBox>}
 
-            {isOrdered &&
-                // <DraggableList quizId={quiz.id}>
-                answers.map((a, i) => {
-                    const hasError = incorrectIndexes.includes(i);
+            {isOrdered && (
+                <DraggableList quizId={quiz.id}>
+                    {answers.map((a, i) => {
+                        const hasError = incorrectIndexes.includes(i);
 
-                    return (
-                        <Input
-                            value={a}
-                            type="text"
-                            darker={lighter}
-                            key={`answer-${i}`}
-                            label={`Answer ${i + 1}`}
-                            placeholder="Type your answer here"
-                            disabled={hasAnswered && !hasError}
-                            error={hasError && "Incorrect answer"}
-                            success={hasAnswered && !hasError && "- Yay! You got it right!"}
-                            onChange={(e) => {
-                                const newAnswers = [...answers];
-                                newAnswers[i] = e.target.value;
-                                setAnswers(newAnswers);
-                                setHasAnswered(false);
+                        return (
+                            <Input
+                                value={a}
+                                type="text"
+                                darker={lighter}
+                                key={`answer-${i}`}
+                                label={`Answer ${i + 1}`}
+                                placeholder="Type your answer here"
+                                disabled={hasAnswered && !hasError}
+                                error={hasError && "Incorrect answer"}
+                                success={hasAnswered && !hasError && "- Yay! You got it right!"}
+                                onChange={(e) => {
+                                    const newAnswers = [...answers];
+                                    newAnswers[i] = e.target.value;
+                                    setAnswers(newAnswers);
+                                    setHasAnswered(false);
 
-                                // Remove error for current index
-                                if (hasError) {
-                                    setIncorrectIndexes((prev) => prev.filter((ii) => ii !== i));
-                                }
-                            }}
-                        />
-                    );
-                })
-                // </DraggableList>
-            }
+                                    // Remove error for current index
+                                    if (hasError) {
+                                        setIncorrectIndexes((prev) =>
+                                            prev.filter((ii) => ii !== i)
+                                        );
+                                    }
+                                }}
+                            />
+                        );
+                    })}
+                </DraggableList>
+            )}
 
             {!isOrdered &&
                 answers.map((a, i) => {
@@ -221,13 +223,7 @@ export function ListAnswer({ quiz, lighter, setCorrect, canClientCheck }) {
                     className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
                 >
                     {isCorrect ? "Correct!" : hasAnswered ? "Incorrect" : "Check Answer "}
-                    {loading && (
-                        <Spinner
-                            primary
-                            size={14}
-                            margin={2}
-                        />
-                    )}
+                    {loading && <Spinner />}
                 </button>
 
                 {hasAnswered && isCorrect && (

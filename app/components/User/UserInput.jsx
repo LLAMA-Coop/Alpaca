@@ -17,7 +17,7 @@ export function UserInput({ isRegistering, onSubmit }) {
     const [twoFactorToken, setTwoFactorToken] = useState("");
     const [twoFactorCode, setTwoFactorCode] = useState("");
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState({});
 
     const addAlert = useAlerts((state) => state.addAlert);

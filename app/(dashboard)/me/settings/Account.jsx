@@ -368,14 +368,7 @@ export function Account({ user }) {
                     {!!newPassword.length && (
                         <FormButtons>
                             <button className="button primary small">
-                                Change Password{" "}
-                                {passwordLoading && (
-                                    <Spinner
-                                        primary
-                                        size={16}
-                                        margin={2}
-                                    />
-                                )}
+                                Change Password {passwordLoading && <Spinner />}
                             </button>
 
                             <button
@@ -442,14 +435,7 @@ export function Account({ user }) {
                                         className="button primary"
                                         disabled={!twoFactorCode}
                                     >
-                                        Verify{" "}
-                                        {passwordLoading && (
-                                            <Spinner
-                                                primary
-                                                size={16}
-                                                margin={2}
-                                            />
-                                        )}
+                                        Verify {passwordLoading && <Spinner />}
                                     </button>
                                 </FormButtons>
                             </Form>
@@ -495,7 +481,7 @@ export function Account({ user }) {
                                                 `Please wait ${Math.ceil(verifyEmailWait / 60)} minutes`
                                             ) : verifyEmailLoading ? (
                                                 <>
-                                                    Sending <Spinner size={14} />
+                                                    Sending <Spinner />
                                                 </>
                                             ) : (
                                                 "Resend verification email"
@@ -520,13 +506,7 @@ export function Account({ user }) {
                                 className="button primary small"
                             >
                                 Change Email
-                                {emailLoading && (
-                                    <Spinner
-                                        primary
-                                        size={16}
-                                        margin={2}
-                                    />
-                                )}
+                                {emailLoading && <Spinner />}
                             </button>
 
                             <button
@@ -603,14 +583,7 @@ export function Account({ user }) {
                                         className="button primary"
                                         disabled={!emailCode}
                                     >
-                                        Verify{" "}
-                                        {emailLoading && (
-                                            <Spinner
-                                                primary
-                                                size={16}
-                                                margin={2}
-                                            />
-                                        )}
+                                        Verify {emailLoading && <Spinner />}
                                     </button>
                                 </FormButtons>
                             </Form>

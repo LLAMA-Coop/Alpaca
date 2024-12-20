@@ -1,16 +1,43 @@
-.spinner {
-    width: 20px;
-    height: 20px;
-    margin-left: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    border: 2px solid var(--border-color);
-    border-top-color: var(--fg-0);
-    animation: spin 0.75s cubic-bezier(0.59, 0.01, 0.45, 0.69) infinite;
+.spinnerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: #00000056; */
+    border-radius: var(--radius-full);
 }
 
-@keyframes spin {
-    to {
+.spinner {
+    animation: rotate 1.5s linear infinite;
+}
+
+.circle {
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    stroke-dasharray: 150, 200;
+    animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate {
+    100% {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 70, 150;
+        stroke-dashoffset: -15;
+    }
+    75% {
+        stroke-dasharray: 80, 150;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -55;
     }
 }
