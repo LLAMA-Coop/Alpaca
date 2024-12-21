@@ -20,6 +20,7 @@ import {
     Dialog,
     Input,
 } from "@client";
+import { getApiUrl } from "@/lib/api";
 
 export function Security({ user }) {
     const [revokeCurrent, setRevokeCurrent] = useState(false);
@@ -83,12 +84,9 @@ export function Security({ user }) {
             setLoading(true);
 
             // Call the API to generate a 2FA secret
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/2fa/generate`,
-                {
-                    method: "POST",
-                }
-            );
+            const response = await fetch(`${getApiUrl()}/2fa/generate`, {
+                method: "POST",
+            });
 
             if (!response.ok) {
                 throw new Error("Failed to generate 2FA secret.");
@@ -118,7 +116,7 @@ export function Security({ user }) {
             setCodeLoading(true);
 
             // Call the API to enable 2FA
-            const response = await fetch("/api/2fa/enable", {
+            const response = await fetch(`${getApiUrl()}/2fa/enable`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -155,7 +153,7 @@ export function Security({ user }) {
 
         try {
             // Call the API to regenerate 2FA recovery codes
-            const response = await fetch("/api/2fa/regenerate", {
+            const response = await fetch(`${getApiUrl()}/2fa/regenerate`, {
                 method: "POST",
             });
 
@@ -188,7 +186,7 @@ export function Security({ user }) {
             setCodeLoading(true);
 
             // Call the API to disable 2FA
-            const response = await fetch("/api/2fa/disable", {
+            const response = await fetch(`${getApiUrl()}/2fa/disable`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -229,7 +227,7 @@ export function Security({ user }) {
             setRevokeLoading(true);
 
             // Call the API to revoke sessions
-            const response = await fetch("/api/auth/session", {
+            const response = await fetch(`${getApiUrl()}/auth/session`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

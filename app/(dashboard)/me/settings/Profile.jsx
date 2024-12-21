@@ -8,6 +8,7 @@ import styles from "./Settings.module.css";
 import { useAlerts } from "@/store/store";
 import { useRef, useState } from "react";
 import Image from "next/image";
+import { getApiUrl } from "@/lib/api";
 
 const cdn = process.env.NEXT_PUBLIC_CDN_URL;
 
@@ -88,7 +89,7 @@ export function Profile({ user }) {
                 return startUpload([avatar]);
             }
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/me`, {
+            const response = await fetch(`${getApiUrl()}/me`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

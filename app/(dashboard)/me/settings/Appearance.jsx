@@ -11,6 +11,7 @@ import { getAccentVariables, getThemeVariables, themes } from "@/lib/themes";
 import styles from "./Settings.module.css";
 import { useEffect, useState } from "react";
 import { useStore } from "@/store/store";
+import { getApiUrl } from "@/lib/api";
 
 export function Appearance({ user }) {
     const [current, setCurrent] = useState(
@@ -85,12 +86,16 @@ export function Appearance({ user }) {
             return;
         }
 
-        if (user.settings && user.settings.theme === themeName && user.settings.accent === accentName) {
+        if (
+            user.settings &&
+            user.settings.theme === themeName &&
+            user.settings.accent === accentName
+        ) {
             return;
         }
 
         // Save the user's settings to the database
-        fetch("/api/me", {
+        fetch(`${getApiUrl()}/me`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -180,7 +185,7 @@ export function Appearance({ user }) {
 
                         setConfettiLoading(true);
 
-                        await fetch("/api/me", {
+                        await fetch(`${getApiUrl()}/me`, {
                             method: "PATCH",
                             headers: {
                                 "Content-Type": "application/json",
