@@ -4,6 +4,20 @@ import { headers } from "next/headers";
 import { db } from "@/lib/db/db";
 import { nanoid } from "nanoid";
 import bcrypt from "bcrypt";
+import { logToFile } from "@/lib/log";
+
+function getIp() {
+    let forwardedFor = headers().get("x-forwarded-for");
+    let realIp = headers().get("x-real-ip");
+
+    if (forwardedFor) {
+        return forwardedFor.split(",")[0].trim();
+    }
+
+    if (realIp) return realIp.trim();
+
+    return "0.0.0.0";
+}
 
 function isCorrectIP(ip) {
     return /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip);
@@ -76,8 +90,13 @@ export async function POST(req) {
             const accessToken = await getToken(user.username, false);
 
             const userAgent = headers().get("user-agent") || "Unknown";
-            const ip = (req.headers.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
-            let location = {};
+            const ip = getIp();
+            logToFile(`User ${user.username} logged in from ${ip} with user agent ${userAgent}`);
+            let location = {
+                city: "Unknown",
+                region: "Unknown",
+                country: "Unknown",
+            };
 
             if (isCorrectIP(ip)) {
                 try {
