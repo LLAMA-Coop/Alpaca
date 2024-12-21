@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import styles from "./Settings.module.css";
 import { useAlerts } from "@/store/store";
 import { useRef, useState } from "react";
-import Image from "next/image";
 import { getApiUrl } from "@/lib/api";
+import Image from "next/image";
 
 const cdn = process.env.NEXT_PUBLIC_CDN_URL;
 
