@@ -5,6 +5,7 @@ import Underline from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
 import { useRef } from "react";
 import styles from "./RTEditor.module.css";
+import { highlight } from "prismjs";
 
 export default function RTEditor({ content, setContent }) {
   const highlightInputRef = useRef(null);
@@ -28,57 +29,31 @@ export default function RTEditor({ content, setContent }) {
 
   return (
     <div>
-      <div className="editor-toolbar">
+      <div className={styles.toolbar}>
         <button
+          className="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editor.can().chain().focus().toggleBold().run()}
         >
-          <div
-            style={{
-              fontSize: "12px",
-              padding: "5px 10px",
-              backgroundColor: "#111729",
-              color: "white",
-              margin: "0px",
-            }}
-          >
-            <b>Bold</b>
-          </div>
+          <b>Bold</b>
         </button>
         <button
+          className="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           disabled={!editor.can().chain().focus().toggleItalic().run()}
         >
-          <div
-            style={{
-              fontSize: "12px",
-              padding: "5px 10px",
-              backgroundColor: "#111729",
-              color: "white",
-              margin: "0px",
-            }}
-          >
-            <i>Italic</i>
-          </div>
+          <i>Italic</i>
         </button>
         <button
+          className="button"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           disabled={!editor.can().chain().focus().toggleUnderline().run()}
         >
-          <div
-            style={{
-              fontSize: "12px",
-              padding: "5px 10px",
-              backgroundColor: "#111729",
-              color: "white",
-              margin: "0px",
-            }}
-          >
-            {" "}
-            <u>Underline</u>
-          </div>
+          {" "}
+          <u>Underline</u>
         </button>
         <button
+          className="button"
           onClick={() =>
             editor
               .chain()
@@ -88,19 +63,9 @@ export default function RTEditor({ content, setContent }) {
           }
           disabled={!editor.can().chain().focus().toggleHighlight().run()}
         >
-          <div
-            style={{
-              fontSize: "12px",
-              padding: "5px 10px",
-              backgroundColor: "#111729",
-              color: "#111729",
-            }}
-          >
-            <mark>Highlight</mark>
-          </div>
+          <mark>Highlight</mark>
         </button>
         <label>
-          Change highlight color
           <input
             type="color"
             id="highlightcolor"
@@ -108,6 +73,7 @@ export default function RTEditor({ content, setContent }) {
             ref={highlightInputRef}
           />
         </label>
+        <div className="!pickertext">Highlight Color</div>
       </div>
 
       {/* Editor Component */}
