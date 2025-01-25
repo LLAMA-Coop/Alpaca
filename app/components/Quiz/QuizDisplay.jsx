@@ -13,7 +13,7 @@ import {
 } from "@client";
 
 export function QuizDisplay({ quiz, canClientCheck, isFlashcard, lighter }) {
-    const [correct, seCorrect] = useState(false);
+    const [correct, setCorrect] = useState(false);
     if (isFlashcard) return null;
 
     return (
@@ -38,7 +38,7 @@ export function QuizDisplay({ quiz, canClientCheck, isFlashcard, lighter }) {
                         <ResponseCard
                             quiz={quiz}
                             lighter={lighter}
-                            setCorrect={seCorrect}
+                            setCorrect={setCorrect}
                             canClientCheck={canClientCheck}
                         />
                     );
@@ -49,7 +49,7 @@ export function QuizDisplay({ quiz, canClientCheck, isFlashcard, lighter }) {
                         <MultipleChoiceCard
                             quiz={quiz}
                             lighter={lighter}
-                            setCorrect={seCorrect}
+                            setCorrect={setCorrect}
                             canClientCheck={canClientCheck}
                         />
                     );
@@ -64,7 +64,7 @@ export function QuizDisplay({ quiz, canClientCheck, isFlashcard, lighter }) {
                         <ListAnswer
                             quiz={quiz}
                             lighter={lighter}
-                            setCorrect={seCorrect}
+                            setCorrect={setCorrect}
                             canClientCheck={canClientCheck}
                         />
                     );
@@ -75,7 +75,7 @@ export function QuizDisplay({ quiz, canClientCheck, isFlashcard, lighter }) {
                         <Blankable
                             quiz={quiz}
                             lighter={lighter}
-                            setCorrect={seCorrect}
+                            setCorrect={setCorrect}
                             canClientCheck={canClientCheck}
                         />
                     );
@@ -86,7 +86,7 @@ export function QuizDisplay({ quiz, canClientCheck, isFlashcard, lighter }) {
                         <Verbatim
                             quiz={quiz}
                             lighter={lighter}
-                            setCorrect={seCorrect}
+                            setCorrect={setCorrect}
                             canClientCheck={canClientCheck}
                         />
                     );

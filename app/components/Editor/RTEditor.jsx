@@ -99,7 +99,7 @@ export default function RTEditor({ content, setContent }) {
             <mark>Highlight</mark>
           </div>
         </button>
-        <label>
+        <label htmlFor="highlightcolor" className={styles.colorSelect}>
           Change highlight color
           <input
             type="color"
