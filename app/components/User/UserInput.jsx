@@ -17,7 +17,7 @@ export function UserInput({ isRegistering, onSubmit }) {
     const [twoFactorToken, setTwoFactorToken] = useState("");
     const [twoFactorCode, setTwoFactorCode] = useState("");
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
 
     const addAlert = useAlerts((state) => state.addAlert);
@@ -192,7 +192,9 @@ export function UserInput({ isRegistering, onSubmit }) {
 
             addAlert({
                 success: true,
-                message: `Successfully logged in${!showTwoFactor ? " - this code is no longer valid" : ""}`,
+                message: `Successfully logged in${
+                    !showTwoFactor ? " - this code is no longer valid" : ""
+                }`,
             });
 
             if (!onSubmit) window.location.reload();

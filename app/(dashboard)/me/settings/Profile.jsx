@@ -267,7 +267,7 @@ export function Profile({ user }) {
 
                                 <p>{avatar ? "Change Avatar" : "Upload Avatar"}</p>
 
-                                {!imageLoading && (
+                                {imageLoading && (
                                     <Spinner
                                         size={18}
                                         stroke="var(--fg-1)"
