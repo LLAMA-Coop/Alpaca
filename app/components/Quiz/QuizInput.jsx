@@ -327,6 +327,7 @@ export function QuizInput({ quiz, setQuiz }) {
 
             {state.type !== "fill-in-the-blank" && (
                 <Input
+                    required
                     multiple
                     notObject
                     label="Answers"
