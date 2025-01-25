@@ -59,9 +59,6 @@ export function Input({
     select = true;
   }
 
-  //   const maxLength = props.maxLength ? props.maxLength : false;
-  const maxLength = 45;
-
   if (!skeleton) {
     // Deal with user errors
 
@@ -312,10 +309,6 @@ export function Input({
             )}
           </button>
         )}
-
-        <span>
-          {charCount} / {maxLength ? maxLength : 0}
-        </span>
       </div>
 
       {description && <p className={styles.description}>{description}</p>}
