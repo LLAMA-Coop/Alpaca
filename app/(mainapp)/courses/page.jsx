@@ -5,14 +5,30 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/dist/server/api-utils";
 
-export default async function CoursesPage() {
+export default async function CoursesPage({ searchParams }) {
     const user = await useUser({ token: cookies().get("token")?.value });
+
+    const page = Number(searchParams["page"] ?? 1);
+    const amount = Number(searchParams["amount"] ?? 10);
+
+    if (page < 1 || amount < 1) {
+        return redirect(`/sources?page=${page < 1 ? 1 : page}&amount=${amount < 1 ? 10 : amount}`);
+    }
 
     const { courses } = await getPermittedResources({
         withCourses: true,
         userId: user?.id,
+        limit: amount + 1,
+        offset: (page - 1) * amount,
     });
+
+    const hasMore = courses.length > amount;
+
+    if (page > 1 && courses.length === 0) {
+        return redirect("/courses?page=1&amount=" + amount);
+    }
 
     return (
         <main className={styles.main}>
@@ -31,21 +47,40 @@ export default async function CoursesPage() {
                 {courses.length > 0 ? (
                     <>
                         <h2>Available Courses</h2>
+
                         <MasoneryList>
                             {courses.map((course) => (
                                 <li key={course.id}>
                                     <CourseDisplay course={course} />
                                 </li>
                             ))}
-                        </MasoneryList>{" "}
+                        </MasoneryList>
+
+                        <div className={styles.paginationButtons}>
+                            <Link
+                                disabled={page <= 1}
+                                className="button submit primary"
+                                href={`/courses?page=${page - 1}&amount=${amount}`}
+                            >
+                                Previous page
+                            </Link>
+
+                            <Link
+                                disabled={!hasMore}
+                                className="button submit primary"
+                                href={`/courses?page=${page + 1}&amount=${amount}`}
+                            >
+                                Next page
+                            </Link>
+                        </div>
                     </>
                 ) : (
                     <div className={styles.noResults}>
                         <Image
-                            src="/assets/no-results.svg"
-                            alt="No courses found"
-                            height={400}
                             width={400}
+                            height={400}
+                            alt="No courses found"
+                            src="/assets/no-results.svg"
                         />
 
                         <p>
@@ -75,8 +110,8 @@ export default async function CoursesPage() {
                         </p>
 
                         <Link
-                            className="button primary"
                             href="/create"
+                            className="button primary"
                         >
                             Create a course
                         </Link>

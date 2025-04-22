@@ -13,6 +13,8 @@
     "dependencies": {
         "@floating-ui/react": "^0.26.24",
         "@tiptap/extension-highlight": "^2.10.3",
+        "@tiptap/extension-link": "^2.11.7",
+        "@tiptap/extension-placeholder": "^2.11.7",
         "@tiptap/extension-underline": "^2.10.3",
         "@tiptap/react": "^2.10.3",
         "@tiptap/starter-kit": "^2.10.3",

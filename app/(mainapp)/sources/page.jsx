@@ -20,9 +20,11 @@ export default async function SourcesPage({ searchParams }) {
     const { sources } = await getPermittedResources({
         withSources: true,
         userId: user?.id,
+        limit: amount + 1,
+        offset: (page - 1) * amount,
     });
 
-    const hasMore = false;
+    const hasMore = sources.length > amount;
 
     if (page > 1 && sources.length === 0) {
         return redirect("/sources?page=1&amount=" + amount);
@@ -49,7 +51,7 @@ export default async function SourcesPage({ searchParams }) {
                         <h2>Available Sources</h2>
 
                         <MasoneryList>
-                            {sources.map((source) => (
+                            {sources.slice(0, amount).map((source) => (
                                 <SourceDisplay
                                     key={source.id}
                                     source={source}

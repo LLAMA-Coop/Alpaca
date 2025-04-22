@@ -1,19 +1,147 @@
+.editor {
+    max-width: 100%;
+}
+
 .toolbar {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
+    display: flex;
+    overflow: hidden;
+    width: fit-content;
+    margin-bottom: 12px;
+    border-radius: 999px;
+    border: 1px solid var(--bg-4);
+    background-color: var(--bg-3);
 }
 
-.toolbar button {
-  padding: 1rem;
-}
-.toolbar input[type="color"] {
-  hight: 1rem;
-  width: 1.5rem;
-  margin-top: 5px;
-  margin-left: 2px;
+.toolbar > * {
+    width: 44px;
+    height: 40px;
+    display: flex;
+    cursor: pointer;
+    font-size: 18px;
+    align-self: center;
+    justify-content: center;
+    background-color: transparent;
+    border-right: 1px solid var(--bg-4);
 }
 
-.pickertext {
-  padding: 0.5rem;
+.toolbar > *:last-child {
+    border-right: none;
+}
+
+.toolbar > *:hover,
+.toolbar > *:focus-visible {
+    background-color: var(--bg-4);
+}
+
+.toolbar > * > * {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+}
+
+.colorSelect {
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    appearance: none;
+    position: absolute;
+}
+
+.editorContent > div {
+    padding: 10px;
+    max-width: 100%;
+    border-radius: 4px;
+    word-break: break-word;
+    border: 1px solid var(--bg-4);
+    background-color: var(--bg-3);
+    min-height: calc(42px + 5 * 20px);
+}
+
+.editorContent ul,
+.editorContent ol {
+    padding-left: 16px;
+}
+
+.editorContent li {
+    position: relative;
+}
+
+.editorContent ul li::before {
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    left: -10px;
+    content: " ";
+    margin-top: 1px;
+    position: absolute;
+    border-radius: 50%;
+    display: inline-block;
+    transform: translateY(-50%);
+    background-color: var(--fg-4);
+}
+
+.editorContent ol li {
+    padding-left: 6px;
+}
+
+.editorContent ol li::before {
+    top: 50%;
+    left: -10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg-4);
+    position: absolute;
+    transform: translateY(-50%);
+    content: counter(list-item) ". ";
+}
+
+.editorContent code {
+    padding: 1px 4px;
+    border-radius: 4px;
+    background-color: var(--bg-4);
+}
+
+.editorContent pre {
+    padding: 4px 8px;
+    overflow-x: auto;
+    border-radius: 4px;
+    overflow-y: hidden;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background-color: var(--bg-4);
+}
+
+.editorContent pre > code {
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    font-size: inherit;
+    background-color: transparent;
+}
+
+.editorContent s {
+    text-decoration: line-through;
+}
+
+.editorContent u {
+    text-decoration: underline;
+}
+
+.editorContent a {
+    cursor: pointer;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.editorContent a:hover,
+.editorContent a:focus-visible {
+    text-decoration: underline;
+}
+
+.editorContent mark {
+    padding: 1px 2px;
+    border-radius: 4px;
 }

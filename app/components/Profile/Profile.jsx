@@ -119,7 +119,10 @@ export function Profile({ user, size = 44 }) {
 
             addAlert({
                 success: response.ok,
-                message: data?.message ?? "Something went wrong",
+                message:
+                    data?.message ?? response.ok
+                        ? "Successfully Sent Report"
+                        : "Something went wrong",
             });
         } catch (error) {
             console.error(error);

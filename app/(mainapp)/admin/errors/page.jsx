@@ -1,11 +1,11 @@
 import styles2 from "@main/page.module.css";
 import styles from "./ErrorBug.module.css";
 import { redirect } from "next/navigation";
+import { DeleteNote } from "./DeleteNote";
 import { ErrorNote } from "./ErrorNote";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
-import { DeleteNote } from "./DeleteNote";
 
 export default async function ErrorsBugsPage() {
     const user = await useUser({ token: cookies().get("token")?.value, select: ["id", "role"] });

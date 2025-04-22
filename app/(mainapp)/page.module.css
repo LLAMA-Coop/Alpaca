@@ -77,8 +77,13 @@
     justify-content: space-between;
 }
 
-.paginationButtons > button {
-    max-width: 200px;
+.paginationButtons > * {
+    max-width: 180px;
+}
+
+.paginationButtons > *:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .loadMore {

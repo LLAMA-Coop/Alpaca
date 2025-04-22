@@ -1,85 +1,214 @@
 "use client";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@client";
 import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
-import { useRef } from "react";
+import StarterKit from "@tiptap/starter-kit";
 import styles from "./RTEditor.module.css";
 import { highlight } from "prismjs";
+import { useRef } from "react";
+import Link from "@tiptap/extension-link";
 
 export default function RTEditor({ content, setContent }) {
-  const highlightInputRef = useRef(null);
+    const highlightInputRef = useRef(null);
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      Highlight.configure({ multicolor: true }),
-    ],
-    content,
-    onUpdate: ({ editor }) => {
-      setContent.dispatch({ type: setContent.type, value: editor.getHTML() });
-    },
-    immediatelyRender: false,
-  });
+    const editor = useEditor({
+        content,
+        immediatelyRender: false,
+        extensions: [
+            StarterKit,
+            Underline,
+            Highlight.configure({ multicolor: true }),
+            Placeholder.configure({
+                placeholder: "Your note",
+            }),
+            Link.configure({
+                openOnClick: true,
+                autolink: true,
+                defaultProtocol: "https",
+                protocols: ["http", "https"],
+                isAllowedUri: (url, ctx) => {
+                    try {
+                        // construct URL
+                        const parsedUrl = url.includes(":")
+                            ? new URL(url)
+                            : new URL(`${ctx.defaultProtocol}://${url}`);
 
-  if (!editor) {
-    return null;
-  }
+                        // use default validation
+                        if (!ctx.defaultValidate(parsedUrl.href)) {
+                            return false;
+                        }
 
-  return (
-    <div>
-      <div className={styles.toolbar}>
-        <button
-          className="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          disabled={!editor.can().chain().focus().toggleBold().run()}
-        >
-          <b>Bold</b>
-        </button>
-        <button
-          className="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          disabled={!editor.can().chain().focus().toggleItalic().run()}
-        >
-          <i>Italic</i>
-        </button>
-        <button
-          className="button"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          disabled={!editor.can().chain().focus().toggleUnderline().run()}
-        >
-          {" "}
-          <u>Underline</u>
-        </button>
-        <button
-          className="button"
-          onClick={() =>
-            editor
-              .chain()
-              .focus()
-              .toggleHighlight({ color: highlightInputRef.current.value })
-              .run()
-          }
-          disabled={!editor.can().chain().focus().toggleHighlight().run()}
-        >
-          <mark>Highlight</mark>
-        </button>
-        
-        <label htmlFor="highlightcolor" className={styles.colorSelect}>
-          Change highlight color
-          <input
-            type="color"
-            id="highlightcolor"
-            defaultValue="#ffff00"
-            ref={highlightInputRef}
-          />
-        </label>
-        <div className="!pickertext">Highlight Color</div>
-      </div>
+                        // disallowed protocols
+                        const disallowedProtocols = ["ftp", "file", "mailto"];
+                        const protocol = parsedUrl.protocol.replace(":", "");
 
-      {/* Editor Component */}
-      <EditorContent editor={editor} className="editor-content" />
-    </div>
-  );
+                        if (disallowedProtocols.includes(protocol)) {
+                            return false;
+                        }
+
+                        // only allow protocols specified in ctx.protocols
+                        const allowedProtocols = ctx.protocols.map((p) =>
+                            typeof p === "string" ? p : p.scheme
+                        );
+
+                        if (!allowedProtocols.includes(protocol)) {
+                            return false;
+                        }
+
+                        // disallowed domains
+                        const disallowedDomains = [];
+                        const domain = parsedUrl.hostname;
+
+                        if (disallowedDomains.includes(domain)) {
+                            return false;
+                        }
+
+                        // all checks have passed
+                        return true;
+                    } catch {
+                        return false;
+                    }
+                },
+                shouldAutoLink: (url) => {
+                    try {
+                        // construct URL
+                        const parsedUrl = url.includes(":")
+                            ? new URL(url)
+                            : new URL(`https://${url}`);
+
+                        // only auto-link if the domain is not in the disallowed list
+                        const disallowedDomains = [];
+                        const domain = parsedUrl.hostname;
+
+                        return !disallowedDomains.includes(domain);
+                    } catch {
+                        return false;
+                    }
+                },
+            }),
+        ],
+        onUpdate: ({ editor }) => {
+            setContent.dispatch({ type: setContent.type, value: editor.getHTML() });
+        },
+    });
+
+    if (!editor) {
+        return null;
+    }
+
+    return (
+        <div className={styles.editor}>
+            <div className={styles.toolbar}>
+                <Tooltip>
+                    <TooltipTrigger>
+                        <button
+                            type="button"
+                            onClick={() => editor.chain().focus().toggleBold().run()}
+                            disabled={!editor.can().chain().focus().toggleBold().run()}
+                        >
+                            <b>B</b>
+                        </button>
+                    </TooltipTrigger>
+
+                    <TooltipContent>Bold Selected Text</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger>
+                        <button
+                            type="button"
+                            onClick={() => editor.chain().focus().toggleItalic().run()}
+                            disabled={!editor.can().chain().focus().toggleItalic().run()}
+                        >
+                            <i>I</i>
+                        </button>
+                    </TooltipTrigger>
+
+                    <TooltipContent>Italicize Selected Text</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger>
+                        <button
+                            type="button"
+                            onClick={() => editor.chain().focus().toggleUnderline().run()}
+                            disabled={!editor.can().chain().focus().toggleUnderline().run()}
+                        >
+                            {" "}
+                            <u>U</u>
+                        </button>
+                    </TooltipTrigger>
+
+                    <TooltipContent>Underline Selected Text</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                editor
+                                    .chain()
+                                    .focus()
+                                    .toggleHighlight({ color: highlightInputRef.current.value })
+                                    .run()
+                            }
+                            disabled={!editor.can().chain().focus().toggleHighlight().run()}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                strokeLinejoin="round"
+                                strokeLinecap="round"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                strokeWidth="2"
+                                fill="none"
+                                height="20"
+                                width="20"
+                            >
+                                <path d="M11 7l6 6" />
+                                <path d="M4 16l11.7 -11.7a1 1 0 0 1 1.4 0l2.6 2.6a1 1 0 0 1 0 1.4l-11.7 11.7h-4v-4z" />
+                            </svg>
+                        </button>
+                    </TooltipTrigger>
+
+                    <TooltipContent>Highlight Selected Text</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger>
+                        <button
+                            type="button"
+                            onClick={() => highlightInputRef.current?.click()}
+                            style={{ backgroundColor: highlightInputRef.current?.value }}
+                        />
+                    </TooltipTrigger>
+
+                    <TooltipContent>Change highlight color</TooltipContent>
+                </Tooltip>
+
+                <label
+                    htmlFor="highlightcolor"
+                    className={styles.colorSelect}
+                >
+                    Change highlight color
+                    <input
+                        type="color"
+                        tabIndex={-1}
+                        id="highlightcolor"
+                        defaultValue="#ffff00"
+                        ref={highlightInputRef}
+                    />
+                </label>
+            </div>
+
+            {/* Editor Component */}
+            <EditorContent
+                editor={editor}
+                className={styles.editorContent}
+            />
+        </div>
+    );
 }

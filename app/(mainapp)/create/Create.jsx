@@ -1,8 +1,8 @@
 "use client";
 
 import { NoteInput, QuizInput, SourceInput, CourseInput } from "@client";
-import styles from "./Create.module.css";
 import { useEffect, useState } from "react";
+import styles from "./Create.module.css";
 
 export default function Create() {
     const [tab, setTab] = useState("Note");
@@ -37,10 +37,7 @@ export default function Create() {
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                         setTab(tabName);
-                                        localStorage.setItem(
-                                            "createTab",
-                                            tabName,
-                                        );
+                                        localStorage.setItem("createTab", tabName);
                                     }
                                 }}
                             >

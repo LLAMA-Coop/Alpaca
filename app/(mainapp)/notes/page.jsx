@@ -13,16 +13,22 @@ export default async function NotesPage({ searchParams }) {
     const page = Number(searchParams["page"] ?? 1);
     const amount = Number(searchParams["amount"] ?? 10);
 
-    if (page < 1 || amount < 1) {
-        return redirect(`/notes?page=${page < 1 ? 1 : page}&amount=${amount < 1 ? 10 : amount}`);
+    if (page < 1 || amount < 1 || amount > 100) {
+        return redirect(
+            `/notes?page=${page < 1 ? 1 : page}&amount=${
+                amount < 1 ? 10 : amount > 100 ? 100 : amount
+            }`
+        );
     }
 
     const { notes } = await getPermittedResources({
         withNotes: true,
         userId: user?.id,
+        limit: amount + 1,
+        offset: (page - 1) * amount,
     });
 
-    const hasMore = false;
+    const hasMore = notes.length > amount;
 
     if (page > 1 && notes.length === 0) {
         return redirect(`/notes?page=1&amount=${amount}`);
@@ -49,7 +55,7 @@ export default async function NotesPage({ searchParams }) {
                         <h2>Available Notes</h2>
 
                         <MasoneryList>
-                            {notes.map((note) => (
+                            {notes.slice(0, amount).map((note) => (
                                 <li key={note.id}>
                                     <NoteDisplay note={note} />
                                 </li>
@@ -57,36 +63,36 @@ export default async function NotesPage({ searchParams }) {
                         </MasoneryList>
 
                         <div className={styles.paginationButtons}>
-                            {page > 1 ? (
+                            {page < 2 ? (
+                                <button
+                                    disabled
+                                    className="button submit"
+                                >
+                                    Previous page
+                                </button>
+                            ) : (
                                 <Link
                                     className="button submit"
                                     href={`/notes?page=${page - 1}&amount=${amount}`}
                                 >
                                     Previous page
                                 </Link>
-                            ) : (
+                            )}
+
+                            {!hasMore ? (
                                 <button
                                     disabled
                                     className="button submit"
                                 >
-                                    Previous page
+                                    Next page
                                 </button>
-                            )}
-
-                            {hasMore ? (
+                            ) : (
                                 <Link
                                     className="button submit"
                                     href={`/notes?page=${page + 1}&amount=${amount}`}
                                 >
                                     Next page
                                 </Link>
-                            ) : (
-                                <button
-                                    disabled
-                                    className="button submit"
-                                >
-                                    Next page
-                                </button>
                             )}
                         </div>
                     </>
