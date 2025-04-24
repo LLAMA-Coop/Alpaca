@@ -9,7 +9,7 @@ import { db } from "@/lib/db/db";
 export async function POST(req) {
     try {
         const user = await useUser({
-            token: cookies().get("token")?.value,
+            token: (await cookies()).get("token")?.value,
             select: ["id", "twoFactorEnabled"],
         });
 

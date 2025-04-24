@@ -126,6 +126,7 @@ a.container:hover {
     line-height: 1.5;
     color: var(--fg-3);
     margin-bottom: 24px;
+    white-space: pre-wrap;
     word-break: break-word;
 }
 

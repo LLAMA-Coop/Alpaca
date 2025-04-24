@@ -6,7 +6,7 @@ import { db } from "@/lib/db/db";
 
 export async function POST(req) {
     try {
-        const token = cookies().get("token")?.value || "";
+        const token = (await cookies()).get("token")?.value || "";
         const user = await useUser({ token, select: ["id", "tokens"] });
 
         if (user) {

@@ -7,10 +7,11 @@ import { UserCard } from "@client";
 import { db } from "@/lib/db/db";
 import { sql } from "kysely";
 
-export default async function GroupPage({ params }) {
+export default async function GroupPage(props) {
+    const params = await props.params;
     const { publicId } = params;
 
-    const user = await useUser({ token: cookies().get("token")?.value });
+    const user = await useUser({ token: (await cookies()).get("token")?.value });
     if (!user) redirect("/groups");
 
     const group = await db

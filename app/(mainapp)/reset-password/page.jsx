@@ -2,7 +2,8 @@ import styles from "../page.module.css";
 import { db } from "@/lib/db/db";
 import { Reset } from "./Reset";
 
-export default async function ResetPasswordPage({ searchParams }) {
+export default async function ResetPasswordPage(props) {
+    const searchParams = await props.searchParams;
     const { token } = searchParams;
 
     const user = await db

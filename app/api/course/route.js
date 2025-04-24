@@ -28,7 +28,7 @@ export async function POST(req) {
     } = course;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         const validator = new Validator();

@@ -4,9 +4,15 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { Avatar } from "@/app/components/client";
 
-export default async function UserPage({ params: { username } }) {
+export default async function UserPage(props) {
+    const params = await props.params;
+
+    const {
+        username
+    } = params;
+
     const user = await useUser({
-        token: cookies().get("token")?.value,
+        token: (await cookies()).get("token")?.value,
         select: ["id", "username"],
     });
 

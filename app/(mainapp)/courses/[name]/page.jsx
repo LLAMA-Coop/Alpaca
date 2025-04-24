@@ -4,8 +4,9 @@ import { CourseDash } from "./CourseDash";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 
-export default async function CoursePage({ params }) {
-    const user = await useUser({ token: cookies().get("token")?.value });
+export default async function CoursePage(props) {
+    const params = await props.params;
+    const user = await useUser({ token: (await cookies()).get("token")?.value });
     const name = decodeURIComponent(params.name);
 
     const course = await getCourse({ name });

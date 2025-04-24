@@ -6,7 +6,7 @@ import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
 
 export async function POST(req) {
-    const token = cookies().get("token")?.value;
+    const token = (await cookies()).get("token")?.value;
 
     try {
         const user = await useUser({

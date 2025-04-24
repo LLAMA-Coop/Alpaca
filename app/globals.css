@@ -91,8 +91,12 @@ mark {
 
 *:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 1px var(--accent-50), 0 1px 1px rgba(0, 0, 0, 0.03),
-        0 3px 6px rgba(0, 0, 0, 0.02), 0 0 0 3px var(--accent-20), 0 1px 1px 0 var(--accent-08);
+    box-shadow:
+        0 0 0 1px var(--accent-50),
+        0 1px 1px rgba(0, 0, 0, 0.03),
+        0 3px 6px rgba(0, 0, 0, 0.02),
+        0 0 0 3px var(--accent-20),
+        0 1px 1px 0 var(--accent-08);
 }
 
 html,
@@ -190,7 +194,11 @@ button {
     border: 1px solid var(--bg);
     background-color: var(--bg);
     font-family: var(--font-body);
-    transition: filter 0.1s ease, box-shadow 0.1s ease, border 0.1s ease, color 0.1s ease,
+    transition:
+        filter 0.1s ease,
+        box-shadow 0.1s ease,
+        border 0.1s ease,
+        color 0.1s ease,
         background-color 0.1s ease;
 }
 
@@ -205,8 +213,11 @@ button {
 
 .button:focus-visible {
     border: 1px solid var(--color-2);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03), 0 3px 6px rgba(0, 0, 0, 0.02),
-        0 0 0 3px var(--color-3), 0 1px 1px 0 var(--color-4);
+    box-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.03),
+        0 3px 6px rgba(0, 0, 0, 0.02),
+        0 0 0 3px var(--color-3),
+        0 1px 1px 0 var(--color-4);
 }
 
 .button.small {
@@ -391,4 +402,103 @@ input[type="date"] {
     color: var(--fg-4);
     pointer-events: none;
     content: attr(data-placeholder);
+}
+
+/* HLJS */
+
+.hljs {
+    display: block;
+    padding: 0.5rem;
+    line-height: 1.2rem;
+    border-radius: 4px;
+    color: var(--fg-2);
+    font-size: 0.875rem;
+    background-color: var(--bg-2);
+}
+
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+    color: #ff7b72;
+}
+
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+    color: #d2a8ff;
+}
+
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+    color: #79c0ff;
+}
+
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+    color: #a5d6ff;
+}
+
+.hljs-built_in,
+.hljs-symbol {
+    color: #ffa657;
+}
+
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+    color: #8b949e;
+}
+
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+    color: #7ee787;
+}
+
+.hljs-subst {
+    color: #c9d1d9;
+}
+
+.hljs-section {
+    color: #1f6feb;
+    font-weight: 700;
+}
+
+.hljs-bullet {
+    color: #f2cc60;
+}
+
+.hljs-emphasis {
+    color: #c9d1d9;
+    font-style: italic;
+}
+
+.hljs-strong {
+    color: #c9d1d9;
+    font-weight: 700;
+}
+
+.hljs-addition {
+    color: #aff5b4;
+    background-color: #033a16;
+}
+
+.hljs-deletion {
+    color: #ffdcd7;
+    background-color: #67060c;
 }

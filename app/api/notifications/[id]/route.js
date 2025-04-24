@@ -7,11 +7,12 @@ import { db } from "@/lib/db/db.js";
 
 // MARK NOTIFICATION AS READ
 
-export async function PATCH(req, { params }) {
+export async function PATCH(req, props) {
+    const params = await props.params;
     const { id } = params;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         await db
@@ -34,11 +35,12 @@ export async function PATCH(req, { params }) {
 
 // DELETE NOTIFICATION
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, props) {
+    const params = await props.params;
     const { id } = params;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         await db

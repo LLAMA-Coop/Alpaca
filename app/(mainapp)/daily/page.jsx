@@ -7,7 +7,7 @@ import { DailyTrain } from "@client";
 import Link from "next/link";
 
 export default async function DailyPage() {
-  const user = await useUser({ token: cookies().get("token")?.value });
+  const user = await useUser({ token: (await cookies()).get("token")?.value });
 
   const { quizzes } = await getPermittedResources({
     userId: user ? user.id : undefined,

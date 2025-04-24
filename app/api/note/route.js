@@ -13,7 +13,7 @@ export async function POST(req) {
     let noteId = null;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         const note = await req.json();

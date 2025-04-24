@@ -8,12 +8,13 @@ import { db } from "@/lib/db/db.js";
 
 // UPDATE GROUP
 
-export async function PATCH(req, { params }) {
+export async function PATCH(req, props) {
+    const params = await props.params;
     const { id } = params;
     const { name, description, icon, isPublic } = await req.json();
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         if (!(await canUserWriteToGroup(user.id, id))) {

@@ -5,7 +5,7 @@ import { Settings } from "./Settings";
 import { useUser } from "@/lib/auth";
 
 export default async function SettingsPage() {
-    const token = cookies().get("token")?.value;
+    const token = (await cookies()).get("token")?.value;
 
     const user = await useUser({
         token,

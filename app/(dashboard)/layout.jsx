@@ -5,7 +5,7 @@ import { Header } from "@server";
 
 export default async function RootLayout({ children }) {
     const user = await useUser({
-        token: cookies().get("token")?.value,
+        token: (await cookies()).get("token")?.value,
         select: ["username", "avatar", "email", "role"],
     });
 

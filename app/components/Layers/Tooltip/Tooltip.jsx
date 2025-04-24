@@ -141,7 +141,7 @@ export const TooltipTrigger = forwardRef(function TooltipTrigger(
 });
 
 export const TooltipContent = forwardRef(function TooltipContent(
-    { noStyle, style, ...props },
+    { noStyle, style, big, maxWidth, ...props },
     propRef
 ) {
     const context = useTooltipContext();
@@ -168,7 +168,7 @@ export const TooltipContent = forwardRef(function TooltipContent(
                 style={{
                     ...context.floatingStyles,
                     ...style,
-                    zIndex: 1000,
+                    zIndex: 100000,
                 }}
                 {...context.getFloatingProps(props)}
             >
@@ -183,7 +183,15 @@ export const TooltipContent = forwardRef(function TooltipContent(
                         />
                     )}
 
-                    <div className={`${!noStyle && styles.container}`}>{props.children}</div>
+                    <div
+                        className={`${!noStyle && styles.container}`}
+                        style={{
+                            maxWidth: maxWidth || undefined,
+                            fontSize: big ? "14px" : undefined,
+                        }}
+                    >
+                        {props.children}
+                    </div>
                 </div>
             </div>
         </FloatingPortal>

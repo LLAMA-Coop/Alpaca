@@ -5,11 +5,12 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, props) {
+    const params = await props.params;
     const { id } = params;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value, select: ["role"] });
+        const user = await useUser({ token: (await cookies()).get("token")?.value, select: ["role"] });
         if (user?.role !== "admin") return unauthorized;
 
         await db.deleteFrom("error_logs").where("id", "=", id).execute();
@@ -25,7 +26,8 @@ export async function DELETE(req, { params }) {
     }
 }
 
-export async function PUT(req, { params }) {
+export async function PUT(req, props) {
+    const params = await props.params;
     const { id } = params;
     const { note } = await req.json();
 
@@ -39,7 +41,7 @@ export async function PUT(req, { params }) {
     }
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value, select: ["role"] });
+        const user = await useUser({ token: (await cookies()).get("token")?.value, select: ["role"] });
         if (user?.role !== "admin") return unauthorized;
 
         await db

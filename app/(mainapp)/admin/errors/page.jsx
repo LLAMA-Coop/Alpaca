@@ -8,7 +8,7 @@ import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
 
 export default async function ErrorsBugsPage() {
-    const user = await useUser({ token: cookies().get("token")?.value, select: ["id", "role"] });
+    const user = await useUser({ token: (await cookies()).get("token")?.value, select: ["id", "role"] });
     if (user?.role !== "admin") redirect("/me/dashboard");
 
     const errors = await db

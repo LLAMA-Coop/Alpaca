@@ -6,7 +6,7 @@ import { useUser } from "@/lib/auth";
 import Link from "next/link";
 
 export default async function GroupsPage() {
-    const user = await useUser({ token: cookies().get("token")?.value });
+    const user = await useUser({ token: (await cookies()).get("token")?.value });
 
     const groups = (await getGroups(user?.id, true)).map((g) => {
         const owner = g.members.find((m) => m.role === "owner");

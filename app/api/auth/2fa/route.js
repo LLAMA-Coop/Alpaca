@@ -83,7 +83,7 @@ export async function POST(req) {
         const refreshToken = await getToken(user.username, true);
         const accessToken = await getToken(user.username, false);
 
-        const userAgent = headers().get("user-agent") || "Unknown";
+        const userAgent = (await headers()).get("user-agent") || "Unknown";
         // const ip = (req.headers.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
         const ip = "91.162.93.92";
         let location = {};

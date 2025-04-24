@@ -11,9 +11,10 @@ import {
 
 // ENROLL IN COURSE
 
-export async function POST(req, { params }) {
+export async function POST(req, props) {
+    const params = await props.params;
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         const { id } = params;

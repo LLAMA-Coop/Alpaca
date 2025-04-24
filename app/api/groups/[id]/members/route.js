@@ -11,12 +11,13 @@ import {
 
 // INVITE USER TO GROUP
 
-export async function POST(req, { params }) {
+export async function POST(req, props) {
+    const params = await props.params;
     const { id } = params;
     const { userId, username } = await req.json();
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         if (!(await canUserWriteToGroup(user.id, id))) {

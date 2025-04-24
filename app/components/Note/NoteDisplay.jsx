@@ -40,7 +40,10 @@ export function NoteDisplay({ note }) {
     const canDelete = note.creator.id === user?.id;
 
     return (
-        <Card fullWidth>
+        <Card
+            fullWidth
+            link={`/notes/${note.publicId}`}
+        >
             <header>
                 <h4 title={note.title}>{note.title}</h4>
             </header>

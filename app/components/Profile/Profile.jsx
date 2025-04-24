@@ -22,14 +22,15 @@ import {
 const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
 export function Profile({ user, size = 44 }) {
+    const router = useRouter();
+    const path = usePathname();
+
     const [notificationsOpen, setNotificationsOpen] = useState(false);
     const [reportOpen, setReportOpen] = useState(false);
 
     const [reportTitle, setReportTitle] = useState("");
     const [reportDescription, setReportDescription] = useState("");
-    const [reportUrl, setReportUrl] = useState(
-        typeof window !== "undefined" ? window.location.href : ""
-    );
+    const [reportUrl, setReportUrl] = useState(path);
 
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
@@ -38,9 +39,6 @@ export function Profile({ user, size = 44 }) {
     const addAlert = useAlerts((state) => state.addAlert);
     const readAll = useStore((state) => state.readAll);
     const setUser = useStore((state) => state.setUser);
-
-    const router = useRouter();
-    const path = usePathname();
 
     function reset() {
         setReportOpen(false);
@@ -120,7 +118,7 @@ export function Profile({ user, size = 44 }) {
             addAlert({
                 success: response.ok,
                 message:
-                    data?.message ?? response.ok
+                    (data?.message ?? response.ok)
                         ? "Successfully Sent Report"
                         : "Something went wrong",
             });

@@ -42,7 +42,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
     const user = await useUser({
-        token: cookies().get("token")?.value,
+        token: (await cookies()).get("token")?.value,
         select: ["id", "username", "displayName", "avatar", "role", "settings"],
         withAssociates: true,
         withNotifications: true,

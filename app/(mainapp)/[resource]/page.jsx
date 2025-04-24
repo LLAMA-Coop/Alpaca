@@ -1,14 +1,23 @@
-import { CourseDisplay, MasoneryList, NoteDisplay, QuizDisplay, SourceDisplay } from "@client";
 import { getPermittedResources } from "@/lib/db/helpers";
 import { SearchOptions } from "./SearchOptions";
 import styles from "@main/page.module.css";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
+import { db } from "@/lib/db/db";
 import Image from "next/image";
 import Link from "next/link";
-import { db } from "@/lib/db/db";
 import { sql } from "kysely";
+import {
+    TooltipContent,
+    TooltipTrigger,
+    SourceDisplay,
+    CourseDisplay,
+    MasoneryList,
+    NoteDisplay,
+    QuizDisplay,
+    Tooltip,
+} from "@client";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -43,7 +52,10 @@ const resourceList = [
     },
 ];
 
-export default async function ResourcePage({ searchParams, params }) {
+export default async function ResourcePage(props) {
+    const params = await props.params;
+    const searchParams = await props.searchParams;
+
     const page = Number(searchParams["page"] ?? 1);
     const amount = Number(searchParams["amount"] ?? DEFAULT_PAGE_SIZE);
     const tag = searchParams["tag"] ?? null;
@@ -51,13 +63,7 @@ export default async function ResourcePage({ searchParams, params }) {
     const current = resourceList.find((r) => r.name === params.resource);
     if (!current) return redirect("/resources");
 
-    const user = await useUser({ token: cookies().get("token")?.value });
-
-    if (!user) {
-        redirect(
-            `/login?next=/${current.name}?page=${page}&amount=${amount}${tag ? `&tag=${tag}` : ""}`
-        );
-    }
+    const user = await useUser({ token: (await cookies()).get("token")?.value });
 
     if (page < 1 || amount < 1 || amount > 100) {
         return redirect(
@@ -72,7 +78,7 @@ export default async function ResourcePage({ searchParams, params }) {
         withNotes: current.name === "notes",
         withQuizzes: current.name === "quizzes",
         withCourses: current.name === "courses",
-        userId: user.id,
+        userId: user?.id,
         limit: amount + 1,
         offset: (page - 1) * amount,
         tagSearch: tag ? tag : undefined,
@@ -88,7 +94,7 @@ export default async function ResourcePage({ searchParams, params }) {
     }
 
     const maxPage = await getMaxPage({
-        userId: user.id,
+        userId: user?.id,
         resource: current.name,
         type: current.singular,
         amount: amount,
@@ -112,7 +118,43 @@ export default async function ResourcePage({ searchParams, params }) {
                 {resources.length > 0 || !!tag ? (
                     <>
                         <header>
-                            <h2>Available {current.title}</h2>
+                            <h2>
+                                Available {current.title}
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <div
+                                            tabIndex={0}
+                                            className={styles.tooltipIcon}
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                strokeLinejoin="round"
+                                                strokeLinecap="round"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth="2"
+                                                fill="none"
+                                                height="24"
+                                                width="24"
+                                            >
+                                                <path d="M8 8a3.5 3 0 0 1 3.5 -3h1a3.5 3 0 0 1 3.5 3a3 3 0 0 1 -2 3a3 4 0 0 0 -2 4" />
+                                                <path d="M12 19l0 .01" />
+                                            </svg>
+                                        </div>
+                                    </TooltipTrigger>
+
+                                    <TooltipContent
+                                        big
+                                        maxWidth={350}
+                                    >
+                                        {current.description}
+                                        {user
+                                            ? ` These are the ${current.name} that are publicly viewable, as well as the ones you made.`
+                                            : ` You are only viewing the publicly available ${current.name}.
+                                                Log in to see ${current.name} available to you.`}
+                                    </TooltipContent>
+                                </Tooltip>
+                            </h2>
 
                             <SearchOptions
                                 tag={tag}
@@ -157,14 +199,28 @@ export default async function ResourcePage({ searchParams, params }) {
                         )}
 
                         <MasoneryList>
-                            {resources.slice(0, amount).map((res) => (
-                                <li key={res.id}>
-                                    {current.name === "sources" && <SourceDisplay source={res} />}
-                                    {current.name === "notes" && <NoteDisplay note={res} />}
-                                    {current.name === "quizzes" && <QuizDisplay quiz={res} />}
-                                    {current.name === "courses" && <CourseDisplay course={res} />}
-                                </li>
-                            ))}
+                            {resources
+                                .sort((a, b) => {
+                                    if (a.createdAt < b.createdAt) return 1;
+                                    if (a.createdAt > b.createdAt) return -1;
+                                    return 0;
+                                })
+                                .slice(0, amount)
+                                .map((res) => (
+                                    <li
+                                        key={res.id}
+                                        style={{ width: "100%" }}
+                                    >
+                                        {current.name === "sources" && (
+                                            <SourceDisplay source={res} />
+                                        )}
+                                        {current.name === "notes" && <NoteDisplay note={res} />}
+                                        {current.name === "quizzes" && <QuizDisplay quiz={res} />}
+                                        {current.name === "courses" && (
+                                            <CourseDisplay course={res} />
+                                        )}
+                                    </li>
+                                ))}
                         </MasoneryList>
 
                         <div className={styles.paginationButtons}>
@@ -227,8 +283,8 @@ export default async function ResourcePage({ searchParams, params }) {
                                         className="link"
                                         href={`/login?next=/${current.name}`}
                                     >
-                                        log in{" "}
-                                    </Link>
+                                        log in
+                                    </Link>{" "}
                                     or{" "}
                                     <Link
                                         className="link"

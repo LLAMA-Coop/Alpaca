@@ -5,10 +5,11 @@ import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
 import Link from "next/link";
 
-export default async function VerifyEmailPage({ params }) {
+export default async function VerifyEmailPage(props) {
+    const params = await props.params;
     const { token: emailToken } = params;
 
-    const token = cookies().get("token")?.value;
+    const token = (await cookies()).get("token")?.value;
 
     const user = await useUser({
         token,

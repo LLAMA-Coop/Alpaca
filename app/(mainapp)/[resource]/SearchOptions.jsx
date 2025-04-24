@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import styles from "./Resources.module.css";
 import { useState } from "react";
 
-export function SearchOptions({ name, tag, page, maxPage: mP, amount, noTags = false }) {
+export function SearchOptions({ name, tag, page, maxPage, amount, noTags = false }) {
     const [tagSearch, setTagSearch] = useState(tag ?? "");
-    const [maxPage, setMaxPage] = useState(mP);
     const router = useRouter();
 
     return (
@@ -24,9 +23,8 @@ export function SearchOptions({ name, tag, page, maxPage: mP, amount, noTags = f
                             <TinySelect
                                 value={amount}
                                 label="Items per page"
-                                options={[5, 10, 20, 50, 100]}
+                                options={[5, 10, 20, 50, 100].filter((v) => v !== amount)}
                                 onChange={(v) => {
-                                    setMaxPage(1);
                                     router.push(
                                         `/${name}?amount=${v}&page=1${tag ? `&tag=${tag}` : ""}`
                                     );
@@ -35,7 +33,7 @@ export function SearchOptions({ name, tag, page, maxPage: mP, amount, noTags = f
                         </div>
                     </TooltipTrigger>
 
-                    <TooltipContent>Change the number of items displayed per page.</TooltipContent>
+                    <TooltipContent>Change the number of items displayed per page</TooltipContent>
                 </Tooltip>
 
                 <hr />
@@ -46,7 +44,9 @@ export function SearchOptions({ name, tag, page, maxPage: mP, amount, noTags = f
                             <TinySelect
                                 label="Page"
                                 value={page}
-                                options={[...Array(maxPage)].map((_, i) => i + 1)}
+                                options={[...Array(maxPage)]
+                                    .map((_, i) => i + 1)
+                                    .filter((v) => v !== page)}
                                 onChange={(v) => {
                                     router.push(
                                         `/${name}?amount=${amount}&page=${v}${
@@ -58,9 +58,7 @@ export function SearchOptions({ name, tag, page, maxPage: mP, amount, noTags = f
                         </div>
                     </TooltipTrigger>
 
-                    <TooltipContent>
-                        Change the page number. The maximum number of pages is {maxPage}.
-                    </TooltipContent>
+                    <TooltipContent>Change the page number</TooltipContent>
                 </Tooltip>
             </form>
 

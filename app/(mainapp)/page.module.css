@@ -50,8 +50,23 @@
 }
 
 .main > section h2 {
+    gap: 12px;
+    display: flex;
     font-size: 38px;
+    align-items: center;
     margin-bottom: 24px;
+    word-break: break-word;
+}
+
+.main > section h2 > div {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    color: var(--fg-0);
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent);
 }
 
 .main > section > p {

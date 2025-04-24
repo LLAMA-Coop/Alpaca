@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getPermittedResources } from "@/lib/db/helpers";
 
 export default async function LandingPage() {
-    const user = await useUser({ token: cookies().get("token")?.value });
+    const user = await useUser({ token: (await cookies()).get("token")?.value });
 
     // const note = (await getNotesById({ id: 1 }))[0];
 

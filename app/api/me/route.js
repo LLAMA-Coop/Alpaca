@@ -29,7 +29,7 @@ export async function PATCH(req) {
 
     try {
         const user = await useUser({
-            token: cookies().get("token")?.value,
+            token: (await cookies()).get("token")?.value,
             select: [
                 "id",
                 "password",

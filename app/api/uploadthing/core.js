@@ -11,7 +11,7 @@ export const ourFileRouter = {
     })
         .middleware(async () => {
             const user = await useUser({
-                token: cookies().get("token")?.value || "",
+                token: (await cookies()).get("token")?.value || "",
             });
 
             if (!user) throw new UploadThingError("Unauthorized");

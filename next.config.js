@@ -11,9 +11,6 @@ const nextConfig = {
         ],
         dangerouslyAllowSVG: true,
     },
-    experimental: {
-        instrumentationHook: true,
-    },
 };
 
 module.exports = nextConfig;

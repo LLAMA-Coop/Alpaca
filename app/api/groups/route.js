@@ -17,7 +17,7 @@ export async function POST(req) {
     const { name, description, icon, isPublic } = group;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
 
         if (!user) {
             icon && (await utapi.deleteFiles(icon));

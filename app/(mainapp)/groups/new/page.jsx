@@ -5,7 +5,7 @@ import { useUser } from "@/lib/auth";
 import { GroupInput } from "@client";
 
 export default async function NewGroupPage() {
-    const user = await useUser({ token: cookies().get("token")?.value });
+    const user = await useUser({ token: (await cookies()).get("token")?.value });
     if (!user) return redirect("/groups");
 
     return (

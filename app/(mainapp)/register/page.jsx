@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 export default async function RegisterPage() {
-    const user = await useUser({ token: cookies().get("token")?.value });
+    const user = await useUser({ token: (await cookies()).get("token")?.value });
     if (user) return redirect(`/me/dashboard`);
 
     return (

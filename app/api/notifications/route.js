@@ -9,7 +9,7 @@ import { db } from "@/lib/db/db.js";
 
 export async function PATCH(req) {
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         await db
@@ -33,7 +33,7 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         await db.deleteFrom("notifications").where("recipientId", "=", user.id).execute();

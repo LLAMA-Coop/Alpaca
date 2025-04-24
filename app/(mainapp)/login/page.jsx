@@ -10,8 +10,9 @@ export const metadata = {
     description: "Log in to Alpaca",
 };
 
-export default async function LoginPage({ searchParams }) {
-    const user = await useUser({ token: cookies().get("token")?.value });
+export default async function LoginPage(props) {
+    const searchParams = await props.searchParams;
+    const user = await useUser({ token: (await cookies()).get("token")?.value });
 
     if (user) {
         const { next } = searchParams;

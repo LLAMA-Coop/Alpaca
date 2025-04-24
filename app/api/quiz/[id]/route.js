@@ -34,7 +34,7 @@ export async function PATCH(req, { params }) {
     }
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         if (!(await canEditResource(user.id, id, "quizzes", "quiz"))) {
@@ -106,12 +106,13 @@ export async function PATCH(req, { params }) {
 
 // GRADE QUIZ
 
-export async function POST(req, { params }) {
+export async function POST(req, props) {
+    const params = await props.params;
     const { answers } = await req.json();
     const { id } = params;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         const quiz = await db
@@ -275,11 +276,12 @@ function shouldSendHints(level, tries) {
 
 // DELETE QUIZ
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, props) {
+    const params = await props.params;
     const { id } = params;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         if (!(await canDeleteResource(user.id, id, "quiz"))) {

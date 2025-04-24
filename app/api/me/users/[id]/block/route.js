@@ -7,11 +7,12 @@ import { db } from "@/lib/db/db";
 
 // BLOCK USER
 
-export async function POST(req, { params }) {
+export async function POST(req, props) {
+    const params = await props.params;
     const { id } = params;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value || "" });
+        const user = await useUser({ token: (await cookies()).get("token")?.value || "" });
         if (!user) return unauthorized;
 
         if (id === user.id) {
@@ -74,11 +75,12 @@ export async function POST(req, { params }) {
     }
 }
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, props) {
+    const params = await props.params;
     const { id } = params;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value || "" });
+        const user = await useUser({ token: (await cookies()).get("token")?.value || "" });
         if (!user) return unauthorized;
 
         if (id === user.id) {

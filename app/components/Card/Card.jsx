@@ -3,6 +3,7 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@client";
 import { useEffect, useState } from "react";
 import styles from "./Card.module.css";
+import hljs from "highlight.js";
 import Link from "next/link";
 
 export function Card({ link, darker, border, lighter, fullWidth, hideAnimatedBorder, ...props }) {
@@ -80,15 +81,26 @@ export function CardButtons({ children }) {
 
 export function CardDescription({ children, setInnerHtml = false }) {
     if (setInnerHtml) {
-        return (
-            <p
-                className={styles.description}
-                dangerouslySetInnerHTML={{ __html: children }}
-            />
-        );
+        return <CardDescriptionHTML>{children}</CardDescriptionHTML>;
     }
 
     return <p className={styles.description}>{children}</p>;
+}
+
+export function CardDescriptionHTML({ children }) {
+    // We want to use highlightjs to highlight each code block in the description
+    // but we need to wait for the component to be mounted to do so
+
+    useEffect(() => {
+        hljs.highlightAll();
+    }, []);
+
+    return (
+        <p
+            className={styles.description}
+            dangerouslySetInnerHTML={{ __html: children }}
+        />
+    );
 }
 
 export function CardCreatedAt({ children }) {

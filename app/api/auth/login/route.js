@@ -7,8 +7,10 @@ import bcrypt from "bcrypt";
 import { logToFile } from "@/lib/log";
 
 function getIp() {
-    let forwardedFor = headers().get("x-forwarded-for");
-    let realIp = headers().get("x-real-ip");
+    let forwardedFor = /* @next-codemod-error Manually await this call and refactor the function to be async */
+    headers().get("x-forwarded-for");
+    let realIp = /* @next-codemod-error Manually await this call and refactor the function to be async */
+    headers().get("x-real-ip");
 
     if (forwardedFor) {
         return forwardedFor.split(",")[0].trim();
@@ -89,7 +91,7 @@ export async function POST(req) {
             const refreshToken = await getToken(user.username, true);
             const accessToken = await getToken(user.username, false);
 
-            const userAgent = headers().get("user-agent") || "Unknown";
+            const userAgent = (await headers()).get("user-agent") || "Unknown";
             const ip = getIp();
             logToFile(`User ${user.username} logged in from ${ip} with user agent ${userAgent}`);
             let location = {

@@ -9,7 +9,7 @@ import { Avatar } from "@/app/components/client";
 
 export default async function ReportsPage() {
     const user = await useUser({
-        token: cookies().get("token")?.value || "",
+        token: (await cookies()).get("token")?.value || "",
         select: ["id", "role"],
     });
 

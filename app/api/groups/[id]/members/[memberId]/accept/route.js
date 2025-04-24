@@ -7,11 +7,12 @@ import { db } from "@/lib/db/db.js";
 
 // ACCEPT GROUP INVITE
 
-export async function POST(req, { params }) {
+export async function POST(req, props) {
+    const params = await props.params;
     const { id, memberId } = params;
 
     try {
-        const user = await useUser({ token: cookies().get("token")?.value });
+        const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
         const invite = await db
