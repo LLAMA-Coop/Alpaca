@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import { useEffect, useState } from "react";
 
 const dashColumnCountBp = {
     500: 1,
@@ -30,8 +30,8 @@ const dash2ColumnCountBp = {
 };
 
 const defaultColumnCountBp = {
-    350: 1,
-    750: 2,
+    650: 1,
+    1024: 2,
 };
 
 export function MasoneryList({ children, ...props }) {
@@ -51,8 +51,8 @@ export function MasoneryList({ children, ...props }) {
                 props.dash
                     ? dashColumnCountBp
                     : props.dash2
-                      ? dash2ColumnCountBp
-                      : defaultColumnCountBp
+                    ? dash2ColumnCountBp
+                    : defaultColumnCountBp
             }
         >
             <Masonry gutter="24px">{children}</Masonry>

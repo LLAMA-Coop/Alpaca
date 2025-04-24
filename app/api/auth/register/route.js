@@ -68,7 +68,14 @@ export async function POST(req) {
                 publicId,
                 username: name,
                 displayName: name,
-                settings: JSON.stringify({}),
+                settings: JSON.stringify({
+                    showConfetti: true,
+                    showResourceOptions: true,
+                    notifications: {
+                        email: true,
+                        push: true,
+                    },
+                }),
                 password: await bcrypt.hash(password, 10),
                 tokens: JSON.stringify([]),
             })

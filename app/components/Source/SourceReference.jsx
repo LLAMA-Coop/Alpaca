@@ -13,14 +13,14 @@ export function SourceReference({ sourceRef }) {
                 error={sourceError}
                 label="Current Sources"
             />
-
-            <ListAdd
+            {/* <ListAdd
                 item="Add a source"
                 listChoices={availableSources}
                 listChosen={sources}
                 listProperty={"title"}
                 listSetter={setSources}
-            />
+            /> */}
+            Something wrong here!
         </div>
     );
 }

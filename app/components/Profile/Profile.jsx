@@ -397,13 +397,6 @@ export function Profile({ user, size = 44 }) {
 
                     <DialogButtons>
                         <button
-                            className="button transparent"
-                            onClick={() => setReportOpen(false)}
-                        >
-                            Cancel
-                        </button>
-
-                        <button
                             className="button danger"
                             onClick={handleReportSubmit}
                             disabled={loading || !reportDescription.length}
@@ -415,6 +408,13 @@ export function Profile({ user, size = 44 }) {
                                     size={16}
                                 />
                             )}
+                        </button>
+
+                        <button
+                            className="button transparent"
+                            onClick={() => setReportOpen(false)}
+                        >
+                            Cancel
                         </button>
                     </DialogButtons>
                 </DialogContent>

@@ -53,9 +53,7 @@
     background-color: var(--bg-3);
     border-radius: var(--radius-medium);
     border: 1px solid var(--border-color);
-    transition:
-        border 0.1s ease,
-        box-shadow 0.1s ease;
+    transition: border 0.1s ease, box-shadow 0.1s ease;
 }
 
 .wrapper.select {
@@ -84,10 +82,7 @@
     --bs-1: var(--accent-20);
     --bs-2: var(--accent-08);
     border: 1px solid var(--accent-50);
-    box-shadow:
-        0 1px 1px rgba(0, 0, 0, 0.03),
-        0 3px 6px rgba(0, 0, 0, 0.02),
-        0 0 0 3px var(--bs-1),
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03), 0 3px 6px rgba(0, 0, 0, 0.02), 0 0 0 3px var(--bs-1),
         0 1px 1px 0 var(--bs-2);
 }
 
@@ -201,10 +196,7 @@
     background-color: var(--bg-3);
     border: 1px solid transparent;
     border-radius: var(--radius-small);
-    transition:
-        background-color 0.1s ease,
-        color 0.1s ease,
-        border 0.1s ease;
+    transition: background-color 0.1s ease, color 0.1s ease, border 0.1s ease;
 }
 
 .selectButton:hover,
@@ -226,6 +218,7 @@
     max-height: 400px;
     overflow: hidden auto;
     flex-direction: column;
+    outline: none !important;
     background-color: var(--bg-2);
     border-radius: var(--radius-medium);
     border: 1px solid var(--border-color);
@@ -288,11 +281,8 @@
 .checkbox:focus-visible {
     outline: none;
     border: 1px solid var(--accent-50);
-    box-shadow:
-        0 1px 1px rgba(0, 0, 0, 0.03),
-        0 3px 6px rgba(0, 0, 0, 0.02),
-        0 0 0 3px var(--accent-20),
-        0 1px 1px 0 var(--accent-08);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03), 0 3px 6px rgba(0, 0, 0, 0.02),
+        0 0 0 3px var(--accent-20), 0 1px 1px 0 var(--accent-08);
 }
 
 .checkbox > span {

@@ -1,0 +1,92 @@
+.container {
+    gap: 16px;
+    display: flex;
+}
+
+.options {
+    height: 36px;
+    display: flex;
+    align-items: center;
+}
+
+.options > div {
+    width: 36px;
+    height: 100%;
+}
+
+.options > div > div:first-child {
+    width: 36px;
+    height: 100%;
+    display: flex;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    user-select: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% 0 0 50%;
+    background-color: var(--bg-3);
+    border: 1px solid var(--border-color);
+}
+
+.options > div:first-child > div:first-child {
+    border-right: none;
+}
+
+.options > div > div:first-child[aria-expanded="true"] {
+    border-radius: 50% 0 0 0;
+    border-bottom-color: transparent;
+}
+
+.options > div:last-child > div:first-child {
+    border-radius: 0 50% 50% 0;
+    border-left-color: transparent;
+}
+
+.options > div:last-child > div:first-child[aria-expanded="true"] {
+    border-radius: 0 50% 0 0;
+}
+
+.options > div > div:first-child:hover,
+.options > div > div:first-child:focus-within {
+    background-color: var(--bg-4);
+}
+
+.options > hr {
+    width: 0;
+    height: 100%;
+    background-color: var(--bg-3);
+    border: 1px solid var(--border-color);
+    border-right: none;
+}
+
+.search {
+    position: relative;
+    height: fit-content;
+    margin-bottom: 24px;
+}
+
+.search > div > div {
+    width: 180px;
+    height: 36px;
+    padding: 0 34px 0 2px;
+    border-radius: var(--radius-full);
+}
+
+.search > button {
+    top: 50%;
+    right: 4px;
+    cursor: pointer;
+    padding: 6px 12px;
+    position: absolute;
+    color: var(--accent-fg);
+    transform: translateY(-50%);
+    transition: filter 0.15s ease;
+    background-color: var(--accent);
+    border-radius: var(--radius-full);
+}
+
+.search > button:hover,
+.search > button:focus-visible {
+    filter: brightness(0.9);
+}

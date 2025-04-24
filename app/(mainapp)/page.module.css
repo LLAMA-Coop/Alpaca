@@ -1,15 +1,18 @@
 .main {
     flex: 1;
+    padding: var(--padding);
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .main > header {
-    max-width: var(--max-width);
-    margin: 0 auto;
     display: flex;
-    flex-direction: column;
+    margin: 0 auto;
     align-items: center;
-    justify-content: center;
+    flex-direction: column;
     padding: var(--padding);
+    justify-content: center;
+    max-width: var(--max-width);
 }
 
 .main > header > h1 {
@@ -32,10 +35,12 @@
 }
 
 .main > section {
-    max-width: var(--max-width);
+    width: 100%;
     margin: 0 auto;
     padding: var(--padding);
-    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    max-width: var(--max-width);
 }
 
 .main > section > header {
@@ -78,7 +83,7 @@
 }
 
 .paginationButtons > * {
-    max-width: 180px;
+    max-width: 170px;
 }
 
 .paginationButtons > *:disabled {
@@ -125,6 +130,16 @@
 
     .main > header > p {
         font-size: clamp(16px, 4vw, 20px);
+    }
+
+    .main > section > header {
+        margin-bottom: 24px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .main > section > header > * {
+        margin-bottom: 12px;
     }
 }
 
@@ -302,35 +317,4 @@
     display: inline-block;
     color: var(--accent-fg);
     background-color: var(--accent);
-}
-
-.search {
-    position: relative;
-    height: fit-content;
-    margin-bottom: 24px;
-}
-
-.search > div > div {
-    width: 180px;
-    height: 36px;
-    padding: 0 34px 0 2px;
-    border-radius: var(--radius-full);
-}
-
-.search > button {
-    top: 50%;
-    right: 4px;
-    cursor: pointer;
-    padding: 6px 12px;
-    position: absolute;
-    color: var(--accent-fg);
-    transform: translateY(-50%);
-    transition: filter 0.15s ease;
-    background-color: var(--accent);
-    border-radius: var(--radius-full);
-}
-
-.search > button:hover,
-.search > button:focus-visible {
-    filter: brightness(0.9);
 }

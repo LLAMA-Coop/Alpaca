@@ -1,5 +1,7 @@
 .header {
-    padding: 0 40px;
+    padding: var(--padding);
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .header > header {

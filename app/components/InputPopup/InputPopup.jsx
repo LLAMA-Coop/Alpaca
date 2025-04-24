@@ -1,9 +1,9 @@
 "use client";
 
-import { SourceInput, NoteInput, QuizInput, PermissionsInput } from "@client";
+import { SourceInput, NoteInput, QuizInput, Permissions } from "@client";
 import { useEffect, useRef, useState } from "react";
-import styles from "./InputPopup.module.css";
 import { CourseInput } from "../Course/CourseInput";
+import styles from "./InputPopup.module.css";
 
 export function InputPopup({ type, resource, setter }) {
     const [showPopup, setShowPopup] = useState(false);
@@ -34,7 +34,7 @@ export function InputPopup({ type, resource, setter }) {
         source: resource ? "Edit source" : "Create new source",
         note: resource ? "Edit note" : "Create new note",
         course: resource ? "Edit course" : "Create new course",
-        permissions: "Edit permissions"
+        permissions: "Edit permissions",
     };
 
     return (
@@ -92,40 +92,27 @@ export function InputPopup({ type, resource, setter }) {
                         </div>
 
                         {type === "quiz" &&
-                            (resource ? (
-                                <QuizInput quiz={resource} />
-                            ) : (
-                                <QuizInput />
-                            ))}
+                            (resource ? <QuizInput quiz={resource} /> : <QuizInput />)}
 
                         {type === "note" &&
-                            (resource ? (
-                                <NoteInput note={resource} />
-                            ) : (
-                                <NoteInput />
-                            ))}
+                            (resource ? <NoteInput note={resource} /> : <NoteInput />)}
 
                         {type === "source" &&
-                            (resource ? (
-                                <SourceInput source={resource} />
-                            ) : (
-                                <SourceInput />
-                            ))}
+                            (resource ? <SourceInput source={resource} /> : <SourceInput />)}
 
                         {type === "course" &&
-                            (resource ? (
-                                <CourseInput course={resource} />
-                            ) : (
-                                <CourseInput />
-                            ))}
+                            (resource ? <CourseInput course={resource} /> : <CourseInput />)}
 
-                        {type === "permissions" &&
+                        {/* {type === "permissions" &&
                             setter &&
                             (resource ? (
-                                <PermissionsInput permissions={resource} setter={setter} />
+                                <Permissions
+                                    permissions={resource}
+                                    setter={setter}
+                                />
                             ) : (
-                                <PermissionsInput setter={setter} />
-                            ))}
+                                <Permissions setter={setter} />
+                            ))} */}
                     </div>
                 </div>
             )}

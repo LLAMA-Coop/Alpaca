@@ -359,7 +359,7 @@ export function Dashboard({ more = false }) {
                                     doesn't mean you can't explore more.
                                 </p>
 
-                                <div>
+                                <div className={styles.emptyButtons}>
                                     <Link
                                         href="/courses"
                                         className="button round primary"

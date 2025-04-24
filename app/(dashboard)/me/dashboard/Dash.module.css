@@ -31,11 +31,8 @@
 
 .tabList > li > div:focus-visible {
     border: 1px solid var(--accent-50);
-    box-shadow:
-        0 1px 1px rgba(0, 0, 0, 0.03),
-        0 3px 6px rgba(0, 0, 0, 0.02),
-        0 0 0 3px var(--accent-20),
-        0 1px 1px 0 var(--accent-08);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03), 0 3px 6px rgba(0, 0, 0, 0.02),
+        0 0 0 3px var(--accent-20), 0 1px 1px 0 var(--accent-08);
 }
 
 .tabList > li.active {
@@ -52,10 +49,7 @@
     background: var(--bg-2);
     justify-content: center;
     border: 1px solid transparent;
-    transition:
-        border 0.1s ease,
-        box-shadow 0.1s ease,
-        color 0.1s ease;
+    transition: border 0.1s ease, box-shadow 0.1s ease, color 0.1s ease;
 }
 
 .tabList > li > div > svg {
@@ -80,6 +74,12 @@
 
 .tabList > li.active > span {
     visibility: visible;
+}
+
+.emptyButtons {
+    gap: 16px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .content {
@@ -340,18 +340,13 @@
     background-color: var(--bg-3);
     border: 1px solid var(--bg-4);
     min-width: minmax(350px, 1fr);
-    transition:
-        border 0.15s ease,
-        box-shadow 0.15s ease;
+    transition: border 0.15s ease, box-shadow 0.15s ease;
 }
 
 .input > div:focus-within {
     border: 1px solid var(--accent-50);
-    box-shadow:
-        0 1px 1px rgba(0, 0, 0, 0.03),
-        0 3px 6px rgba(0, 0, 0, 0.02),
-        0 0 0 3px var(--accent-20),
-        0 1px 1px 0 var(--accent-08);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03), 0 3px 6px rgba(0, 0, 0, 0.02),
+        0 0 0 3px var(--accent-20), 0 1px 1px 0 var(--accent-08);
 }
 
 .input > div > input {
@@ -398,11 +393,8 @@
 
 .input > div > button:focus-visible {
     border: 1px solid var(--accent-50);
-    box-shadow:
-        0 1px 1px rgba(0, 0, 0, 0.03),
-        0 3px 6px rgba(0, 0, 0, 0.02),
-        0 0 0 3px var(--accent-20),
-        0 1px 1px 0 var(--accent-08);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03), 0 3px 6px rgba(0, 0, 0, 0.02),
+        0 0 0 3px var(--accent-20), 0 1px 1px 0 var(--accent-08);
 }
 
 .input > div > button:active {
@@ -473,9 +465,7 @@
     background-color: var(--bg-3);
     max-width: 360px;
     cursor: pointer;
-    transition:
-        transform 0.1s ease-in-out,
-        box-shadow 0.1s ease-in-out;
+    transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
 }
 
 .associate:hover,
@@ -510,9 +500,7 @@
     background-color: var(--bg-1);
     border: 0px;
     cursor: pointer;
-    transition:
-        background-color 0.1s ease-in-out,
-        color 0.1s ease-in-out;
+    transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
 }
 
 .associate > button:hover,

@@ -1,6 +1,5 @@
 "use client";
 
-import { useModals, useAlerts } from "@/store/store";
 import styles from "./InviteUser.module.css";
 import { Input, UserInput } from "@client";
 import { useState } from "react";
@@ -11,9 +10,9 @@ export function InviteUser({ groupId }) {
     const [userId, setUserId] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const removeModal = useModals((state) => state.removeModal);
-    const addModal = useModals((state) => state.addModal);
-    const addAlert = useAlerts((state) => state.addAlert);
+    // const removeModal = useModals((state) => state.removeModal);
+    // const addModal = useModals((state) => state.addModal);
+    // const addAlert = useAlerts((state) => state.addAlert);
 
     async function sendInvitation() {
         if (loading) return;
@@ -35,7 +34,7 @@ export function InviteUser({ groupId }) {
                         ? {
                               username: userId,
                           }
-                        : { userId },
+                        : { userId }
                 ),
             }).then((res) => res.json());
 
@@ -44,21 +43,21 @@ export function InviteUser({ groupId }) {
             } else if (response.status === 401) {
                 // Not working currently, but we should use
                 // a React Hook to send requests
-                addModal({
-                    title: "Sign back in",
-                    content: <UserInput onSubmit={removeModal} />,
-                });
+                // addModal({
+                //     title: "Sign back in",
+                //     content: <UserInput onSubmit={removeModal} />,
+                // });
             }
 
-            addAlert({
-                success: response.success,
-                message: response.message,
-            });
+            // addAlert({
+            //     success: response.success,
+            //     message: response.message,
+            // });
         } catch (error) {
-            addAlert({
-                success: false,
-                message: "An error occurred while sending invitation.",
-            });
+            // addAlert({
+            //     success: false,
+            //     message: "An error occurred while sending invitation.",
+            // });
         }
 
         setLoading(false);
@@ -105,15 +104,9 @@ export function InviteUser({ groupId }) {
                 Send Invitation
             </button>
 
-            <p>
-                A notification will be sent to them which will include your user
-                ID and username.
-            </p>
+            <p>A notification will be sent to them which will include your user ID and username.</p>
 
-            <p>
-                If they accept your user, you will be able to see their user
-                name.
-            </p>
+            <p>If they accept your user, you will be able to see their user name.</p>
         </form>
     );
 }

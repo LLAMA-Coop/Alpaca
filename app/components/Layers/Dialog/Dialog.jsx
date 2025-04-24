@@ -200,6 +200,7 @@ export const DialogDescription = forwardRef(function DialogDescription(
 
 export const DialogClose = forwardRef(function DialogClose(props, ref) {
     const { setOpen } = useDialogContext();
+
     return (
         <button
             type="button"
@@ -211,8 +212,8 @@ export const DialogClose = forwardRef(function DialogClose(props, ref) {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512.021 512.021"
                 fill="currentColor"
-                height="16"
-                width="16"
+                height="14"
+                width="14"
                 x="0px"
                 y="0px"
             >

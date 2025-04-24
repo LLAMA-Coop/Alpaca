@@ -1,7 +1,9 @@
 .container {
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 50%;
     position: relative;
     width: fit-content;
-    cursor: pointer;
 }
 
 .container > div {
@@ -9,24 +11,24 @@
 }
 
 .container > button {
+    border: none;
     cursor: pointer;
     border-radius: 50%;
-    border: none;
 }
 
 .notification {
     height: 20px;
-    min-width: 20px;
+    bottom: -5px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--accent-fg);
-    background-color: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 25vw;
     padding: 0 5px;
+    min-width: 20px;
     font-weight: 700;
     position: absolute;
+    align-items: center;
+    border-radius: 25vw;
+    justify-content: center;
+    color: var(--accent-fg);
     right: calc(100% - 15px);
-    bottom: -5px;
+    background-color: var(--accent);
+    border: 1px solid var(--accent);
 }
