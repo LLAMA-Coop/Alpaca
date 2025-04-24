@@ -1,16 +1,14 @@
 import { getToken, catchRouteError } from "@/lib/db/helpers";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { logToFile } from "@/lib/log";
 import { db } from "@/lib/db/db";
 import { nanoid } from "nanoid";
 import bcrypt from "bcrypt";
-import { logToFile } from "@/lib/log";
 
-function getIp() {
-    let forwardedFor = /* @next-codemod-error Manually await this call and refactor the function to be async */
-    headers().get("x-forwarded-for");
-    let realIp = /* @next-codemod-error Manually await this call and refactor the function to be async */
-    headers().get("x-real-ip");
+async function getIp() {
+    const forwardedFor = await headers().get("x-forwarded-for");
+    const realIp = await headers().get("x-real-ip");
 
     if (forwardedFor) {
         return forwardedFor.split(",")[0].trim();
@@ -92,7 +90,7 @@ export async function POST(req) {
             const accessToken = await getToken(user.username, false);
 
             const userAgent = (await headers()).get("user-agent") || "Unknown";
-            const ip = getIp();
+            const ip = await getIp();
             logToFile(`User ${user.username} logged in from ${ip} with user agent ${userAgent}`);
             let location = {
                 city: "Unknown",
