@@ -215,7 +215,7 @@ export default async function ResourcePage(props) {
                                             <SourceDisplay source={res} />
                                         )}
                                         {current.name === "notes" && <NoteDisplay note={res} />}
-                                        {current.name === "quizzes" && <QuizDisplay quiz={res} />}
+                                        {current.name === "quizzes" && <QuizDisplay quiz={res} canEditDelete={true} />}
                                         {current.name === "courses" && (
                                             <CourseDisplay course={res} />
                                         )}

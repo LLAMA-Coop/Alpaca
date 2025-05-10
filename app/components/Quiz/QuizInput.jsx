@@ -121,7 +121,7 @@ function stateReducer(state, action) {
     }
 }
 
-export function QuizInput({ quiz, setQuiz }) {
+export function QuizInput({ quiz, setQuiz, close }) {
     const [state, dispatch] = useReducer(stateReducer, defaultState);
 
     const addAlert = useAlerts((state) => state.addAlert);
@@ -245,6 +245,8 @@ export function QuizInput({ quiz, setQuiz }) {
                 success: true,
                 message: "Successfully updated quiz.",
             });
+
+            if(close) close();
         } else {
             const data = await response.json();
 

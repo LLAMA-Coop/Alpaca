@@ -289,7 +289,7 @@ export async function DELETE(req, props) {
                 {
                     message: "You do not have permission to delete this quiz",
                 },
-                { status: 404 }
+                { status: 403 }
             );
         }
 
