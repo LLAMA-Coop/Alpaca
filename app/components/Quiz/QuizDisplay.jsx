@@ -35,7 +35,7 @@ export function QuizDisplay({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
 
-  if (!quiz) return null;
+  if (!quiz || !quiz.id) return null;
 
   const user = useStore((state) => state.user);
   const addAlert = useAlerts((state) => state.addAlert);
