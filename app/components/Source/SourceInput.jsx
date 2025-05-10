@@ -6,6 +6,7 @@ import { getChangedFields } from "@/lib/objects";
 import { validation } from "@/lib/validation";
 import { useEffect, useReducer } from "react";
 import { Validator } from "@/lib/validation";
+import { htmlDate } from "@/lib/date";
 
 const defaultState = {
     title: "",
@@ -295,7 +296,7 @@ export function SourceInput({ source, close }) {
             <Input
                 type="date"
                 label="Publication Date"
-                value={state.publishedAt || ""}
+                value={htmlDate(state.publishedAt) || ""}
                 error={state.errors.publishedAt}
                 description="The date at which the source was published"
                 onChange={(e) => {
@@ -307,7 +308,7 @@ export function SourceInput({ source, close }) {
             <Input
                 type="date"
                 label="Last Accessed"
-                value={state.lastAccessed || ""}
+                value={htmlDate(state.lastAccessed) || ""}
                 error={state.errors.lastAccessed}
                 description="The date at which you last accessed the source"
                 onChange={(e) => {
