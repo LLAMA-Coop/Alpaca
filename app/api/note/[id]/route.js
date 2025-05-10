@@ -107,7 +107,7 @@ export async function DELETE(req, props) {
 
         const { id } = params;
 
-        if (!(await canDeleteResource(user.id, id, "note"))) {
+        if (!(await canDeleteResource(user.id, id, "notes"))) {
             return NextResponse.json(
                 {
                     message: "You do not have permission to delete this note",

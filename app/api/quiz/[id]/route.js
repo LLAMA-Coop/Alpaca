@@ -284,7 +284,7 @@ export async function DELETE(req, props) {
         const user = await useUser({ token: (await cookies()).get("token")?.value });
         if (!user) return unauthorized;
 
-        if (!(await canDeleteResource(user.id, id, "quiz"))) {
+        if (!(await canDeleteResource(user.id, id, "quizzes"))) {
             return NextResponse.json(
                 {
                     message: "You do not have permission to delete this quiz",
