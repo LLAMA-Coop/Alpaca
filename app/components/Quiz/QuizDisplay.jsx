@@ -49,6 +49,9 @@ export function QuizDisplay({
 
   const canDelete = quiz.creator.id === user?.id;
 
+  const whenLevelUp = new Date(quiz.hiddenUntil);
+  const canLevelUp = whenLevelUp < Date.now();
+
   if (isFlashcard) return null;
 
   return (
@@ -125,6 +128,8 @@ export function QuizDisplay({
           );
         }
       })()}
+
+      {!!canEditDelete && <div>{canLevelUp ? "Level Up Now!" : "Available to level up " + whenLevelUp.toLocaleDateString() + " " + whenLevelUp.toLocaleTimeString()}</div>}
 
       {!!canEditDelete && (!!canEdit || !!canDelete) && (
         <div className={styles.tools}>
