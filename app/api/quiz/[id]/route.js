@@ -16,9 +16,8 @@ import {
 } from "@/lib/db/helpers";
 
 // UPDATE QUIZ
-
 export async function PATCH(req, { params }) {
-    const { id } = req;
+    const { id } = params;
 
     const data = await req.json();
     const { type, prompt, choices, answers, hints, sources, notes, courses, tags, permissions } =

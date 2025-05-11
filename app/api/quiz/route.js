@@ -7,7 +7,6 @@ import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db.js";
 
 // CREATE QUIZ
-
 export async function POST(req) {
     const publicId = getNanoId();
     let quizId = null;
@@ -110,6 +109,23 @@ export async function POST(req) {
                         B: s,
                         A_type: "quiz",
                         B_type: "source",
+                        // includeReference: false,
+                        // reference: null,
+                        // referenceType: null,
+                    }))
+                )
+                .execute();
+        }
+
+        if (courses.length) {
+            await db
+                .insertInto("resource_relations")
+                .values(
+                    courses.map((c) => ({
+                        A: quizId,
+                        B: c,
+                        A_type: "quiz",
+                        B_type: "cource",
                         // includeReference: false,
                         // reference: null,
                         // referenceType: null,

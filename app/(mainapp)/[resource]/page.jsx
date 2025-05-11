@@ -85,6 +85,7 @@ export default async function ResourcePage(props) {
     });
 
     const resources = resourcesObject[current.name];
+    console.log(resources)
     if (!resources) return redirect("/");
 
     const hasMore = resources.length > amount;
