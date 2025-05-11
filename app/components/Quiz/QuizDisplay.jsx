@@ -35,20 +35,21 @@ export function QuizDisplay({
   const [correct, setCorrect] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-
+  
   if (!quiz || !quiz.id) return null;
+  console.log("QUIZ", quiz)
 
   const user = useStore((state) => state.user);
   const addAlert = useAlerts((state) => state.addAlert);
   const router = useRouter();
 
   const canEdit =
-    !!user &&
+    !!user && quiz.creator &&
     (quiz.creator.id ||
       quiz.permissions.write.includes(user?.id) ||
       quiz.permissions.allWrite);
 
-  const canDelete = quiz.creator.id === user?.id;
+  const canDelete = quiz.creator && quiz.creator.id === user?.id;
 
   const whenLevelUp = new Date(toUTCdatestring(quiz.hiddenUntil));
   const canLevelUp = whenLevelUp < Date.now();

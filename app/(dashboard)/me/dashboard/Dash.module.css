@@ -69,11 +69,12 @@
     font-size: 15px;
     font-weight: 500;
     line-height: 1.2;
-    visibility: hidden;
 }
 
-.tabList > li.active > span {
-    visibility: visible;
+.tabList > li.active {
+    outline: solid 1px var(--accent);
+    background-color: var(--bg-3);
+    color: var(--accent);
 }
 
 .emptyButtons {

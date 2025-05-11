@@ -30,11 +30,12 @@ export function SourceDisplay({ source }) {
 
   const canEdit =
     !!user &&
+    source.creator &&
     (source.creator.id === user?.id ||
       source.permissions.write.includes(user?.id) ||
       source.permissions.allWrite);
 
-  const canDelete = source.creator.id === user?.id;
+  const canDelete = source.creator && source.creator.id === user?.id;
 
   return (
     <Card fullWidth link={`/sources/${source.publicId}`}>
@@ -73,7 +74,7 @@ export function SourceDisplay({ source }) {
         </section>
       )}
 
-      {!!source.courses.length && (
+      {!!source.courses?.length && (
         <section>
           <h5>
             Courses
@@ -220,7 +221,7 @@ export function SourceDisplay({ source }) {
       )}
 
       <footer>
-        <p>Created by {source.creator.username}</p>
+        {source.creator && <p>Created by {source.creator.username}</p>}
         <CardCreatedAt>
           {new Date(source.createdAt).toLocaleDateString()}
         </CardCreatedAt>

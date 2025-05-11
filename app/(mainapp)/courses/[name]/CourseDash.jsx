@@ -1,18 +1,16 @@
 "use client";
 
 import {
-  Card,
   QuizDisplay,
-  UserStats,
-  ListItem,
-  InputPopup,
+  NoteDisplay,
+  SourceDisplay,
   Spinner,
   MasoneryList,
   CourseDisplay,
 } from "@client";
 import styles from "@/app/(dashboard)/me/dashboard/Dash.module.css";
 import { useAlerts, useStore } from "@/store/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const tabs = [
   {
@@ -69,20 +67,23 @@ const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
 export function CourseDash({ course, isLogged }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [currentTab, setCurrentTab] = useState(
-    parseInt(
-      typeof window != "undefined"
-        ? localStorage?.getItem("currentTab") || 0
-        : 0
-    )
-  );
+  const [currentTab, setCurrentTab] = useState(0);
 
   const addAlert = useAlerts((state) => state.addAlert);
   const courses = useStore((state) => state.courses);
   const quizzes = useStore((state) => state.quizzes);
   const user = useStore((state) => state.user);
 
-  const isEditable = true;
+  useEffect(() => {
+    setCurrentTab(
+      parseInt(
+        typeof window != "undefined"
+          ? localStorage?.getItem("currentTab") || 0
+          : 0
+      )
+    );
+  }, []);
+
   const isEnrolled = courses.find((c) => c.id === course.id);
 
   let sum = 0;
@@ -90,8 +91,6 @@ export function CourseDash({ course, isLogged }) {
   let lowestLevel;
 
   course.quizzes = course.quizzes.map((q) => {
-    if (!q) console.log("This is where the error is");
-
     const userQuiz = q
       ? quizzes.find((x) => x.id === q.id)
       : {
@@ -306,9 +305,9 @@ export function CourseDash({ course, isLogged }) {
       </section>
 
       <section className={styles.content}>
-        {/* <div className={styles.courseHead}>
-                        <h1>{course.name}</h1>
-                    </div> */}
+        <div className={styles.courseHead}>
+          <h1>{course.name}</h1>
+        </div>
 
         <header className={`${styles.tabHeader} ${styles.course}`}>
           <h3>
@@ -460,7 +459,7 @@ export function CourseDash({ course, isLogged }) {
 
                   <MasoneryList>
                     {course.notes.map((note) => (
-                      <QuizDisplay lighter quiz={note} key={note.id} />
+                      <NoteDisplay note={note} key={note.id} />
                     ))}
                   </MasoneryList>
                 </div>
@@ -476,7 +475,7 @@ export function CourseDash({ course, isLogged }) {
 
                   <MasoneryList>
                     {course.sources.map((source) => (
-                      <QuizDisplay lighter quiz={source} key={source.id} />
+                      <SourceDisplay source={source} key={source.id} />
                     ))}
                   </MasoneryList>
                 </div>
