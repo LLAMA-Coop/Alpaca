@@ -23,6 +23,7 @@ import {
 } from "@client";
 import styles from "@/app/components/Card/Card.module.css";
 import { useRouter } from "next/navigation";
+import { toUTCdatestring } from "@/lib/date";
 
 export function QuizDisplay({
   quiz,
@@ -49,7 +50,7 @@ export function QuizDisplay({
 
   const canDelete = quiz.creator.id === user?.id;
 
-  const whenLevelUp = new Date(quiz.hiddenUntil);
+  const whenLevelUp = new Date(toUTCdatestring(quiz.hiddenUntil));
   const canLevelUp = whenLevelUp < Date.now();
 
   if (isFlashcard) return null;
@@ -129,7 +130,16 @@ export function QuizDisplay({
         }
       })()}
 
-      {!!canEditDelete && <div>{canLevelUp ? "Level Up Now!" : "Available to level up " + whenLevelUp.toLocaleDateString() + " " + whenLevelUp.toLocaleTimeString()}</div>}
+      {!!canEditDelete && (
+        <div>
+          {canLevelUp
+            ? "Level Up Now!"
+            : "Available to level up " +
+              whenLevelUp.toLocaleDateString() +
+              " " +
+              whenLevelUp.toLocaleTimeString()}
+        </div>
+      )}
 
       {!!canEditDelete && (!!canEdit || !!canDelete) && (
         <div className={styles.tools}>
@@ -234,7 +244,7 @@ export function QuizDisplay({
                     try {
                       data = await response.json();
                     } catch (e) {
-                      console.log(`Error parsing response: ${e}`);
+                      console.error(`Error parsing response: ${e}`);
                     }
 
                     if (response.status === 200) {

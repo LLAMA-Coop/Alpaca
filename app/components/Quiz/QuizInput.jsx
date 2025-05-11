@@ -143,8 +143,6 @@ export function QuizInput({ quiz, setQuiz, close }) {
   useEffect(() => {
     if (!quiz) return;
 
-    console.log(quiz);
-
     dispatch({
       type: "editing",
       value: quiz,
