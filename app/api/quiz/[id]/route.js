@@ -137,7 +137,7 @@ export async function POST(req, props) {
         }
 
         if (quiz.type === "prompt-response") {
-            isCorrect = stringCompare(quiz.answers[0], answers) >= 0.8;
+            isCorrect = quiz.answers.some((x) => stringCompare(x, answers) >= 0.8)
         }
 
         if (quiz.type === "multiple-choice") {
