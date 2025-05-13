@@ -104,7 +104,6 @@ export async function PATCH(req, { params }) {
 }
 
 // GRADE QUIZ
-
 export async function POST(req, props) {
     const params = await props.params;
     const { answers } = await req.json();
@@ -197,7 +196,7 @@ export async function POST(req, props) {
             quizInteraction.level += 1;
 
             quizInteraction.hiddenUntil = new Date(
-                hiddenUntil.setHours(hiddenUntil.getHours() + quizInteraction.level)
+                hiddenUntil.setDays(hiddenUntil.getDate() + quizInteraction.level)
             );
         } else if (isCorrect) {
             quizInteraction.lastCorrect = new Date();
