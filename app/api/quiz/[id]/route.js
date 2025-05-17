@@ -158,9 +158,9 @@ export async function POST(req, props) {
       isCorrect = quiz.answers[0] === answers;
     }
 
-        if (quiz.type === "prompt-response") {
-            isCorrect = quiz.answers.some((x) => stringCompare(x, answers) >= 0.8)
-        }
+    if (quiz.type === "prompt-response") {
+      isCorrect = quiz.answers.some((x) => stringCompare(x, answers) >= 0.8);
+    }
 
     if (quiz.type === "multiple-choice") {
       isCorrect =
@@ -217,15 +217,16 @@ export async function POST(req, props) {
       quizInteraction.lastCorrect = new Date();
       quizInteraction.level += 1;
 
-            quizInteraction.hiddenUntil = new Date(
-                hiddenUntil.setDate(hiddenUntil.getDate() + quizInteraction.level)
-            );
-        } else if (isCorrect) {
-            quizInteraction.lastCorrect = new Date();
-        } else {
-            quizInteraction.lastCorrect = 0;
-            quizInteraction.level = quizInteraction.level > 0 ? quizInteraction.level - 1 : 0;
-        }
+      quizInteraction.hiddenUntil = new Date(
+        hiddenUntil.setDate(hiddenUntil.getDate() + quizInteraction.level)
+      );
+    } else if (isCorrect) {
+      quizInteraction.lastCorrect = new Date();
+    } else {
+      quizInteraction.lastCorrect = 0;
+      quizInteraction.level =
+        quizInteraction.level > 0 ? quizInteraction.level - 1 : 0;
+    }
 
     const lastCorrect = timestampFromDate(quizInteraction.lastCorrect);
     const hiddenUntil = timestampFromDate(quizInteraction.hiddenUntil);

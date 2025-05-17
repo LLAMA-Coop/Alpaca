@@ -1,6 +1,5 @@
 import { getPermittedResources } from "@/lib/db/helpers";
 import styles from "@/app/(mainapp)/page.module.css";
-import shuffleArray from "@/lib/shuffleArray";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import { DailyTrain } from "@client";

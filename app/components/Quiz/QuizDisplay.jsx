@@ -2,7 +2,7 @@
 
 import { Verbatim } from "./Verbatim";
 import { useStore, useAlerts } from "@/store/store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MultipleChoiceCard,
   CardCreatedAt,
@@ -31,20 +31,21 @@ export function QuizDisplay({
   isFlashcard,
   canEditDelete,
   lighter,
+  handleWhenCorrect,
 }) {
   const [correct, setCorrect] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-  
+
   if (!quiz || !quiz.id) return null;
-  console.log("QUIZ", quiz)
 
   const user = useStore((state) => state.user);
   const addAlert = useAlerts((state) => state.addAlert);
   const router = useRouter();
 
   const canEdit =
-    !!user && quiz.creator &&
+    !!user &&
+    quiz.creator &&
     (quiz.creator.id ||
       quiz.permissions.write.includes(user?.id) ||
       quiz.permissions.allWrite);
@@ -53,8 +54,6 @@ export function QuizDisplay({
 
   const whenLevelUp = new Date(toUTCdatestring(quiz.hiddenUntil));
   const canLevelUp = whenLevelUp < Date.now();
-
-  if (isFlashcard) return null;
 
   return (
     <Card fullWidth lighter={lighter} border={correct && "var(--success)"}>
@@ -76,6 +75,7 @@ export function QuizDisplay({
               lighter={lighter}
               setCorrect={setCorrect}
               canClientCheck={canClientCheck}
+              isFlashcard={isFlashcard}
             />
           );
         }
@@ -87,6 +87,7 @@ export function QuizDisplay({
               lighter={lighter}
               setCorrect={setCorrect}
               canClientCheck={canClientCheck}
+              isFlashcard={isFlashcard}
             />
           );
         }
@@ -104,6 +105,7 @@ export function QuizDisplay({
               lighter={lighter}
               setCorrect={setCorrect}
               canClientCheck={canClientCheck}
+              isFlashcard={isFlashcard}
             />
           );
         }
@@ -115,6 +117,7 @@ export function QuizDisplay({
               lighter={lighter}
               setCorrect={setCorrect}
               canClientCheck={canClientCheck}
+              isFlashcard={isFlashcard}
             />
           );
         }
@@ -126,6 +129,7 @@ export function QuizDisplay({
               lighter={lighter}
               setCorrect={setCorrect}
               canClientCheck={canClientCheck}
+              isFlashcard={isFlashcard}
             />
           );
         }
