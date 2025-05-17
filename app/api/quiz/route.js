@@ -125,7 +125,7 @@ export async function POST(req) {
                         A: quizId,
                         B: c,
                         A_type: "quiz",
-                        B_type: "cource",
+                        B_type: "course",
                         // includeReference: false,
                         // reference: null,
                         // referenceType: null,
