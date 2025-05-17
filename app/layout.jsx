@@ -1,4 +1,4 @@
-import { getGroups, getPermittedResources } from "@/lib/db/helpers";
+import { getGroups, getPermittedResources, getRelationships } from "@/lib/db/helpers";
 import { Inter, Sofia_Sans, Roboto_Mono } from "next/font/google";
 import { FillStore, Timer, Alerts, ThemeSetter } from "@client";
 import { metadatas } from "@/lib/metadatas";
@@ -55,6 +55,8 @@ export default async function RootLayout({ children }) {
 
     const groups = await getGroups(user?.id);
 
+    const relationships = await getRelationships();
+
     return (
         <html
             lang="en"
@@ -68,6 +70,7 @@ export default async function RootLayout({ children }) {
                     sources={sources}
                     quizzes={quizzes}
                     courses={courses}
+                    relationships={relationships}
                     associates={user.associates}
                     notifications={user.notifications || []}
                 />
