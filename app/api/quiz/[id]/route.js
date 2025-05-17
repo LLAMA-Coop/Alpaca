@@ -218,7 +218,7 @@ export async function POST(req, props) {
       quizInteraction.level += 1;
 
             quizInteraction.hiddenUntil = new Date(
-                hiddenUntil.setDays(hiddenUntil.getDate() + quizInteraction.level)
+                hiddenUntil.setDate(hiddenUntil.getDate() + quizInteraction.level)
             );
         } else if (isCorrect) {
             quizInteraction.lastCorrect = new Date();
