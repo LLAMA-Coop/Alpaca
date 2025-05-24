@@ -31,6 +31,17 @@ export function NoteDisplay({ note }) {
   const user = useStore((state) => state.user);
   const router = useRouter();
 
+  const coursesStore = useStore((state) => state.courses);
+  const sourcesStore = useStore((state) => state.sources);
+
+  const courses = note.courses ? note.courses
+    .map((x) => coursesStore.find((crs) => crs.id === x))
+    .filter((x) => !!x) : [];
+
+  const sources = note.sources ? note.sources
+    .map((x) => sourcesStore.find((src) => src.id === x))
+    .filter((x) => !!x) : [];
+
   const canEdit =
     !!user &&
     !!note.creator &&
@@ -67,34 +78,34 @@ export function NoteDisplay({ note }) {
         </section>
       )}
 
-      {!!note.courses?.length && (
+      {!!courses.length && (
         <section>
           <h5>
             Courses
-            <CardChip>{note.courses.length}</CardChip>
+            <CardChip>{courses.length}</CardChip>
           </h5>
 
           <p>This note has been used in the following courses.</p>
 
           <CardList>
-            {note.courses.map((c) => (
+            {courses.map((c) => (
               <CardListItem key={c.id}>{c.name}</CardListItem>
             ))}
           </CardList>
         </section>
       )}
 
-      {!!note.sources?.length && (
+      {!!sources.length && (
         <section>
           <h5>
             Sources Used
-            <CardChip>{note.sources.length}</CardChip>
+            <CardChip>{sources.length}</CardChip>
           </h5>
 
           <p>This note has been created using the following sources.</p>
 
           <CardList>
-            {note.sources.map((s) => (
+            {sources.map((s) => (
               <CardListItem key={s.id}>{s.title}</CardListItem>
             ))}
           </CardList>

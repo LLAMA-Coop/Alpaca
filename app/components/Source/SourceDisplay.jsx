@@ -29,9 +29,11 @@ export function SourceDisplay({ source }) {
   const addAlert = useAlerts((state) => state.addAlert);
   const router = useRouter();
 
-  const courses = source.courses
-    .map((x) => coursesStore.find((crs) => crs.id === x))
-    .filter((x) => !!x);
+  const courses = sources.courses
+    ? source.courses
+        .map((x) => coursesStore.find((crs) => crs.id === x))
+        .filter((x) => !!x)
+    : [];
 
   const canEdit =
     !!user &&
