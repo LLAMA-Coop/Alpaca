@@ -8,6 +8,7 @@ const keyMap = {
   course: "courses",
   group: "groups",
   associate: "associates",
+  relationship: "relationships",
   blocked: "blocked",
   notification: "notifications",
 };

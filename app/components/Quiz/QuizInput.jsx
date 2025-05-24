@@ -142,6 +142,19 @@ export function QuizInput({ quiz, setQuiz, close }) {
 
   useEffect(() => {
     if (!quiz) return;
+    quiz.courses = quiz.courses
+      ? quiz.courses.map((crsId) =>
+          courses.find((course) => course.id === crsId)
+        )
+      : [];
+    quiz.sources = quiz.sources
+      ? quiz.sources.map((srcId) =>
+          sources.find((source) => source.id === srcId)
+        )
+      : [];
+    quiz.notes = quiz.notes
+      ? quiz.notes.map((ntId) => notes.find((note) => note.id === ntId))
+      : [];
 
     dispatch({
       type: "editing",

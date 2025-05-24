@@ -2,7 +2,7 @@
 
 import { Verbatim } from "./Verbatim";
 import { useStore, useAlerts } from "@/store/store";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   MultipleChoiceCard,
   CardCreatedAt,
