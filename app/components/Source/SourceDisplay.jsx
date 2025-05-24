@@ -25,8 +25,13 @@ export function SourceDisplay({ source }) {
   if (!source) return null;
 
   const user = useStore((state) => state.user);
+  const coursesStore = useStore((state) => state.courses);
   const addAlert = useAlerts((state) => state.addAlert);
   const router = useRouter();
+
+  const courses = source.courses
+    .map((x) => coursesStore.find((crs) => crs.id === x))
+    .filter((x) => !!x);
 
   const canEdit =
     !!user &&
@@ -74,17 +79,17 @@ export function SourceDisplay({ source }) {
         </section>
       )}
 
-      {!!source.courses?.length && (
+      {!!courses.length && (
         <section>
           <h5>
             Courses
-            <CardChip>{source.courses.length}</CardChip>
+            <CardChip>{courses.length}</CardChip>
           </h5>
 
           <p>This source has been used in the following courses.</p>
 
           <CardList>
-            {source.courses.map((c) => (
+            {courses.map((c) => (
               <CardListItem key={c.id}>{c.name}</CardListItem>
             ))}
           </CardList>
