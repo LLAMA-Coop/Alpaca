@@ -19,6 +19,8 @@ export function DailyTrain({ quizzes }) {
   );
   const [tags, setTags] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [sources, setSources] = useState([]);
+  const [notes, setNotes] = useState([]);
 
   const [filteredQuizzes, setFilteredQuizzes] = useState(quizzes);
 
@@ -37,6 +39,8 @@ export function DailyTrain({ quizzes }) {
   useEffect(() => {
     let presentTags = [];
     let presentCourses = [];
+    let presentSources = [];
+    let presentNotes = [];
     if (quizzes)
       quizzes.forEach((q) => {
         q.tags.forEach((t) => {
@@ -50,9 +54,23 @@ export function DailyTrain({ quizzes }) {
               presentCourses.push(c);
             }
           });
+        if (q.sources)
+          q.sources.forEach((s) => {
+            if (!presentSources.includes(s)) {
+              presentSources.push(s);
+            }
+          });
+        if (q.notes)
+          q.notes.forEach((n) => {
+            if (!presentNotes.includes(n)) {
+              presentNotes.push(n);
+            }
+          });
       });
     setTags(presentTags);
     setCourses(presentCourses);
+    setSources(presentSources);
+    setNotes(presentNotes);
   }, []);
 
   useEffect(() => {
@@ -66,7 +84,12 @@ export function DailyTrain({ quizzes }) {
   useEffect(() => {
     setFilteredQuizzes(
       quizzes.filter((quiz) => {
-        if (settings.tags.length === 0 && settings.courses.length === 0) {
+        if (
+          settings.tags.length === 0 &&
+          settings.courses.length === 0 &&
+          settings.sources.length === 0 &&
+          settings.notes.length === 0
+        ) {
           return true;
         }
         if (
@@ -81,6 +104,22 @@ export function DailyTrain({ quizzes }) {
           hasCommonItem(
             settings.courses.map((x) => x.id),
             quiz.courses
+          )
+        ) {
+          return true;
+        }
+        if (
+          hasCommonItem(
+            settings.sources.map((x) => x.id),
+            quiz.sources
+          )
+        ) {
+          return true;
+        }
+        if (
+          hasCommonItem(
+            settings.notes.map((x) => x.id),
+            quiz.notes
           )
         ) {
           return true;
@@ -131,7 +170,12 @@ export function DailyTrain({ quizzes }) {
         <DialogContent>
           <DialogHeading>Settings</DialogHeading>
 
-          <TrainSettings tags={tags} courses={courses} />
+          <TrainSettings
+            tags={tags}
+            courses={courses}
+            sources={sources}
+            notes={notes}
+          />
         </DialogContent>
       </Dialog>
 

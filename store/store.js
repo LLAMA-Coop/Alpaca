@@ -107,6 +107,8 @@ export const useDailyTrain = create()((set) => ({
     timeLimit: 60 * 15,
     tags: [],
     courses: [],
+    sources: [],
+    notes: [],
   },
 
   setStart: (start) => set(() => ({ start })),

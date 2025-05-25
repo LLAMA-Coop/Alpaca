@@ -5,13 +5,17 @@ import styles from "./DailyTrain.module.css";
 import { useState, useEffect } from "react";
 import { Input, Select } from "@client";
 
-export function TrainSettings({ tags, courses }) {
+export function TrainSettings({ tags, courses, sources, notes }) {
   const settings = useDailyTrain((state) => state.settings);
   const setSettings = useDailyTrain((state) => state.setSettings);
   const availableCourses = useStore((state) => state.courses);
+  const availableSources = useStore((state) => state.sources);
+  const availableNotes = useStore((state) => state.notes);
 
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
+  const [selectedSources, setSelectSources] = useState([]);
+  const [selectNotes, setSelectedNotes] = useState([]);
   const [minutes, setMinutes] = useState("00");
   const [seconds, setSeconds] = useState("00");
 
@@ -25,12 +29,19 @@ export function TrainSettings({ tags, courses }) {
     setSeconds(seconds);
     setSelectedTags(settings.tags.length > 0 ? settings.tags : []);
     setSelectedCourses(settings.courses.length > 0 ? settings.courses : []);
+    setSelectSources(settings.sources.length > 0 ? settings.sources : []);
+    setSelectedNotes(settings.notes.length > 0 ? settings.notes : []);
   }, [settings]);
 
   const tagOptions = tags.map((tag, index) => ({ tag, id: index }));
   const courseOptions = courses.map((c_id) => {
-    const course = availableCourses.find((c) => c.id === c_id);
-    return course;
+    return availableCourses.find((c) => c.id === c_id);
+  });
+  const sourceOptions = sources.map((s_id) => {
+    return availableSources.find((s) => s.id === s_id);
+  });
+  const noteOptions = notes.map((n_id) => {
+    return availableNotes.find((n) => n.id === n_id);
   });
 
   function updateTime(denomination, value) {
@@ -44,12 +55,23 @@ export function TrainSettings({ tags, courses }) {
     setSettings({ timeLimit });
   }
 
-  function setSettingTags(tagsChosen) {
-    setSettings({ tags: tagsChosen });
-  }
-
-  function setSettingCourses(coursesChosen) {
-    setSettings({ courses: coursesChosen });
+  function setFilterSettings(type) {
+    switch (type) {
+      case "tags":
+      case "tag":
+        return (selections) => setSettings({ tags: selections });
+      case "courses":
+      case "course":
+        return (selections) => setSettings({ courses: selections });
+      case "sources":
+      case "source":
+        return (selections) => setSettings({ sources: selections });
+      case "notes":
+      case "note":
+        return (selections) => setSettings({ notes: selections });
+      default:
+        throw new Error(`Invalid type, ${type}, for setFilterSettings`);
+    }
   }
 
   return (
@@ -87,7 +109,7 @@ export function TrainSettings({ tags, courses }) {
           options={tagOptions}
           itemValue="tag"
           itemLabel="tag"
-          setter={setSettingTags}
+          setter={setFilterSettings("tags")}
         />
       </div>
 
@@ -101,7 +123,35 @@ export function TrainSettings({ tags, courses }) {
           options={courseOptions}
           itemValue="name"
           itemLabel="name"
-          setter={setSettingCourses}
+          setter={setFilterSettings("courses")}
+        />
+      </div>
+
+      <div>
+        <h3>Filter by Sources</h3>
+
+        <Select
+          multiple
+          label="Sources"
+          data={selectedSources}
+          options={sourceOptions}
+          itemValue="title"
+          itemLabel="title"
+          setter={setFilterSettings("sources")}
+        />
+      </div>
+
+      <div>
+        <h3>Filter by Notes</h3>
+
+        <Select
+          multiple
+          label="Notes"
+          data={selectNotes}
+          options={noteOptions}
+          itemValue="title"
+          itemLabel="title"
+          setter={setFilterSettings("notes")}
         />
       </div>
     </div>
