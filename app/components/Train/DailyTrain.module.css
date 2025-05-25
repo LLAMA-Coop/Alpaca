@@ -3,6 +3,10 @@
     gap: 14px;
 }
 
+.quizList > li {
+    margin: 1rem 0;
+}
+
 .settingsButton {
     display: flex;
     align-items: center;
