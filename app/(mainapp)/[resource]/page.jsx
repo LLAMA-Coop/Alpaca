@@ -86,7 +86,6 @@ export default async function ResourcePage(props) {
 
   const relationships = await getRelationships();
   const includeRef = relationships.filter((x) => !!x.includeReference);
-  console.log(includeRef);
 
   const type = resourceList.find((x) => x.name === current.name).singular;
 
@@ -150,8 +149,6 @@ export default async function ResourcePage(props) {
     });
     pushToList(rel, type);
   });
-
-  console.log(resourcesObject[current.name], relationships);
 
   const resources = resourcesObject[current.name];
   if (!resources) return redirect("/");
