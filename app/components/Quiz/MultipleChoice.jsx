@@ -14,6 +14,7 @@ export function MultipleChoiceCard({
   setCorrect,
   lighter,
   isFlashcard,
+  handleWhenCorrect,
 }) {
   const [hasAnswered, setHasAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -75,6 +76,8 @@ export function MultipleChoiceCard({
       setIsCorrect(true);
       setHasAnswered(true);
 
+      handleWhenCorrect();
+
       if (showConfetti) {
         correctConfetti();
       }
@@ -113,6 +116,8 @@ export function MultipleChoiceCard({
             setFailures((prev) => prev + 1);
           } else {
             setHints([]);
+
+            handleWhenCorrect();
 
             if (showConfetti) {
               correctConfetti();

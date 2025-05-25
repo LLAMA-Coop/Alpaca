@@ -15,6 +15,7 @@ export function ResponseCard({
   setCorrect,
   lighter,
   isFlashcard,
+  handleWhenCorrect,
 }) {
   const [hasAnswered, setHasAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -63,6 +64,7 @@ export function ResponseCard({
       setHints([]);
       setIsCorrect(true);
       setHasAnswered(true);
+      handleWhenCorrect();
 
       if (showConfetti) {
         correctConfetti();
@@ -98,6 +100,8 @@ export function ResponseCard({
             setFailures((prev) => prev + 1);
           } else {
             setHints([]);
+
+            handleWhenCorrect();
 
             if (showConfetti) {
               correctConfetti();

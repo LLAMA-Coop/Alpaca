@@ -10,7 +10,13 @@ import { nanoid } from "nanoid";
 import listPrint from "@/lib/listPrint";
 import interleaveArrays from "@/lib/interleaveArrays";
 
-export function Blankable({ canClientCheck, quiz, setCorrect, isFlashcard }) {
+export function Blankable({
+  canClientCheck,
+  quiz,
+  setCorrect,
+  isFlashcard,
+  handleWhenCorrect,
+}) {
   const texts = quiz.prompt.split(/<blank \/>/);
 
   const [answers, setAnswers] = useState(new Array(texts.length - 1).fill(""));
@@ -66,6 +72,8 @@ export function Blankable({ canClientCheck, quiz, setCorrect, isFlashcard }) {
       setIsCorrect(true);
       setHasAnswered(true);
 
+      handleWhenCorrect();
+
       if (showConfetti) {
         correctConfetti();
       }
@@ -101,6 +109,8 @@ export function Blankable({ canClientCheck, quiz, setCorrect, isFlashcard }) {
             setFailures((prev) => prev + 1);
           } else {
             setHints([]);
+
+            handleWhenCorrect();
 
             if (showConfetti) {
               correctConfetti();

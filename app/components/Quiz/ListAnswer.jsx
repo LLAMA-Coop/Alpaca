@@ -22,6 +22,7 @@ export function ListAnswer({
   setCorrect,
   canClientCheck,
   isFlashcard,
+  handleWhenCorrect
 }) {
   const [answers, setAnswers] = useState(new Array(quiz.numOfAnswers).fill(""));
   const [incorrectIndexes, setIncorrectIndexes] = useState([]);
@@ -88,6 +89,8 @@ export function ListAnswer({
       setIsCorrect(true);
       setHasAnswered(true);
 
+      handleWhenCorrect();
+
       if (showConfetti) {
         correctConfetti();
       }
@@ -123,6 +126,8 @@ export function ListAnswer({
             setFailures((prev) => prev + 1);
           } else {
             setHints([]);
+
+            handleWhenCorrect();
 
             if (showConfetti) {
               correctConfetti();

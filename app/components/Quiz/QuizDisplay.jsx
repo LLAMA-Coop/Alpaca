@@ -76,6 +76,7 @@ export function QuizDisplay({
               setCorrect={setCorrect}
               canClientCheck={canClientCheck}
               isFlashcard={isFlashcard}
+              handleWhenCorrect={handleWhenCorrect}
             />
           );
         }
@@ -88,6 +89,7 @@ export function QuizDisplay({
               setCorrect={setCorrect}
               canClientCheck={canClientCheck}
               isFlashcard={isFlashcard}
+              handleWhenCorrect={handleWhenCorrect}
             />
           );
         }
@@ -106,6 +108,7 @@ export function QuizDisplay({
               setCorrect={setCorrect}
               canClientCheck={canClientCheck}
               isFlashcard={isFlashcard}
+              handleWhenCorrect={handleWhenCorrect}
             />
           );
         }
@@ -118,6 +121,7 @@ export function QuizDisplay({
               setCorrect={setCorrect}
               canClientCheck={canClientCheck}
               isFlashcard={isFlashcard}
+              handleWhenCorrect={handleWhenCorrect}
             />
           );
         }
@@ -130,6 +134,7 @@ export function QuizDisplay({
               setCorrect={setCorrect}
               canClientCheck={canClientCheck}
               isFlashcard={isFlashcard}
+              handleWhenCorrect={handleWhenCorrect}
             />
           );
         }
