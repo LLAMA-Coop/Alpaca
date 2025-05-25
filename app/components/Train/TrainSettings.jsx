@@ -24,11 +24,7 @@ export function TrainSettings({ tags, courses }) {
     setMinutes(minutes);
     setSeconds(seconds);
     setSelectedTags(settings.tags.length > 0 ? settings.tags : []);
-    setSelectedCourses(
-      settings.courses.length > 0
-        ? settings.courses
-        : []
-    );
+    setSelectedCourses(settings.courses.length > 0 ? settings.courses : []);
   }, [settings]);
 
   const tagOptions = tags.map((tag, index) => ({ tag, id: index }));
@@ -60,29 +56,25 @@ export function TrainSettings({ tags, courses }) {
     <div className={styles.settings}>
       <div>
         <h3>Time Limit</h3>
-        {/* <Input
-                    inline
-                    label={"Minutes"}
-                    type="number"
-                    min={0}
-                    max={60}
-                    value={minutes}
-                    onChange={(e) =>
-                        updateTime("minutes", Number(e.target.value))
-                    }
-                />
-                :
-                <Input
-                    inline
-                    label={"Seconds"}
-                    type="number"
-                    min={-10}
-                    max={60}
-                    value={seconds}
-                    onChange={(e) =>
-                        updateTime("seconds", Number(e.target.value))
-                    }
-                /> */}
+        <Input
+          inline
+          label={"Minutes"}
+          type="number"
+          min={0}
+          max={60}
+          value={minutes}
+          onChange={(e) => updateTime("minutes", Number(e.target.value))}
+        />
+        :
+        <Input
+          inline
+          label={"Seconds"}
+          type="number"
+          min={-10}
+          max={60}
+          value={seconds}
+          onChange={(e) => updateTime("seconds", Number(e.target.value))}
+        />
       </div>
 
       <div>
