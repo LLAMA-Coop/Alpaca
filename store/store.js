@@ -28,6 +28,22 @@ export const useStore = create((set) => ({
 
   notifications: [],
 
+  inputDefaults: {
+    courses: [],
+    sources: [],
+    notes: [],
+    quizzes: [],
+    tags: [],
+    permissions: {
+      allRead: false,
+      allWrite: false,
+      read: [],
+      write: [],
+      groupId: null,
+      groupLocked: false,
+    },
+  },
+
   setUser: (user) =>
     set(() => {
       return { user };
@@ -49,6 +65,15 @@ export const useStore = create((set) => ({
         },
       };
     });
+  },
+
+  setInputDefaults: (defaults) => {
+    return set((state) => ({
+      inputDefaults: {
+        ...state.inputDefaults,
+        ...defaults,
+      },
+    }));
   },
 
   fillInitialData: (data) => set(() => ({ ...data })),

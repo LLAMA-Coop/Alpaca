@@ -29,7 +29,7 @@ export function SourceDisplay({ source }) {
   const addAlert = useAlerts((state) => state.addAlert);
   const router = useRouter();
 
-  const courses = sources.courses
+  const courses = source.courses
     ? source.courses
         .map((x) => coursesStore.find((crs) => crs.id === x))
         .filter((x) => !!x)

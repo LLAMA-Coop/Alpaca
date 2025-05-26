@@ -136,12 +136,20 @@ export function QuizInput({ quiz, setQuiz, close }) {
   const courses = useStore((state) => state.courses);
   const notes = useStore((state) => state.notes);
   const user = useStore((state) => state.user);
+  const inputDefaults = useStore((state) => state.inputDefaults);
 
   const isOwner = quiz && user && quiz.creator.id === user.id;
   const canChangePermissions = isOwner || !quiz;
 
   useEffect(() => {
-    if (!quiz) return;
+    if (!quiz) {
+      dispatch({ type: "sources", value: inputDefaults.sources });
+      dispatch({ type: "courses", value: inputDefaults.courses });
+      dispatch({ type: "notes", value: inputDefaults.notes });
+      dispatch({ type: "tags", value: inputDefaults.tags });
+      dispatch({ type: "permissions", value: inputDefaults.permissions });
+      return;
+    }
     quiz.courses = quiz.courses
       ? quiz.courses.map((crsId) =>
           courses.find((course) => course.id === crsId)
@@ -163,7 +171,7 @@ export function QuizInput({ quiz, setQuiz, close }) {
       notes,
       courses,
     });
-  }, [sources, notes, courses]);
+  }, [sources, notes, courses, inputDefaults]);
 
   useEffect(() => {
     if (setQuiz) {
@@ -403,16 +411,16 @@ export function QuizInput({ quiz, setQuiz, close }) {
       )}
 
       <Select
-        multiple
         required
-        itemValue="id"
+        multiple
         label="Sources"
-        options={sources}
-        itemLabel="title"
         data={state.sources}
+        options={sources}
+        itemValue="title"
+        itemLabel="title"
         placeholder="Select sources"
         error={state.errors.sources}
-        description="The sources you used to create this note"
+        description="The sources you used to create this quiz"
         setter={(value) => {
           dispatch({ type: "sources", value });
           dispatch({ type: "errors", value: { sources: "" } });
@@ -422,8 +430,8 @@ export function QuizInput({ quiz, setQuiz, close }) {
       <Select
         multiple
         label="Notes"
-        itemValue="id"
         options={notes}
+        itemValue="title"
         itemLabel="title"
         data={state.notes}
         placeholder="Select notes"
@@ -437,8 +445,8 @@ export function QuizInput({ quiz, setQuiz, close }) {
 
       <Select
         multiple
-        itemValue="id"
         label="Courses"
+        itemValue="name"
         itemLabel="name"
         options={courses}
         data={state.courses}
