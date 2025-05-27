@@ -134,18 +134,19 @@ export function SelectElement({
         if (multiple) {
           if (
             data.find((t) => {
-              if(!t) return false
+              if (!t) return false;
               return notObject
                 ? t === options[index]
-                : t[itemValue] === options[index][itemValue]
-        })
+                : options[index] && t[itemValue] === options[index][itemValue];
+            })
           ) {
             setter(
-              data.filter((t) =>
-                notObject
+              data.filter((t) => {
+                if (!t) return false;
+                return notObject
                   ? t !== options[index]
-                  : t[itemValue] !== options[index][itemValue]
-              )
+                  : options[index] && t[itemValue] !== options[index][itemValue];
+              })
             );
           } else {
             setter([...data, options[index]]);
@@ -257,7 +258,9 @@ export function SelectElement({
                 setter(
                   data.filter((t) => {
                     if (!t) return false;
-                    return notObject ? t !== item : t[itemValue] !== item[itemValue];
+                    return notObject
+                      ? t !== item
+                      : t[itemValue] !== item[itemValue];
                   })
                 );
               }}
@@ -287,12 +290,7 @@ export function SelectElement({
         </div>
 
         <div className={styles.selectButton}>
-          <svg
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            height="12"
-            width="12"
-          >
+          <svg viewBox="0 0 24 24" fill="currentColor" height="12" width="12">
             <path d="m2.772,9.567c-.589-.583-.595-1.532-.012-2.122L8.812,1.324c.855-.856,1.985-1.324,3.188-1.324s2.332.468,3.182,1.318l6.058,6.127c.583.589.577,1.539-.012,2.122-.292.289-.674.433-1.055.433-.387,0-.773-.148-1.066-.445l-6.052-6.121c-.555-.555-1.549-.561-2.115.006l-6.046,6.115c-.582.589-1.533.594-2.121.012Zm16.334,4.878l-6.046,6.115c-.566.566-1.561.561-2.115.006l-6.052-6.121c-.582-.59-1.533-.594-2.121-.012-.589.582-.595,1.532-.012,2.121l6.058,6.127c.85.851,1.979,1.318,3.182,1.318s2.332-.468,3.188-1.324l6.052-6.121c.583-.589.577-1.539-.012-2.121s-1.539-.578-2.121.012Z" />
           </svg>
         </div>
