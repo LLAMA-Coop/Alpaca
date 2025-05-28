@@ -81,7 +81,6 @@ export function SearchOptions({ name, tag, page, maxPage, amount, noTags = false
 
                     <button type="submit">
                         <svg
-                            xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 513.749 513.749"
                             fill="currentColor"
                             height="12"

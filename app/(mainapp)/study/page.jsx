@@ -1,4 +1,5 @@
 import { getPermittedResources } from "@/lib/db/helpers";
+import { SearchOptions } from "../[resource]/SearchOptions";
 import styles from "@/app/(mainapp)/page.module.css";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
@@ -9,13 +10,24 @@ import {
   QuizDisplay,
 } from "@/app/components/client";
 
-export default async function StudyPage() {
+const DEFAULT_PAGE_SIZE = 10;
+
+export default async function StudyPage(props) {
+  const searchParams = await props.searchParams;
   const user = await useUser({ token: (await cookies()).get("token")?.value });
+
+  const page = Number(searchParams["page"] ?? 1);
+  const amount = Number(searchParams["amount"] ?? DEFAULT_PAGE_SIZE);
+  const tag = searchParams["tag"] ?? null;
 
   const { notes, quizzes } = await getPermittedResources({
     userId: user ? user.id : undefined,
     withNotes: true,
     withQuizzes: true,
+    userId: user?.id,
+    limit: amount,
+    offset: (page - 1) * amount,
+    tagSearch: tag ? tag : undefined,
   });
 
   return (
@@ -27,6 +39,15 @@ export default async function StudyPage() {
           This is where you study your notes and practice quiz questions without
           trying to level up
         </p>
+
+        <SearchOptions
+          tag={tag}
+          page={page}
+          amount={amount}
+          maxPage={100}
+          name="study"
+          noTags={false}
+        />
       </header>
 
       <section>
