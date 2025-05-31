@@ -153,26 +153,21 @@ export function QuizInput({ quiz, setQuiz, close }) {
       dispatch({ type: "permissions", value: inputDefaults.permissions });
       return;
     }
-    quiz.courses = quiz.courses
-      ? quiz.courses.map((crsId) =>
-          courses.find((course) => course.id === crsId)
-        )
-      : [];
-    quiz.sources = quiz.sources
-      ? quiz.sources.map((srcId) =>
-          sources.find((source) => source.id === srcId)
-        )
-      : [];
-    quiz.notes = quiz.notes
-      ? quiz.notes.map((ntId) => notes.find((note) => note.id === ntId))
-      : [];
 
     dispatch({
       type: "editing",
-      value: quiz,
-      sources,
-      notes,
-      courses,
+      value: {
+        ...quiz,
+        sources: sources.filter((x) =>
+          quiz.sources ? quiz.sources.includes(x.id) : false
+        ),
+        notes: notes.filter((x) =>
+          quiz.notes ? quiz.notes.includes(x.id) : false
+        ),
+        courses: courses.filter((x) =>
+          quiz.courses ? quiz.courses.includes(x.id) : false
+        ),
+      },
     });
   }, [sources, notes, courses, inputDefaults]);
 
@@ -455,7 +450,7 @@ export function QuizInput({ quiz, setQuiz, close }) {
         data={state.courses}
         placeholder="Select courses"
         error={state.errors.courses}
-        description="The courses this note is related to"
+        description="The courses this note cites or references"
         setter={(value) => {
           dispatch({ type: "courses", value });
           dispatch({ type: "errors", value: { courses: "" } });

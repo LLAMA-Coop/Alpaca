@@ -80,25 +80,7 @@ export function NoteInput({ note, close }) {
     };
   }
 
-  const [state, dispatch] = useReducer(
-    stateReducer,
-    note
-      ? {
-          ...defaultState,
-          title: note.title,
-          text: note.text,
-          sources: note.sources || [],
-          courses: note.courses || [],
-          tags: note.tags || [],
-          permissions: {
-            ...note.permissions,
-            allRead: note.permissions.allRead === 1,
-            allWrite: note.permissions.allWrite === 1,
-            groupLocked: note.permissions.groupLocked === 1,
-          },
-        }
-      : defaultState
-  );
+  const [state, dispatch] = useReducer(stateReducer, defaultState);
 
   const addAlert = useAlerts((state) => state.addAlert);
   const sources = useStore((state) => state.sources);
@@ -117,7 +99,18 @@ export function NoteInput({ note, close }) {
       dispatch({ type: "permissions", value: inputDefaults.permissions });
       return;
     }
-    dispatch({ type: "editing", value: note, sources, courses });
+    dispatch({
+      type: "editing",
+      value: {
+        ...note,
+        sources: sources.filter((x) =>
+          note.sources ? note.sources.includes(x.id) : false
+        ),
+        courses: courses.filter((x) =>
+          note.courses ? note.courses.includes(x.id) : false
+        ),
+      },
+    });
   }, [sources, courses, inputDefaults]);
 
   const noteData = {
@@ -212,7 +205,7 @@ export function NoteInput({ note, close }) {
     }
 
     if (response.status === 201) {
-      dispatch({ type: "reset", default: inputDefaults });
+      dispatch({ type: "reset", default: inputD });
 
       addAlert({
         success: true,
