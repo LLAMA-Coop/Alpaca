@@ -156,6 +156,7 @@ export function BlankableInput({
     <div>
       <Input
         required
+        type="textarea"
         error={error}
         value={promptInput}
         onChange={handleChangePrompt}
