@@ -36,13 +36,13 @@ export function TrainSettings({ tags, courses, sources, notes }) {
   const tagOptions = tags.map((tag, index) => ({ tag, id: index }));
   const courseOptions = courses.map((c_id) => {
     return availableCourses.find((c) => c.id === c_id);
-  });
+  }).filter(x => x);
   const sourceOptions = sources.map((s_id) => {
     return availableSources.find((s) => s.id === s_id);
-  });
+  }).filter(x => x);
   const noteOptions = notes.map((n_id) => {
     return availableNotes.find((n) => n.id === n_id);
-  });
+  }).filter(x => x);
 
   function updateTime(denomination, value) {
     let timeLimit;
