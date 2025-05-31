@@ -1,7 +1,4 @@
-import {
-  getPermittedResources,
-  getRelationships,
-} from "@/lib/db/helpers";
+import { getPermittedResources, getRelationships } from "@/lib/db/helpers";
 import { redirect } from "next/navigation";
 import { CourseDash } from "./CourseDash";
 import { cookies } from "next/headers";
@@ -15,6 +12,7 @@ export default async function CoursePage(props) {
   const resources = await getPermittedResources({
     userId: user.id,
     takeAll: true,
+    limit: 10000000,
   });
 
   const course = resources.courses.find((x) => x.name === name);
