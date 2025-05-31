@@ -61,7 +61,7 @@ function stateReducer(state, action) {
     case "errors":
       return { ...state, errors: { ...state.errors, ...action.value } };
     case "reset":
-      return defaultState;
+      return { ...defaultState, ...action.default };
     default:
       return state;
   }
@@ -212,7 +212,7 @@ export function NoteInput({ note, close }) {
     }
 
     if (response.status === 201) {
-      dispatch({ type: "reset" });
+      dispatch({ type: "reset", default: inputDefaults });
 
       addAlert({
         success: true,

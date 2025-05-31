@@ -122,7 +122,10 @@ function stateReducer(state, action) {
         courses: action.value.courses || [],
       };
     case "reset":
-      return defaultState;
+      return {
+        ...defaultState,
+        ...action.default,
+      };
     default:
       return state;
   }
@@ -268,7 +271,7 @@ export function QuizInput({ quiz, setQuiz, close }) {
     dispatch({ type: "loading", value: false });
 
     if (response.status === 201) {
-      dispatch({ type: "reset" });
+      dispatch({ type: "reset", default: inputDefaults });
 
       addAlert({
         success: true,

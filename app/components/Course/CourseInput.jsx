@@ -4,9 +4,7 @@ import { useStore, useAlerts } from "@/store/store";
 import { useEffect, useReducer } from "react";
 import { validation } from "@/lib/validation";
 import { Validator } from "@/lib/validation";
-import { getNanoId } from "@/lib/random";
 import {
-    DeletePopup,
     Permissions,
     Checkbox,
     TextArea,
