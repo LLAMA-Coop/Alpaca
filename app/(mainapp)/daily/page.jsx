@@ -6,37 +6,6 @@ import { DailyTrain } from "@client";
 import Link from "next/link";
 import shuffleQuizzes from "@/lib/shuffleQuizzes";
 
-const resourceList = [
-  {
-    name: "sources",
-    title: "Sources",
-    singular: "source",
-    description:
-      "A source is a record of a resource such as a book, website, or video tutorial, that you can cite for your notes or quiz questions.",
-  },
-  {
-    name: "notes",
-    title: "Notes",
-    singular: "note",
-    description:
-      "A note is a record of your thoughts, ideas, or summaries of a source. You can use notes to create quiz questions or to help you study.",
-  },
-  {
-    name: "quizzes",
-    title: "Quizzes",
-    singular: "quiz",
-    description:
-      "A quiz is a question that challenges your understanding and recall of information from a source or note.",
-  },
-  {
-    name: "courses",
-    title: "Courses",
-    singular: "course",
-    description:
-      "A course is a collection of notes, quizzes, and sources that are related to a specific topic or subject.",
-  },
-];
-
 export default async function DailyPage() {
   const user = await useUser({ token: (await cookies()).get("token")?.value });
 
@@ -50,9 +19,38 @@ export default async function DailyPage() {
 
   const relationships = await getRelationships();
   const includeRef = relationships.filter((x) => !!x.includeReference);
-  const type = "quiz";
-
+  
   function pushToList(rel, type) {
+    const resourceList = [
+      {
+        name: "sources",
+        title: "Sources",
+        singular: "source",
+        description:
+          "A source is a record of a resource such as a book, website, or video tutorial, that you can cite for your notes or quiz questions.",
+      },
+      {
+        name: "notes",
+        title: "Notes",
+        singular: "note",
+        description:
+          "A note is a record of your thoughts, ideas, or summaries of a source. You can use notes to create quiz questions or to help you study.",
+      },
+      {
+        name: "quizzes",
+        title: "Quizzes",
+        singular: "quiz",
+        description:
+          "A quiz is a question that challenges your understanding and recall of information from a source or note.",
+      },
+      {
+        name: "courses",
+        title: "Courses",
+        singular: "course",
+        description:
+          "A course is a collection of notes, quizzes, and sources that are related to a specific topic or subject.",
+      },
+    ];
     if (rel.AType === type) {
       quizzes
         .filter((x) => x.id === rel.A)
@@ -120,7 +118,7 @@ export default async function DailyPage() {
         relationships.push(newRel);
       }
     });
-    pushToList(rel, type);
+    pushToList(rel, "quiz");
   });
 
   return (

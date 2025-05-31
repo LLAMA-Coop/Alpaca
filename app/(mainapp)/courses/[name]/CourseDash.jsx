@@ -72,6 +72,8 @@ export function CourseDash({ course, isLogged }) {
   const addAlert = useAlerts((state) => state.addAlert);
   const courses = useStore((state) => state.courses);
   const quizzes = useStore((state) => state.quizzes);
+  const notes = useStore((state) => state.notes);
+  const sources = useStore((state) => state.sources);
   const user = useStore((state) => state.user);
 
   useEffect(() => {
@@ -90,34 +92,47 @@ export function CourseDash({ course, isLogged }) {
   let countOfCanLevel = 0;
   let lowestLevel;
 
-  course.quizzes = course.quizzes.map((q) => {
-    const userQuiz = q
-      ? quizzes.find((x) => x.id === q.id)
-      : {
-          id: 0,
-          createAt: 0,
-          level: 0,
-        };
+  const userQuizzes = course.quizzes
+    ? course.quizzes
+        .map((q) => {
+          const userQuiz = q
+            ? quizzes.find((x) => x.id === q)
+            : {
+                id: 0,
+                createAt: 0,
+                level: 0,
+              };
 
-    if (userQuiz) {
-      sum += userQuiz.level;
+          if (!userQuiz) return;
 
-      lowestLevel =
-        lowestLevel == undefined || userQuiz.level < lowestLevel
-          ? userQuiz.level
-          : lowestLevel;
+          sum += userQuiz.level;
 
-      if (new Date(userQuiz.hiddenUntil) < Date.now()) {
-        countOfCanLevel++;
-      }
+          lowestLevel =
+            lowestLevel == undefined || userQuiz.level < lowestLevel
+              ? userQuiz.level
+              : lowestLevel;
 
-      return userQuiz;
-    }
+          if (new Date(userQuiz.hiddenUntil) < Date.now()) {
+            countOfCanLevel++;
+          }
+          return userQuiz;
+        })
+        .filter((x) => !!x)
+    : [];
 
-    countOfCanLevel++;
-  });
+  const averageLevel = userQuizzes.length ? sum / userQuizzes.length : 0;
 
-  const averageLevel = quizzes.length ? sum / quizzes.length : 0;
+  const courseNotes = course.notes
+    ? course.notes
+        .map((n) => notes.find((nt) => nt.id === n))
+        .filter((x) => !!x)
+    : [];
+
+  const courseSources = course.sources
+    ? course.sources
+        .map((src) => sources.find((s) => s.id === src))
+        .filter((x) => !!x)
+    : [];
 
   async function enroll() {
     setIsLoading(true);
@@ -349,11 +364,15 @@ export function CourseDash({ course, isLogged }) {
             )}
 
             {currentTab === 2 && (
-              <span>Available Notes: {course.notes.length}</span>
+              <span>
+                Available Notes: {courseNotes ? courseNotes.length : 0}
+              </span>
             )}
 
             {currentTab === 3 && (
-              <span>Available Sources: {course.sources.length}</span>
+              <span>
+                Available Sources: {courseSources ? courseSources.length : 0}
+              </span>
             )}
           </h3>
         </header>
@@ -405,7 +424,7 @@ export function CourseDash({ course, isLogged }) {
                 )}
               </div>
 
-              {course.parents.length > 0 && (
+              {course.parents?.length > 0 && (
                 <div>
                   <h3>Parent Courses</h3>
 
@@ -417,7 +436,7 @@ export function CourseDash({ course, isLogged }) {
                 </div>
               )}
 
-              {course.prerequisites.length > 0 && (
+              {course.prerequisites?.length > 0 && (
                 <div>
                   <h3>Prerequesite Courses</h3>
 
@@ -433,12 +452,12 @@ export function CourseDash({ course, isLogged }) {
 
           {currentTab === 1 && (
             <div className={styles.userContent}>
-              {course.quizzes.length > 0 && (
+              {userQuizzes.length > 0 && (
                 <div>
                   <h3>Quizzes related to this course</h3>
 
                   <MasoneryList>
-                    {course.quizzes.map((quiz) =>
+                    {userQuizzes.map((quiz) =>
                       quiz ? (
                         <QuizDisplay lighter quiz={quiz} key={quiz.id} />
                       ) : (
@@ -453,12 +472,12 @@ export function CourseDash({ course, isLogged }) {
 
           {currentTab === 2 && (
             <div className={styles.userContent}>
-              {course.notes.length > 0 && (
+              {courseNotes?.length > 0 && (
                 <div>
                   <h3>Notes related to this course</h3>
 
                   <MasoneryList>
-                    {course.notes.map((note) => (
+                    {courseNotes.map((note) => (
                       <NoteDisplay note={note} key={note.id} />
                     ))}
                   </MasoneryList>
@@ -469,12 +488,12 @@ export function CourseDash({ course, isLogged }) {
 
           {currentTab === 3 && (
             <div className={styles.userContent}>
-              {course.sources.length > 0 && (
+              {courseSources?.length > 0 && (
                 <div>
                   <h3>Sources related to this course</h3>
 
                   <MasoneryList>
-                    {course.sources.map((source) => (
+                    {courseSources.map((source) => (
                       <SourceDisplay source={source} key={source.id} />
                     ))}
                   </MasoneryList>
