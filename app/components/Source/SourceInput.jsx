@@ -120,7 +120,15 @@ export function SourceInput({ source, close }) {
       dispatch({ type: "permissions", value: inputDefaults.permissions });
       return;
     }
-    dispatch({ type: "editing", value: source, courses });
+    dispatch({
+      type: "editing",
+      value: {
+        ...source,
+        courses: courses.filter((x) =>
+          source.courses ? source.courses.includes(x.id) : false
+        ),
+      },
+    });
   }, [courses, inputDefaults]);
 
   const sourceData = {
