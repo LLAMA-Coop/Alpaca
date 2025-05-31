@@ -4,11 +4,7 @@ import styles from "@/app/(mainapp)/page.module.css";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import shuffleArray from "@/lib/shuffleArray";
-import {
-  MasoneryList,
-  NoteDisplay,
-  QuizDisplay,
-} from "@/app/components/client";
+import StudyList from "./StudyList";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -20,10 +16,11 @@ export default async function StudyPage(props) {
   const amount = Number(searchParams["amount"] ?? DEFAULT_PAGE_SIZE);
   const tag = searchParams["tag"] ?? null;
 
-  const { notes, quizzes } = await getPermittedResources({
+  const { notes, quizzes, sources } = await getPermittedResources({
     userId: user ? user.id : undefined,
     withNotes: true,
     withQuizzes: true,
+    withSources: true,
     userId: user?.id,
     limit: amount,
     offset: (page - 1) * amount,
@@ -50,31 +47,17 @@ export default async function StudyPage(props) {
         />
       </header>
 
-      <section>
-        <h2>Notes</h2>
-        <MasoneryList>
-          {shuffleArray(notes).map((note) => (
-            <NoteDisplay key={note.id} note={note} />
-          ))}
-        </MasoneryList>
-      </section>
+      <StudyList resources={shuffleArray(notes)} type="note" heading="Notes" />
 
-      <section>
-        <h2>Flashcards</h2>
-        <MasoneryList>
-          {shuffleArray(quizzes)
-            .sort((quiz1, quiz2) => quiz1.level - quiz2.level)
-            .map((quiz) => (
-              <QuizDisplay
-                key={quiz.id}
-                quiz={quiz}
-                canClientCheck={true}
-                canEditDelete={true}
-                isFlashcard={true}
-              />
-            ))}
-        </MasoneryList>
-      </section>
+      <StudyList
+        resources={shuffleArray(quizzes).sort(
+          (quiz1, quiz2) => quiz1.level - quiz2.level
+        )}
+        type="quiz"
+        heading="Flashcards"
+      />
+
+      <StudyList resources={sources} type="source" heading="Sources" />
     </main>
   );
 }
