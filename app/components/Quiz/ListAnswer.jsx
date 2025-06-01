@@ -22,7 +22,7 @@ export function ListAnswer({
   setCorrect,
   canClientCheck,
   isFlashcard,
-  handleWhenCorrect
+  handleWhenCorrect,
 }) {
   const [answers, setAnswers] = useState(new Array(quiz.numOfAnswers).fill(""));
   const [incorrectIndexes, setIncorrectIndexes] = useState([]);
@@ -89,7 +89,7 @@ export function ListAnswer({
       setIsCorrect(true);
       setHasAnswered(true);
 
-      handleWhenCorrect();
+      if (handleWhenCorrect) handleWhenCorrect();
 
       if (showConfetti) {
         correctConfetti();
@@ -127,7 +127,7 @@ export function ListAnswer({
           } else {
             setHints([]);
 
-            handleWhenCorrect();
+            if (handleWhenCorrect) handleWhenCorrect();
 
             if (showConfetti) {
               correctConfetti();
@@ -239,19 +239,25 @@ export function ListAnswer({
       )}
 
       <FormButtons>
-        {!isFlashcard && <button
-          type="submit"
-          disabled={
-            (hasAnswered && !isCorrect) ||
-            !answers.every((a) => a) ||
-            loading ||
-            isCorrect
-          }
-          className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
-        >
-          {isCorrect ? "Correct!" : hasAnswered ? "Incorrect" : "Check Answer "}
-          {loading && <Spinner />}
-        </button>}
+        {!isFlashcard && (
+          <button
+            type="submit"
+            disabled={
+              (hasAnswered && !isCorrect) ||
+              !answers.every((a) => a) ||
+              loading ||
+              isCorrect
+            }
+            className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
+          >
+            {isCorrect
+              ? "Correct!"
+              : hasAnswered
+                ? "Incorrect"
+                : "Check Answer "}
+            {loading && <Spinner />}
+          </button>
+        )}
 
         {isFlashcard && (
           <button type="submit" className={`button small primary`}>

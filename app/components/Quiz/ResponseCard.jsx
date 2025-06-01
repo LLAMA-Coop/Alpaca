@@ -64,7 +64,7 @@ export function ResponseCard({
       setHints([]);
       setIsCorrect(true);
       setHasAnswered(true);
-      handleWhenCorrect();
+      if(handleWhenCorrect) handleWhenCorrect();
 
       if (showConfetti) {
         correctConfetti();
@@ -101,7 +101,7 @@ export function ResponseCard({
           } else {
             setHints([]);
 
-            handleWhenCorrect();
+            if(handleWhenCorrect) handleWhenCorrect();
 
             if (showConfetti) {
               correctConfetti();

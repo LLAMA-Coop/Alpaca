@@ -72,7 +72,7 @@ export function Blankable({
       setIsCorrect(true);
       setHasAnswered(true);
 
-      handleWhenCorrect();
+      if (handleWhenCorrect) handleWhenCorrect();
 
       if (showConfetti) {
         correctConfetti();
@@ -110,7 +110,7 @@ export function Blankable({
           } else {
             setHints([]);
 
-            handleWhenCorrect();
+            if (handleWhenCorrect) handleWhenCorrect();
 
             if (showConfetti) {
               correctConfetti();

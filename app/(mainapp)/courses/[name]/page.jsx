@@ -12,7 +12,7 @@ export default async function CoursePage(props) {
   const resources = await getPermittedResources({
     userId: user.id,
     takeAll: true,
-    limit: 10000000,
+    limit: 10000,
   });
 
   const course = resources.courses.find((x) => x.name === name);
@@ -44,7 +44,7 @@ export default async function CoursePage(props) {
         };
         relationships.push(newRel);
       }
-      // if rel.BType source rel.B 1,
+      
       if (
         x.AType !== "course" &&
         x.AType === rel.BType &&

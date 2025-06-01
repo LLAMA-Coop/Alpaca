@@ -117,26 +117,36 @@ export default async function ResourcePage(props) {
 
   relationships.forEach((rel) => {
     includeRef.forEach((x) => {
-      if (x.AType !== "course" && x.AType === rel.AType && rel.BType !== "course" && x.A === rel.A) {
+      if (
+        x.AType !== "course" &&
+        x.AType === rel.AType &&
+        rel.BType !== "course" &&
+        x.A === rel.A
+      ) {
         const newRel = {
           A: x.B,
           AType: "course",
           B: rel.B,
-          BType: rel.BType
+          BType: rel.BType,
         };
-        relationships.push(newRel)
+        relationships.push(newRel);
       }
-      // if rel.BType source rel.B 1,
-      if (x.AType !== "course" && x.AType === rel.BType && rel.BType !== "course"  && x.A === rel.B) {
+      
+      if (
+        x.AType !== "course" &&
+        x.AType === rel.BType &&
+        rel.BType !== "course" &&
+        x.A === rel.B
+      ) {
         const newRel = {
           A: rel.A,
           AType: rel.AType,
           B: x.B,
-          BType: "course"
+          BType: "course",
         };
-        relationships.push(newRel)
+        relationships.push(newRel);
       }
-      
+
       if (x.BType !== "course" && x.BType === rel.BType && x.B === rel.B) {
         const newRel = {
           AType: rel.BType,
@@ -144,7 +154,7 @@ export default async function ResourcePage(props) {
           BType: "course",
           B: x.A,
         };
-        relationships.push(newRel)
+        relationships.push(newRel);
       }
     });
     pushToList(rel, type);
@@ -170,18 +180,6 @@ export default async function ResourcePage(props) {
 
   return (
     <main className={styles.main}>
-      {/* <header>
-                <h1>{current.title}</h1>
-
-                <p>
-                    {current.description}
-                    {user
-                        ? ` These are the ${current.name} that are publicly viewable, as well as the ones you made.`
-                        : ` You are only viewing the publicly available ${current.name}.
-                           Log in to see ${current.name} available to you.`}
-                </p>
-            </header> */}
-
       <section>
         {resources.length > 0 || !!tag ? (
           <>

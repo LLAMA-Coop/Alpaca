@@ -76,7 +76,7 @@ export function MultipleChoiceCard({
       setIsCorrect(true);
       setHasAnswered(true);
 
-      handleWhenCorrect();
+      if(handleWhenCorrect) handleWhenCorrect();
 
       if (showConfetti) {
         correctConfetti();
@@ -117,7 +117,7 @@ export function MultipleChoiceCard({
           } else {
             setHints([]);
 
-            handleWhenCorrect();
+            if(handleWhenCorrect) handleWhenCorrect();
 
             if (showConfetti) {
               correctConfetti();
