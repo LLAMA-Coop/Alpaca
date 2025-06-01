@@ -148,9 +148,9 @@ export function ListAnswer({
 
   return (
     <Form gap={20} singleColumn onSubmit={handleSubmitAnswer}>
-      {isOrdered && <InfoBox fullWidth>Order the answers correctly</InfoBox>}
+      {/* isOrdered && <InfoBox fullWidth>Order the answers correctly</InfoBox> */}
 
-      {isOrdered && (
+      {/* isOrdered && (
         // <DraggableList quizId={quiz.id}>
         //     {answers.map((a, i) => {
         //         const hasError = incorrectIndexes.includes(i);
@@ -184,11 +184,10 @@ export function ListAnswer({
         //     })}
         // </DraggableList>
 
-        <div>little problem there</div>
-      )}
+        // <div>little problem there</div>
+      */ }
 
-      {!isOrdered &&
-        answers.map((a, i) => {
+      {answers.map((a, i) => {
           const hasError = incorrectIndexes.includes(i);
 
           return (
