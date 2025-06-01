@@ -12,7 +12,6 @@ export default async function DailyPage() {
   const resourcesObject = await getPermittedResources({
     userId: user ? user.id : undefined,
     withQuizzes: true,
-    limit: 10000,
   });
   const { quizzes } = resourcesObject;
   const sortedQuizzes = shuffleQuizzes(quizzes);

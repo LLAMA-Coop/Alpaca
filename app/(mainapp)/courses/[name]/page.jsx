@@ -12,7 +12,6 @@ export default async function CoursePage(props) {
   const resources = await getPermittedResources({
     userId: user.id,
     takeAll: true,
-    limit: 10000,
   });
 
   const course = resources.courses.find((x) => x.name === name);
