@@ -30,6 +30,7 @@ export function Blankable({
 
   const addAlert = useAlerts((state) => state.addAlert);
   const user = useStore((state) => state.user);
+  const updateItem = useStore((state) => state.updateItem);
   const showConfetti =
     (user && user.settings && user.settings.showConfetti) ?? true;
 
@@ -107,6 +108,7 @@ export function Blankable({
 
           if (!isCorrect) {
             setFailures((prev) => prev + 1);
+            // updateItem("quiz", { ...quiz, level: quiz.level-- });
           } else {
             setHints([]);
 
@@ -115,6 +117,7 @@ export function Blankable({
             if (showConfetti) {
               correctConfetti();
             }
+            // updateItem("quiz", { ...quiz, level: quiz.level++ });
           }
         }
       } catch (error) {

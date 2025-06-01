@@ -2,7 +2,7 @@
 
 import { Verbatim } from "./Verbatim";
 import { useStore, useAlerts } from "@/store/store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MultipleChoiceCard,
   CardCreatedAt,
@@ -40,8 +40,15 @@ export function QuizDisplay({
   if (!quiz || !quiz.id) return null;
 
   const user = useStore((state) => state.user);
+  const storeQuiz = useStore((state) =>
+    state.quizzes.find((x) => x.id === quiz.id)
+  );
   const addAlert = useAlerts((state) => state.addAlert);
   const router = useRouter();
+
+  useEffect(() => {
+    console.log("It changed!!!", storeQuiz)
+  }, [storeQuiz])
 
   const canEdit =
     !!user &&
@@ -64,7 +71,7 @@ export function QuizDisplay({
             : "Fill in the blank"}
         </h4>
 
-        <CardChip>Level {quiz.level}</CardChip>
+        <CardChip>Level {storeQuiz?.level}</CardChip>
       </header>
 
       {(() => {

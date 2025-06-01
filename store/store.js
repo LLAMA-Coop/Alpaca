@@ -89,6 +89,19 @@ export const useStore = create((set) => ({
     }));
   },
 
+  updateItem: (type, updatedItem) => {
+    if (!keyMap[type]) {
+      return;
+    }
+
+    return set((state) => ({
+      ...state,
+      [keyMap[type]]: state[keyMap[type]].map((x) =>
+        x.id === updatedItem.id ? updatedItem : x
+      ),
+    }));
+  },
+
   removeItem: (type, id) => {
     if (!keyMap[type]) {
       return;
