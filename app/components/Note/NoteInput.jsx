@@ -99,6 +99,7 @@ export function NoteInput({ note, close }) {
       dispatch({ type: "permissions", value: inputDefaults.permissions });
       return;
     }
+    
     dispatch({
       type: "editing",
       value: {
@@ -116,8 +117,8 @@ export function NoteInput({ note, close }) {
   const noteData = {
     title: state.title,
     text: state.text,
-    sources: state.sources.map((src) => src.id),
-    courses: state.courses.map((course) => course.id),
+    sources: state.sources ? state.sources.map((src) => src.id) : [],
+    courses: state.courses ? state.courses.map((course) => course.id) : [],
     tags: state.tags,
     permissions: state.permissions,
   };
@@ -130,8 +131,8 @@ export function NoteInput({ note, close }) {
     const changedFields = getChangedFields(
       {
         ...note,
-        sources: note.sources.map((src) => src.id),
-        courses: note.courses.map((course) => course.id),
+        sources: note.sources ? note.sources.map((src) => src.id) : [],
+        courses: note.courses ? note.courses.map((course) => course.id) : [],
       },
       noteData
     );
