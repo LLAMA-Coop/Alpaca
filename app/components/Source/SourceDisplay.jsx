@@ -201,7 +201,7 @@ export function SourceDisplay({ source }) {
                     try {
                       data = await response.json();
                     } catch (e) {
-                      console.log(`Error parsing response: ${e}`);
+                      console.error(`Error parsing response: ${e}`);
                     }
 
                     if (response.status === 200) {

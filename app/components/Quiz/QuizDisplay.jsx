@@ -46,10 +46,6 @@ export function QuizDisplay({
   const addAlert = useAlerts((state) => state.addAlert);
   const router = useRouter();
 
-  useEffect(() => {
-    console.log("It changed!!!", storeQuiz)
-  }, [storeQuiz])
-
   const canEdit =
     !!user &&
     quiz.creator &&
