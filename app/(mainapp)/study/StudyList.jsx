@@ -26,7 +26,15 @@ export default function StudyList({ resources, type, heading }) {
           {resources.map((res) => {
             if (type === "note") return <NoteDisplay key={res.id} note={res} />;
 
-            if (type === "quiz") return <QuizDisplay key={res.id} quiz={res} />;
+            if (type === "quiz")
+              return (
+                <QuizDisplay
+                  key={res.id}
+                  quiz={res}
+                  isFlashcard={true}
+                  canClientCheck={true}
+                />
+              );
 
             if (type === "source")
               return <SourceDisplay key={res.id} source={res} />;
