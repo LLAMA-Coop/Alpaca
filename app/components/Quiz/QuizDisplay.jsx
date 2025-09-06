@@ -18,12 +18,19 @@ import {
   DialogContent,
   DialogHeading,
   DialogDescription,
+  Form,
+  FormButtons,
   InfoBox,
   QuizInput,
+  Spinner,
 } from "@client";
 import styles from "@/app/components/Card/Card.module.css";
 import { useRouter } from "next/navigation";
 import { toUTCdatestring } from "@/lib/date";
+import checkAnswers from "@/lib/checkAnswers";
+import listPrint from "@/lib/listPrint";
+import { correctConfetti } from "@/lib/correctConfetti";
+import { add } from "date-fns";
 
 export function QuizDisplay({
   quiz,
@@ -33,13 +40,49 @@ export function QuizDisplay({
   lighter,
   handleWhenCorrect,
 }) {
+  const [answer, setAnswer] = useState("");
   const [correct, setCorrect] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [spelling, setSpelling] = useState(false);
+  const [hasAnswered, setHasAnswered] = useState(false);
+  const [failures, setFailures] = useState(0);
+  const [practice, setPractice] = useState(false);
+
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [clientCheck, setClientCheck] = useState(!!canClientCheck);
+  const [flashcard, setFlashcard] = useState(!!isFlashcard);
+  const [reveal, setReveal] = useState(false);
+  const [hints, setHints] = useState([]);
+
+  useEffect(() => {
+    if (!hasAnswered) return;
+    console.log("Did we mean for this?")
+
+    setFlashcard(true);
+    setClientCheck(true);
+    setTimeout(() => {
+      setFlashcard(false);
+      setClientCheck(false);
+      setIsCorrect(false);
+      setAnswer("");
+      setHasAnswered(false);
+      setFailures(0);
+      setReveal(false);
+      addAlert({
+        success: true,
+        message: `A quiz is ready for you to try again`,
+      });
+    }, 30000);
+  }, [practice]);
 
   if (!quiz || !quiz.id) return null;
 
   const user = useStore((state) => state.user);
+  const showConfetti =
+    (user && user.settings && user.settings.showConfetti) ?? true;
   const storeQuiz = useStore((state) =>
     state.quizzes.find((x) => x.id === quiz.id)
   );
@@ -58,101 +101,263 @@ export function QuizDisplay({
   const whenLevelUp = new Date(toUTCdatestring(quiz.hiddenUntil));
   const canLevelUp = whenLevelUp < Date.now();
 
+  async function handleSubmitAnswer(e) {
+    e.preventDefault();
+
+    if ((hasAnswered || !answer) && !flashcard) return;
+
+    setLoading(true);
+
+    if (clientCheck) {
+      const ansCheck = checkAnswers({
+        userAnswers: answer,
+        quiz,
+      });
+
+      setReveal(true);
+
+      if (!ansCheck.isCorrect) {
+        setFailures((prev) => prev + 1);
+        setIsCorrect(false);
+        setHasAnswered(true);
+
+        const showHints = failures >= 2;
+
+        if (showHints) {
+          setHints(quiz.hints);
+        }
+
+        return setLoading(false);
+      }
+
+      setHints([]);
+      setIsCorrect(true);
+      setSpelling(ansCheck.matchQuality)
+      setHasAnswered(true);
+      if (handleWhenCorrect) handleWhenCorrect();
+
+      if (showConfetti) {
+        correctConfetti();
+      }
+
+      return setLoading(false);
+    } else {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/quiz/${quiz.id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ answers: answer }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to check answer");
+        } else {
+          const data = await response.json();
+          if (!data?.content) throw new Error("No data returned");
+
+          const { isCorrect, hints, matchQuality } = data.content;
+
+          setIsCorrect(isCorrect);
+          setSpelling(matchQuality);
+          setHasAnswered(true);
+          setHints(hints);
+
+          if (!isCorrect) {
+            if (failures >= 2) {
+              addAlert({
+                success: false,
+                message:
+                  "You seem to be having trouble. Practice as a flashcard for 30 seconds.",
+              });
+              setPractice((prev) => !prev);
+            } else {
+              setFailures((prev) => prev + 1);
+            }
+          } else {
+            setHints([]);
+
+            if (handleWhenCorrect) handleWhenCorrect();
+
+            if (showConfetti) {
+              correctConfetti();
+            }
+          }
+        }
+      } catch (error) {
+        setHasAnswered(false);
+        addAlert({
+          success: false,
+          message: error.message,
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
+
   return (
-    <Card fullWidth lighter={lighter} border={correct && "var(--success)"}>
+    <Card fullWidth lighter={lighter} border={isCorrect && "var(--success)"}>
       <header>
         <h4>
           {quiz.type !== "fill-in-the-blank"
-            ? `${quiz.prompt} ${isFlashcard ? "(Flashcard)" : ""}`
+            ? `${quiz.prompt} ${flashcard ? "(Flashcard)" : ""}`
             : "Fill in the blank"}
         </h4>
 
         <CardChip>Level {storeQuiz?.level}</CardChip>
       </header>
 
-      {(() => {
-        if (quiz.type === "prompt-response") {
-          return (
-            <ResponseCard
-              quiz={quiz}
-              lighter={lighter}
-              setCorrect={setCorrect}
-              canClientCheck={canClientCheck}
-              isFlashcard={isFlashcard}
-              handleWhenCorrect={handleWhenCorrect}
-            />
-          );
+      <Form
+        singleColumn
+        gap={
+          quiz.type === "ordered-list-answer" ||
+          quiz.type === "unordered-list-answer" ||
+          quiz.type === "unordered-list"
+            ? 20
+            : 40
         }
+        onSubmit={handleSubmitAnswer}
+      >
+        {quiz.type === "prompt-response" && (
+          <ResponseCard
+            answer={answer}
+            setAnswer={setAnswer}
+            hasAnswered={hasAnswered}
+            setHasAnswered={setHasAnswered}
+            isCorrect={isCorrect}
+            lighter={lighter}
+          />
+        )}
 
-        if (quiz.type === "multiple-choice") {
-          return (
-            <MultipleChoiceCard
-              quiz={quiz}
-              lighter={lighter}
-              setCorrect={setCorrect}
-              canClientCheck={canClientCheck}
-              isFlashcard={isFlashcard}
-              handleWhenCorrect={handleWhenCorrect}
-            />
-          );
-        }
+        {quiz.type === "multiple-choice" && (
+          <MultipleChoiceCard
+            quiz={quiz}
+            lighter={lighter}
+            setCorrect={setCorrect}
+            canClientCheck={canClientCheck}
+            isFlashcard={isFlashcard}
+            handleWhenCorrect={handleWhenCorrect}
+          />
+        )}
 
-        if (
-          [
-            "unordered-list-answer",
-            "ordered-list-answer",
-            "unordered-list",
-          ].includes(quiz.type)
-        ) {
-          return (
-            <ListAnswer
-              quiz={quiz}
-              lighter={lighter}
-              setCorrect={setCorrect}
-              canClientCheck={canClientCheck}
-              isFlashcard={isFlashcard}
-              handleWhenCorrect={handleWhenCorrect}
-            />
-          );
-        }
+        {[
+          "unordered-list-answer",
+          "ordered-list-answer",
+          "unordered-list",
+        ].includes(quiz.type) && (
+          <ListAnswer
+            quiz={quiz}
+            lighter={lighter}
+            setCorrect={setCorrect}
+            canClientCheck={canClientCheck}
+            isFlashcard={isFlashcard}
+            handleWhenCorrect={handleWhenCorrect}
+          />
+        )}
 
-        if (quiz.type === "fill-in-the-blank") {
-          return (
-            <Blankable
-              quiz={quiz}
-              lighter={lighter}
-              setCorrect={setCorrect}
-              canClientCheck={canClientCheck}
-              isFlashcard={isFlashcard}
-              handleWhenCorrect={handleWhenCorrect}
-            />
-          );
-        }
+        {quiz.type === "fill-in-the-blank" && (
+          <Blankable
+            quiz={quiz}
+            lighter={lighter}
+            setCorrect={setCorrect}
+            canClientCheck={canClientCheck}
+            isFlashcard={isFlashcard}
+            handleWhenCorrect={handleWhenCorrect}
+          />
+        )}
 
-        if (quiz.type === "verbatim") {
-          return (
-            <Verbatim
-              quiz={quiz}
-              lighter={lighter}
-              setCorrect={setCorrect}
-              canClientCheck={canClientCheck}
-              isFlashcard={isFlashcard}
-              handleWhenCorrect={handleWhenCorrect}
-            />
-          );
-        }
-      })()}
+        {quiz.type === "verbatim" && (
+          <Verbatim
+            quiz={quiz}
+            lighter={lighter}
+            setCorrect={setCorrect}
+            canClientCheck={canClientCheck}
+            isFlashcard={isFlashcard}
+            handleWhenCorrect={handleWhenCorrect}
+          />
+        )}
 
-      {!!canEditDelete && (
-        <div>
-          {canLevelUp
-            ? "Level Up Now!"
-            : "Available to level up " +
-              whenLevelUp.toLocaleDateString() +
-              " " +
-              whenLevelUp.toLocaleTimeString()}
-        </div>
-      )}
+        {flashcard && reveal && (
+          <InfoBox fullWidth asDiv>
+            <h4>The correct answer is:</h4>
+            {listPrint(quiz.answers, "or")}
+          </InfoBox>
+        )}
+
+        {isCorrect && spelling !== 1 && (
+          <InfoBox fullWidth asDiv>
+            <h4>
+              Your spelling is {Math.round(spelling * 10000) / 100}% correct!
+              The exact answer is:
+            </h4>
+            {listPrint(quiz.answers, "or")}
+          </InfoBox>
+        )}
+
+        {!!hints.length && (
+          <InfoBox fullWidth asDiv>
+            <h4>Here are some hints to help you out</h4>
+            <ul className={styles.hints}>
+              {hints.map((hint) => (
+                <li key={nanoid()}>{hint}</li>
+              ))}
+            </ul>
+          </InfoBox>
+        )}
+
+        <FormButtons>
+          {!flashcard && (
+            <button
+              type="submit"
+              disabled={
+                (hasAnswered && !isCorrect) || !answer || loading || isCorrect
+              }
+              className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
+            >
+              {isCorrect
+                ? "Correct!"
+                : hasAnswered
+                  ? "Incorrect"
+                  : "Check Answer "}{" "}
+              {loading && <Spinner primary size={14} margin={2} />}
+            </button>
+          )}
+
+          {flashcard && (
+            <button type="submit" className={`button small primary`}>
+              Reveal Answer
+            </button>
+          )}
+
+          {hasAnswered && isCorrect && (
+            <button
+              type="button"
+              className="button small border"
+              onClick={() => {
+                setAnswer("");
+                setIsCorrect(false);
+                setHasAnswered(false);
+              }}
+            >
+              Try Again
+            </button>
+          )}
+        </FormButtons>
+      </Form>
+
+      <div>
+        {canLevelUp
+          ? "Level Up Now!"
+          : "Available to level up " +
+            whenLevelUp.toLocaleDateString() +
+            " " +
+            whenLevelUp.toLocaleTimeString()}
+      </div>
 
       {!!canEditDelete && (!!canEdit || !!canDelete) && (
         <div className={styles.tools}>
@@ -282,7 +487,6 @@ export function QuizDisplay({
           )}
         </div>
       )}
-
       <footer>
         <p
           title={`Created By ${quiz.creator ? quiz.creator.username : "No one"}`}

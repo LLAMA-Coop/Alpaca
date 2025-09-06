@@ -2,6 +2,7 @@ import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { isValidDate, timestampFromDate } from "@/lib/date";
 import { unauthorized } from "@/lib/apiErrorResponses";
 import { stringCompare } from "@/lib/stringCompare";
+import checkAnswers from "@/lib/checkAnswers";
 import { areFieldsEqual } from "@/lib/objects";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -150,40 +151,10 @@ export async function POST(req, props) {
       );
     }
 
-    let isCorrect;
-    let incorrectIndexes;
-
-    if (quiz.type === "true-false") {
-      // True-false quizzes are always correct if the answer is the same
-      isCorrect = quiz.answers[0] === answers;
-    }
-
-    if (quiz.type === "prompt-response") {
-      isCorrect = quiz.answers.some((x) => stringCompare(x, answers) >= 0.8);
-    }
-
-    if (quiz.type === "multiple-choice") {
-      isCorrect =
-        quiz.answers.every((a) => answers.includes(a)) &&
-        answers.length === quiz.answers.length;
-    }
-
-    if (
-      [
-        "ordered-list-answer",
-        "unordered-list-answer",
-        "fill-in-the-blank",
-        "verbatim",
-      ].includes(quiz.type)
-    ) {
-      incorrectIndexes = whichIndexesIncorrect(
-        answers,
-        quiz.answers,
-        quiz.type !== "unordered-list-answer"
-      );
-
-      isCorrect = incorrectIndexes.length === 0;
-    }
+    const { isCorrect, matchQuality, incorrectIndexes } = checkAnswers({
+      userAnswers: answers,
+      quiz,
+    });
 
     let quizInteraction = await db
       .selectFrom("user_quizzes")
@@ -266,6 +237,7 @@ export async function POST(req, props) {
           isCorrect,
           incorrectIndexes,
           hints: sendHints ? hintsFromLevel(quiz.hints, level) : [],
+          matchQuality
         },
       },
       { status: 200 }
