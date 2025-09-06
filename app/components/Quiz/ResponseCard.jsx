@@ -4,6 +4,7 @@ import { Input, InfoBox, Form, Spinner, FormButtons } from "@client";
 import { correctConfetti } from "@/lib/correctConfetti";
 import { useAlerts, useStore } from "@/store/store";
 import { stringCompare } from "@/lib/stringCompare";
+import checkAnswers from "@/lib/checkAnswers";
 import listPrint from "@/lib/listPrint";
 import styles from "./QuizInput.module.css";
 import { useEffect, useState } from "react";
@@ -17,11 +18,13 @@ export function ResponseCard({
   isFlashcard,
   handleWhenCorrect,
 }) {
+  const [answer, setAnswer] = useState("");
   const [hasAnswered, setHasAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [loading, setLoading] = useState(false);
   const [failures, setFailures] = useState(0);
-  const [answer, setAnswer] = useState("");
+  const [clientCheck, setClientCheck] = useState(!!canClientCheck);
+  const [flashcard, setFlashcard] = useState(!!isFlashcard);
   const [reveal, setReveal] = useState(false);
   const [hints, setHints] = useState([]);
 
@@ -36,14 +39,18 @@ export function ResponseCard({
 
   async function handleSubmitAnswer(e) {
     e.preventDefault();
-    if ((hasAnswered || !answer) && !isFlashcard) return;
+    if ((hasAnswered || !answer) && !flashcard) return;
 
     setLoading(true);
 
-    if (canClientCheck) {
-      const isCorrect = quiz.answers.find(
-        (a) => stringCompare(a, answer) >= 0.8
-      );
+    if (clientCheck) {
+      // const isCorrect = quiz.answers.find(
+      //   (a) => stringCompare(a, answer) >= 0.8
+      // );
+      const { isCorrect, incorrectIndexes, matchQuality } = checkAnswers({
+        userAnswers: answer,
+        quiz,
+      });
 
       setReveal(true);
 
@@ -61,10 +68,17 @@ export function ResponseCard({
         return setLoading(false);
       }
 
+      if (matchQuality < 1) {
+        addAlert({
+          success: false,
+          message: `Spelling at ${matchQuality * 100}%. The answer is: ${quiz.answers[0]}`,
+        });
+      }
+
       setHints([]);
       setIsCorrect(true);
       setHasAnswered(true);
-      if(handleWhenCorrect) handleWhenCorrect();
+      if (handleWhenCorrect) handleWhenCorrect();
 
       if (showConfetti) {
         correctConfetti();
@@ -97,11 +111,18 @@ export function ResponseCard({
           setHints(hints);
 
           if (!isCorrect) {
-            setFailures((prev) => prev + 1);
+            console.log("Failures", failures, flashcard, clientCheck);
+            if (failures >= 2) {
+              console.log("Flash!");
+              setFlashcard(true);
+              setClientCheck(true);
+            } else {
+              setFailures((prev) => prev + 1);
+            }
           } else {
             setHints([]);
 
-            if(handleWhenCorrect) handleWhenCorrect();
+            if (handleWhenCorrect) handleWhenCorrect();
 
             if (showConfetti) {
               correctConfetti();
@@ -139,7 +160,7 @@ export function ResponseCard({
         }}
       />
 
-      {isFlashcard && reveal && (
+      {flashcard && reveal && (
         <InfoBox fullWidth asDiv>
           <h4>The correct answer is:</h4>
           {listPrint(quiz.answers, "or")}
@@ -158,7 +179,7 @@ export function ResponseCard({
       )}
 
       <FormButtons>
-        {!isFlashcard && (
+        {!flashcard && (
           <button
             type="submit"
             disabled={
@@ -175,7 +196,7 @@ export function ResponseCard({
           </button>
         )}
 
-        {isFlashcard && (
+        {flashcard && (
           <button type="submit" className={`button small primary`}>
             Reveal Answer
           </button>
