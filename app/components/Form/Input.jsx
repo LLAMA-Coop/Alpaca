@@ -242,6 +242,8 @@ export function Input({
           <input
             id={id}
             {...props}
+            autoComplete="off"
+            autoCapitalize="off"
             value={value}
             aria-label={label}
             className={styles.input}
