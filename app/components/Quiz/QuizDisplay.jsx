@@ -282,11 +282,13 @@ export function QuizDisplay({
         {quiz.type === "verbatim" && (
           <Verbatim
             quiz={quiz}
+            answers={answers}
+            setAnswers={setAnswers}
+            hasAnswered={hasAnswered}
+            setHasAnswered={setHasAnswered}
+            incorrectIndexes={incIndexes}
+            setIncorrectIndexes={setIncIndexes}
             lighter={lighter}
-            setCorrect={setCorrect}
-            canClientCheck={canClientCheck}
-            isFlashcard={isFlashcard}
-            handleWhenCorrect={handleWhenCorrect}
           />
         )}
 

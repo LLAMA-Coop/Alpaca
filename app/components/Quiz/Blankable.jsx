@@ -17,7 +17,6 @@ export function Blankable({
   const texts = quiz.prompt.split(/<blank \/>/);
 
   const [uAns, setUAns] = useState(new Array(texts.length - 1).fill(""));
-  const [isCorrect, setIsCorrect] = useState(false);
 
   useEffect(() => {
     setUAns((prev) => {
@@ -28,8 +27,6 @@ export function Blankable({
       return newAns;
     });
   }, [answers]);
-
-  const error = hasAnswered && !isCorrect;
 
   return (
     <div className={styles.blanks}>
@@ -45,7 +42,7 @@ export function Blankable({
                 hideLabel
                 value={uAns[index]}
                 label={`Blank ${index + 1}`}
-                disabled={hasAnswered && isCorrect}
+                disabled={hasAnswered && !hasError}
                 error={hasError}
                 success={hasAnswered && !hasError}
                 width={`calc(calc(${uAns[index]?.length + 1}ch) - 4px)`}
