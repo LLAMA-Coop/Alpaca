@@ -40,7 +40,7 @@ export function QuizDisplay({
   lighter,
   handleWhenCorrect,
 }) {
-  const [answers, setAnswers] = useState([""]);
+  const [answers, setAnswers] = useState([]);
   const [correct, setCorrect] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [spelling, setSpelling] = useState(false);
@@ -66,7 +66,7 @@ export function QuizDisplay({
       setFlashcard(false);
       setClientCheck(false);
       setIsCorrect(false);
-      setAnswers([""]);
+      setAnswers([]);
       setHasAnswered(false);
       setFailures(0);
       setReveal(false);
@@ -131,7 +131,7 @@ export function QuizDisplay({
 
       setHints([]);
       setIsCorrect(true);
-      setSpelling(ansCheck.matchQuality)
+      setSpelling(ansCheck.matchQuality);
       setHasAnswered(true);
       if (handleWhenCorrect) handleWhenCorrect();
 
@@ -236,11 +236,12 @@ export function QuizDisplay({
         {quiz.type === "multiple-choice" && (
           <MultipleChoiceCard
             quiz={quiz}
+            answers={answers}
+            setAnswers={setAnswers}
+            hasAnswered={hasAnswered}
+            setHasAnswered={setHasAnswered}
+            isCorrect={isCorrect}
             lighter={lighter}
-            setCorrect={setCorrect}
-            canClientCheck={canClientCheck}
-            isFlashcard={isFlashcard}
-            handleWhenCorrect={handleWhenCorrect}
           />
         )}
 
@@ -284,7 +285,7 @@ export function QuizDisplay({
         {flashcard && reveal && (
           <InfoBox fullWidth asDiv>
             <h4>The correct answer is:</h4>
-            {listPrint(quiz.answers, "or")}
+            {listPrint(quiz.answers, quiz.multipleAnswers ? "and" : "or")}
           </InfoBox>
         )}
 
@@ -294,7 +295,7 @@ export function QuizDisplay({
               Your spelling is {Math.round(spelling * 10000) / 100}% correct!
               The exact answer is:
             </h4>
-            {listPrint(quiz.answers, "or")}
+            {listPrint(quiz.answers, quiz.multipleAnswers ? "and" : "or")}
           </InfoBox>
         )}
 
@@ -338,7 +339,7 @@ export function QuizDisplay({
               type="button"
               className="button small border"
               onClick={() => {
-                setAnswers([""]);
+                setAnswers([]);
                 setIsCorrect(false);
                 setHasAnswered(false);
               }}
