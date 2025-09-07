@@ -3,8 +3,8 @@
 import { Input } from "@client";
 
 export function ResponseCard({
-  answer,
-  setAnswer,
+  answers,
+  setAnswers,
   hasAnswered,
   setHasAnswered,
   isCorrect,
@@ -13,7 +13,7 @@ export function ResponseCard({
   return (
     <Input
       type="text"
-      value={answer}
+      value={answers}
       darker={lighter}
       label="Your Response"
       error={hasAnswered && !isCorrect ? "Incorrect" : null}
@@ -21,7 +21,7 @@ export function ResponseCard({
       placeholder="Type your response here"
       success={hasAnswered && isCorrect && "- Yay! You got it right!"}
       onChange={(e) => {
-        setAnswer(e.target.value);
+        setAnswers([e.target.value]);
         setHasAnswered(false);
       }}
     />

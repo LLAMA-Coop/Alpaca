@@ -40,7 +40,7 @@ export function QuizDisplay({
   lighter,
   handleWhenCorrect,
 }) {
-  const [answer, setAnswer] = useState("");
+  const [answers, setAnswers] = useState([""]);
   const [correct, setCorrect] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [spelling, setSpelling] = useState(false);
@@ -59,7 +59,6 @@ export function QuizDisplay({
 
   useEffect(() => {
     if (!hasAnswered) return;
-    console.log("Did we mean for this?")
 
     setFlashcard(true);
     setClientCheck(true);
@@ -67,7 +66,7 @@ export function QuizDisplay({
       setFlashcard(false);
       setClientCheck(false);
       setIsCorrect(false);
-      setAnswer("");
+      setAnswers([""]);
       setHasAnswered(false);
       setFailures(0);
       setReveal(false);
@@ -104,13 +103,13 @@ export function QuizDisplay({
   async function handleSubmitAnswer(e) {
     e.preventDefault();
 
-    if ((hasAnswered || !answer) && !flashcard) return;
+    if ((hasAnswered || !answers) && !flashcard) return;
 
     setLoading(true);
 
     if (clientCheck) {
       const ansCheck = checkAnswers({
-        userAnswers: answer,
+        userAnswers: answers,
         quiz,
       });
 
@@ -150,7 +149,7 @@ export function QuizDisplay({
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ answers: answer }),
+            body: JSON.stringify({ answers: answers }),
           }
         );
 
@@ -225,8 +224,8 @@ export function QuizDisplay({
       >
         {quiz.type === "prompt-response" && (
           <ResponseCard
-            answer={answer}
-            setAnswer={setAnswer}
+            answers={answers}
+            setAnswers={setAnswers}
             hasAnswered={hasAnswered}
             setHasAnswered={setHasAnswered}
             isCorrect={isCorrect}
@@ -315,7 +314,7 @@ export function QuizDisplay({
             <button
               type="submit"
               disabled={
-                (hasAnswered && !isCorrect) || !answer || loading || isCorrect
+                (hasAnswered && !isCorrect) || !answers || loading || isCorrect
               }
               className={`button small ${hasAnswered ? (isCorrect ? "success" : "danger") : "primary"}`}
             >
@@ -339,7 +338,7 @@ export function QuizDisplay({
               type="button"
               className="button small border"
               onClick={() => {
-                setAnswer("");
+                setAnswers([""]);
                 setIsCorrect(false);
                 setHasAnswered(false);
               }}
