@@ -1,7 +1,5 @@
-import whichIndexesIncorrect from "@/lib/whichIndexesIncorrect";
 import { isValidDate, timestampFromDate } from "@/lib/date";
 import { unauthorized } from "@/lib/apiErrorResponses";
-import { stringCompare } from "@/lib/stringCompare";
 import checkAnswers from "@/lib/checkAnswers";
 import { areFieldsEqual } from "@/lib/objects";
 import { NextResponse } from "next/server";

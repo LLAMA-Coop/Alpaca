@@ -30,7 +30,6 @@ import { toUTCdatestring } from "@/lib/date";
 import checkAnswers from "@/lib/checkAnswers";
 import listPrint from "@/lib/listPrint";
 import { correctConfetti } from "@/lib/correctConfetti";
-import { add } from "date-fns";
 
 export function QuizDisplay({
   quiz,
@@ -43,6 +42,7 @@ export function QuizDisplay({
   const [answers, setAnswers] = useState([]);
   const [correct, setCorrect] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [incIndexes, setIncIndexes] = useState([]);
   const [spelling, setSpelling] = useState(false);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [failures, setFailures] = useState(0);
@@ -58,7 +58,7 @@ export function QuizDisplay({
   const [hints, setHints] = useState([]);
 
   useEffect(() => {
-    if (!hasAnswered) return;
+    if (!hasAnswered || isFlashcard) return;
 
     setFlashcard(true);
     setClientCheck(true);
@@ -69,6 +69,7 @@ export function QuizDisplay({
       setAnswers([]);
       setHasAnswered(false);
       setFailures(0);
+      setIncIndexes([]);
       setReveal(false);
       addAlert({
         success: true,
@@ -118,6 +119,7 @@ export function QuizDisplay({
       if (!ansCheck.isCorrect) {
         setFailures((prev) => prev + 1);
         setIsCorrect(false);
+        setIncIndexes(ansCheck.incorrectIndexes);
         setHasAnswered(true);
 
         const showHints = failures >= 2;
@@ -159,9 +161,11 @@ export function QuizDisplay({
           const data = await response.json();
           if (!data?.content) throw new Error("No data returned");
 
-          const { isCorrect, hints, matchQuality } = data.content;
+          const { isCorrect, incorrectIndexes, hints, matchQuality } =
+            data.content;
 
           setIsCorrect(isCorrect);
+          setIncIndexes(incorrectIndexes);
           setSpelling(matchQuality);
           setHasAnswered(true);
           setHints(hints);
@@ -252,22 +256,26 @@ export function QuizDisplay({
         ].includes(quiz.type) && (
           <ListAnswer
             quiz={quiz}
+            answers={answers}
+            setAnswers={setAnswers}
+            hasAnswered={hasAnswered}
+            setHasAnswered={setHasAnswered}
+            incorrectIndexes={incIndexes}
+            setIncorrectIndexes={setIncIndexes}
             lighter={lighter}
-            setCorrect={setCorrect}
-            canClientCheck={canClientCheck}
-            isFlashcard={isFlashcard}
-            handleWhenCorrect={handleWhenCorrect}
           />
         )}
 
         {quiz.type === "fill-in-the-blank" && (
           <Blankable
             quiz={quiz}
+            answers={answers}
+            setAnswers={setAnswers}
+            hasAnswered={hasAnswered}
+            setHasAnswered={setHasAnswered}
+            incorrectIndexes={incIndexes}
+            setIncorrectIndexes={setIncIndexes}
             lighter={lighter}
-            setCorrect={setCorrect}
-            canClientCheck={canClientCheck}
-            isFlashcard={isFlashcard}
-            handleWhenCorrect={handleWhenCorrect}
           />
         )}
 
