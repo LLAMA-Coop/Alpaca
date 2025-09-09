@@ -11,6 +11,7 @@ import {
 } from "@/app/components/client";
 import shuffleArray from "@/lib/shuffleArray";
 import styles from "@/app/(dashboard)/me/dashboard/Dash.module.css";
+import { useState } from "react";
 
 function getUserQuizzesStats(quizIDs, quizList) {
   let sum = 0;
@@ -167,14 +168,18 @@ export function CourseTabInfo({
 }
 
 export function CourseTabMain({ user, course, isLoading, setIsLoading }) {
+  const [courseState, setCourseState] = useState({ ...course });
   const addAlert = useAlerts((state) => state.addAlert);
 
   async function enrollment(action) {
+    // The `action` is one of three strings:
+    // "private", "open", and "paid"
+
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${basePath}/api/course`, {
-        method: "PUT",
+      const response = await fetch(`${basePath}/api/course/${course.id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -183,13 +188,18 @@ export function CourseTabMain({ user, course, isLoading, setIsLoading }) {
         }),
       });
 
-      if (response.success) {
+      if (response.ok) {
         addAlert({
           success: true,
           message: `Successful ${action}`,
         });
 
-        window.location.reload();
+        console.log(courseState);
+
+        setCourseState((prev) => ({
+          ...prev,
+          enrollment: action,
+        }));
       } else {
         addAlert({
           success: false,
@@ -208,11 +218,17 @@ export function CourseTabMain({ user, course, isLoading, setIsLoading }) {
   }
 
   async function permissions(action) {
+    // The `action` is shaped like:
+    // {
+    //   allRead: Boolean
+    // }
+    // More potential actions can be added later if the below route is set up to receive
+
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${basePath}/api/course`, {
-        method: "PUT",
+      const response = await fetch(`${basePath}/api/course/${course.id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -221,13 +237,18 @@ export function CourseTabMain({ user, course, isLoading, setIsLoading }) {
         }),
       });
 
-      if (response.success) {
+      if (response.ok) {
         addAlert({
           success: true,
-          message: `Successful ${action}`,
+          message: `Successfully changed permissions for course`,
         });
 
-        window.location.reload();
+        setCourseState((prev) => ({
+          ...prev,
+          permissions: {
+            ...action,
+          },
+        }));
       } else {
         addAlert({
           success: false,
@@ -249,9 +270,10 @@ export function CourseTabMain({ user, course, isLoading, setIsLoading }) {
     <div className={styles.userContent}>
       {user?.id === course.creator.id && (
         <div className={styles.actionButtons}>
+          {/* There are actually three choices for enrollment: "private", "open", and "paid" */}
           <button
             onClick={() => {
-              if (course.enrollment === "open") {
+              if (courseState.enrollment === "open") {
                 enrollment("private");
               } else {
                 enrollment("open");
@@ -259,7 +281,7 @@ export function CourseTabMain({ user, course, isLoading, setIsLoading }) {
             }}
             className="button"
           >
-            {course.enrollment === "open"
+            {courseState.enrollment === "open"
               ? "Close enrollment"
               : "Open enrollment"}
 
@@ -268,7 +290,7 @@ export function CourseTabMain({ user, course, isLoading, setIsLoading }) {
 
           <button
             onClick={() => {
-              if (course.permissions.allRead) {
+              if (courseState.permissions.allRead) {
                 permissions({
                   allRead: false,
                 });
@@ -280,7 +302,7 @@ export function CourseTabMain({ user, course, isLoading, setIsLoading }) {
             }}
             className="button"
           >
-            {course.permissions.allRead ? "Make private" : "Make public"}
+            {courseState.permissions.allRead ? "Make private" : "Make public"}
 
             {isLoading && <Spinner />}
           </button>
@@ -350,10 +372,16 @@ export function QuizzesTabMain({ course }) {
           <MasoneryList>
             {shuffleArray(userQuizzes)
               .sort((a, b) => {
-                if (b.hiddenUntil === "" || new Date(a.hiddenUntil) > new Date(b.hiddenUntil)) {
+                if (
+                  b.hiddenUntil === "" ||
+                  new Date(a.hiddenUntil) > new Date(b.hiddenUntil)
+                ) {
                   return 1;
                 }
-                if (a.hiddenUntil === "" || new Date(a.hiddenUntil) < new Date(b.hiddenUntil)) {
+                if (
+                  a.hiddenUntil === "" ||
+                  new Date(a.hiddenUntil) < new Date(b.hiddenUntil)
+                ) {
                   return -1;
                 }
                 return a.level - b.level;

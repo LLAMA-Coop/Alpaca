@@ -1,6 +1,5 @@
 "use client";
 
-import { QuizDisplay, NoteDisplay, SourceDisplay, MasoneryList } from "@client";
 import styles from "@/app/(dashboard)/me/dashboard/Dash.module.css";
 import { useStore } from "@/store/store";
 import { useEffect, useState } from "react";

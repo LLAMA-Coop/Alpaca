@@ -7,7 +7,6 @@ import { useUser } from "@/lib/auth";
 import { db } from "@/lib/db/db";
 
 // CREATE COURSE
-
 export async function POST(req) {
     const publicId = getNanoId();
     let courseId = null;
