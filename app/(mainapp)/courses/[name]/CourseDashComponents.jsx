@@ -27,6 +27,7 @@ function getUserQuizzesStats(quizIDs, quizList) {
                 id: 0,
                 createAt: 0,
                 level: 0,
+                hiddenUntil: 0,
               };
 
           if (!userQuiz) return;
