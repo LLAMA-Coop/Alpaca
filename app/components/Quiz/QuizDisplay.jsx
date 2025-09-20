@@ -40,7 +40,6 @@ export function QuizDisplay({
   handleWhenCorrect,
 }) {
   const [answers, setAnswers] = useState([]);
-  const [correct, setCorrect] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [incIndexes, setIncIndexes] = useState([]);
   const [spelling, setSpelling] = useState(false);
@@ -135,7 +134,8 @@ export function QuizDisplay({
       setIsCorrect(true);
       setSpelling(ansCheck.matchQuality);
       setHasAnswered(true);
-      if (handleWhenCorrect) handleWhenCorrect();
+
+      if (handleWhenCorrect && !flashcard) handleWhenCorrect();
 
       if (showConfetti) {
         correctConfetti();
