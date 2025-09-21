@@ -140,6 +140,7 @@ export const useStore = create((set) => ({
 export const useDailyTrain = create()((set) => ({
   start: false,
   isPaused: false,
+  timesUp: false,
 
   settings: {
     timeLimit: 60 * 15,
@@ -151,6 +152,7 @@ export const useDailyTrain = create()((set) => ({
 
   setStart: (start) => set(() => ({ start })),
   setIsPaused: (isPaused) => set(() => ({ isPaused })),
+  setTimesUp: (timesUp) => set(() => ({ timesUp })),
   setTimeLimit: (timeLimit) => set(() => ({ timeLimit })),
 
   setSettings: (newValues) => {

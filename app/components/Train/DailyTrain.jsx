@@ -6,6 +6,8 @@ import {
   DialogHeading,
   QuizDisplay,
   TrainSettings,
+  Card,
+  CardDescription,
 } from "@client";
 import hasCommonItem from "@/lib/hasCommonItem";
 import { useDailyTrain } from "@/store/store";
@@ -22,11 +24,15 @@ export function DailyTrain({ quizzes }) {
   const [sources, setSources] = useState([]);
   const [notes, setNotes] = useState([]);
 
+  const [numCorrect, setNumCorrect] = useState(0);
+  const [numIncorrect, setNumIncorrect] = useState(0);
+
   const [filteredQuizzes, setFilteredQuizzes] = useState(quizzes);
 
   const setStart = useDailyTrain((state) => state.setStart);
   const start = useDailyTrain((state) => state.start);
   const isPaused = useDailyTrain((state) => state.isPaused);
+  const timesUp = useDailyTrain((state) => state.timesUp);
   const setIsPaused = useDailyTrain((state) => state.setIsPaused);
   const settings = useDailyTrain((state) => state.settings);
 
@@ -34,6 +40,11 @@ export function DailyTrain({ quizzes }) {
     const newVisible = [...visibleSet];
     newVisible[index] = false;
     setVisibleSet(newVisible);
+    setNumCorrect((prev) => prev + 1);
+  }
+
+  function handleWhenIncorrect() {
+    setNumIncorrect((prev) => prev + 1);
   }
 
   useEffect(() => {
@@ -150,12 +161,7 @@ export function DailyTrain({ quizzes }) {
         </button>
 
         <button onClick={() => setShowSettings(true)} className="button">
-          <svg
-            viewBox="0 0 512 512"
-            fill="currentColor"
-            height="18"
-            width="18"
-          >
+          <svg viewBox="0 0 512 512" fill="currentColor" height="18" width="18">
             <g>
               <path d="M21.359,101.359h58.368c11.52,42.386,55.219,67.408,97.605,55.888c27.223-7.399,48.489-28.665,55.888-55.888h257.472   c11.782,0,21.333-9.551,21.333-21.333s-9.551-21.333-21.333-21.333H233.22C221.7,16.306,178.001-8.716,135.615,2.804   c-27.223,7.399-48.489,28.665-55.888,55.888H21.359c-11.782,0-21.333,9.551-21.333,21.333S9.577,101.359,21.359,101.359z" />
               <path d="M490.692,234.692h-58.368c-11.497-42.38-55.172-67.416-97.552-55.92c-27.245,7.391-48.529,28.674-55.92,55.92H21.359   c-11.782,0-21.333,9.551-21.333,21.333c0,11.782,9.551,21.333,21.333,21.333h257.493c11.497,42.38,55.172,67.416,97.552,55.92   c27.245-7.391,48.529-28.674,55.92-55.92h58.368c11.782,0,21.333-9.551,21.333-21.333   C512.025,244.243,502.474,234.692,490.692,234.692z" />
@@ -194,6 +200,7 @@ export function DailyTrain({ quizzes }) {
                       quiz={quiz}
                       canClientCheck={false}
                       handleWhenCorrect={() => handleWhenCorrect(index)}
+                      handleWhenIncorrect={() => handleWhenIncorrect()}
                     />
                   </li>
                 );
@@ -222,12 +229,7 @@ export function DailyTrain({ quizzes }) {
             }}
             className={styles.closeButton}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
+            <svg width="24" height="24">
               <path
                 d="M18 6l-12 12 M6 6l12 12"
                 stroke="black"
@@ -253,6 +255,18 @@ export function DailyTrain({ quizzes }) {
             </button>
           </div>
         </div>
+      )}
+
+      {timesUp && (
+        <Card>
+          Time's Up!
+          <CardDescription>
+            You have answered {numCorrect} questions correctly
+          </CardDescription>
+          <CardDescription>
+            You have made {numIncorrect} mistakes
+          </CardDescription>
+        </Card>
       )}
     </>
   );

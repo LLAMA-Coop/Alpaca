@@ -38,6 +38,7 @@ export function QuizDisplay({
   canEditDelete,
   lighter,
   handleWhenCorrect,
+  handleWhenIncorrect,
 }) {
   const [answers, setAnswers] = useState([]);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -127,6 +128,8 @@ export function QuizDisplay({
           setHints(quiz.hints);
         }
 
+        if (handleWhenIncorrect & !flashcard) handleWhenIncorrect();
+
         return setLoading(false);
       }
 
@@ -171,6 +174,7 @@ export function QuizDisplay({
           setHints(hints);
 
           if (!isCorrect) {
+            if (handleWhenIncorrect & !flashcard) handleWhenIncorrect();
             if (failures >= 2) {
               addAlert({
                 success: false,
