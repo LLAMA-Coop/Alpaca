@@ -10,6 +10,7 @@ export default async function HomePage() {
             <section className={styles.hero}>
                 <div className={styles.heroContainer}>
                     <div className={styles.heroContent}>
+                        <div className={styles.heroBadge}><span>✦</span> Open Source Learning</div>
                         <h1 className={styles.heroTitle}>Master Your Learning</h1>
                         <p className={styles.heroSubtitle}>
                             Create a craft of skills. Organize sources, create notes, and reinforce knowledge through intelligent quizzes.

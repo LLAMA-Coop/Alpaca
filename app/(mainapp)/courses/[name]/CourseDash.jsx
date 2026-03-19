@@ -5,20 +5,14 @@ import { useStore } from "@/store/store";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  CourseTabInfo,
-  CourseTabMain,
-  NotesTabInfo,
-  NotesTabMain,
-  QuizzesTabInfo,
+  OverviewTab,
   QuizzesTabMain,
-  SourcesInfoTab,
+  NotesTabMain,
   SourcesMainTab,
 } from "./CourseDashComponents";
 
 export function CourseDash({ course, isLogged }) {
-  const [isLoading, setIsLoading] = useState(false);
   const [currentTab, setCurrentTab] = useState(0);
-  const [isTabChanging, setIsTabChanging] = useState(false);
 
   const courses = useStore((state) => state.courses);
   const user = useStore((state) => state.user);
@@ -26,213 +20,154 @@ export function CourseDash({ course, isLogged }) {
   useEffect(() => {
     setCurrentTab(
       parseInt(
-        typeof window != "undefined"
+        typeof window !== "undefined"
           ? localStorage?.getItem("currentTab") || 0
           : 0
       )
     );
   }, []);
 
-  const isEnrolled = courses.find((c) => c.id === course.id);
+  const isEnrolled = !!courses.find((c) => c.id === course.id);
+
+  const quizCount = course.quizzes?.length ?? 0;
+  const noteCount = course.notes?.length ?? 0;
+  const sourceCount = course.sources?.length ?? 0;
 
   const tabs = [
     {
       name: "Overview",
+      count: null,
       icon: (
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M3 13h2v8H3zm4-8h2v16H7zm4-2h2v18h-2zm4 4h2v14h-2zm4-2h2v16h-2z" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
         </svg>
-      ),
-      info: (
-        <CourseTabInfo
-          course={course}
-          isLogged={isLogged}
-          isEnrolled={isEnrolled}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-        />
-      ),
-      main: (
-        <CourseTabMain
-          user={user}
-          course={course}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-        />
       ),
     },
     {
       name: "Quizzes",
+      count: quizCount,
       icon: (
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 9.5c0 .83-.67 1.5-1.5 1.5S11 13.33 11 12.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm5 0c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5z" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <line x1="12" y1="17" x2="12.01" y2="17" strokeWidth="2.5" />
         </svg>
       ),
-      info: <QuizzesTabInfo course={course} />,
-      main: <QuizzesTabMain course={course} />,
     },
     {
       name: "Notes",
+      count: noteCount,
       icon: (
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
         </svg>
       ),
-      info: <NotesTabInfo course={course} />,
-      main: <NotesTabMain course={course} />,
     },
     {
       name: "Sources",
+      count: sourceCount,
       icon: (
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
         </svg>
       ),
-      info: <SourcesInfoTab course={course} />,
-      main: <SourcesMainTab course={course} />,
     },
   ];
 
-  // Handle tab change with loading state
   const handleTabChange = (index) => {
-    setIsTabChanging(true);
     setCurrentTab(index);
     localStorage.setItem("currentTab", index);
-    // Clear loading state after animation completes
-    setTimeout(() => setIsTabChanging(false), 200);
   };
 
-  // Keyboard navigation for tabs
   const handleTabKeyDown = (e, index) => {
-    if (e.key === "ArrowLeft") {
+    if (e.key === "ArrowUp") {
       e.preventDefault();
-      const newIndex = index > 0 ? index - 1 : tabs.length - 1;
-      handleTabChange(newIndex);
-    } else if (e.key === "ArrowRight") {
+      handleTabChange(index > 0 ? index - 1 : tabs.length - 1);
+    } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      const newIndex = index < tabs.length - 1 ? index + 1 : 0;
-      handleTabChange(newIndex);
+      handleTabChange(index < tabs.length - 1 ? index + 1 : 0);
     }
   };
 
   return (
-    <div className={styles.main}>
-      {/* Breadcrumb Navigation */}
-      <div className={styles.breadcrumbs}>
-        <div className={styles.breadcrumbContent}>
+    <div className={styles.page}>
+      {/* Breadcrumb */}
+      <div className={styles.breadcrumbBar}>
+        <div className={styles.breadcrumbInner}>
           <Link href="/courses" className={styles.breadcrumbLink}>
             Courses
           </Link>
-          <span className={styles.breadcrumbSeparator}>/</span>
+          <span className={styles.breadcrumbSep} aria-hidden="true">/</span>
           <span className={styles.breadcrumbCurrent}>{course.name}</span>
         </div>
       </div>
 
-      {/* Header Section with Status Badge */}
-      <div className={styles.headerSection}>
-        <div className={styles.headerContent}>
-          <div className={styles.titleWithBadge}>
-            <h1 className={styles.courseTitle}>{course.name}</h1>
-            {isEnrolled && (
-              <span className={styles.enrolledBadge}>Enrolled</span>
-            )}
-          </div>
-
-          {course.description && (
-            <p className={styles.courseDescription}>{course.description}</p>
-          )}
-
-          {/* Enrollment Info */}
-          {isEnrolled && (
-            <div className={styles.headerMeta}>
-              {user && (
-                <div className={styles.metaItem}>
-                  <strong>Learning as:</strong> {user.username}
-                </div>
+      <div className={styles.layout}>
+        {/* Left Sidebar */}
+        <aside className={styles.sidebar}>
+          <div className={styles.sidebarInner}>
+            <div className={styles.sidebarHeader}>
+              <p className={styles.sidebarLabel}>Course</p>
+              <h2 className={styles.sidebarTitle}>{course.name}</h2>
+              {isEnrolled && (
+                <span className={styles.enrolledBadge}>Enrolled</span>
               )}
             </div>
+
+            <nav className={styles.sidebarNav} aria-label="Course sections">
+              <ul role="tablist" aria-orientation="vertical">
+                {tabs.map((tab, index) => (
+                  <li key={tab.name}>
+                    <button
+                      className={`${styles.navItem} ${currentTab === index ? styles.navItemActive : ""
+                        }`}
+                      onClick={() => handleTabChange(index)}
+                      onKeyDown={(e) => handleTabKeyDown(e, index)}
+                      role="tab"
+                      aria-selected={currentTab === index}
+                    >
+                      <span className={styles.navIcon}>{tab.icon}</span>
+                      <span className={styles.navLabel}>{tab.name}</span>
+                      {tab.count !== null && (
+                        <span
+                          className={`${styles.navBadge} ${tab.count === 0 ? styles.navBadgeEmpty : ""
+                            }`}
+                        >
+                          {tab.count}
+                        </span>
+                      )}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className={styles.content}>
+          {currentTab === 0 && (
+            <OverviewTab
+              course={course}
+              isLogged={isLogged}
+              isEnrolled={isEnrolled}
+              user={user}
+              onTabChange={handleTabChange}
+            />
           )}
-
-          {/* Action Buttons */}
-          <div className={styles.headerActions}>
-            {tabs[0].info}
-          </div>
-        </div>
-      </div>
-
-      {/* Tab Navigation */}
-      <div className={styles.tabNavigation}>
-        <div className={styles.tabContainer}>
-          <ul className={styles.tabList} role="tablist">
-            {tabs.map((tab, index) => (
-              <li key={tab.name} className={styles.tabItem}>
-                <button
-                  className={`${styles.tabButton} ${currentTab === index ? styles.active : ""
-                    }`}
-                  onClick={() => handleTabChange(index)}
-                  onKeyDown={(e) => handleTabKeyDown(e, index)}
-                  aria-selected={currentTab === index}
-                  role="tab"
-                  aria-controls={`tab-panel-${index}`}
-                >
-                  {tab.icon}
-                  <span className={styles.tabName}>{tab.name}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Tab Info Sidebar */}
-      {!isTabChanging && (
-        <div className={styles.tabInfoBar}>
-          <div className={styles.tabInfoContent}>
-            {tabs[currentTab].info}
-          </div>
-        </div>
-      )}
-
-      {/* Content Area */}
-      <div className={styles.contentWrapper}>
-        <div className={styles.contentContainer}>
-          <div
-            className={`${styles.tabContent} ${currentTab === 0 ? styles.active : ""
-              }`}
-            id="tab-panel-0"
-            role="tabpanel"
-          >
-            {currentTab === 0 && tabs[0].main}
-          </div>
-
-          <div
-            className={`${styles.tabContent} ${currentTab === 1 ? styles.active : ""
-              }`}
-            id="tab-panel-1"
-            role="tabpanel"
-          >
-            {currentTab === 1 && tabs[1].main}
-          </div>
-
-          <div
-            className={`${styles.tabContent} ${currentTab === 2 ? styles.active : ""
-              }`}
-            id="tab-panel-2"
-            role="tabpanel"
-          >
-            {currentTab === 2 && tabs[2].main}
-          </div>
-
-          <div
-            className={`${styles.tabContent} ${currentTab === 3 ? styles.active : ""
-              }`}
-            id="tab-panel-3"
-            role="tabpanel"
-          >
-            {currentTab === 3 && tabs[3].main}
-          </div>
-        </div>
+          {currentTab === 1 && <QuizzesTabMain course={course} />}
+          {currentTab === 2 && <NotesTabMain course={course} />}
+          {currentTab === 3 && <SourcesMainTab course={course} />}
+        </main>
       </div>
     </div>
   );
 }
+
