@@ -218,12 +218,8 @@
     max-height: 400px;
     overflow: hidden auto;
     flex-direction: column;
-<<<<<<< HEAD
-    background-color: var(--bg-1);
-=======
     outline: none !important;
     background-color: var(--bg-2);
->>>>>>> 7185b7bac7fcf68d2d11bb16c56ff43e1a46c7b6
     border-radius: var(--radius-medium);
     border: 1px solid var(--border-color);
 }

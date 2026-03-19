@@ -1,0 +1,211 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.selectorBox {
+  background-color: var(--bg-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-large);
+  padding: 24px;
+  transition: border-color var(--transition-base);
+}
+
+.selectorBox:focus-within {
+  border-color: var(--accent-50);
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg-3);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.selector {
+  position: relative;
+}
+
+.button {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-large);
+  background-color: var(--bg-1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
+  transition: all var(--transition-base);
+  color: var(--fg-2);
+}
+
+.button:not(:disabled):hover {
+  background-color: var(--bg-3);
+  border-color: var(--accent-50);
+}
+
+.button.open {
+  background-color: var(--bg-2);
+  border-color: var(--accent-50);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.selected {
+  font-weight: 500;
+  color: var(--fg-1);
+}
+
+.id {
+  font-size: 12px;
+  color: var(--fg-4);
+}
+
+.placeholder {
+  color: var(--fg-4);
+}
+
+.arrow {
+  color: var(--fg-4);
+  font-size: 11px;
+  transition: transform var(--transition-base);
+}
+
+.button.open .arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-2);
+  border: 1px solid var(--accent-50);
+  border-top: none;
+  border-bottom-left-radius: var(--radius-large);
+  border-bottom-right-radius: var(--radius-large);
+  box-shadow: var(--boxshadow-medium);
+  z-index: 50;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 14px;
+  outline: none;
+  background-color: var(--bg-3);
+  color: var(--fg-2);
+}
+
+.searchInput:focus {
+  background-color: var(--bg-2);
+}
+
+.error {
+  padding: 16px;
+  text-align: center;
+}
+
+.error p {
+  color: var(--danger);
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.retryButton {
+  padding: 6px 14px;
+  background-color: var(--danger-08);
+  color: var(--danger);
+  border: 1px solid var(--danger-20);
+  border-radius: var(--radius-medium);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all var(--transition-fast);
+}
+
+.retryButton:hover {
+  background-color: var(--danger-20);
+}
+
+.empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--fg-4);
+  font-size: 14px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color var(--transition-fast);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item:hover {
+  background-color: var(--bg-3);
+}
+
+.item.active {
+  background-color: var(--accent-08);
+}
+
+.courseName {
+  font-weight: 500;
+  color: var(--fg-1);
+  flex: 1;
+}
+
+.courseId {
+  font-size: 12px;
+  color: var(--fg-4);
+  white-space: nowrap;
+}
+
+.clearButton {
+  margin-top: 12px;
+  padding: 10px 16px;
+  background-color: var(--bg-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-medium);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--fg-3);
+  transition: all var(--transition-fast);
+  width: 100%;
+}
+
+.clearButton:hover {
+  background-color: var(--bg-4);
+  color: var(--fg-2);
+}

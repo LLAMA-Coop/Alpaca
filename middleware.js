@@ -36,8 +36,8 @@ const isAuthenticated = async (req) => {
         );
 
         const { payload } = await jwtVerify(token, secret, {
-            issuer: "mnemefeast",
-            audience: "mnemefeast",
+            issuer: process.env.BASE_URL || "http://localhost:3000",
+            audience: process.env.BASE_URL || "http://localhost:3000",
         });
 
         return !!payload.id;

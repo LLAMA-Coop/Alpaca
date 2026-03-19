@@ -93,3 +93,16 @@ export {
     PasswordChangedTemplate,
     EmailFooter,
 } from "./EmailTemplates";
+
+export { ProgressBar, CourseProgressCard } from "./Progress/ProgressBar";
+export { RichNoteEditor, RichNotePreview } from "./Note/RichEditor";
+export { CourseStructure, ModuleCard } from "./Course/CourseStructure";
+export {
+    PersonalDashboard,
+    DashboardWidget,
+    CoursesWidget,
+    RecentActivityWidget,
+    StreakWidget,
+} from "./Dashboard/Dashboard";
+
+export { CourseModuleManager } from "./Course/CourseModuleManager";

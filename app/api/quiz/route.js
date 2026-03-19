@@ -47,7 +47,7 @@ export async function POST(req) {
 
         validator.validate({ field: "tags", value: tags, type: "misc" });
 
-        const permissions = validator.validatePermissions(perm, true);
+        let permissions = validator.validatePermissions(perm, true);
 
         if (type === "multiple-choice" && !choices.length) {
             validator.addError({
@@ -132,6 +132,14 @@ export async function POST(req) {
                     }))
                 )
                 .execute();
+        }
+
+        // If no permissions are set, give the creator read access
+        if (!permissions.allRead && !permissions.allWrite && (!permissions.read || permissions.read === "[]")) {
+            permissions = {
+                ...permissions,
+                allRead: true,
+            };
         }
 
         await db

@@ -2,32 +2,63 @@
     display: flex;
 }
 
-.nav > ul {
+.nav>ul {
     list-style: none;
 }
 
-.nav > ul {
+.nav>ul {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     width: fit-content;
     margin: 0 auto;
+    gap: 8px;
 }
 
-.nav > ul > li > a {
+.nav>ul>li>a {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-radius: 3px;
-    padding: 7px 14px;
+    border-radius: var(--radius-medium);
+    padding: 8px 16px;
     user-select: none;
     color: var(--fg-3);
-    transition: color 0.1s ease-in-out;
-    font-size: 14px;
+    transition: all var(--transition-base);
+    font-size: 15px;
+    font-weight: 500;
+    position: relative;
+    outline-offset: 4px;
 }
 
-.nav > ul > li > a:hover {
-    color: var(--fg-1);
+.nav>ul>li>a::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    width: calc(100% - 32px);
+    height: 2px;
+    background-color: var(--accent);
+    transform: scaleX(0);
+    transition: transform var(--transition-base);
+    border-radius: 1px;
+}
+
+.nav>ul>li>a:hover {
+    color: var(--accent);
+    background-color: var(--accent-08);
+}
+
+.nav>ul>li>a:hover::before {
+    transform: scaleX(1);
+}
+
+.nav>ul>li>a.active {
+    color: var(--accent);
+    background-color: var(--accent-08);
+}
+
+.nav>ul>li>a.active::before {
+    transform: scaleX(1);
 }

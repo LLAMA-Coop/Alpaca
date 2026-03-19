@@ -88,12 +88,21 @@ export async function POST(req) {
             })
             .execute();
 
+        // If no permissions are set, give the creator read access
+        let finalPermissions = permissions;
+        if (!permissions.allRead && !permissions.allWrite && (!permissions.read || permissions.read === "[]")) {
+            finalPermissions = {
+                ...permissions,
+                allRead: true,
+            };
+        }
+
         await db
             .insertInto("resource_permissions")
             .values({
                 resourceId: courseId,
                 resourceType: "course",
-                ...permissions,
+                ...finalPermissions,
             })
             .execute();
 

@@ -1,0 +1,204 @@
+﻿.container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.uploadBox {
+    background-color: var(--bg-2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-large);
+    padding: 24px;
+}
+
+.dropzone {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-large);
+    padding: 48px 32px;
+    text-align: center;
+    background-color: var(--bg-1);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.dropzone.active {
+    background-color: var(--accent-08);
+    border-color: var(--accent);
+}
+
+.dropzone:hover {
+    background-color: var(--bg-3);
+    border-color: var(--accent-50);
+}
+
+.icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+.dropzone h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--fg-1);
+    margin: 8px 0;
+}
+
+.subtitle {
+    color: var(--fg-3);
+    font-size: 14px;
+    margin: 8px 0;
+}
+
+.hiddenInput {
+    display: none;
+}
+
+.selectButton {
+    margin-top: 16px;
+    padding: 10px 20px;
+    background-color: var(--accent);
+    color: var(--accent-fg);
+    border: none;
+    border-radius: var(--radius-large);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: opacity var(--transition-fast);
+}
+
+.selectButton:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.selectButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.fileInfo {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background-color: var(--bg-3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-medium);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.fileName {
+    font-weight: 500;
+    color: var(--fg-2);
+}
+
+.fileSize {
+    color: var(--fg-4);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.errorBox {
+    margin-top: 16px;
+    padding: 16px;
+    background-color: var(--danger-08);
+    border: 1px solid var(--danger-20);
+    border-radius: var(--radius-medium);
+}
+
+.errorTitle {
+    font-weight: 600;
+    color: var(--danger);
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.errorList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.errorList li {
+    padding: 4px 0;
+    color: var(--fg-3);
+    font-size: 13px;
+}
+
+.actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+.uploadButton,
+.cancelButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius-large);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all var(--transition-base);
+    flex: 1;
+}
+
+.uploadButton {
+    background-color: var(--accent);
+    color: var(--accent-fg);
+}
+
+.uploadButton:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.uploadButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.cancelButton {
+    background-color: var(--bg-3);
+    color: var(--fg-3);
+    border: 1px solid var(--border-color);
+}
+
+.cancelButton:hover {
+    background-color: var(--bg-4);
+    color: var(--fg-2);
+}
+
+.loading {
+    margin-top: 20px;
+    padding: 24px;
+    text-align: center;
+    background-color: var(--bg-2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-large);
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.loading p {
+    color: var(--fg-3);
+    margin: 12px 0 0 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

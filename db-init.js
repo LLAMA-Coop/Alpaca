@@ -1,3 +1,4 @@
+import "dotenv/config";
 import mysql from "mysql2";
 import util from "util";
 import fs from "fs";

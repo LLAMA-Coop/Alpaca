@@ -1,0 +1,61 @@
+.nav {
+    margin: 0 var(--gutter-x);
+}
+
+.tabs {
+    margin: 0;
+}
+
+.tabs>ol {
+    display: flex;
+    margin: 40px auto;
+    max-width: var(--max-width);
+    width: auto;
+    justify-content: flex-start;
+    gap: 16px;
+}
+
+.tabs>ol>li {
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    user-select: none;
+    color: var(--fg-3);
+    padding: 10px 20px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    transition: all 0.3s ease;
+    font-family: var(--font-heading);
+}
+
+.tabs>ol>li:not(.active, :active):hover {
+    color: var(--fg-1);
+    font-weight: 600;
+    background-color: var(--bg-1);
+}
+
+.tabs>ol>li:active,
+.tabs>ol>li.active {
+    color: var(--fg-1);
+    font-weight: 600;
+    border-color: var(--accent);
+}
+
+@media screen and (max-width: 768px) {
+    .tabs>ol>li {
+        font-size: 16px;
+        padding: 8px 16px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .tabs>ol {
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .tabs>ol>li {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+}

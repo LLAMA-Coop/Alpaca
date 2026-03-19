@@ -15,7 +15,7 @@ import {
 // UPDATE COURSE
 export async function PATCH(req, props) {
   const params = await props.params;
-  const { id } = params;
+  const { courseId } = params;
 
   const data = await req.json();
   const {
@@ -47,7 +47,7 @@ export async function PATCH(req, props) {
     });
     if (!user) return unauthorized;
 
-    if (!(await canEditResource(user.id, id, "courses", "course"))) {
+    if (!(await canEditResource(user.id, courseId, "courses", "course"))) {
       return NextResponse.json(
         {
           message: "You do not have permission to edit this course",
@@ -61,9 +61,9 @@ export async function PATCH(req, props) {
       .select(({ eb }) => [
         "id",
         "createdBy",
-        getResourcePermissions("course", id, eb),
+        getResourcePermissions("course", courseId, eb),
       ])
-      .where("id", "=", id)
+      .where("id", "=", courseId)
       .executeTakeFirst();
 
     if (!course) {
@@ -89,7 +89,7 @@ export async function PATCH(req, props) {
     }
 
     const content = await updateCourse({
-      id,
+      id: courseId,
       name,
       description,
       enrollment,
@@ -132,9 +132,9 @@ export async function DELETE(req, props) {
     });
     if (!user) return unauthorized;
 
-    const { id } = params;
+    const { courseId } = params;
 
-    if (!(await canDeleteResource(user.id, id, "courses"))) {
+    if (!(await canDeleteResource(user.id, courseId, "courses"))) {
       return NextResponse.json(
         {
           message: "You do not have permission to delete this course",
@@ -143,7 +143,7 @@ export async function DELETE(req, props) {
       );
     }
 
-    await db.deleteFrom("courses").where("id", "=", id).execute();
+    await db.deleteFrom("courses").where("courseId", "=", courseId).execute();
 
     return NextResponse.json(
       {

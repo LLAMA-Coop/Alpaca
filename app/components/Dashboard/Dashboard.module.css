@@ -1,0 +1,210 @@
+.dashboard {
+    margin: 0 var(--gutter-x);
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.dashboardHeader {
+    margin-bottom: 40px;
+}
+
+.dashboardHeader h1 {
+    font-size: 32px;
+    margin: 0 0 8px 0;
+    color: var(--fg-1);
+}
+
+.dashboardHeader p {
+    margin: 0;
+    font-size: 16px;
+    color: var(--fg-2);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+
+.column1,
+.column2 {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Widgets */
+.widget {
+    padding: 24px;
+    border-radius: var(--radius-large);
+    background-color: var(--bg-2);
+    border: 1px solid var(--bg-1);
+    transition: all 0.2s ease;
+}
+
+.widget:hover {
+    border-color: var(--accent);
+}
+
+.widgetHeader {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--bg-1);
+}
+
+.widgetHeader h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--fg-1);
+}
+
+.widgetContent {
+    width: 100%;
+}
+
+/* Courses Widget */
+.widget-courses {}
+
+.coursesList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.coursesList a,
+.coursesList>div {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Recent Activity Widget */
+.widget-recent {}
+
+.activityList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.activityItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: var(--radius-default);
+    background-color: var(--bg-1);
+    transition: background-color 0.2s ease;
+}
+
+.activityItem:hover {
+    background-color: var(--bg-0);
+}
+
+.activityType {
+    background-color: var(--accent);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    min-width: 50px;
+    text-align: center;
+}
+
+.activityTitle {
+    flex: 1;
+    font-size: 14px;
+    color: var(--fg-1);
+    font-weight: 500;
+}
+
+.activityTime {
+    font-size: 12px;
+    color: var(--fg-3);
+}
+
+/* Streak Widget */
+.widget-streak {
+    background: linear-gradient(135deg, var(--bg-2) 0%, var(--bg-3) 100%);
+}
+
+.streakContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.streakItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px;
+    border-radius: var(--radius-default);
+    background-color: var(--bg-1);
+    text-align: center;
+}
+
+.streakLabel {
+    font-size: 12px;
+    color: var(--fg-2);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.streakNumber {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.empty {
+    text-align: center;
+    color: var(--fg-2);
+    padding: 20px;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboardHeader h1 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 24px 0;
+    }
+
+    .dashboardHeader {
+        margin-bottom: 24px;
+    }
+
+    .dashboardHeader h1 {
+        font-size: 24px;
+    }
+
+    .dashboardHeader p {
+        font-size: 14px;
+    }
+
+    .widget {
+        padding: 16px;
+    }
+
+    .streakContainer {
+        grid-template-columns: 1fr;
+    }
+}

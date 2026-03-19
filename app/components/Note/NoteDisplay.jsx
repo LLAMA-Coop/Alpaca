@@ -3,7 +3,7 @@
 import styles from "@/app/components/Card/Card.module.css";
 import { useRouter } from "next/navigation";
 import { useStore } from "@/store/store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   DialogDescription,
   CardDescription,
@@ -30,6 +30,26 @@ export function NoteDisplay({ note }) {
 
   const user = useStore((state) => state.user);
   const router = useRouter();
+
+  // Track progress when note is viewed
+  useEffect(() => {
+    if (user && note?.id) {
+      fetch(
+        `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/progress`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.id,
+            resourceId: note.id,
+            resourceType: "note",
+            isCompleted: false,
+            timeSpent: 0,
+          }),
+        }
+      ).catch((err) => console.error("Failed to track progress:", err));
+    }
+  }, [user, note?.id]);
 
   const coursesStore = useStore((state) => state.courses);
   const sourcesStore = useStore((state) => state.sources);
