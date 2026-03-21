@@ -33,11 +33,19 @@ if (
         await query(`USE ${db}`);
 
         const queries = fs
-            .readFileSync("./lib/db/tables2.sql")
+            .readFileSync("./lib/db/tables.sql")
             .toString()
             .split(";");
 
+        const queriesProgress = fs.readFileSync("./lib/db/progress_tables.sql").toString().split(";");
+
         queries.forEach(async (q) => {
+            if (q.trim() !== "") {
+                await query(q);
+            }
+        });
+
+        queriesProgress.forEach(async (q) => {
             if (q.trim() !== "") {
                 await query(q);
             }

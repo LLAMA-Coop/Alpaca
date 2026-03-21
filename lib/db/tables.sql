@@ -1,29 +1,56 @@
-CREATE TABLE IF NOT EXISTS `Users` (
+CREATE TABLE IF NOT EXISTS `users` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `username` VARCHAR(32) NOT NULL,
-    `displayName` VARCHAR (32),
+    `public_id` CHAR(6) NOT NULL,
+
+    -- Need this for case sensitivity
+	`username` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL UNIQUE,
+    `display_name` VARCHAR (32) NOT NULL,
+    `role` ENUM("admin", "moderator", "user") DEFAULT "user",
+
+    `email` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_bin NULL UNIQUE,
+    `email_verified` TINYINT DEFAULT 0,
+    `email_code` CHAR(6) NULL,
+    `email_verification_token` CHAR(32) NULL,
+
     `description` VARCHAR(512),
     `avatar` VARCHAR(128),
-    `passwordHash` VARCHAR(60),
-    `refreshToken` VARCHAR(256)
+    `settings` JSON NOT NULL,
+    `is_private` TINYINT DEFAULT 0,
+
+    `password` VARCHAR(256),
+    `password_reset` CHAR(32) NULL,
+    `password_reset_expiration` TIMESTAMP NULL,
+    `tokens` JSON NOT NULL,
+
+    `two_factor_enabled` TINYINT DEFAULT 0,
+    `two_factor_secret` VARCHAR(128) NULL,
+    `two_factor_temp` VARCHAR(128) NULL,
+    `two_factor_recovery` JSON NULL,
+
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+
+    `is_deleted` TINYINT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS `Notifications` (
+CREATE TABLE IF NOT EXISTS `notifications` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `recipientId` BIGINT NOT NULL,
-    `senderId` BIGINT,
-    `groupId` BIGINT,
+
+    `recipient_id` BIGINT NOT NULL,
+    `sender_id` BIGINT,
+    `group_id` BIGINT,
 
     -- Invite is for groups, request is for associates
-    `type` ENUM('invite', 'request', 'message', 'alert'),
-    `subject` VARCHAR(32),
-    `message` VARCHAR(256),
-    `responseAction` ENUM('Accept','Decline', 'Request', 'Join', 'Invite', 'Ignore', 'Send Message', 'Reply', 'Delete'),
-    `isRead` BOOLEAN DEFAULT FALSE
+    `type` ENUM("invite", "request", "message", "alert"),
+    `subject` VARCHAR(100),
+    `message` VARCHAR(1024),
+
+    -- Having a hard time understanding how this is useful
+    `action` ENUM("Accept", "Decline", "Request", "Join", "Invite", "Ignore", "Send Message", "Reply", "Delete") NULL,
+    `is_read` TINYINT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS `Associates` (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `associates` (
     `A` BIGINT NOT NULL,
     `B` BIGINT NOT NULL,
 
@@ -31,164 +58,222 @@ CREATE TABLE IF NOT EXISTS `Associates` (
     UNIQUE KEY `associates_BA_idx` (`B`, `A`)
 );
 
-CREATE TABLE IF NOT EXISTS `Groups` (
+CREATE TABLE IF NOT EXISTS `blocked` (
+    `blocker` BIGINT NOT NULL,
+    `blocked` BIGINT NOT NULL,
+
+    UNIQUE KEY `blocked_blocker_blocked_idx` (`blocker`, `blocked`),
+    UNIQUE KEY `blocked_blocked_blocker_idx` (`blocked`, `blocker`)
+);
+
+CREATE TABLE IF NOT EXISTS `groups` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `public_id` CHAR(6) NOT NULL,
+
     `name` VARCHAR(128) NOT NULL,
-    -- public ID is for the URL
-    `publicId` CHAR(12),
     `description` VARCHAR(512),
-    `isPublic` BOOLEAN NOT NULL DEFAULT FALSE,
-    `avatar` VARCHAR(128)
+    `icon` VARCHAR(128),
+    
+    `is_public` TINYINT DEFAULT 0,
+
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+
+    `created_by` BIGINT NOT NULL,
+
+    `is_deleted` TINYINT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS `Members` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `groupId` BIGINT NOT NULL,
-    `userId` BIGINT NOT NULL,
-    `role` ENUM('owner', 'administrator', 'student', 'user')
+CREATE TABLE IF NOT EXISTS `members` (
+    `group_id` BIGINT NOT NULL,
+    `user_id` BIGINT NOT NULL,
+
+    `role` ENUM("owner", "admin", "student", "user"),
+
+    UNIQUE KEY `members_group_id_user_id_idx` (`group_id`, `user_id`),
+    KEY `members_user_id_idx` (`user_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `Sources` (
+CREATE TABLE IF NOT EXISTS `sources` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `public_id` CHAR(6) NOT NULL,
+
     `title` VARCHAR(128) NOT NULL,
-    `medium` ENUM('book', 'article', 'video', 'podcast', 'website', 'audio'),
-    `url` VARCHAR(128),
+    `medium` ENUM("book", "article", "video", "podcast", "website", "audio"),
+    `url` VARCHAR(512),
+
     `tags` JSON NOT NULL,
-    `createdBy` BIGINT NOT NULL,
-    `publishedUpdated` DATE NULL,
-    `lastAccessed` DATE NULL
+    `credits` JSON NOT NULL,
+    `created_by` BIGINT NOT NULL,
+
+    `published_at` TIMESTAMP NULL,
+    `last_accessed` TIMESTAMP NULL,
+    
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+
+    `is_deleted` TINYINT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS `SourceCredits` (
+CREATE TABLE IF NOT EXISTS `notes` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `sourceId` BIGINT NOT NULL,
-    `name` VARCHAR(64),
-    `type` VARCHAR(32) DEFAULT 'Author',
+    `public_id` CHAR(6) NOT NULL,
 
-    CONSTRAINT UNIQUE (`sourceId`, `name`, `type`)
-);
-
-CREATE TABLE IF NOT EXISTS `Notes` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `title` VARCHAR(128) NOT NULL,
     `text` VARCHAR(8192) NOT NULL,
+
     `tags` JSON NOT NULL,
-    `createdBy` BIGINT NOT NULL
+    `created_by` BIGINT NOT NULL,
+
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+
+    `is_deleted` TINYINT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS `Quizzes` (
+CREATE TABLE IF NOT EXISTS `quizzes` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `type` ENUM('prompt-response', 'multiple-choice', 'fill-in-the-blank', 'ordered-list-answer', 'unordered-list-answer', 'verbatim'),
+    `public_id` CHAR(6) NOT NULL,
+    
+    `type` ENUM("prompt-response", "multiple-choice", "fill-in-the-blank", "ordered-list-answer", "unordered-list-answer", "verbatim"),
     `prompt` VARCHAR(256),
-    `choices` JSON NULL,
-    `correctResponses` JSON NOT NULL,
+
+    `choices` JSON NOT NULL,
+    `answers` JSON NOT NULL,
     `hints` JSON NOT NULL,
     `tags` JSON NOT NULL,
-    `createdBy` BIGINT NOT NULL
+
+    `created_by` BIGINT NOT NULL,
+
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+
+    `is_deleted` TINYINT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS `UserQuizzes` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `userId` BIGINT NOT NULL,
-    `quizId` BIGINT NOT NULL,
-    `lastCorrect` DATE DEFAULT CURRENT_DATE,
+CREATE TABLE IF NOT EXISTS `user_quizzes` (
+    `user_id` BIGINT NOT NULL,
+    `quiz_id` BIGINT NOT NULL,
+
     `level` INT DEFAULT 0,
-    `hiddenUntil` DATE DEFAULT CURRENT_DATE,
-    UNIQUE KEY userQuizCombo (`userId`, `quizId`)
+    `tries_at_level` INT DEFAULT 0,
+    `last_correct` TIMESTAMP DEFAULT NOW(),
+    `hidden_until` TIMESTAMP DEFAULT NOW(),
+
+    UNIQUE KEY `user_quizzes_user_id_quiz_id_idx` (`user_id`, `quiz_id`),
+    KEY `user_quizzes_quiz_id_idx` (`quiz_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `QuizNotes` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `quizId` BIGINT NOT NULL,
-    `noteId` BIGINT NOT NULL,
+CREATE TABLE IF NOT EXISTS `resource_contributors` (
+    `resource_id` BIGINT NOT NULL,
+    `user_id` BIGINT NOT NULL,
 
-    CONSTRAINT UNIQUE (`quizId`, `noteId`)
+    `type` ENUM("source", "note", "quiz"),
+
+    UNIQUE KEY `resource_contributors_resource_id_user_id_idx` (`resource_id`, `user_id`),
+    KEY `resource_contributors_user_id_idx` (`user_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `ResourceContributors` (
+CREATE TABLE IF NOT EXISTS `courses` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `resourceId` BIGINT NOT NULL,
-    `resourceType` ENUM('source', 'note', 'quiz', 'course'),
-    `userId` BIGINT NOT NULL,
-    `date` DATE DEFAULT CURRENT_DATE
-);
+    `public_id` CHAR(6) NOT NULL,
 
-CREATE TABLE IF NOT EXISTS `ResourceSources` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `resourceId` BIGINT NOT NULL,
-    `resourceType` ENUM('note', 'quiz'),
-    `sourceId` BIGINT NOT NULL,
-    `locInSource` VARCHAR(32),
-    `locType` ENUM('page', 'id reference', 'section', 'timestamp', 'url'),
-
-    UNIQUE KEY `sourceInfo` (`resourceId`, `resourceType`, `sourceId`)
-);
-
-CREATE TABLE IF NOT EXISTS `Courses` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(128),
     `description` VARCHAR(512),
-    `enrollment` ENUM('open', 'paid', 'private'),
-    `createdBy` BIGINT NOT NULL,
-    `createdDate` DATE DEFAULT CURRENT_DATE
+    `enrollment` ENUM("open", "paid", "private"),
+
+    `created_by` BIGINT NOT NULL,
+
+    `created_at` TIMESTAMP DEFAULT NOW(),
+    `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+
+    `is_deleted` TINYINT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS `CourseUsers` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `courseId` BIGINT NOT NULL,
-    `userId` BIGINT NOT NULL,
-    `userType` ENUM('owner', 'tutor', 'student'),
-    `enrollmentExpiration` DATE DEFAULT (CURRENT_DATE + INTERVAL 200 YEAR)
+CREATE TABLE IF NOT EXISTS `course_users` (
+    `course_id` BIGINT NOT NULL,
+    `user_id` BIGINT NOT NULL,
+
+    `role` ENUM("owner", "tutor", "student") DEFAULT "student",
+    `expiration` TIMESTAMP null,
+
+    UNIQUE KEY `course_users_course_id_user_id_idx` (`course_id`, `user_id`),
+    KEY `course_users_user_id_idx` (`user_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `CourseHierarchy` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `inferiorCourse` BIGINT NOT NULL,
-    `superiorCourse` BIGINT NOT NULL,
-    `relationship` ENUM('prerequisite', 'encompasses'),
-    `averageLevelRequired` INT DEFAULT 0,
-    `minimumLevelRequired` INT DEFAULT 0,
+CREATE TABLE IF NOT EXISTS `courses_hierarchy` (
+    `inferior` BIGINT NOT NULL,
+    `superior` BIGINT NOT NULL,
 
-    CONSTRAINT UNIQUE (`inferiorCourse`, `superiorCourse`, `relationship`)
+    `relationship` ENUM("prerequisite", "encompasses"),
+    `average_level_required` INT DEFAULT 0,
+    `minimum_level_required` INT DEFAULT 0,
+
+    KEY `courses_hierarchy_inferior_idx` (`inferior`),
+    KEY `courses_hierarchy_superior_idx` (`superior`)
 );
 
-CREATE TABLE IF NOT EXISTS `CourseResources` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `courseId` BIGINT NOT NULL,
-    `resourceId` BIGINT NOT NULL,
-    `resourceType` ENUM('source', 'note', 'quiz'),
-    `includeReferencingResources` BOOLEAN,
+CREATE TABLE IF NOT EXISTS `resource_relations` (
+    `A` BIGINT NOT NULL,
+    `B` BIGINT NOT NULL,
 
-    UNIQUE KEY `resourceInfo` (`courseId`, `resourceId`, `resourceType`)
+    `A_type` ENUM("source", "note", "quiz", "course", "group"),
+    `B_type` ENUM("source", "note", "quiz", "course", "group"),
+
+    `include_reference` TINYINT DEFAULT 0,
+    `reference` VARCHAR(128) NULL,
+    `reference_type` ENUM("page", "id", "section", "timestamp", "url") NULL,
+
+    UNIQUE KEY `resource_relations_AB_idx` (`A`, `B`, `A_type`, `B_type`),
+    UNIQUE KEY `resource_relations_BA_idx` (`B`, `A`, `B_type`, `A_type`)
 );
 
-CREATE TABLE IF NOT EXISTS `ResourcePermissions` (
-    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `resourceId` BIGINT NOT NULL,
-    `resourceType` ENUM('source', 'note', 'quiz', 'course', 'user', 'group') NOT NULL,
-    `permitAll` BOOLEAN DEFAULT FALSE,
-    `permissionType` ENUM('read', 'write', 'none') DEFAULT 'read',
-    `permittedId` BIGINT DEFAULT NULL,
-    `permittedType` ENUM ('user', 'group') DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `resource_permissions` (
+    `resource_id` BIGINT NOT NULL,
+    `resource_type` ENUM("source", "note", "quiz", "course", "group"),
 
-    UNIQUE KEY `uniquePermission` (
-        `resourceId`, `resourceType`, `permittedId`, `permittedType`
-    ),
-    CHECK (
-        (`permitAll` = TRUE AND `permittedId` IS NULL AND `permittedType` IS NULL)
-        OR
-        (`permitAll` = FALSE AND `permittedId` IS NOT NULL AND `permittedType` IS NOT NULL)
-    )
+    `group_id` BIGINT NULL,
+    `group_locked` TINYINT DEFAULT 0,
+
+    `all_read` TINYINT DEFAULT 0,
+    `all_write` TINYINT DEFAULT 0,
+
+    `read` JSON NOT NULL,
+    `write` JSON NOT NULL,
+
+    KEY `resource_permissions_resource_id_idx` (`resource_id`),
+    KEY `resource_permissions_group_id_idx` (`group_id`),
+
+    -- can only have one row with same resource_id and resource_type
+    UNIQUE KEY `resource_permissions_resource_id_resource_type_idx` (`resource_id`, `resource_type`),
+
+    -- If all_edit is true, then all_read must be true
+    CHECK (`all_write` = 0 OR `all_read` = 1)
 );
 
-CREATE TABLE IF NOT EXISTS `ErrorsBugs` (
+CREATE TABLE IF NOT EXISTS `user_reports` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `function` VARCHAR(128),
-    `name` VARCHAR(128),
+
+    `reporter` BIGINT NOT NULL,
+    `reported` BIGINT NOT NULL,
+
+    `type` ENUM("spam", "harassment", "hate-speech", "violence", "nudity", "other"),
+    `reason` VARCHAR(256) NULL,
+    `link` VARCHAR(256) NULL,
+
+    `created_at` TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS `error_logs` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+    `route` VARCHAR(256),
+    `name` VARCHAR(256),
     `message` VARCHAR(1024),
-    `code` VARCHAR(128),
-    `sql` VARCHAR(1024),
-    `stack` VARCHAR(1024),
-    `devNote` VARCHAR(1024),
-    `time` DATETIME DEFAULT CURRENT_TIMESTAMP
+    `code` VARCHAR(256),
+    `stack` LONGTEXT,
+
+    `note` VARCHAR(1024) NULL,
+
+    `triggered_at` TIMESTAMP DEFAULT NOW()
 );
