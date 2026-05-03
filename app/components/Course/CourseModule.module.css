@@ -1,0 +1,231 @@
+.moduleManager {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 20px;
+    background: var(--bg1, #f5f5f5);
+    border-radius: 8px;
+    border: 1px solid var(--border, #ddd);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text, #333);
+}
+
+.subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-secondary, #666);
+}
+
+.moduleList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.moduleList h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text, #333);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.moduleItem {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 16px;
+    background: white;
+    border: 1px solid var(--border-light, #e0e0e0);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.moduleItem:hover {
+    border-color: var(--accent, #0066ff);
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.1);
+}
+
+.moduleInfo {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex: 1;
+}
+
+.order {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    background: var(--accent, #0066ff);
+    color: white;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 2px;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.details h5 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text, #333);
+}
+
+.description {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-secondary, #666);
+    line-height: 1.4;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.editForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.titleInput,
+.descInput {
+    padding: 10px 12px;
+    border: 1px solid var(--border-light, #ddd);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text, #333);
+    background: white;
+    transition: border-color 0.2s ease;
+}
+
+.titleInput:focus,
+.descInput:focus {
+    outline: none;
+    border-color: var(--accent, #0066ff);
+    box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.1);
+}
+
+.titleInput {
+    font-weight: 500;
+}
+
+.descInput {
+    min-height: 60px;
+    resize: vertical;
+}
+
+.addForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: white;
+    border: 2px dashed var(--border-light, #ddd);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.addForm:focus-within {
+    border-color: var(--accent, #0066ff);
+    background: rgba(0, 102, 255, 0.02);
+}
+
+.addForm h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text, #333);
+}
+
+.addForm form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    padding: 24px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 6px;
+}
+
+.empty p {
+    margin: 0;
+    color: var(--text-secondary, #666);
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .moduleManager {
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .moduleItem {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .moduleInfo {
+        width: 100%;
+    }
+
+    .actions {
+        width: 100%;
+    }
+
+    .actions button {
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .moduleManager {
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .moduleItem {
+        padding: 12px;
+    }
+
+    .titleInput,
+    .descInput {
+        font-size: 16px;
+        /* Prevents iOS zoom */
+    }
+}

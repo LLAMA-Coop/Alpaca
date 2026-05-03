@@ -1,8 +1,8 @@
 :root {
     --max-width: 1100px;
-    --padding: 120px 40px;
+    --padding: 80px 40px;
     --gutter-x: 40px;
-    --gutter-y: 150px;
+    --gutter-y: 80px;
     --gutter: var(--gutter-y) var(--gutter-x);
 
     --bg-0: #ffffff;
@@ -48,9 +48,13 @@
     --radius-xlarge: 16px;
     --radius-full: 1000px;
 
-    --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
-    --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
-    --boxshadow-dark: 0 0 16px 0 hsla(0, 0%, 0%, 0.2);
+    --boxshadow-light: 0 2px 8px 0 hsla(0, 0%, 0%, 0.08);
+    --boxshadow-medium: 0 4px 16px 0 hsla(0, 0%, 0%, 0.1);
+    --boxshadow-dark: 0 12px 32px 0 hsla(0, 0%, 0%, 0.15);
+    --boxshadow-glow: 0 0 20px hsla(0, 0%, 0%, 0.12);
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.2s ease;
+    --transition-smooth: 0.3s ease;
 }
 
 @media screen and (prefers-color-scheme: dark) {
@@ -92,11 +96,11 @@ mark {
 *:focus-visible {
     outline: none;
     box-shadow:
-        0 0 0 1px var(--accent-50),
-        0 1px 1px rgba(0, 0, 0, 0.03),
-        0 3px 6px rgba(0, 0, 0, 0.02),
-        0 0 0 3px var(--accent-20),
-        0 1px 1px 0 var(--accent-08);
+        0 0 0 2px var(--bg-0),
+        0 0 0 4px var(--accent),
+        0 0 0 6px var(--accent-20),
+        0 0 12px var(--accent-08);
+    transition: box-shadow var(--transition-base);
 }
 
 html,
@@ -109,6 +113,63 @@ body {
     color-scheme: light dark;
     font-family: var(--font-body);
     background-color: var(--bg-1);
+    animation: fadeIn var(--transition-smooth);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        left: -1000px;
+    }
+
+    100% {
+        left: 1000px;
+    }
 }
 
 body {
@@ -127,6 +188,8 @@ h6 {
     font-weight: 700;
     color: var(--fg-1);
     font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+    animation: slideUp var(--transition-smooth) ease;
 }
 
 .link {
@@ -135,10 +198,13 @@ h6 {
     font-family: var(--font-body);
     background-color: transparent;
     border-radius: var(--radius-medium);
+    transition: color var(--transition-fast), opacity var(--transition-fast);
+    position: relative;
 }
 
 .link:hover {
     text-decoration: underline;
+    opacity: 0.8;
 }
 
 .scrollbar {
@@ -333,25 +399,25 @@ input[type="date"] {
 
 @media screen and (max-width: 1024px) {
     :root {
-        --padding: 100px 40px;
+        --padding: 60px 40px;
         --gutter-x: 40px;
-        --gutter-y: 120px;
+        --gutter-y: 60px;
     }
 }
 
 @media screen and (max-width: 768px) {
     :root {
-        --padding: 60px 24px;
+        --padding: 48px 24px;
         --gutter-x: 24px;
-        --gutter-y: 100px;
+        --gutter-y: 48px;
     }
 }
 
 @media (max-width: 550px) {
     :root {
-        --padding: 60px 20px;
+        --padding: 40px 20px;
         --gutter-x: 20px;
-        --gutter-y: 80px;
+        --gutter-y: 40px;
     }
 }
 
@@ -359,31 +425,31 @@ input[type="date"] {
     :root {
         --padding: 20px 10px;
         --gutter-x: 10px;
-        --gutter-y: 60px;
+        --gutter-y: 24px;
     }
 }
 
 @media (max-height: 1024px) {
     :root {
-        --padding: 100px 40px;
+        --padding: 60px 40px;
         --gutter-x: 40px;
-        --gutter-y: 100px;
+        --gutter-y: 60px;
     }
 }
 
 @media (max-height: 768px) {
     :root {
-        --padding: 60px 24px;
+        --padding: 48px 24px;
         --gutter-x: 24px;
-        --gutter-y: 80px;
+        --gutter-y: 48px;
     }
 }
 
 @media (max-height: 550px) {
     :root {
-        --padding: 60px 20px;
+        --padding: 40px 20px;
         --gutter-x: 20px;
-        --gutter-y: 60px;
+        --gutter-y: 40px;
     }
 }
 
@@ -391,7 +457,7 @@ input[type="date"] {
     :root {
         --padding: 20px 10px;
         --gutter-x: 10px;
-        --gutter-y: 40px;
+        --gutter-y: 24px;
     }
 }
 
@@ -501,4 +567,155 @@ input[type="date"] {
 .hljs-deletion {
     color: #ffdcd7;
     background-color: #67060c;
+}
+
+/* Enhanced Global Styles for Better UX */
+
+/* Improved Link Styling */
+a {
+    position: relative;
+}
+
+.link {
+    border-radius: var(--radius-medium);
+    transition: color var(--transition-base), opacity var(--transition-base), text-shadow var(--transition-base);
+    position: relative;
+}
+
+.link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--transition-base);
+}
+
+.link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Enhanced Button Styling */
+.button {
+    position: relative;
+    overflow: hidden;
+}
+
+.button::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.button:active::before {
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    to {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+    }
+}
+
+/* Smooth Transitions */
+* {
+    transition: background-color var(--transition-base), border-color var(--transition-base);
+}
+
+/* Better Focus Styles */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Improved Input Styling */
+input,
+textarea,
+select {
+    transition: border-color var(--transition-base), box-shadow var(--transition-base), background-color var(--transition-base);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    box-shadow: 0 0 0 3px var(--accent-08);
+}
+
+/* Smooth Hover Effects */
+button:not(:disabled),
+a:not(.button) {
+    position: relative;
+}
+
+button:not(:disabled):hover,
+a:not(.button):hover {
+    opacity: 0.9;
+}
+
+/* Enhanced Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    transition: color var(--transition-base);
+}
+
+/* Smooth Scroll Behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Animation for Page Transitions */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+main {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Better Disabled State */
+button:disabled,
+input:disabled,
+select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Enhanced Card Hover Effects */
+.card,
+[class*="Card"] {
+    transition: all var(--transition-base);
+}
+
+.card:hover,
+[class*="Card"]:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--boxshadow-medium);
 }

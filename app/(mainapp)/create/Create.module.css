@@ -4,35 +4,35 @@
 
 .tabs > ol {
     display: flex;
-    margin: 160px auto 40px auto;
+    margin: 100px auto 40px auto;
     max-width: var(--max-width);
+    width: 40%;
     justify-content: space-between;
 }
 
 .tabs > ol > li {
     cursor: pointer;
-    font-size: 18px;
-    font-weight: 400;
+    font-size: 22px;
+    font-weight: 300;
     user-select: none;
     color: var(--fg-3);
     padding: 10px 24px;
-    background-color: var(--bg-2);
     border: 1px solid transparent;
     border-radius: var(--radius-full);
     transition:
-        background-color 0.1s ease,
-        color 0.1s ease;
+        font-weight 0.5s ease;
+    font-family: var(--font-heading);
 }
 
 .tabs > ol > li:not(.active, :active):hover {
     color: var(--fg-1);
-    background-color: var(--bg-3);
+    font-weight: 700;
 }
 
 .tabs > ol > li:active,
 .tabs > ol > li.active {
     color: var(--fg-1);
-    background-color: var(--bg-4);
+    font-weight: 700;
 }
 
 .content {
@@ -42,8 +42,8 @@
 .content > div {
     max-width: var(--max-width);
     margin: 0 auto 120px auto;
-    padding: 24px;
-    border-radius: var(--radius-large);
+    padding: 40px;
+    border-radius: var(--radius-xlarge);
     background-color: var(--bg-2);
 }
 

@@ -50,8 +50,8 @@
     position: relative;
     align-items: center;
     overflow: hidden auto;
-    background-color: var(--bg-3);
-    border-radius: var(--radius-medium);
+    background-color: var(--bg-1);
+    border-radius: var(--radius-large);
     border: 1px solid var(--border-color);
     transition: border 0.1s ease, box-shadow 0.1s ease;
 }
@@ -99,7 +99,7 @@
     color: var(--fg-2);
     border: none !important;
     box-shadow: none !important;
-    background-color: transparent;
+    background-color: var(--bg-1);
     border-radius: var(--radius-medium);
 }
 
@@ -193,7 +193,7 @@
     color: var(--fg-3);
     align-items: center;
     justify-content: center;
-    background-color: var(--bg-3);
+    background-color: var(--bg-2);
     border: 1px solid transparent;
     border-radius: var(--radius-small);
     transition: background-color 0.1s ease, color 0.1s ease, border 0.1s ease;
@@ -305,7 +305,7 @@
     cursor: pointer;
     min-width: 40px;
     position: relative;
-    background-color: var(--bg-4);
+    background-color: var(--bg-1);
     border-radius: var(--radius-full);
 }
 
@@ -320,13 +320,13 @@
     height: 20px;
     display: flex;
     position: absolute;
-    color: var(--bg-4);
+    color: var(--fg-1);
     align-items: center;
     justify-content: center;
     transition: left 0.1s ease;
     transform: translate(-50%, -50%);
     border-radius: var(--radius-full);
-    background-color: var(--success-fg);
+    background-color: var(--bg-3);
 }
 
 .checker.checked > div {

@@ -78,8 +78,6 @@
 }
 
 .tabList > li.active {
-  outline: solid 1px var(--accent);
-  background-color: var(--bg-3);
   color: var(--accent);
 }
 

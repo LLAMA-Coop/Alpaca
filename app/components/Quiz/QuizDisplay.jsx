@@ -138,6 +138,24 @@ export function QuizDisplay({
       setSpelling(ansCheck.matchQuality);
       setHasAnswered(true);
 
+      // Track progress
+      if (user) {
+        fetch(
+          `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/progress`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: user.id,
+              resourceId: quiz.id,
+              resourceType: "quiz",
+              isCompleted: true,
+              timeSpent: 0,
+            }),
+          }
+        ).catch((err) => console.error("Failed to track progress:", err));
+      }
+
       if (handleWhenCorrect && !flashcard) handleWhenCorrect();
 
       if (showConfetti) {
@@ -188,6 +206,24 @@ export function QuizDisplay({
           } else {
             setHints([]);
 
+            // Track progress
+            if (user) {
+              fetch(
+                `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/progress`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    userId: user.id,
+                    resourceId: quiz.id,
+                    resourceType: "quiz",
+                    isCompleted: true,
+                    timeSpent: 0,
+                  }),
+                }
+              ).catch((err) => console.error("Failed to track progress:", err));
+            }
+
             if (handleWhenCorrect) handleWhenCorrect();
 
             if (showConfetti) {
@@ -223,8 +259,8 @@ export function QuizDisplay({
         singleColumn
         gap={
           quiz.type === "ordered-list-answer" ||
-          quiz.type === "unordered-list-answer" ||
-          quiz.type === "unordered-list"
+            quiz.type === "unordered-list-answer" ||
+            quiz.type === "unordered-list"
             ? 20
             : 40
         }
@@ -258,17 +294,17 @@ export function QuizDisplay({
           "ordered-list-answer",
           "unordered-list",
         ].includes(quiz.type) && (
-          <ListAnswer
-            quiz={quiz}
-            answers={answers}
-            setAnswers={setAnswers}
-            hasAnswered={hasAnswered}
-            setHasAnswered={setHasAnswered}
-            incorrectIndexes={incIndexes}
-            setIncorrectIndexes={setIncIndexes}
-            lighter={lighter}
-          />
-        )}
+            <ListAnswer
+              quiz={quiz}
+              answers={answers}
+              setAnswers={setAnswers}
+              hasAnswered={hasAnswered}
+              setHasAnswered={setHasAnswered}
+              incorrectIndexes={incIndexes}
+              setIncorrectIndexes={setIncIndexes}
+              lighter={lighter}
+            />
+          )}
 
         {quiz.type === "fill-in-the-blank" && (
           <Blankable
@@ -368,9 +404,9 @@ export function QuizDisplay({
         {canLevelUp
           ? "Level Up Now!"
           : "Available to level up " +
-            whenLevelUp.toLocaleDateString() +
-            " " +
-            whenLevelUp.toLocaleTimeString()}
+          whenLevelUp.toLocaleDateString() +
+          " " +
+          whenLevelUp.toLocaleTimeString()}
       </div>
 
       {!!canEditDelete && (!!canEdit || !!canDelete) && (

@@ -7,8 +7,9 @@ import { nanoid } from "nanoid";
 import bcrypt from "bcrypt";
 
 async function getIp() {
-    const forwardedFor = await headers().get("x-forwarded-for");
-    const realIp = await headers().get("x-real-ip");
+    const headersList = await headers();
+    const forwardedFor = headersList.get("x-forwarded-for");
+    const realIp = headersList.get("x-real-ip");
 
     if (forwardedFor) {
         return forwardedFor.split(",")[0].trim();
@@ -89,7 +90,8 @@ export async function POST(req) {
             const refreshToken = await getToken(user.username, true);
             const accessToken = await getToken(user.username, false);
 
-            const userAgent = (await headers()).get("user-agent") || "Unknown";
+            const headersList = await headers();
+            const userAgent = headersList.get("user-agent") || "Unknown";
             const ip = await getIp();
             logToFile(`User ${user.username} logged in from ${ip} with user agent ${userAgent}`);
             let location = {

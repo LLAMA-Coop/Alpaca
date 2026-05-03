@@ -4,7 +4,7 @@ import { CardChip, CardCreatedAt, CardList, CardListItem } from "../Card/Card";
 import styles from "@/app/components/Card/Card.module.css";
 import { useRouter } from "next/navigation";
 import { useStore, useAlerts } from "@/store/store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   DialogDescription,
   TooltipTrigger,
@@ -29,10 +29,30 @@ export function SourceDisplay({ source }) {
   const addAlert = useAlerts((state) => state.addAlert);
   const router = useRouter();
 
+  // Track progress when source is viewed
+  useEffect(() => {
+    if (user && source?.id) {
+      fetch(
+        `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/progress`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.id,
+            resourceId: source.id,
+            resourceType: "source",
+            isCompleted: false,
+            timeSpent: 0,
+          }),
+        }
+      ).catch((err) => console.error("Failed to track progress:", err));
+    }
+  }, [user, source?.id]);
+
   const courses = source.courses
     ? source.courses
-        .map((x) => coursesStore.find((crs) => crs.id === x))
-        .filter((x) => !!x)
+      .map((x) => coursesStore.find((crs) => crs.id === x))
+      .filter((x) => !!x)
     : [];
 
   const canEdit =

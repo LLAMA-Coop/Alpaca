@@ -3,7 +3,7 @@
 import { Option, SelectElement } from "./Select";
 import { CheckboxElement } from "./Checkbox";
 import { useEffect, useState } from "react";
-import { getNanoId } from "@/lib/random";
+import { useId } from "react";
 import styles from "./Input.module.css";
 
 export function Input({
@@ -37,13 +37,8 @@ export function Input({
   ...props
 }) {
   const [revealPassword, setRevealPassword] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
   const [charCount, setCharCount] = useState(0);
-  const id = getNanoId();
-
-  useEffect(() => {
-    setHasLoaded(true);
-  }, []);
+  const id = useId();
 
   useEffect(() => {
     if (onIdChange) {
@@ -77,15 +72,6 @@ export function Input({
     }
   }
 
-  if (!hasLoaded || skeleton) {
-    return (
-      <div className={styles.container}>
-        <label className={`${styles.label} ${styles.skeleton}`} />
-        <input tabIndex={-1} className={`${styles.input} ${styles.skeleton}`} />
-      </div>
-    );
-  }
-
   if (select) {
     return (
       <SelectElement
@@ -109,7 +95,7 @@ export function Input({
       >
         {options.map((option) => (
           <Option
-            key={getNanoId()}
+            key={useId()}
             label={notObject ? option : option[itemLabel]}
             active={
               multiple
@@ -208,7 +194,7 @@ export function Input({
           !!data.length &&
           data.map((item) => (
             <span
-              key={getNanoId()}
+              key={useId()}
               className={styles.chip}
               onClick={() => removeItem && removeItem(item)}
             >

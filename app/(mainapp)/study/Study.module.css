@@ -1,0 +1,54 @@
+.main {
+    margin: 0 var(--gutter-x);
+}
+
+.header {
+    max-width: var(--max-width);
+    margin: 60px auto 0;
+    padding: 0;
+}
+
+.header h1 {
+    font-size: 48px;
+    margin: 0 0 16px 0;
+}
+
+.header p {
+    font-size: 16px;
+    color: var(--fg-2);
+    margin: 0 0 32px 0;
+}
+
+.content {
+    max-width: var(--max-width);
+    margin: 40px auto 120px;
+    padding: 0;
+}
+
+.content>div {
+    width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .header h1 {
+        font-size: 32px;
+    }
+
+    .header p {
+        font-size: 14px;
+    }
+
+    .content {
+        margin: 24px auto 80px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .content {
+        margin: 16px auto 40px;
+    }
+}

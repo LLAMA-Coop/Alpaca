@@ -1,0 +1,548 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Status Messages */
+.status {
+    padding: 20px;
+    border-radius: var(--radius-large);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-2);
+}
+
+.status.success {
+    background-color: var(--success-08);
+    border-color: var(--success-20);
+}
+
+.status.error {
+    background-color: var(--danger-08);
+    border-color: var(--danger-20);
+}
+
+.statusHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.statusHeader h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--fg-4);
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-medium);
+    transition: background-color var(--transition-fast);
+}
+
+.closeButton:hover {
+    background-color: var(--bg-3);
+    color: var(--fg-2);
+}
+
+.message {
+    margin: 0 0 12px 0;
+    color: var(--fg-3);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.details {
+    margin-top: 12px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+}
+
+.details summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.details pre {
+    margin-top: 8px;
+    padding: 12px;
+    background-color: var(--bg-1);
+    border-radius: var(--radius-medium);
+    border: 1px solid var(--border-color);
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--fg-3);
+}
+
+/* No Selection */
+.noSelection {
+    padding: 48px;
+    text-align: center;
+    background-color: var(--bg-2);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-large);
+    color: var(--fg-4);
+    font-size: 16px;
+}
+
+/* Guides Section */
+.guides {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.section {
+    background-color: var(--bg-2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-large);
+    padding: 24px;
+}
+
+.section h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--fg-2);
+    margin: 0 0 20px 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Guide Cards */
+.guideCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.guideCard {
+    background-color: var(--bg-3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-large);
+    padding: 20px;
+    transition: border-color var(--transition-base);
+}
+
+.guideCard:hover {
+    border-color: var(--accent-50);
+}
+
+.guideCard h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--fg-1);
+    margin: 0 0 6px 0;
+}
+
+.guideCard p {
+    font-size: 13px;
+    color: var(--fg-3);
+    margin: 0 0 12px 0;
+}
+
+.formatBox {
+    background-color: var(--bg-2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-medium);
+    padding: 12px;
+}
+
+.columns {
+    font-size: 12px;
+    margin-bottom: 10px;
+    color: var(--fg-3);
+    font-family: monospace;
+}
+
+.columns strong {
+    color: var(--fg-2);
+}
+
+.example {
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+}
+
+.example strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--fg-2);
+    font-size: 12px;
+}
+
+.example pre {
+    margin: 0;
+    background-color: var(--bg-1);
+    border-radius: var(--radius-small);
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    font-size: 11px;
+    overflow-x: auto;
+    color: var(--fg-3);
+}
+
+/* Format Details */
+.formatDetails {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+.resourceType {
+    background-color: var(--bg-3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-large);
+    padding: 20px;
+}
+
+.resourceType h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg-2);
+    margin: 0 0 12px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.resourceType table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.resourceType td {
+    padding: 8px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.resourceType tr:last-child td {
+    border-bottom: none;
+}
+
+.resourceType td:first-child {
+    width: 35%;
+}
+
+.resourceType td strong {
+    color: var(--fg-2);
+    font-weight: 600;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.resourceType td:last-child {
+    color: var(--fg-3);
+    font-size: 12px;
+}
+
+/* AI Prompt Guide */
+.promptGuide {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.promptBox {
+    background-color: var(--accent-08);
+    border: 1px solid var(--accent-20);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-large);
+    padding: 20px;
+}
+
+.promptBox h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg-2);
+    margin: 0 0 8px 0;
+}
+
+.promptText {
+    font-size: 13px;
+    color: var(--fg-3);
+    margin: 0 0 12px 0;
+}
+
+.promptBox pre {
+    background-color: var(--bg-2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-medium);
+    padding: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-x: auto;
+    color: var(--fg-3);
+    margin: 1rem 0;
+}
+
+/* Animations */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Status Messages */
+.status {
+    padding: 20px;
+    border-radius: var(--radius-large);
+    border: 1px solid var(--border-color);
+    animation: slideDown 0.3s ease-out;
+}
+
+.status.success {
+    background-color: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.status.error {
+    background-color: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.statusHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.statusHeader h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--fg-1);
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--fg-3);
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--transition-base);
+}
+
+.closeButton:hover {
+    color: var(--fg-1);
+}
+
+.message {
+    margin: 0 0 12px 0;
+    color: var(--fg-2);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.details {
+    margin-top: 12px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+}
+
+.details summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.details pre {
+    margin-top: 12px;
+    padding: 12px;
+    background-color: var(--bg-1);
+    border-radius: var(--radius-medium);
+    overflow-x: auto;
+    font-size: 11px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Guide Sections */
+.guide {
+    background-color: var(--bg-1);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-large);
+    padding: 32px;
+}
+
+.guide h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--fg-1);
+    margin: 0 0 24px 0;
+}
+
+.section {
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--fg-1);
+    margin: 0 0 12px 0;
+}
+
+.section p {
+    font-size: 14px;
+    color: var(--fg-3);
+    margin: 0 0 12px 0;
+    line-height: 1.6;
+}
+
+.code {
+    background-color: var(--bg-0);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-medium);
+    padding: 12px;
+    overflow-x: auto;
+    font-size: 13px;
+    font-family: 'Monaco', 'Courier New', monospace;
+    color: var(--fg-2);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+.table thead {
+    background-color: var(--bg-0);
+}
+
+.table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--fg-1);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--fg-2);
+}
+
+.table tr:hover {
+    background-color: var(--bg-0);
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list li {
+    padding: 8px 0;
+    color: var(--fg-2);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.list strong {
+    color: var(--fg-1);
+}
+
+.promptBox {
+    background-color: var(--bg-0);
+    border: 1px solid var(--accent-20);
+    border-radius: var(--radius-medium);
+    padding: 16px;
+    margin-top: 12px;
+}
+
+.promptBox p {
+    font-size: 13px;
+    color: var(--fg-3);
+    margin: 0 0 12px 0;
+}
+
+.promptBox p:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 24px 16px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .guide {
+        padding: 20px;
+    }
+
+    .guide h2 {
+        font-size: 20px;
+    }
+
+    .table {
+        font-size: 12px;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px;
+    }
+
+    .code {
+        font-size: 11px;
+    }
+}

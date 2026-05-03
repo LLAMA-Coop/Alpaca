@@ -1,11 +1,11 @@
 "use client";
 
-import { Permissions, Spinner, Select, Input, Form } from "@client";
+import { Permissions, Spinner, Select, Input, Form, RichNoteEditor } from "@client";
 import { Validator, validation } from "@/lib/validation";
 import { useEffect, useMemo, useReducer } from "react";
 import { useStore, useAlerts } from "@/store/store";
 import { getChangedFields } from "@/lib/objects";
-import RTEditor from "../Editor/RTEditor";
+
 
 const defaultState = {
   title: "",
@@ -99,7 +99,7 @@ export function NoteInput({ note, close }) {
       dispatch({ type: "permissions", value: inputDefaults.permissions });
       return;
     }
-    
+
     dispatch({
       type: "editing",
       value: {
@@ -175,24 +175,24 @@ export function NoteInput({ note, close }) {
         },
         body: note
           ? JSON.stringify(
-              getChangedFields(
-                {
-                  ...note,
-                  sources: note.sources.map((src) => src.id),
-                  courses: note.courses.map((course) => course.id),
-                },
-                noteData,
-                true
-              )
+            getChangedFields(
+              {
+                ...note,
+                sources: note.sources.map((src) => src.id),
+                courses: note.courses.map((course) => course.id),
+              },
+              noteData,
+              true
             )
+          )
           : JSON.stringify({
-              title: state.title.trim(),
-              text: state.text.trim(),
-              sources: state.sources.map((s) => s.id),
-              courses: state.courses.map((c) => c.id),
-              tags: state.tags,
-              permissions,
-            }),
+            title: state.title.trim(),
+            text: state.text.trim(),
+            sources: state.sources.map((s) => s.id),
+            courses: state.courses.map((c) => c.id),
+            tags: state.tags,
+            permissions,
+          }),
       }
     );
 
@@ -206,13 +206,49 @@ export function NoteInput({ note, close }) {
     }
 
     if (response.status === 201) {
-      dispatch({ type: "reset", default: inputD });
+      // Track progress for new note
+      if (user && data?.noteId) {
+        fetch(
+          `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/progress`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: user.id,
+              resourceId: data.noteId,
+              resourceType: "note",
+              isCompleted: true,
+              timeSpent: 0,
+            }),
+          }
+        ).catch((err) => console.error("Failed to track progress:", err));
+      }
+
+      dispatch({ type: "reset", default: inputDefaults });
 
       addAlert({
         success: true,
         message: data.message || "Successfully created note.",
       });
     } else if (response.status === 200) {
+      // Track progress for updated note
+      if (user && note?.id) {
+        fetch(
+          `${process.env.NEXT_PUBLIC_BASEPATH ?? ""}/api/progress`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: user.id,
+              resourceId: note.id,
+              resourceType: "note",
+              isCompleted: true,
+              timeSpent: 0,
+            }),
+          }
+        ).catch((err) => console.error("Failed to track progress:", err));
+      }
+
       addAlert({
         success: true,
         message: data.message || "Successfully updated note.",
@@ -273,10 +309,10 @@ export function NoteInput({ note, close }) {
         options={
           note
             ? // Filter duplicates
-              [...sources, ...state.sources].filter(
-                (source, index, self) =>
-                  index === self.findIndex((s) => s.id === source.id)
-              )
+            [...sources, ...state.sources].filter(
+              (source, index, self) =>
+                index === self.findIndex((s) => s.id === source.id)
+            )
             : sources
         }
         itemLabel="title"
@@ -306,7 +342,14 @@ export function NoteInput({ note, close }) {
         }}
       />
 
-      <RTEditor content={state.text} setContent={{ dispatch, type: "text" }} />
+      <RichNoteEditor
+        value={state.text}
+        onChange={(e) => {
+          dispatch({ type: "text", value: e.target.value });
+          dispatch({ type: "errors", value: { text: "" } });
+        }}
+        placeholder="Write your note here..."
+      />
 
       {canChangePermissions ? (
         <Permissions

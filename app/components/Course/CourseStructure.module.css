@@ -1,0 +1,175 @@
+.structure {
+    padding: 24px 0;
+}
+
+.header {
+    margin-bottom: 32px;
+}
+
+.header h2 {
+    font-size: 32px;
+    margin: 0 0 8px 0;
+    color: var(--fg-1);
+}
+
+.courseDesc {
+    margin: 0;
+    font-size: 16px;
+    color: var(--fg-2);
+}
+
+.overallProgress {
+    margin-bottom: 32px;
+    padding: 20px;
+    border-radius: var(--radius-large);
+    background-color: var(--bg-2);
+    border: 1px solid var(--bg-1);
+}
+
+.overallProgress>div p {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg-1);
+}
+
+.modules {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.module {
+    padding: 20px;
+    border-radius: var(--radius-large);
+    background-color: var(--bg-2);
+    border: 2px solid var(--bg-1);
+    transition: all 0.3s ease;
+}
+
+.module:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.module.completed {
+    border-color: var(--accent-green, #10b981);
+    background-color: var(--bg-3);
+}
+
+.module.progress {
+    border-color: var(--accent-yellow, #f59e0b);
+}
+
+.module.pending {
+    border-color: var(--bg-1);
+}
+
+.moduleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 12px;
+}
+
+.moduleHeader h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--fg-1);
+    flex: 1;
+}
+
+.stat {
+    background-color: var(--accent);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-left: 8px;
+}
+
+.description {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: var(--fg-2);
+    line-height: 1.5;
+}
+
+.items {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: var(--bg-1);
+    transition: all 0.2s ease;
+}
+
+.item:hover {
+    background-color: var(--bg-0);
+}
+
+.item.completed {
+    opacity: 0.7;
+    background-color: var(--bg-0);
+}
+
+.itemIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--accent);
+}
+
+.itemName {
+    flex: 1;
+    font-size: 13px;
+    color: var(--fg-1);
+    font-weight: 500;
+}
+
+.itemName:hover {
+    color: var(--accent);
+}
+
+.itemType {
+    font-size: 11px;
+    background-color: var(--accent);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.noModules {
+    grid-column: 1 / -1;
+    padding: 40px;
+    text-align: center;
+    color: var(--fg-2);
+}
+
+@media (max-width: 768px) {
+    .modules {
+        grid-template-columns: 1fr;
+    }
+
+    .header h2 {
+        font-size: 24px;
+    }
+}

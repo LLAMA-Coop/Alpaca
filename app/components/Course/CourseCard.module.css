@@ -1,0 +1,129 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-large);
+    transition: all var(--transition-base);
+    text-decoration: none;
+    outline-offset: 4px;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), #059669);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.card:hover {
+    transform: translateY(-12px);
+    border-color: var(--accent);
+    box-shadow: 0 16px 40px rgba(16, 185, 129, 0.2);
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card:active {
+    transform: translateY(-8px);
+}
+
+.cardContent {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+}
+
+.cardTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--fg-1);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.cardDescription {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--fg-3);
+    margin: 0;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cardFooter {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.infoTag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--fg-3);
+    font-weight: 500;
+    padding: 6px 12px;
+    background-color: var(--bg-2);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-base);
+    white-space: nowrap;
+}
+
+.infoTag svg {
+    width: 14px;
+    height: 14px;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.card:hover .infoTag {
+    background-color: var(--accent-08);
+    color: var(--accent);
+}
+
+.card:hover .infoTag svg {
+    color: var(--accent);
+}
+
+@media (max-width: 768px) {
+    .card {
+        padding: 20px;
+    }
+
+    .cardTitle {
+        font-size: 16px;
+    }
+
+    .cardDescription {
+        font-size: 13px;
+    }
+
+    .cardFooter {
+        gap: 10px;
+    }
+
+    .infoTag {
+        font-size: 12px;
+        padding: 3px 8px;
+    }
+}
