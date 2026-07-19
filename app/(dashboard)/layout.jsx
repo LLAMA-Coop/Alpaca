@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { Header } from "@server";
 
 export default async function RootLayout({ children }) {
     const user = await useUser({
@@ -11,10 +10,5 @@ export default async function RootLayout({ children }) {
 
     if (!user) redirect("/login");
 
-    return (
-        <>
-            <Header user={user} />
-            {children}
-        </>
-    );
+    return <div className="appShell">{children}</div>;
 }

@@ -1,46 +1,71 @@
 :root {
-    --max-width: 1100px;
+    --max-width: 1180px;
     --padding: 80px 40px;
     --gutter-x: 40px;
     --gutter-y: 80px;
     --gutter: var(--gutter-y) var(--gutter-x);
 
-    --bg-0: #ffffff;
-    --bg-1: #eff1f5;
-    --bg-2: #e6e9ef;
-    --bg-3: #dce0e8;
-    --bg-4: #ccd0da;
+    --bg-0: #000511;
+    --bg-1: #020617;
+    --bg-2: #0f172a;
+    --bg-3: #1e293b;
+    --bg-4: #334155;
 
-    --fg-1: #020617;
-    --fg-2: #0f172a;
-    --fg-3: #1e293b;
-    --fg-4: #334155;
+    --fg-1: #f8fafc;
+    --fg-2: #e2e8f0;
+    --fg-3: #cbd5e1;
+    --fg-4: #989fa8;
 
-    --accent: #10b981;
-    --accent-50: #10b98180;
-    --accent-20: #10b98156;
-    --accent-08: #10b98114;
-    --accent-fg: #000000;
+    --accent: #12e0a0;
+    --accent-50: #12e0a080;
+    --accent-20: #12e0a056;
+    --accent-08: #12e0a014;
+    --accent-fg: #00220f;
 
-    --success: #4ade80;
-    --success-50: #4ade8080;
-    --success-20: #4ade8056;
-    --success-08: #4ade8014;
-    --success-fg: #000000;
+    --success: #12e0a0;
+    --success-50: #12e0a080;
+    --success-20: #12e0a056;
+    --success-08: #12e0a014;
+    --success-fg: #00220f;
 
-    --warning: #f59e0b;
-    --warning-50: #f59e0b80;
-    --warning-20: #f59e0b56;
-    --warning-08: #f59e0b14;
-    --warning-fg: #000000;
+    --warning: #ffc800;
+    --warning-50: #ffc80080;
+    --warning-20: #ffc80056;
+    --warning-08: #ffc80014;
+    --warning-fg: #3a2c00;
 
-    --danger: #e11d48;
-    --danger-50: #e11d4880;
-    --danger-20: #e11d4856;
-    --danger-08: #e11d4814;
+    --danger: #ff4b6e;
+    --danger-50: #ff4b6e80;
+    --danger-20: #ff4b6e56;
+    --danger-08: #ff4b6e14;
     --danger-fg: #ffffff;
 
-    --border-color: #ccd0da56;
+    /* Complementary gamification accents */
+    --gold: #ffc800;
+    --gold-50: #ffc80080;
+    --gold-20: #ffc80056;
+    --gold-08: #ffc80014;
+    --gold-fg: #3a2c00;
+
+    --purple: #a78bfa;
+    --purple-50: #a78bfa80;
+    --purple-20: #a78bfa56;
+    --purple-08: #a78bfa14;
+    --purple-fg: #1c1235;
+
+    --sky: #38bdf8;
+    --sky-50: #38bdf880;
+    --sky-20: #38bdf856;
+    --sky-08: #38bdf814;
+    --sky-fg: #001c2b;
+
+    --pink: #fb7bb8;
+    --pink-50: #fb7bb880;
+    --pink-20: #fb7bb856;
+    --pink-08: #fb7bb814;
+    --pink-fg: #350018;
+
+    --border-color: #33415556;
 
     --radius-small: 2px;
     --radius-medium: 4px;
@@ -48,30 +73,13 @@
     --radius-xlarge: 16px;
     --radius-full: 1000px;
 
-    --boxshadow-light: 0 2px 8px 0 hsla(0, 0%, 0%, 0.08);
-    --boxshadow-medium: 0 4px 16px 0 hsla(0, 0%, 0%, 0.1);
-    --boxshadow-dark: 0 12px 32px 0 hsla(0, 0%, 0%, 0.15);
-    --boxshadow-glow: 0 0 20px hsla(0, 0%, 0%, 0.12);
+    --boxshadow-light: 0 2px 8px 0 hsla(0, 0%, 0%, 0.24);
+    --boxshadow-medium: 0 4px 16px 0 hsla(0, 0%, 0%, 0.32);
+    --boxshadow-dark: 0 12px 32px 0 hsla(0, 0%, 0%, 0.45);
+    --boxshadow-glow: 0 0 20px hsla(0, 0%, 0%, 0.4);
     --transition-fast: 0.15s ease;
     --transition-base: 0.2s ease;
     --transition-smooth: 0.3s ease;
-}
-
-@media screen and (prefers-color-scheme: dark) {
-    :root {
-        --bg-0: #000511;
-        --bg-1: #020617;
-        --bg-2: #0f172a;
-        --bg-3: #1e293b;
-        --bg-4: #334155;
-
-        --fg-1: #f8fafc;
-        --fg-2: #e2e8f0;
-        --fg-3: #cbd5e1;
-        --fg-4: #989fa8;
-
-        --border-color: #33415556;
-    }
 }
 
 * {
@@ -110,9 +118,13 @@ body {
     min-height: 100dvh;
     color: var(--fg-2);
     scroll-behavior: smooth;
-    color-scheme: light dark;
+    color-scheme: dark;
     font-family: var(--font-body);
-    background-color: var(--bg-1);
+    background:
+        radial-gradient(circle at 8% -12%, color-mix(in srgb, var(--accent) 14%, transparent) 0, transparent 38%),
+        radial-gradient(circle at 96% 0%, color-mix(in srgb, var(--purple) 12%, transparent) 0, transparent 34%),
+        radial-gradient(circle at 50% 120%, color-mix(in srgb, var(--sky) 8%, transparent) 0, transparent 45%),
+        var(--bg-1);
     animation: fadeIn var(--transition-smooth);
 }
 
@@ -177,6 +189,26 @@ body {
     flex-direction: column;
     padding-left: calc(100vw - 100%);
     padding-left: calc(100dvw - 100%);
+}
+
+.appShell {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+.appViewport {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.appMain {
+    flex: 1;
+    width: 100%;
+    animation: slideUp var(--transition-smooth);
 }
 
 h1,

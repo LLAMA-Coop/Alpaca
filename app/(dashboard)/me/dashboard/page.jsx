@@ -1,43 +1,64 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
-import { getUserStreak, getRecentActivity, getPermittedResources } from "@/lib/db/helpers";
+import {
+    getUserStreak,
+    getUserXP,
+    getTodayStudySeconds,
+    getLeaderboard,
+    getStreakCalendar,
+    getUserCourseProgress,
+    getPermittedResources,
+} from "@/lib/db/helpers";
 import { PersonalDashboard } from "@client";
+import shuffleQuizzes from "@/lib/shuffleQuizzes";
 
 export default async function DashboardPage() {
     const token = (await cookies()).get("token")?.value;
     const user = await useUser({
         token,
-        select: ["id"],
+        select: ["id", "username", "displayName", "avatar"],
     });
 
     if (!user) return redirect("/login?next=/me/dashboard");
 
-    // Fetch user's enrolled courses
     const resources = await getPermittedResources({
         userId: user.id,
         withCourses: true,
+        withQuizzes: true,
     });
 
-    // Fetch streak data
-    const streak = await getUserStreak(user.id);
+    const courses = resources.courses || [];
+    const dueQuizzes = shuffleQuizzes(resources.quizzes || []).slice(0, 5);
 
-    // Fetch recent activity
-    const recentActivityRaw = await getRecentActivity(user.id, 10);
+    const [streak, xp, todaySeconds, leaderboard, calendar, courseProgress] = await Promise.all([
+        getUserStreak(user.id),
+        getUserXP(user.id),
+        getTodayStudySeconds(user.id),
+        getLeaderboard({ limit: 5 }),
+        getStreakCalendar(user.id, 7),
+        Promise.all(
+            courses.slice(0, 3).map((course) => getUserCourseProgress(user.id, course.id))
+        ),
+    ]);
 
-    // Format recent activity for display
-    const recentActivity = recentActivityRaw.map((activity) => ({
-        type: activity.resourceType?.toUpperCase() || "UNKNOWN",
-        title: `Accessed ${activity.resourceType}`,
-        time: activity.lastAccessedAt ? new Date(activity.lastAccessedAt).toLocaleDateString() : "Today",
-    }));
+    const progressMap = {};
+    courses.slice(0, 3).forEach((course, index) => {
+        progressMap[course.id] = courseProgress[index];
+    });
 
     return (
         <PersonalDashboard
-            courses={resources.courses || []}
-            recentActivity={recentActivity}
-            streak={streak.currentStreak}
-            longestStreak={streak.longestStreak}
+            user={user}
+            streak={streak}
+            xp={xp}
+            todaySeconds={todaySeconds}
+            leaderboard={leaderboard}
+            calendar={calendar}
+            courses={courses}
+            progressMap={progressMap}
+            dueQuizzes={dueQuizzes}
         />
     );
 }
+
