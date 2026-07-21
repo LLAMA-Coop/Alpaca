@@ -1,87 +1,68 @@
 .tabs {
-    margin: 0 var(--gutter-x);
+    width: min(1180px, calc(100% - 48px));
+    margin: 32px auto 0;
 }
 
 .tabs > ol {
     display: flex;
-    margin: 100px auto 40px auto;
-    max-width: var(--max-width);
-    width: 40%;
-    justify-content: space-between;
+    width: fit-content;
+    max-width: 100%;
+    justify-content: flex-start;
+    gap: 6px;
+    padding: 5px;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-large);
+    background: var(--surface-0);
+    overflow-x: auto;
 }
 
 .tabs > ol > li {
     cursor: pointer;
-    font-size: 22px;
-    font-weight: 300;
+    font-size: 14px;
+    font-weight: 800;
     user-select: none;
     color: var(--fg-3);
-    padding: 10px 24px;
+    padding: 9px 14px;
     border: 1px solid transparent;
-    border-radius: var(--radius-full);
-    transition:
-        font-weight 0.5s ease;
-    font-family: var(--font-heading);
+    border-radius: var(--radius-medium);
+    font-family: var(--font-body);
+    white-space: nowrap;
 }
 
 .tabs > ol > li:not(.active, :active):hover {
     color: var(--fg-1);
-    font-weight: 700;
+    background: var(--surface-hover);
 }
 
 .tabs > ol > li:active,
 .tabs > ol > li.active {
-    color: var(--fg-1);
-    font-weight: 700;
+    color: var(--accent-fg);
+    font-weight: 850;
+    border-color: color-mix(in srgb, var(--accent) 64%, black);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 94%, white), var(--accent));
 }
 
 .content {
-    margin: 0 var(--gutter-x);
+    width: min(1180px, calc(100% - 48px));
+    margin: 16px auto 96px;
 }
 
 .content > div {
-    max-width: var(--max-width);
-    margin: 0 auto 120px auto;
-    padding: 40px;
+    margin: 0;
+    padding: 22px;
     border-radius: var(--radius-xlarge);
-    background-color: var(--bg-2);
-}
-
-@media screen and (max-width: 1024px) {
-    .tabs > ol > li {
-        font-size: 18px;
-    }
+    border: 1px solid var(--surface-border);
+    background: var(--surface-0);
+    box-shadow: var(--boxshadow-light);
 }
 
 @media screen and (max-width: 768px) {
-    .tabs > ol > li {
-        font-size: clamp(16px, 2vw, 20px);
+    .tabs,
+    .content {
+        width: min(100% - 24px, 1180px);
     }
 
     .content > div {
-        margin: 0 auto 80px auto;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .tabs > ol {
-        margin: 120px auto 40px auto;
-    }
-
-    .tabs > ol > li {
-        font-size: 14px;
-        padding: 8px 20px;
-    }
-
-    .content > div {
-        margin: 0 auto 40px auto;
-    }
-}
-
-@media screen and (max-width: 390px) {
-    .tabs > ol {
-        gap: 10px;
-        flex-wrap: wrap;
-        justify-content: start;
+        padding: 16px;
     }
 }

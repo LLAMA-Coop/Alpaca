@@ -5,40 +5,37 @@
     gap: 8px;
 }
 
-.container>a {
+.container > a {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
-/* ── Hamburger toggle button ── */
 .button {
     z-index: 100;
-    border: none;
+    border: 1px solid var(--surface-border);
     display: none;
     padding: 8px;
     cursor: pointer;
     position: relative;
     border-radius: var(--radius-large);
     color: var(--fg-2);
-    background: transparent;
-    transition: color var(--transition-base), background-color var(--transition-base);
+    background: var(--surface-0);
     line-height: 0;
     flex-shrink: 0;
 }
 
 .button:hover {
     color: var(--fg-1);
-    background-color: var(--bg-2);
+    background: var(--surface-hover);
 }
 
-/* ── Backdrop ── */
 .backdrop {
     position: fixed;
     inset: 0;
     z-index: 90;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    background-color: rgba(0, 0, 0, 0.58);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     animation: backdropFadeIn 0.2s ease forwards;
 }
 
@@ -47,37 +44,26 @@
 }
 
 @keyframes backdropFadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes backdropFadeOut {
-    from {
-        opacity: 1;
-    }
-
-    to {
-        opacity: 0;
-    }
+    from { opacity: 1; }
+    to { opacity: 0; }
 }
 
-/* ── Drawer panel ── */
 .drawer {
     position: fixed;
     top: 0;
     right: 0;
-    width: 300px;
-    max-width: 88vw;
+    width: 318px;
+    max-width: 90vw;
     height: 100vh;
     height: 100dvh;
     z-index: 95;
-    background-color: var(--bg-1);
-    border-left: 1px solid var(--border-color);
+    background: var(--bg-1);
+    border-left: 1px solid var(--surface-border);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -90,58 +76,46 @@
 }
 
 @keyframes drawerSlideIn {
-    from {
-        transform: translateX(100%);
-    }
-
-    to {
-        transform: translateX(0);
-    }
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
 }
 
 @keyframes drawerSlideOut {
-    from {
-        transform: translateX(0);
-    }
-
-    to {
-        transform: translateX(100%);
-    }
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
 }
 
-/* ── Drawer header ── */
 .drawerHeader {
     display: flex;
     align-items: center;
     padding: 0 20px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--surface-border);
     flex-shrink: 0;
     height: 64px;
 }
 
 .drawerBrand {
     font-size: 22px;
-    font-weight: 700;
-    color: var(--accent);
+    font-weight: 850;
+    color: var(--fg-1);
     font-family: var(--font-heading);
     text-decoration: none;
     outline-offset: 4px;
     border-radius: var(--radius-medium);
-    transition: opacity var(--transition-base);
 }
 
-.drawerBrand:hover {
-    opacity: 0.85;
+.drawerBrand::after {
+    display: none;
 }
 
-/* ── Drawer profile section ── */
 .drawerProfile {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 16px 20px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--surface-border);
     flex-shrink: 0;
+    background: var(--surface-0);
 }
 
 .drawerProfileInfo {
@@ -152,7 +126,7 @@
 }
 
 .drawerProfileName {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 15px;
     color: var(--fg-1);
     white-space: nowrap;
@@ -168,7 +142,6 @@
     text-overflow: ellipsis;
 }
 
-/* ── Drawer nav links ── */
 .drawerNav {
     flex: 1;
     padding: 12px;
@@ -178,7 +151,7 @@
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
 }
 
 .drawerLink {
@@ -189,24 +162,26 @@
     border-radius: var(--radius-large);
     color: var(--fg-3);
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 650;
     text-decoration: none;
-    transition: color var(--transition-base), background-color var(--transition-base);
     position: relative;
+}
+
+.drawerLink::after {
+    display: none;
 }
 
 .drawerLinkIcon {
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.65;
+    opacity: 0.72;
     flex-shrink: 0;
-    transition: opacity var(--transition-base);
 }
 
 .drawerLink:hover {
     color: var(--fg-1);
-    background-color: var(--bg-2);
+    background: var(--surface-hover);
 }
 
 .drawerLink:hover .drawerLinkIcon {
@@ -214,9 +189,9 @@
 }
 
 .drawerLink.active {
-    color: var(--accent);
-    background-color: var(--accent-08);
-    font-weight: 600;
+    color: var(--accent-fg);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 94%, white), var(--accent));
+    font-weight: 800;
     cursor: default;
 }
 
@@ -228,19 +203,17 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background-color: var(--accent);
+    background-color: currentColor;
     margin-left: auto;
     flex-shrink: 0;
 }
 
-/* ── Drawer footer (unauthenticated login CTA) ── */
 .drawerFooter {
     padding: 16px 20px;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--surface-border);
     flex-shrink: 0;
 }
 
-/* ── Responsive: show hamburger on mobile ── */
 @media (max-width: 900px) {
     .button {
         display: flex;

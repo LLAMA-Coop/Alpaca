@@ -1,4 +1,4 @@
-import styles from "./page.module.css";
+﻿import styles from "./page.module.css";
 import Link from "next/link";
 import { AlpacaSVG } from "@/app/components/AlpacaSVG";
 import { AvailableCourses } from "@/app/components/Course/AvailableCourses";
@@ -82,7 +82,7 @@ export default async function HomePage() {
                     </div>
                     <div className={`${styles.statCard} ${styles.streakCard}`}>
                         <h3>Current Streak</h3>
-                        <p className={styles.big}>🔥 7 days</p>
+                        <p className={styles.big}>7 days</p>
                         <Link href="/daily" className="link">Keep streak alive</Link>
                     </div>
                     <div className={`${styles.statCard} ${styles.leagueCard}`}>
@@ -123,3 +123,4 @@ export default async function HomePage() {
         </main>
     );
 }
+

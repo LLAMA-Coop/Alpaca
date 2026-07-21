@@ -517,3 +517,77 @@
         gap: 16px;
     }
 }
+
+/* Uniform dark course dashboard overrides */
+.page {
+    background: transparent;
+}
+
+.breadcrumbBar {
+    border-bottom-color: var(--surface-border);
+    background: color-mix(in srgb, var(--bg-0) 82%, transparent);
+}
+
+.layout {
+    padding-top: 24px;
+}
+
+.sidebarInner,
+.card,
+.progressStat {
+    background: var(--surface-0);
+    border-color: var(--surface-border);
+    border-radius: var(--radius-xlarge);
+    box-shadow: var(--boxshadow-light);
+}
+
+.sidebarHeader,
+.quizProgressRow {
+    border-color: var(--surface-border);
+}
+
+.navItem {
+    border-radius: var(--radius-large);
+    font-weight: 700;
+}
+
+.navItem:hover {
+    background: var(--surface-hover);
+}
+
+.navItemActive,
+.navItemActive:hover {
+    color: var(--accent-fg);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 94%, white), var(--accent));
+    font-weight: 850;
+}
+
+.navItemActive .navBadge {
+    color: var(--accent-fg);
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.navBadge,
+.progressStat {
+    background: var(--surface-1);
+}
+
+.progressStat:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent-20);
+}
+
+.progressBarWrap {
+    background: var(--surface-2);
+}
+
+.courseTitle {
+    font-weight: 900;
+}
+
+@media (max-width: 600px) {
+    .layout {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}

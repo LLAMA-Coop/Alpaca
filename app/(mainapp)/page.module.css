@@ -1531,3 +1531,145 @@
         font-size: 18px;
     }
 }
+/* Uniform dark page overrides */
+.main {
+    flex: 1;
+    padding: 0;
+}
+
+.homeWrap {
+    width: min(1180px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 28px 0 56px;
+    gap: 18px;
+}
+
+.introCard,
+.pathSection,
+.statsSection,
+.modeSection,
+.finalCta,
+.noResults,
+.featureCard,
+.quizCard,
+.whyCard,
+.communityCard,
+.techSection,
+.quizSection {
+    border-radius: var(--radius-xlarge);
+    border: 1px solid var(--surface-border);
+    background: var(--surface-0);
+    box-shadow: var(--boxshadow-light);
+}
+
+.introCard {
+    padding: clamp(20px, 3vw, 30px);
+    background:
+        linear-gradient(135deg, var(--surface-0), color-mix(in srgb, var(--surface-0) 88%, var(--accent) 6%));
+}
+
+.heroCopy h1 {
+    letter-spacing: 0;
+}
+
+.heroArt,
+.node,
+.statCard,
+.modeGrid article {
+    border-radius: var(--radius-xlarge);
+    border-color: var(--surface-border);
+    background: var(--surface-1);
+}
+
+.pathSection,
+.modeSection,
+.finalCta {
+    padding: 22px;
+}
+
+.node span,
+.done span {
+    border-radius: var(--radius-large);
+}
+
+.connector {
+    background: var(--surface-2);
+}
+
+.statCard {
+    border-top-width: 0;
+    padding: 16px;
+}
+
+.progressTrack {
+    background: var(--surface-2);
+}
+
+.modeGrid article {
+    border-left-width: 3px;
+}
+
+.noResults {
+    padding: 36px;
+}
+
+.paginationButtons {
+    gap: 12px;
+    margin-top: 32px;
+}
+
+@media (max-width: 980px) {
+    .homeWrap {
+        width: min(100% - 24px, 1180px);
+        padding: 18px 0 96px;
+    }
+}
+
+/* Shared page shell overrides for resource and daily pages */
+.main > header,
+.main > section {
+    border-radius: var(--radius-xlarge);
+    border: 1px solid var(--surface-border);
+    background: var(--surface-0);
+    box-shadow: var(--boxshadow-light);
+    padding: 24px;
+    margin-top: 24px;
+}
+
+.main > header {
+    margin-top: 28px;
+}
+
+.main > header > h1,
+.main > section h2 {
+    margin-bottom: 12px;
+    letter-spacing: 0;
+}
+
+.main > header > p,
+.main > section > p {
+    color: var(--fg-3);
+    line-height: 1.65;
+}
+
+.main > section > header {
+    gap: 16px;
+    align-items: center;
+}
+
+.main > section > header h2 {
+    margin-bottom: 0;
+}
+
+.main > section > header + ul,
+.main > section > header + div {
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .main > header,
+    .main > section {
+        padding: 16px;
+        margin-top: 16px;
+    }
+}

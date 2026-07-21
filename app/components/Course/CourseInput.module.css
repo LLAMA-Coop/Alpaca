@@ -2,16 +2,27 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    gap: 18px;
 }
 
-.form > div, .submit {
+.form > div,
+.submit {
     flex-basis: 100%;
 }
 
 .permissions {
-    flex-basis: 50%;
+    flex-basis: calc(50% - 9px);
 }
 
 .links {
     padding: 1rem;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-large);
+    background: var(--surface-1);
+}
+
+@media (max-width: 768px) {
+    .permissions {
+        flex-basis: 100%;
+    }
 }

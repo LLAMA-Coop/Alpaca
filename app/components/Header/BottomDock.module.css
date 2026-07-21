@@ -3,56 +3,50 @@
     left: 50%;
     bottom: 14px;
     transform: translateX(-50%);
-    width: min(620px, calc(100% - 20px));
-    display: none;
+    width: min(280px, calc(100% - 20px));
+    display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
-    padding: 8px;
-    border-radius: 20px;
-    border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
-    background-color: var(--bg-2);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    padding: 10px;
+    border-radius: 999px;
+    border: 1px solid var(--surface-border);
+    background: color-mix(in srgb, var(--bg-0) 86%, transparent);
+    box-shadow: var(--boxshadow-dark);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     z-index: 120;
 }
 
 .item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 3px;
-    min-height: 54px;
-    border-radius: 14px;
-    font-size: 12px;
-    font-weight: 700;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    font-size: 0;
     color: var(--fg-3);
-    transition: transform var(--transition-base), background-color var(--transition-base), color var(--transition-base);
+    text-decoration: none;
+    background: var(--surface-0);
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+    transition:
+        background-color var(--transition-base),
+        color var(--transition-base),
+        transform var(--transition-base),
+        box-shadow var(--transition-base);
+}
+
+.item::after {
+    display: none;
 }
 
 .item:hover {
-    transform: translateY(-2px);
     color: var(--fg-1);
-    background-color: var(--bg-3);
+    background: var(--surface-hover);
+    transform: translateY(-1px);
 }
 
 .active {
-    color: var(--accent);
-    background: linear-gradient(180deg, var(--accent-08), transparent);
-}
-
-.emoji {
-    font-size: 18px;
-    line-height: 1;
-}
-
-.label {
-    white-space: nowrap;
-}
-
-@media (max-width: 900px) {
-    .dock {
-        display: grid;
-    }
+    color: var(--accent-fg);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 94%, white), var(--accent));
 }

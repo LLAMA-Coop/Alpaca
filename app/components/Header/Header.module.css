@@ -2,24 +2,24 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid var(--border-color);
-    background: color-mix(in srgb, var(--bg-1) 92%, transparent);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--surface-border);
+    background: color-mix(in srgb, var(--bg-0) 88%, transparent);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
 .headerTop {
-    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent);
-    background-color: var(--bg-0);
+    border-bottom: 1px solid var(--surface-border);
+    background: color-mix(in srgb, var(--bg-0) 88%, black);
 }
 
 .metrics {
     max-width: 1180px;
     margin: 0 auto;
-    min-height: 44px;
-    padding: 8px 24px;
+    min-height: 38px;
+    padding: 7px 24px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
 }
 
@@ -27,13 +27,18 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    min-height: 26px;
     font-size: 12px;
     font-weight: 700;
-    color: var(--fg-2);
-    background-color: var(--bg-2);
-    border: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent);
-    border-radius: 999px;
-    padding: 6px 11px;
+    color: var(--fg-3);
+    background: var(--surface-0);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-large);
+    padding: 5px 10px;
+}
+
+.metricPill svg {
+    flex-shrink: 0;
 }
 
 .goal {
@@ -43,18 +48,18 @@
 
 .streakPill {
     color: var(--gold);
-    background-color: var(--gold-08);
-    border-color: color-mix(in srgb, var(--gold) 35%, transparent);
+    background: color-mix(in srgb, var(--gold-08) 70%, var(--surface-0));
+    border-color: color-mix(in srgb, var(--gold) 30%, var(--surface-border));
 }
 
 .xpPill {
     color: var(--purple);
-    background-color: var(--purple-08);
-    border-color: color-mix(in srgb, var(--purple) 35%, transparent);
+    background: color-mix(in srgb, var(--purple-08) 70%, var(--surface-0));
+    border-color: color-mix(in srgb, var(--purple) 30%, var(--surface-border));
 }
 
 .goalBar {
-    width: 108px;
+    width: 112px;
     height: 7px;
     border-radius: 999px;
     background-color: var(--bg-3);
@@ -71,7 +76,7 @@
 .header {
     max-width: 1180px;
     margin: 0 auto;
-    height: 72px;
+    height: 66px;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -83,11 +88,15 @@
     align-items: center;
     gap: 10px;
     font-family: var(--font-heading);
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 900;
     color: var(--fg-1);
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
     flex-shrink: 0;
+}
+
+.link::after {
+    display: none;
 }
 
 .brandBadge {
@@ -95,11 +104,11 @@
     height: 34px;
     display: grid;
     place-items: center;
-    border-radius: 12px;
-    color: #08210a;
+    border-radius: var(--radius-large);
+    color: var(--accent-fg);
     font-size: 18px;
-    background-color: var(--accent);
-    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 94%, white), var(--accent));
+    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.16);
 }
 
 .header>nav {
@@ -113,7 +122,7 @@
 
 @media screen and (max-width: 900px) {
     .metrics {
-        padding: 8px 16px;
+        padding: 7px 16px;
     }
 
     .goal {
@@ -121,7 +130,7 @@
     }
 
     .header {
-        height: 64px;
+        height: 62px;
         padding: 0 16px;
     }
 

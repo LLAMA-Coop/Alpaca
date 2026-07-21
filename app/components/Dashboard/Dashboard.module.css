@@ -3,6 +3,7 @@
     min-height: 100dvh;
     display: grid;
     grid-template-columns: 260px 1fr 300px;
+    align-items: start;
     background-color: var(--bg-1);
 }
 
@@ -14,11 +15,9 @@
     padding: 20px 16px;
     border-right: 1px solid var(--border-color);
     background-color: var(--bg-0);
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100dvh;
-    overflow-y: auto;
+    position: static;
+    height: auto;
+    overflow: visible;
 }
 
 .brand {
@@ -568,11 +567,9 @@
     padding: 20px 16px;
     border-left: 1px solid var(--border-color);
     background-color: var(--bg-0);
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100dvh;
-    overflow-y: auto;
+    position: static;
+    height: auto;
+    overflow: visible;
 }
 
 .railCard {

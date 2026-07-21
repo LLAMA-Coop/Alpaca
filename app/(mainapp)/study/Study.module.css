@@ -1,54 +1,61 @@
 .main {
-    margin: 0 var(--gutter-x);
+    width: min(1180px, calc(100% - 48px));
+    margin: 32px auto 96px;
 }
 
 .header {
-    max-width: var(--max-width);
-    margin: 60px auto 0;
-    padding: 0;
+    padding: 22px;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-xlarge);
+    background: var(--surface-0);
+    box-shadow: var(--boxshadow-light);
 }
 
 .header h1 {
-    font-size: 48px;
-    margin: 0 0 16px 0;
+    font-size: clamp(32px, 4vw, 48px);
+    margin: 0 0 10px 0;
+    font-weight: 900;
 }
 
 .header p {
-    font-size: 16px;
-    color: var(--fg-2);
-    margin: 0 0 32px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-3);
+    margin: 0;
+    max-width: 680px;
 }
 
 .content {
-    max-width: var(--max-width);
-    margin: 40px auto 120px;
-    padding: 0;
+    margin: 18px auto 0;
+    padding: 18px;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-xlarge);
+    background: var(--surface-0);
+    box-shadow: var(--boxshadow-light);
 }
 
-.content>div {
+.content > div {
     width: 100%;
 }
 
-@media screen and (max-width: 768px) {
-    .header h1 {
-        font-size: 32px;
-    }
-
-    .header p {
-        font-size: 14px;
-    }
-
-    .content {
-        margin: 24px auto 80px;
-    }
+.content h2 {
+    font-size: 22px;
+    font-weight: 850;
+    margin-bottom: 16px;
 }
 
-@media screen and (max-width: 480px) {
-    .header h1 {
-        font-size: 24px;
+.content p {
+    color: var(--fg-3);
+}
+
+@media screen and (max-width: 768px) {
+    .main {
+        width: min(100% - 24px, 1180px);
+        margin: 18px auto 96px;
     }
 
+    .header,
     .content {
-        margin: 16px auto 40px;
+        padding: 16px;
     }
 }

@@ -1,61 +1,53 @@
 .nav {
-    margin: 0 var(--gutter-x);
+    width: min(1180px, calc(100% - 48px));
+    margin: 16px auto 0;
 }
 
 .tabs {
     margin: 0;
 }
 
-.tabs>ol {
+.tabs > ol {
     display: flex;
-    margin: 40px auto;
-    max-width: var(--max-width);
-    width: auto;
+    width: fit-content;
+    max-width: 100%;
     justify-content: flex-start;
-    gap: 16px;
+    gap: 6px;
+    padding: 5px;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-large);
+    background: var(--surface-0);
+    overflow-x: auto;
 }
 
-.tabs>ol>li {
+.tabs > ol > li {
     cursor: pointer;
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 800;
     user-select: none;
     color: var(--fg-3);
-    padding: 10px 20px;
+    padding: 9px 14px;
     border: 1px solid transparent;
-    border-radius: var(--radius-full);
-    transition: all 0.3s ease;
-    font-family: var(--font-heading);
+    border-radius: var(--radius-medium);
+    font-family: var(--font-body);
+    white-space: nowrap;
 }
 
-.tabs>ol>li:not(.active, :active):hover {
+.tabs > ol > li:not(.active, :active):hover {
     color: var(--fg-1);
-    font-weight: 600;
-    background-color: var(--bg-1);
+    background: var(--surface-hover);
 }
 
-.tabs>ol>li:active,
-.tabs>ol>li.active {
-    color: var(--fg-1);
-    font-weight: 600;
-    border-color: var(--accent);
+.tabs > ol > li:active,
+.tabs > ol > li.active {
+    color: var(--accent-fg);
+    font-weight: 850;
+    border-color: color-mix(in srgb, var(--accent) 64%, black);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 94%, white), var(--accent));
 }
 
 @media screen and (max-width: 768px) {
-    .tabs>ol>li {
-        font-size: 16px;
-        padding: 8px 16px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .tabs>ol {
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .tabs>ol>li {
-        font-size: 14px;
-        padding: 6px 12px;
+    .nav {
+        width: min(100% - 24px, 1180px);
     }
 }
