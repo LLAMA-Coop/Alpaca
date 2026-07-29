@@ -1,62 +1,64 @@
 .container {
-    gap: 16px;
+    gap: 12px;
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .options {
-    height: 36px;
+    height: 38px;
     display: flex;
     align-items: center;
 }
 
 .options > div {
-    width: 36px;
+    width: 38px;
     height: 100%;
 }
 
 .options > div > div:first-child {
-    width: 36px;
+    width: 38px;
     height: 100%;
     display: flex;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 800;
     user-select: none;
     align-items: center;
     justify-content: center;
-    border-radius: 50% 0 0 50%;
-    background-color: var(--bg-3);
-    border: 1px solid var(--border-color);
+    background: var(--surface-0);
+    border: 1px solid var(--surface-border);
 }
 
 .options > div:first-child > div:first-child {
+    border-radius: var(--radius-large) 0 0 var(--radius-large);
     border-right: none;
 }
 
-.options > div > div:first-child[aria-expanded="true"] {
-    border-radius: 50% 0 0 0;
+.options > div:first-child > div:first-child[aria-expanded="true"] {
+    border-radius: var(--radius-large) 0 0 0;
     border-bottom-color: transparent;
 }
 
 .options > div:last-child > div:first-child {
-    border-radius: 0 50% 50% 0;
+    border-radius: 0 var(--radius-large) var(--radius-large) 0;
     border-left-color: transparent;
 }
 
 .options > div:last-child > div:first-child[aria-expanded="true"] {
-    border-radius: 0 50% 0 0;
+    border-radius: 0 var(--radius-large) 0 0;
 }
 
 .options > div > div:first-child:hover,
 .options > div > div:first-child:focus-within {
-    background-color: var(--bg-4);
+    background: var(--surface-hover);
 }
 
 .options > hr {
     width: 0;
     height: 100%;
-    background-color: var(--bg-3);
-    border: 1px solid var(--border-color);
+    background-color: var(--surface-border);
+    border: 1px solid var(--surface-border);
     border-right: none;
 }
 
@@ -67,10 +69,10 @@
 }
 
 .search > div > div {
-    width: 180px;
-    height: 36px;
-    padding: 0 34px 0 2px;
-    border-radius: var(--radius-full);
+    width: 200px;
+    height: 38px;
+    padding: 0 38px 0 2px;
+    border-radius: var(--radius-large);
 }
 
 .search > button {
@@ -81,12 +83,11 @@
     position: absolute;
     color: var(--accent-fg);
     transform: translateY(-50%);
-    transition: filter 0.15s ease;
-    background-color: var(--accent);
-    border-radius: var(--radius-full);
+    background: var(--accent);
+    border-radius: var(--radius-medium);
 }
 
 .search > button:hover,
 .search > button:focus-visible {
-    filter: brightness(0.9);
+    filter: brightness(1.08);
 }

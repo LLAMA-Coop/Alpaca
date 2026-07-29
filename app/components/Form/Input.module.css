@@ -152,7 +152,7 @@
 
 .chip:hover {
     color: var(--fg-1);
-    background-color: var(--bg-4);
+    background: var(--surface-2);
 }
 
 .chip > span {
@@ -195,19 +195,19 @@
     justify-content: center;
     background-color: var(--bg-2);
     border: 1px solid transparent;
-    border-radius: var(--radius-small);
+    border-radius: var(--radius-medium);
     transition: background-color 0.1s ease, color 0.1s ease, border 0.1s ease;
 }
 
 .selectButton:hover,
 .selectButton:focus {
     color: var(--fg-2);
-    background-color: var(--bg-4);
+    background: var(--surface-2);
 }
 
 .wrapper.active .selectButton {
     color: var(--accent);
-    background-color: var(--bg-4);
+    background: var(--surface-2);
 }
 
 .options {
@@ -238,7 +238,7 @@
     font-family: var(--font-body);
     background-color: transparent;
     justify-content: space-between;
-    border-radius: var(--radius-small);
+    border-radius: var(--radius-medium);
 }
 
 .option > p {
@@ -258,7 +258,7 @@
 
 .option.active {
     color: var(--fg-2);
-    background-color: var(--bg-3);
+    background: var(--surface-1);
 }
 
 .option:focus,
@@ -326,7 +326,7 @@
     transition: left 0.1s ease;
     transform: translate(-50%, -50%);
     border-radius: var(--radius-full);
-    background-color: var(--bg-3);
+    background: var(--surface-1);
 }
 
 .checker.checked > div {
@@ -412,4 +412,55 @@
     width: 18px;
     height: 18px;
     fill: currentColor;
+}
+
+/* Unified dark form refresh */
+.label {
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.wrapper {
+    background: var(--surface-0);
+    border-color: var(--surface-border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.wrapper:focus-within,
+.wrapper.active {
+    border-color: var(--accent-50);
+    box-shadow: 0 0 0 3px var(--accent-08);
+}
+
+.input {
+    background: transparent;
+    color: var(--fg-1);
+}
+
+.chip,
+.selectButton,
+.option,
+.checker,
+.reveal {
+    border-color: var(--surface-border);
+    background: var(--surface-1);
+}
+
+.chip:hover,
+.selectButton:hover,
+.selectButton:focus,
+.option.active,
+.reveal:hover,
+.reveal:focus-visible {
+    background: var(--surface-hover);
+}
+
+.options {
+    background: var(--bg-1);
+    border-color: var(--surface-border);
+    box-shadow: var(--boxshadow-dark);
+}
+
+.checker.checked {
+    background: var(--accent);
 }

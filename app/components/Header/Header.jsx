@@ -1,25 +1,5 @@
-import { RightContainer } from "@client";
-import styles from "./Header.module.css";
-import { DynamicNav } from "@server";
-import Link from "next/link";
+﻿import { BottomDock } from "./BottomDock";
 
 export async function Header({ user }) {
-    return (
-        <div className={styles.header}>
-            <header>
-                <div>
-                    <Link
-                        className={styles.link}
-                        href="/"
-                    >
-                        Alpaca
-                    </Link>
-                </div>
-
-                <DynamicNav user={user} />
-
-                <RightContainer user={user} />
-            </header>
-        </div>
-    );
+    return <BottomDock user={user} />;
 }
